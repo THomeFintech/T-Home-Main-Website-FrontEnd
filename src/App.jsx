@@ -1,3 +1,4 @@
+
 import Register from "./pages/Register";
 import { BrowserRouter, Routes, Route, Outlet, useParams } from "react-router-dom";
 
@@ -173,3 +174,4 @@ function App() {
 }
 
 export default App;
+
