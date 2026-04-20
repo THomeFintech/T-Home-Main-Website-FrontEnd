@@ -105,7 +105,7 @@ function App() {
             <Route path="/applications" element={<TrackApplication />} />
             <Route path="/applications/:applicationId" element={<TrackApplicationWithParam />} />
             <Route path="/documents" element={<DocumentsPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile" element={<Profilepage />} />
             <Route path="/support" element={<Support />} />
           </Route>
 
