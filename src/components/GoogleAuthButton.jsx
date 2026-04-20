@@ -1,11 +1,13 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function GoogleAuthButton({ className = "", iconOnly = false }) {
   const navigate = useNavigate();
 
   const login = useGoogleLogin({
-   onSuccess: async (tokenResponse) => {
+    onSuccess: async (tokenResponse) => {
       console.log("🔥 GOOGLE ACCESS TOKEN:", tokenResponse.access_token);
       try {
         // 1️⃣ Get user info from Google
@@ -20,7 +22,7 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
         const userInfo = await userInfoRes.json();
 
         // 2️⃣ Send to FastAPI backend
-        const backendRes = await fetch("http://127.0.0.1:8000/auth/google", {
+        const backendRes = await fetch(`${API_URL}/auth/google`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -30,9 +32,7 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
             picture: userInfo.picture,
           }),
         });
-
         const data = await backendRes.json();
-
         if (!backendRes.ok) {
           alert(data.detail || "Google login failed");
           return;
@@ -43,7 +43,7 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
         localStorage.setItem("isLoggedIn", "true");
 
         // 4️⃣ Fetch user profile
-        const profileRes = await fetch("http://127.0.0.1:8000/auth/me", {
+        const profileRes = await fetch(`${API_URL}/auth/me`, {
           headers: { Authorization: `Bearer ${data.access_token}` },
         });
         const userData = await profileRes.json();
@@ -52,7 +52,6 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
         // 5️⃣ Notify & redirect
         window.dispatchEvent(new Event("authChange"));
         navigate("/");
-
       } catch (err) {
         console.error("Google auth error:", err);
         alert("Google login failed. Please try again.");
