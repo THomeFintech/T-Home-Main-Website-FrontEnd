@@ -400,7 +400,7 @@ function DOBPicker({ value, onChange }) {
 }
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
-export default function ProfilePage() {
+export default function Profilepage() {
   const fileInputRef = useRef(null);
   const [avatar, setAvatar] = useState(null);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
