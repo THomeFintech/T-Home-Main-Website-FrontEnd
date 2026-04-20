@@ -206,39 +206,6 @@ export default function HomeLoan() {
           </div>
         </div>
       </div>
-
-      {/* FOOTER */}
-      <div className="bg-[#0b1220] border-t border-white/10 py-10 px-6">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-5 gap-6 text-sm text-gray-400">
-          <div>
-            <h3 className="text-white font-semibold mb-2">T-HOMES</h3>
-            <p>Innovative and reliable financial solutions for your home needs.</p>
-          </div>
-          <div>
-            <h4 className="text-white mb-2">Quick Links</h4>
-            <p>About Us</p>
-            <p>Careers</p>
-            <p>Blog</p>
-          </div>
-          <div>
-            <h4 className="text-white mb-2">Services</h4>
-            <p>Home Loans</p>
-            <p>Loan Against Property</p>
-          </div>
-          <div>
-            <h4 className="text-white mb-2">Tools</h4>
-            <p>EMI Calculator</p>
-            <p>Eligibility Checker</p>
-          </div>
-          <div>
-            <h4 className="text-white mb-2">Subscribe</h4>
-            <input className="w-full p-2 rounded bg-white/10 mb-2" placeholder="Email" />
-            <button className="w-full bg-blue-600 py-2 rounded">Subscribe</button>
-          </div>
-        </div>
-
-        <p className="text-center text-gray-500 text-xs mt-6">© 2026 T-HOMES</p>
-      </div>
     </div>
   );
 }
