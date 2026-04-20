@@ -25,7 +25,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import TrackApplication from "./pages/TrackApplication";
 import DocumentsPage from "./pages/DocumentsPage";
-import ProfilePage from "./pages/ProfilePage";
+import ProfilePage from "./pages/Profilepage";
 import Support from "./pages/Support";
 import Proceed from "./components/Proceed";
 import { GoogleOAuthProvider } from '@react-oauth/google';
