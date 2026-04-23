@@ -9,7 +9,7 @@ const data = [
   {
     title: "Loans",
     key: "loans",
-    count: 7,
+    count: 5,
     icon: <Home size={20} className="text-blue-500 stroke-[2.5]" />, 
     items: [
      
@@ -23,7 +23,7 @@ const data = [
   icon: <ArrowRightLeft size={20} />,
   link: "/coming-soon"
 },
-      { name: "Education Loan", description: "Fund your higher education easily globally", icon: <GraduationCap size={20} />, link: "/education-loan" },
+      
     ],
   },
   {
@@ -37,7 +37,7 @@ const data = [
       { name: "PAN & Aadhaar Linking", description: "Unlock the value of your property to fund your needs", icon: <FileText size={20} />, link: "/pan-aadhaar-linking" },
     ],
   },
-  {
+  { 
     title: "Business Registrations",
     key: "business",
     count: 3,
@@ -196,9 +196,7 @@ export default function Services() {
 
                 {/* VIEW ALL */}
                 <div className="mt-4 sm:mt-5 flex justify-center">
-                  <button className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-6 sm:px-8 py-1.5 text-[11px] sm:text-xs font-bold text-blue-300 shadow-[0_10px_25px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl transition-all hover:bg-white/[0.11] hover:text-blue-200">
-                    View all {section.title.toLowerCase()} <ChevronRight size={14} />
-                  </button>
+                  
                 </div>
               </div>
             </div>
