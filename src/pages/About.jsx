@@ -182,7 +182,7 @@ const About = () => {
             <div className="absolute inset-0 rounded-2xl bg-white/5 blur-xl"></div>
 
             <img
-              src="https://randomuser.me/api/portraits/men/32.jpg"
+              src="ceo.png"
               className="relative w-24 h-24 mx-auto rounded-full mb-5 border-2 border-gray-600"
             />
 
@@ -209,7 +209,7 @@ const About = () => {
             <div className="absolute inset-0 rounded-2xl bg-white/5 blur-xl"></div>
 
             <img
-              src="https://randomuser.me/api/portraits/men/45.jpg"
+              src="cto.jpeg"
               className="relative w-24 h-24 mx-auto rounded-full mb-5 border-2 border-gray-600"
             />
 
