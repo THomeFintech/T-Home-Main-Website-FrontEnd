@@ -12,7 +12,7 @@ const data = [
     count: 7,
     icon: <Home size={20} className="text-blue-500 stroke-[2.5]" />, 
     items: [
-      { name: "EMI Intelligence System", description: "Calculate your monthly EMI and understand your complete repayment plan with our advanced algorithms.", icon: <KeyRound size={20} />, link: "/emi-calculator" },
+     
       { name: "Home Loans", tag: "POPULAR", description: "Low interest rates for your dream home with easy processing", icon: <Home size={20} />, link: "/home-loans" },
       { name: "Personal Loans", description: "Quick approvals and flexible repayment options", icon: <User size={20} />, link: "/personal-loans" },
       { name: "Loan Against Property", description: "Unlock the value of your property to fund your needs", icon: <Building2 size={20} />, link: "/loan-against-property" },
