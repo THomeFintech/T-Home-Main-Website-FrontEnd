@@ -112,7 +112,7 @@ export default function Sidebar({ activePage, onNavigate, onLogout }) {
     >
 
       {/* 🔹 LOGO + LOGOUT */}
-      <div className="px-1 pb-5">
+      <div className="px-1 pb-2">
 
         {/* LOGO */}
         <div
@@ -129,31 +129,7 @@ export default function Sidebar({ activePage, onNavigate, onLogout }) {
           </span>
         </div>
 
-        {/* LOGOUT */}
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-xl border border-white/15 bg-white/[0.06] px-3 py-2.5 text-sm font-medium text-slate-200 transition-all hover:border-red-300/35 hover:bg-red-500/10 hover:text-white"
-          style={{
-            boxShadow:
-              "inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.18)",
-          }}
-        >
-          <span className="text-red-300">
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.9"
-            >
-              <path d="M10 17l5-5-5-5" />
-              <path d="M15 12H3" />
-              <path d="M21 5v14a2 2 0 01-2 2h-6" />
-            </svg>
-          </span>
-          Logout
-        </button>
+        
       </div>
 
       {/* NAV ITEMS */}
@@ -197,8 +173,34 @@ export default function Sidebar({ activePage, onNavigate, onLogout }) {
               );
             })}
           </div>
+          
         </div>
       ))}
+      {/* LOGOUT */}
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-xl border border-white/15 bg-white/[0.06] px-3 py-2.5 text-sm font-medium text-slate-200 transition-all hover:border-red-300/35 hover:bg-red-500/10 hover:text-white"
+          style={{
+            boxShadow:
+              "inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.18)",
+          }}
+        >
+          <span className="text-red-300">
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.9"
+            >
+              <path d="M10 17l5-5-5-5" />
+              <path d="M15 12H3" />
+              <path d="M21 5v14a2 2 0 01-2 2h-6" />
+            </svg>
+          </span>
+          Logout
+        </button>
     </aside>
   );
 }
