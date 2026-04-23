@@ -453,7 +453,7 @@ function Home() {
                 title: "Loan Prediction System",
                 desc: "Find out how much home loan you can get instantly.",
                 btn: "Check Eligibility",
-                path: "/contact-form",
+                path: "/tools?tool=loan-prediction",
               },
               {
                 title: "Balance Transfer",
@@ -671,20 +671,21 @@ function Home() {
           <p className="mx-auto mt-4 max-w-2xl text-sm text-white/85 md:text-[34px]" style={{ fontSize: "clamp(18px, 1.05vw, 34px)" }}>
             Join thousands of satisfied users who have transformed their financial experience with T-Home.
           </p>
-          <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <button
-              onClick={() => navigate("/register")}
-              className="rounded-lg border border-white/70 bg-white px-7 py-3 font-semibold text-[#1f4de2] shadow-[0_8px_20px_rgba(0,0,0,0.2)] transition hover:bg-[#f2f6ff]"
-            >
-              Create Free Account
-            </button>
-            <button
-              onClick={() => goTo("/contact")}
-              className="rounded-lg border border-[#7e96f0]/85 bg-[linear-gradient(180deg,#425ac9_0%,#344bb6_100%)] px-7 py-3 font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-[linear-gradient(180deg,#4d67db_0%,#3e57c7_100%)]"
-            >
-              Speak to an Expert
-            </button>
-          </div>
+         <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+  <button
+    onClick={() => navigate("/get-started")}
+    className="rounded-lg border border-white/70 bg-white px-7 py-3 font-semibold text-[#1f4de2] shadow-[0_8px_20px_rgba(0,0,0,0.2)] transition hover:bg-[#f2f6ff]"
+  >
+    Create Free Account
+  </button>
+
+  <button
+    onClick={() => navigate("/contact")}
+    className="rounded-lg border border-[#7e96f0]/85 bg-[linear-gradient(180deg,#425ac9_0%,#344bb6_100%)] px-7 py-3 font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-[linear-gradient(180deg,#4d67db_0%,#3e57c7_100%)]"
+  >
+    Speak to an Expert
+  </button>
+</div>
         </div>
       </section>
     </div>
