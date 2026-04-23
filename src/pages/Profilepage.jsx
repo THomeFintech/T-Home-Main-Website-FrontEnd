@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 
 // ── Glass constants ───────────────────────────────────────────────────────────
 const G = {
@@ -423,7 +425,7 @@ useEffect(() => {
 
   if (!token) return;
 
-  fetch("http://127.0.0.1:8000/auth/me", {
+  fetch(`${BASE_URL}/auth/me`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -468,7 +470,7 @@ setContact({
 
   async function handleSave() {
   try {
-    const res = await fetch("http://127.0.0.1:8000/auth/update-profile", {
+    const res = await fetch(`${BASE_URL}/auth/update-profile`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -520,7 +522,7 @@ setContact({
   }
 async function handleContactSave() {
   try {
-    const res = await fetch("http://127.0.0.1:8000/auth/update-contact", {
+    const res = await fetch(`${BASE_URL}/auth/update-contact`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -564,7 +566,7 @@ async function handleContactSave() {
   }
 
   try {
-    const res = await fetch("http://127.0.0.1:8000/auth/change-password", {
+    const res = await fetch(`${BASE_URL}/auth/change-password`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
