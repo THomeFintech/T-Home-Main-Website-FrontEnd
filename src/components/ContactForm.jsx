@@ -13,7 +13,7 @@ export default function ContactForm({
     service: contactData.service || "",
     agree: contactData.agree || false,
   });
-
+const BASE_URL = import.meta.env.VITE_API_URL;
   const [errors, setErrors] = useState({});
 
   const services = [
@@ -121,9 +121,7 @@ export default function ContactForm({
   };
 
   try {
-    const res = await fetch(
-      "http://127.0.0.1:8000/applications/contact/create",
-      {
+    const res = await fetch(`${BASE_URL}/applications/contact/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
