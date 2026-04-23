@@ -13,6 +13,8 @@ export default function HiringForm() {
     resume: null,
   });
 
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
 
@@ -57,7 +59,7 @@ export default function HiringForm() {
       setLoading(true);
       setMsg("");
 
-      const res = await fetch("http://127.0.0.1:8000/apply-job", {
+      const res = await fetch(`${BASE_URL}/apply-job`, {
         method: "POST",
         body: form,
       });
