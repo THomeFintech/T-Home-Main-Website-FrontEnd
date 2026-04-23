@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 // Icons using SVG inline
 const BuildingIcon = () => (
@@ -48,6 +48,8 @@ const CheckCircleIcon = () => (
 );
 
 const CollaboratePage = () => {
+  const formRef = useRef(null);
+
   const [form, setForm] = useState({
     fullName: "",
     companyName: "",
@@ -62,6 +64,10 @@ const CollaboratePage = () => {
 
   const handleSubmit = () => {
     alert("Application submitted!");
+  };
+
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -80,253 +86,403 @@ const CollaboratePage = () => {
 
       <div className="relative z-10">
 
-      {/* ─── HERO SECTION ─── */}
-      <section
-        className="relative flex flex-col items-center justify-center text-center py-28 px-6"
-        style={{ background: "linear-gradient(180deg, #0e2244 0%, #0a1628 100%)" }}
-      >
-        {/* subtle grid overlay */}
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(100,160,255,0.3) 1px, transparent 0)", backgroundSize: "40px 40px" }} />
-        <h1 className="relative text-4xl md:text-5xl font-bold mb-4 leading-tight">
-          Partner with <span className="text-blue-400">T-Home</span> to Grow Together
-        </h1>
-        <p className="relative text-gray-300 max-w-xl mb-8 text-base">
-          Join our network of financial experts, institutions, and partners to deliver smarter, faster, and more accessible financial solutions.
-        </p>
-        <div className="relative flex gap-4 flex-wrap justify-center">
-          <button className="bg-blue-500 hover:bg-blue-600 transition px-6 py-3 rounded-full font-semibold text-white">
-            Become A Partner
-          </button>
-          <button className="border border-gray-500 hover:border-gray-300 transition px-6 py-3 rounded-full font-semibold text-white">
-            Talk to Us
-          </button>
-        </div>
-      </section>
+        {/* ─── HERO SECTION ─── */}
+        <section
+          className="relative flex flex-col items-center justify-center px-6 py-28 text-center"
+          style={{ background: "linear-gradient(180deg, #0e2244 0%, #0a1628 100%)" }}
+        >
+          <div
+            className="absolute inset-0 opacity-10"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 1px 1px, rgba(100,160,255,0.3) 1px, transparent 0)",
+              backgroundSize: "40px 40px",
+            }}
+          />
+          <h1 className="relative mb-4 text-4xl font-bold leading-tight md:text-5xl">
+            Partner with <span className="text-blue-400">T-Home</span> to Grow Together
+          </h1>
+          <p className="relative mb-8 max-w-xl text-base text-gray-300">
+            Join our network of financial experts, institutions, and partners to deliver smarter, faster, and more accessible financial solutions.
+          </p>
+          <div className="relative flex flex-wrap justify-center gap-4">
+            <button
+              onClick={scrollToForm}
+              className="rounded-full bg-blue-500 px-6 py-3 font-semibold text-white transition hover:bg-blue-600"
+            >
+              Become A Partner
+            </button>
+            <button
+              onClick={scrollToForm}
+              className="rounded-full border border-gray-500 px-6 py-3 font-semibold text-white transition hover:border-gray-300"
+            >
+              Talk to Us
+            </button>
+          </div>
+        </section>
 
-      {/* ─── WHO CAN COLLABORATE ─── */}
-      <section className="py-20 px-6 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-2">Who Can Collaborate</h2>
-        <p className="text-blue-400 mb-12 text-sm">Our platform is designed for a diverse ecosystem of financial professionals.</p>
-        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { icon: <BuildingIcon />, title: "Financial Institutions", desc: "Banks and credit unions looking to expand their reach and digitize lending." },
-            { icon: <BriefcaseIcon />, title: "Loan Agents & Brokers-(DSA's)", desc: "Professionals seeking access to better rates, fast approvals, and verified leads." },
-            { icon: <UserIcon />, title: "Freelancers", desc: "Independent advisors referring clients and earning top-tier commissions." },
-            { icon: <RocketIcon />, title: "Startups", desc: "Fintech innovators looking to integrate our embedded finance API solutions." },
-          ].map((card, i) => (
+        {/* ─── WHO CAN COLLABORATE ─── */}
+        <section className="px-6 py-20 text-center">
+          <h2 className="mb-2 text-3xl font-bold md:text-4xl">Who Can Collaborate</h2>
+          <p className="mb-12 text-sm text-blue-400">
+            Our platform is designed for a diverse ecosystem of financial professionals.
+          </p>
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: <BuildingIcon />,
+                title: "Financial Institutions",
+                desc: "Banks and credit unions looking to expand their reach and digitize lending.",
+              },
+              {
+                icon: <BriefcaseIcon />,
+                title: "Loan Agents & Brokers-(DSA's)",
+                desc: "Professionals seeking access to better rates, fast approvals, and verified leads.",
+              },
+              {
+                icon: <UserIcon />,
+                title: "Freelancers",
+                desc: "Independent advisors referring clients and earning top-tier commissions.",
+              },
+              {
+                icon: <RocketIcon />,
+                title: "Startups",
+                desc: "Fintech innovators looking to integrate our embedded finance API solutions.",
+              },
+            ].map((card, i) => (
+              <div
+                key={i}
+                className="rounded-2xl p-6 text-left"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  backdropFilter: "blur(12px)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  boxShadow: "0 4px 30px rgba(0,0,0,0.3)",
+                }}
+              >
+                <div
+                  className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl text-blue-400"
+                  style={{
+                    background: "rgba(59,130,246,0.15)",
+                    border: "1px solid rgba(59,130,246,0.25)",
+                  }}
+                >
+                  {card.icon}
+                </div>
+                <h3 className="mb-2 text-base font-semibold">{card.title}</h3>
+                <p className="text-sm leading-relaxed text-gray-400">{card.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ─── WHY PARTNER WITH US ─── */}
+        <section className="px-6 py-20 text-center" style={{ background: "rgba(0,0,0,0.25)" }}>
+          <h2 className="mb-2 text-3xl font-bold md:text-4xl">Why Partner With Us</h2>
+          <p className="mb-14 text-sm text-gray-400">
+            We provide the tools, support, and financial incentives to help you succeed.
+          </p>
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: <TrendingUpIcon />,
+                title: "High Commission",
+                desc: "Earn industry-leading payouts for every successful referral or closed deal.",
+              },
+              {
+                icon: <TargetIcon />,
+                title: "Verified Leads",
+                desc: "Access a steady stream of pre-qualified, high-intent customer leads.",
+              },
+              {
+                icon: <BoltIcon />,
+                title: "Fast Onboarding",
+                desc: "Get verified and start collaborating within 24 hours through our digital portal.",
+              },
+              {
+                icon: <HeadsetIcon />,
+                title: "Dedicated Support",
+                desc: "Your own account manager to ensure smooth operations and fast payouts.",
+              },
+            ].map((item, i) => (
+              <div key={i} className="flex flex-col items-center gap-3">
+                <div
+                  className="flex h-14 w-14 items-center justify-center rounded-full text-blue-400"
+                  style={{
+                    background: "rgba(59,130,246,0.12)",
+                    border: "1px solid rgba(59,130,246,0.3)",
+                  }}
+                >
+                  {item.icon}
+                </div>
+                <h3 className="text-sm font-semibold">{item.title}</h3>
+                <p className="text-xs leading-relaxed text-gray-400">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ─── HOW IT WORKS ─── */}
+        <section className="px-6 py-20 text-center">
+          <h2 className="mb-2 text-3xl font-bold md:text-4xl">How It Works</h2>
+          <p className="mb-14 text-sm text-gray-400">
+            A simple, transparent process to get you up and running quickly.
+          </p>
+          <div className="relative mx-auto flex max-w-3xl flex-col items-center justify-center gap-0 md:flex-row md:gap-0">
             <div
-              key={i}
-              className="rounded-2xl p-6 text-left"
+              className="absolute left-[16.5%] right-[16.5%] top-7 hidden h-px md:block"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(59,130,246,0.5) 0%, rgba(59,130,246,0.5) 100%)",
+              }}
+            />
+            {[
+              { num: 1, title: "Apply", desc: "Submit your partnership application form." },
+              { num: 2, title: "Get Verified", desc: "Our team reviews and approves your profile." },
+              { num: 3, title: "Start Collaborating", desc: "Access the portal and begin earning." },
+            ].map((step, i) => (
+              <div key={i} className="relative z-10 flex flex-1 flex-col items-center px-6">
+                <div
+                  className={`mb-4 flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold ${
+                    step.num === 2 ? "bg-blue-500 text-white" : "text-blue-400"
+                  }`}
+                  style={
+                    step.num !== 2
+                      ? {
+                          border: "2px solid rgba(59,130,246,0.6)",
+                          background: "rgba(59,130,246,0.1)",
+                        }
+                      : {}
+                  }
+                >
+                  {step.num}
+                </div>
+                <h3 className="mb-1 text-sm font-semibold">{step.title}</h3>
+                <p className="text-xs text-gray-400">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ─── TESTIMONIALS ─── */}
+        <section className="px-6 py-20 text-center" style={{ background: "rgba(0,0,0,0.2)" }}>
+          <h2 className="mb-2 text-3xl font-bold md:text-4xl">Trusted by Partners</h2>
+          <p className="mb-12 text-sm text-gray-400">
+            Hear from professionals who are already growing with T-Home.
+          </p>
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3">
+            {[
+              {
+                quote:
+                  "Partnering with T-Home transformed our lead flow. The platform is seamless, and the commission structure is exactly what we needed to scale our agency.",
+                name: "Jane D.",
+                role: "Independent Broker",
+                initials: "JD",
+                color: "#6366f1",
+              },
+              {
+                quote:
+                  "The embedded finance API was incredibly easy to integrate. Our startup can now offer direct lending solutions without the regulatory headache.",
+                name: "Mark S.",
+                role: "Fintech Founder",
+                initials: "MS",
+                color: "#3b82f6",
+              },
+              {
+                quote:
+                  "Fastest onboarding I've ever experienced. Within two days, I was referring clients and tracking my earnings in real-time on the dashboard.",
+                name: "Sarah L.",
+                role: "Financial Consultant",
+                initials: "SL",
+                color: "#8b5cf6",
+              },
+            ].map((t, i) => (
+              <div
+                key={i}
+                className="rounded-2xl p-6 text-left"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  backdropFilter: "blur(12px)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  boxShadow: "0 4px 30px rgba(0,0,0,0.3)",
+                }}
+              >
+                <p className="mb-5 text-sm leading-relaxed text-gray-300">"{t.quote}"</p>
+                <div className="flex items-center gap-3">
+                  <div
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white"
+                    style={{ background: t.color }}
+                  >
+                    {t.initials}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">{t.name}</p>
+                    <p className="text-xs text-gray-400">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ─── APPLICATION FORM ─── */}
+        <section ref={formRef} className="px-6 py-20">
+          <div className="mx-auto flex max-w-5xl flex-col items-start gap-12 md:flex-row">
+            <div className="flex-1">
+              <h2 className="mb-4 text-3xl font-bold">Ready to take next step?</h2>
+              <p className="mb-8 text-sm leading-relaxed text-gray-400">
+                Fill out the application form to express your interest. Our partnership team will review your details and reach out within 24 hours to discuss the next steps.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  "No upfront fees or commitments",
+                  "Customized commission structures",
+                  "Full access to marketing resources",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm text-gray-300">
+                    <span className="text-blue-400">
+                      <CheckCircleIcon />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div
+              className="w-full flex-1 rounded-2xl p-8"
               style={{
                 background: "rgba(255,255,255,0.04)",
-                backdropFilter: "blur(12px)",
+                backdropFilter: "blur(16px)",
                 border: "1px solid rgba(255,255,255,0.08)",
-                boxShadow: "0 4px 30px rgba(0,0,0,0.3)",
+                boxShadow: "0 8px 40px rgba(0,0,0,0.4)",
               }}
             >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-blue-400"
-                style={{ background: "rgba(59,130,246,0.15)", border: "1px solid rgba(59,130,246,0.25)" }}>
-                {card.icon}
-              </div>
-              <h3 className="font-semibold text-base mb-2">{card.title}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">{card.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── WHY PARTNER WITH US ─── */}
-      <section className="py-20 px-6 text-center" style={{ background: "rgba(0,0,0,0.25)" }}>
-        <h2 className="text-3xl md:text-4xl font-bold mb-2">Why Partner With Us</h2>
-        <p className="text-gray-400 mb-14 text-sm">We provide the tools, support, and financial incentives to help you succeed.</p>
-        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          {[
-            { icon: <TrendingUpIcon />, title: "High Commission", desc: "Earn industry-leading payouts for every successful referral or closed deal." },
-            { icon: <TargetIcon />, title: "Verified Leads", desc: "Access a steady stream of pre-qualified, high-intent customer leads." },
-            { icon: <BoltIcon />, title: "Fast Onboarding", desc: "Get verified and start collaborating within 24 hours through our digital portal." },
-            { icon: <HeadsetIcon />, title: "Dedicated Support", desc: "Your own account manager to ensure smooth operations and fast payouts." },
-          ].map((item, i) => (
-            <div key={i} className="flex flex-col items-center gap-3">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center text-blue-400"
-                style={{ background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.3)" }}>
-                {item.icon}
-              </div>
-              <h3 className="font-semibold text-sm">{item.title}</h3>
-              <p className="text-gray-400 text-xs leading-relaxed">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── HOW IT WORKS ─── */}
-      <section className="py-20 px-6 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-2">How It Works</h2>
-        <p className="text-gray-400 mb-14 text-sm">A simple, transparent process to get you up and running quickly.</p>
-        <div className="max-w-3xl mx-auto flex flex-col md:flex-row items-center justify-center gap-0 md:gap-0 relative">
-          {/* connector line */}
-          <div className="hidden md:block absolute top-7 left-1/6 right-1/6 h-px" style={{ background: "linear-gradient(90deg, rgba(59,130,246,0.5) 0%, rgba(59,130,246,0.5) 100%)", left: "16.5%", right: "16.5%" }} />
-          {[
-            { num: 1, title: "Apply", desc: "Submit your partnership application form." },
-            { num: 2, title: "Get Verified", desc: "Our team reviews and approves your profile." },
-            { num: 3, title: "Start Collaborating", desc: "Access the portal and begin earning." },
-          ].map((step, i) => (
-            <div key={i} className="flex flex-col items-center flex-1 px-6 relative z-10">
-              <div className={`w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold mb-4 ${step.num === 2 ? "bg-blue-500 text-white" : "text-blue-400"}`}
-                style={step.num !== 2 ? { border: "2px solid rgba(59,130,246,0.6)", background: "rgba(59,130,246,0.1)" } : {}}>
-                {step.num}
-              </div>
-              <h3 className="font-semibold text-sm mb-1">{step.title}</h3>
-              <p className="text-gray-400 text-xs">{step.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── TESTIMONIALS ─── */}
-      <section className="py-20 px-6 text-center" style={{ background: "rgba(0,0,0,0.2)" }}>
-        <h2 className="text-3xl md:text-4xl font-bold mb-2">Trusted by Partners</h2>
-        <p className="text-gray-400 mb-12 text-sm">Hear from professionals who are already growing with T-Home.</p>
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { quote: "Partnering with T-Home transformed our lead flow. The platform is seamless, and the commission structure is exactly what we needed to scale our agency.", name: "Jane D.", role: "Independent Broker", initials: "JD", color: "#6366f1" },
-            { quote: "The embedded finance API was incredibly easy to integrate. Our startup can now offer direct lending solutions without the regulatory headache.", name: "Mark S.", role: "Fintech Founder", initials: "MS", color: "#3b82f6" },
-            { quote: "Fastest onboarding I've ever experienced. Within two days, I was referring clients and tracking my earnings in real-time on the dashboard.", name: "Sarah L.", role: "Financial Consultant", initials: "SL", color: "#8b5cf6" },
-          ].map((t, i) => (
-            <div key={i} className="rounded-2xl p-6 text-left"
-              style={{ background: "rgba(255,255,255,0.04)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 4px 30px rgba(0,0,0,0.3)" }}>
-              <p className="text-gray-300 text-sm leading-relaxed mb-5">"{t.quote}"</p>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                  style={{ background: t.color }}>
-                  {t.initials}
-                </div>
+              <div className="space-y-4">
                 <div>
-                  <p className="font-semibold text-sm">{t.name}</p>
-                  <p className="text-gray-400 text-xs">{t.role}</p>
+                  <label className="mb-1 block text-xs text-gray-400">Full Name</label>
+                  <input
+                    name="fullName"
+                    value={form.fullName}
+                    onChange={handleChange}
+                    placeholder="Enter your full name"
+                    className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
+                    style={{
+                      background: "rgba(255,255,255,0.06)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                    }}
+                  />
                 </div>
+
+                <div>
+                  <label className="mb-1 block text-xs text-gray-400">Company Name</label>
+                  <input
+                    name="companyName"
+                    value={form.companyName}
+                    onChange={handleChange}
+                    placeholder="Enter your company name"
+                    className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
+                    style={{
+                      background: "rgba(255,255,255,0.06)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                    }}
+                  />
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="mb-1 block text-xs text-gray-400">Type of Partner</label>
+                    <select
+                      name="partnerType"
+                      value={form.partnerType}
+                      onChange={handleChange}
+                      className="w-full rounded-lg px-4 py-3 text-sm text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
+                      style={{
+                        background: "rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                      }}
+                    >
+                      <option value="">Select partner type</option>
+                      <option value="institution">Financial Institution</option>
+                      <option value="broker">Loan Agent / Broker</option>
+                      <option value="freelancer">Freelancer</option>
+                      <option value="startup">Startup</option>
+                    </select>
+                  </div>
+
+                  <div className="flex-1">
+                    <label className="mb-1 block text-xs text-gray-400">Experience Level</label>
+                    <select
+                      name="experience"
+                      value={form.experience}
+                      onChange={handleChange}
+                      className="w-full rounded-lg px-4 py-3 text-sm text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
+                      style={{
+                        background: "rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                      }}
+                    >
+                      <option value="">Years of experience</option>
+                      <option value="0-1">0–1 years</option>
+                      <option value="1-3">1–3 years</option>
+                      <option value="3-5">3–5 years</option>
+                      <option value="5+">5+ years</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs text-gray-400">Message (Optional)</label>
+                  <textarea
+                    name="message"
+                    value={form.message}
+                    onChange={handleChange}
+                    rows={4}
+                    placeholder="Tell us about your goals..."
+                    className="w-full resize-none rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
+                    style={{
+                      background: "rgba(255,255,255,0.06)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                    }}
+                  />
+                </div>
+
+                <button
+                  onClick={handleSubmit}
+                  className="w-full rounded-lg bg-blue-500 py-3 text-sm font-semibold text-white transition hover:bg-blue-600"
+                >
+                  Submit Application
+                </button>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* ─── APPLICATION FORM ─── */}
-      <section className="py-20 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-12 items-start">
-          {/* Left */}
-          <div className="flex-1">
-            <h2 className="text-3xl font-bold mb-4">Ready to take next step?</h2>
-            <p className="text-gray-400 text-sm leading-relaxed mb-8">
-              Fill out the application form to express your interest. Our partnership team will review your details and reach out within 24 hours to discuss the next steps.
+        {/* ─── CTA BANNER ─── */}
+        <section className="mb-12 px-6 py-16">
+          <div
+            className="mx-auto max-w-3xl rounded-2xl px-8 py-14 text-center"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(30,58,138,0.5) 0%, rgba(17,24,80,0.6) 100%)",
+              backdropFilter: "blur(16px)",
+              border: "1px solid rgba(59,130,246,0.2)",
+              boxShadow: "0 8px 40px rgba(0,0,0,0.4)",
+            }}
+          >
+            <h2 className="mb-3 text-3xl font-bold">Let's Build Financial Growth Together</h2>
+            <p className="mb-8 text-sm text-gray-400">
+              Join the fastest growing network of financial professionals today.
             </p>
-            <ul className="space-y-3">
-              {["No upfront fees or commitments", "Customized commission structures", "Full access to marketing resources"].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-sm text-gray-300">
-                  <span className="text-blue-400"><CheckCircleIcon /></span>
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <button
+              onClick={scrollToForm}
+              className="rounded-full bg-blue-500 px-8 py-3 font-semibold text-white transition hover:bg-blue-600"
+            >
+              Apply Now
+            </button>
           </div>
-
-          {/* Form */}
-          <div className="flex-1 rounded-2xl p-8 w-full"
-            style={{ background: "rgba(255,255,255,0.04)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 8px 40px rgba(0,0,0,0.4)" }}>
-            <div className="space-y-4">
-              <div>
-                <label className="text-xs text-gray-400 mb-1 block">Full Name</label>
-                <input
-                  name="fullName"
-                  value={form.fullName}
-                  onChange={handleChange}
-                  placeholder="Enter your full name"
-                  className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
-                />
-              </div>
-              <div>
-                <label className="text-xs text-gray-400 mb-1 block">Company Name</label>
-                <input
-                  name="companyName"
-                  value={form.companyName}
-                  onChange={handleChange}
-                  placeholder="Enter your company name"
-                  className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
-                />
-              </div>
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="text-xs text-gray-400 mb-1 block">Type of Partner</label>
-                  <select
-                    name="partnerType"
-                    value={form.partnerType}
-                    onChange={handleChange}
-                    className="w-full rounded-lg px-4 py-3 text-sm text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
-                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
-                  >
-                    <option value="">Select partner type</option>
-                    <option value="institution">Financial Institution</option>
-                    <option value="broker">Loan Agent / Broker</option>
-                    <option value="freelancer">Freelancer</option>
-                    <option value="startup">Startup</option>
-                  </select>
-                </div>
-                <div className="flex-1">
-                  <label className="text-xs text-gray-400 mb-1 block">Experience Level</label>
-                  <select
-                    name="experience"
-                    value={form.experience}
-                    onChange={handleChange}
-                    className="w-full rounded-lg px-4 py-3 text-sm text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
-                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
-                  >
-                    <option value="">Years of experience</option>
-                    <option value="0-1">0–1 years</option>
-                    <option value="1-3">1–3 years</option>
-                    <option value="3-5">3–5 years</option>
-                    <option value="5+">5+ years</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="text-xs text-gray-400 mb-1 block">Message (Optional)</label>
-                <textarea
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
-                  rows={4}
-                  placeholder="Tell us about your goals..."
-                  className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500 resize-none"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
-                />
-              </div>
-              <button
-                onClick={handleSubmit}
-                className="w-full bg-blue-500 hover:bg-blue-600 transition py-3 rounded-lg font-semibold text-white text-sm"
-              >
-                Submit Application
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── CTA BANNER ─── */}
-      <section className="py-16 px-6 mb-12">
-        <div className="max-w-3xl mx-auto text-center rounded-2xl py-14 px-8"
-          style={{ background: "linear-gradient(135deg, rgba(30,58,138,0.5) 0%, rgba(17,24,80,0.6) 100%)", backdropFilter: "blur(16px)", border: "1px solid rgba(59,130,246,0.2)", boxShadow: "0 8px 40px rgba(0,0,0,0.4)" }}>
-          <h2 className="text-3xl font-bold mb-3">Let's Build Financial Growth Together</h2>
-          <p className="text-gray-400 text-sm mb-8">Join the fastest growing network of financial professionals today.</p>
-          <button className="bg-blue-500 hover:bg-blue-600 transition px-8 py-3 rounded-full font-semibold text-white">
-            Apply Now
-          </button>
-        </div>
-      </section>
-
+        </section>
       </div>
-
     </div>
   );
 };
