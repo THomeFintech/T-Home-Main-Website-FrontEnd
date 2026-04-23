@@ -27,7 +27,7 @@ export default function MortgageLoan() {
 
           <div className="flex gap-4 mb-6">
             <button
-              onClick={() => navigate("/contact-form")}
+              onClick={() => navigate("/tools?tool=loan-prediction")}
               className="bg-blue-600 px-6 py-2 rounded-full text-sm"
             >
               Apply Now
