@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import "../styles/Login.css";
 
+
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 const IconMailDark = () => (
   <svg className="login-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -74,7 +77,7 @@ export default function Login() {
   setLoading(true);
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/auth/login", {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -107,7 +110,7 @@ export default function Login() {
     window.dispatchEvent(new Event("authChange"));
 
     // Fetch correct user
-    const profileResponse = await fetch("http://127.0.0.1:8000/auth/me", {
+    const profileResponse = await fetch(`${BASE_URL}/auth/me`, {
       headers: {
         Authorization: `Bearer ${data.access_token}`
       }
