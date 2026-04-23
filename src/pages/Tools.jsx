@@ -22,6 +22,7 @@ export default function Tools() {
   const [selectedBank, setSelectedBank] = useState(null);
   const [showBankCards, setShowBankCards] = useState(false);
   const [isSelectingBank, setIsSelectingBank] = useState(false);
+
   const API_BASE = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
@@ -36,6 +37,24 @@ export default function Tools() {
       }
     }
   }, [location.search, navigate]);
+
+  useEffect(() => {
+  if (location.pathname === "/tools" && !location.search) {
+    setStep(0);
+  }
+}, [location.pathname, location.search]);
+
+useEffect(() => {
+  if (location.pathname === "/tools" && location.state?.resetTools) {
+    setStep(0);
+    setContactData({});
+    setLoanData({});
+    setPredictionResult(null);
+    setSelectedBank(null);
+    setShowBankCards(false);
+    setIsSelectingBank(false);
+  }
+}, [location]);
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
