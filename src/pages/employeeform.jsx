@@ -13,10 +13,9 @@ export default function HiringForm() {
     resume: null,
   });
 
-  const BASE_URL = import.meta.env.VITE_API_URL;
-
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   /* ================= HANDLE CHANGE ================= */
   const handleChange = (e) => {
@@ -59,7 +58,7 @@ export default function HiringForm() {
       setLoading(true);
       setMsg("");
 
-      const res = await fetch(`${BASE_URL}/apply-job`, {
+      const res = await await fetch(`${BASE_URL}/apply-job`, {
         method: "POST",
         body: form,
       });
@@ -98,9 +97,9 @@ export default function HiringForm() {
   const labelClass = "mb-2 block text-sm font-medium text-white/80";
 
   return (
-    <div className="relative w-full max-w-3xl mx-auto rounded-[28px] border border-white/30 bg-white/10 backdrop-blur-2xl p-6 md:p-10 shadow-[0_25px_80px_rgba(0,0,0,0.5)]">
+  <div className="min-h-screen pt-28 pb-10 px-4 flex items-start justify-center bg-[radial-gradient(circle,#1E2447_0%,#000000_70%)]">
 
-      {/* HEADER */}
+    <div className="relative w-full max-w-3xl mx-auto rounded-[28px] border border-white/30 bg-white/10 backdrop-blur-2xl p-6 md:p-10 shadow-[0_25px_80px_rgba(0,0,0,0.5)]">      {/* HEADER */}
       <div className="mb-8 flex items-center gap-3">
         <FileText className="h-7 w-7 text-blue-300" />
         <h2 className="text-3xl font-semibold text-blue-200">
@@ -218,6 +217,7 @@ export default function HiringForm() {
         )}
 
       </form>
+    </div>
     </div>
   );
 }
