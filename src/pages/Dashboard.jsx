@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API = import.meta.env.VITE_API_URL;
+const API = "http://127.0.0.1:8000";
 
 function authHeaders() {
   const token = localStorage.getItem("token");
@@ -352,12 +352,7 @@ export default function Dashboard() {
                         </div>
                       </div>
                       {/* FIX 3: View Details wired to loan route */}
-                      <button
-                        className="text-xs text-[#4f72e0] hover:underline"
-                        onClick={() => navigate(`/loans/${loan.loan_id}`)}
-                      >
-                        View Details
-                      </button>
+                      
                     </div>
 
                     <div className="grid grid-cols-3 gap-4 mb-4">
