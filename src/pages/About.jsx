@@ -182,7 +182,7 @@ const About = () => {
             <div className="absolute inset-0 rounded-2xl bg-white/5 blur-xl"></div>
 
             <img
-              src="ceo.png"
+              src="https://randomuser.me/api/portraits/men/32.jpg"
               className="relative w-24 h-24 mx-auto rounded-full mb-5 border-2 border-gray-600"
             />
 
@@ -209,7 +209,7 @@ const About = () => {
             <div className="absolute inset-0 rounded-2xl bg-white/5 blur-xl"></div>
 
             <img
-              src="cto.jpeg"
+              src="https://randomuser.me/api/portraits/men/45.jpg"
               className="relative w-24 h-24 mx-auto rounded-full mb-5 border-2 border-gray-600"
             />
 
@@ -241,16 +241,22 @@ const About = () => {
         </p>
 
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-          {["5k+", "95%", "10+", "100%"].map((item, i) => (
-            <motion.div
-              key={i}
-              className="bg-gradient-to-br from-gray-900 to-blue-900 p-6 md:p-8 rounded-2xl shadow-lg"
-              whileHover={{ scale: 1.05 }}
-            >
-              <h3 className="text-2xl md:text-3xl font-bold">{item}</h3>
-            </motion.div>
-          ))}
-        </div>
+  {[
+    { value: "5k+", label: "Loans Approved" },
+    { value: "95%", label: "Approval Rate" },
+    { value: "10+", label: "Years Experience" },
+    { value: "100%", label: "Certified Experts" },
+  ].map((item, i) => (
+    <motion.div
+      key={i}
+      className="bg-gradient-to-br from-gray-900 to-blue-900 p-6 md:p-8 rounded-2xl shadow-lg text-center"
+      whileHover={{ scale: 1.05 }}
+    >
+      <h3 className="text-2xl md:text-3xl font-bold">{item.value}</h3>
+      <p className="mt-3 text-sm md:text-base text-gray-300">{item.label}</p>
+    </motion.div>
+  ))}
+</div>
       </section>
 
       </div>
