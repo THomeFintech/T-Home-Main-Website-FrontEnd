@@ -22,6 +22,7 @@ export default function Tools() {
   const [selectedBank, setSelectedBank] = useState(null);
   const [showBankCards, setShowBankCards] = useState(false);
   const [isSelectingBank, setIsSelectingBank] = useState(false);
+  const API_BASE = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -107,7 +108,7 @@ export default function Tools() {
 
       console.log("Calling /applications/select-bank with payload:", payload);
 
-      const response = await fetch("http://127.0.0.1:8000/applications/select-bank", {
+      const response = await fetch(`${API_BASE}/applications/select-bank`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
