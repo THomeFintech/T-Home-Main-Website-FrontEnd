@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Briefcase,
@@ -124,6 +124,10 @@ const testimonials = [
 export default function CareerSection() {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("All Roles");
+  const openRolesRef = useRef(null);
+  const scrollToOpenRoles = () => {
+  openRolesRef.current?.scrollIntoView({ behavior: "smooth" });
+};
   const categories = ["All Roles", "Engineering", "Design", "Marketing", "Operations"];
 
   const filteredJobs = useMemo(() => {
@@ -153,9 +157,12 @@ export default function CareerSection() {
           <p className="mx-auto mt-2.5 max-w-[780px] text-[15px] text-[#d7def3]">
             Join a fast-growing team that&apos;s redefining financial services with innovation, trust, and bleeding-edge technology.
           </p>
-          <button className="mt-5 rounded-[10px] bg-[#2f73ff] px-6 py-2.5 text-[13px] font-semibold transition hover:bg-[#2b69eb]">
-            Explore Open Roles
-          </button>
+          <button
+  onClick={scrollToOpenRoles}
+  className="mt-5 rounded-[10px] bg-[#2f73ff] px-6 py-2.5 text-[13px] font-semibold transition hover:bg-[#2b69eb]"
+>
+  Explore Open Roles
+</button>
         </section>
 
         <section className="mt-12">
@@ -183,7 +190,7 @@ export default function CareerSection() {
           </div>
         </section>
 
-        <section className="mt-12 text-center">
+        <section ref={openRolesRef} className="mt-12 text-center">
           <h2 className="text-[40px] font-semibold">Open Positions</h2>
 
           <div className="mt-3 flex flex-wrap justify-center gap-2">
@@ -304,9 +311,12 @@ export default function CareerSection() {
           <p className="mx-auto mt-2 max-w-[620px] text-[15px] text-[#e0e9ff]">
             Join T-Home and help us build financial infrastructure that empowers millions of users globally.
           </p>
-          <button className="mt-6 rounded-[10px] bg-[#2f73ff] px-7 py-2.5 text-[13px] font-semibold transition hover:bg-[#2b69eb]">
-            Join Us Now
-          </button>
+          <button
+  onClick={scrollToOpenRoles}
+  className="mt-6 rounded-[10px] bg-[#2f73ff] px-7 py-2.5 text-[13px] font-semibold transition hover:bg-[#2b69eb]"
+>
+  Join Us Now
+</button>
         </section>
       </div>
     </div>
