@@ -34,9 +34,10 @@ export default function ContactPage() {
       service: formData.service,
       message: formData.message.trim(),
     };
+    const BASE_URL = import.meta.env.VITE_API_URL;
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/contact", {
+      const res = await fetch(`${BASE_URL}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
