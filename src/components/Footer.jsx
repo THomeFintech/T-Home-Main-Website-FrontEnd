@@ -8,6 +8,8 @@ function Footer() {
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
   /* ================= SUBSCRIBE ================= */
   const handleSubscribe = async () => {
 
@@ -22,7 +24,7 @@ function Footer() {
 
       console.log("📩 Sending:", email);
 
-      const res = await fetch("http://127.0.0.1:8000/subscribe", {
+      const res = await fetch(`${BASE_URL}/subscribe`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
