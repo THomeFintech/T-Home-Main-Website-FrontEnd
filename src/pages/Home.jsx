@@ -337,11 +337,11 @@ function Home() {
                       </div>
                       <div className="self-end">
                         <button
-                          onClick={() => goTo(service.path)}
-                          className="rounded-lg border border-[#83bcff]/55 bg-[linear-gradient(180deg,rgba(77,143,255,0.58)_0%,rgba(47,105,236,0.48)_100%)] px-6 py-2 text-sm font-medium text-[#f3f8ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)] transition duration-300 hover:border-white/50 hover:bg-[linear-gradient(180deg,rgba(100,173,255,0.9)_0%,rgba(56,130,255,0.86)_100%)] hover:shadow-[0_0_26px_rgba(86,156,255,0.42)]"
-                        >
-                          {service.button}
-                        </button>
+  onClick={() => navigate(service.path)}
+  className="rounded-lg border border-[#83bcff]/55 bg-[linear-gradient(180deg,rgba(77,143,255,0.58)_0%,rgba(47,105,236,0.48)_100%)] px-6 py-2 text-sm font-medium text-[#f3f8ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)] transition duration-300 hover:border-white/50 hover:bg-[linear-gradient(180deg,rgba(100,173,255,0.9)_0%,rgba(56,130,255,0.86)_100%)] hover:shadow-[0_0_26px_rgba(86,156,255,0.42)]"
+>
+  {service.button}
+</button>
                       </div>
                     </div>
                   ))}
@@ -450,16 +450,16 @@ function Home() {
                 path: "/emi-calculator",
               },
               {
-                title: "CIBIL Score Checker",
+                title: "Loan Prediction System",
                 desc: "Find out how much home loan you can get instantly.",
                 btn: "Check Eligibility",
-                path: "/cibil-score",
+                path: "/contact-form",
               },
               {
-                title: "Investment Planner",
-                desc: "Estimate your tax liabilities quickly and plan your finances better.",
-                btn: "Calculate Tax",
-                path: "/investment-planner",
+                title: "Balance Transfer",
+                desc: "Estimate your savings quickly and plan your loan transfer better.",
+                btn: "Calculate Transfer",
+                path: "/coming-soon",
               },
             ].map((tool, i) => (
               <div
@@ -471,7 +471,7 @@ function Home() {
                   {tool.desc}
                 </p>
                 <button
-                  onClick={() => goTo(tool.path)}
+                  onClick={() => navigate(tool.path)}
                   className="mt-6 rounded-lg border border-[#5ea6ff]/45 bg-[linear-gradient(180deg,rgba(58,108,197,0.46)_0%,rgba(36,73,148,0.4)_100%)] px-5 py-2 text-sm font-medium text-[#e8f2ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]"
                 >
                   {tool.btn}
