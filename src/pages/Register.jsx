@@ -11,6 +11,8 @@ export default function Register() {
     confirmPassword: "",
     agree: true,
   });
+
+  const BASE_URL = import.meta.env.VITE_API_URL;
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -48,7 +50,7 @@ export default function Register() {
 
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:8000/auth/register", {
+      const res = await fetch(`${BASE_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
