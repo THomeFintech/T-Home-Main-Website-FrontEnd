@@ -27,28 +27,31 @@ export default function Tools() {
     const params = new URLSearchParams(location.search);
     const tool = params.get("tool");
     if (tool === "loan-prediction") {
-      setStep(1);
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      if (isLoggedIn) {
+        setStep(1);
+      } else {
+        navigate("/login");
+      }
     }
-  }, [location.search]);
+  }, [location.search, navigate]);
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
 
   const handleLoanResult = (data, formValues) => {
-  console.log("Prediction result:", data);
-  console.log("Form values:", formValues);
+    console.log("Prediction result:", data);
+    console.log("Form values:", formValues);
 
-  setPredictionResult(data);
+    setPredictionResult(data);
+    setLoanData(formValues);
 
-  // 🔥 STORE FORM DATA FOR AUTO-FILL
-  setLoanData(formValues);
-
-  if (["Approved", "Partially Approved"].includes(data?.decision)) {
-    setShowBankCards(true);
-  } else {
-    setShowBankCards(false);
-  }
-};
+    if (["Approved", "Partially Approved"].includes(data?.decision)) {
+      setShowBankCards(true);
+    } else {
+      setShowBankCards(false);
+    }
+  };
 
   const formattedBanks = useMemo(() => {
     if (!predictionResult?.recommended_banks) return [];
@@ -162,7 +165,15 @@ export default function Tools() {
         "Understand your chances of getting a loan with smart predictions powered by your financial details.",
       buttonText: "Check Eligibility",
       icon: Shield,
-      onClick: () => setStep(1),
+      onClick: () => {
+        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+        if (isLoggedIn) {
+          setStep(1);
+        } else {
+          navigate("/login");
+        }
+      },
       theme: {
         border: "border-blue-500/20",
         cardBorder: "border-blue-500/10",
