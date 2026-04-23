@@ -1,6 +1,6 @@
-
 import Register from "./pages/Register";
-import { BrowserRouter, Routes, Route, Outlet, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet, useParams, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 // Layouts
 import DashboardLayout from "./layout/DashboardLayout";
@@ -26,11 +26,11 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import TrackApplication from "./pages/TrackApplication";
 import DocumentsPage from "./pages/DocumentsPage";
-import Profilepage from "./pages/Profilepage";
+import ProfilePage from "./pages/ProfilePage";
 import Support from "./pages/Support";
 import Proceed from "./components/Proceed";
 import { GoogleOAuthProvider } from '@react-oauth/google';
-
+import LoanForm from "./components/LoanForm";
 
 // Service Pages
 import HomeLoan from "./pages/HomeLoan";
@@ -64,6 +64,19 @@ import FoodLicense from "./pages/FoodLicense";
 import PanAadhaarLinking from "./pages/PanAadhaarLinking";
 
 /* =========================
+   ✅ SCROLL FIX (NEW)
+========================= */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
+/* =========================
    LAYOUT
 ========================= */
 function Layout() {
@@ -94,11 +107,13 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <BrowserRouter>
+
+        {/* ✅ ADD THIS LINE */}
+        <ScrollToTop />
+
         <Routes>
 
-          {/* AUTH ROUTES */}
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          
 
           {/* DASHBOARD ROUTES */}
           <Route element={<DashboardLayout />}>
@@ -106,7 +121,7 @@ function App() {
             <Route path="/applications" element={<TrackApplication />} />
             <Route path="/applications/:applicationId" element={<TrackApplicationWithParam />} />
             <Route path="/documents" element={<DocumentsPage />} />
-            <Route path="/profile" element={<Profilepage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route path="/support" element={<Support />} />
           </Route>
 
@@ -124,37 +139,28 @@ function App() {
             <Route path="terms-and-conditions" element={<TermsAndConditions />} />
             <Route path="get-started" element={<GetStarted />} />
             <Route path="apply" element={<EmployeeForm />} />
+            {/* AUTH ROUTES */}
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
 
             {/* SERVICE ROUTES */}
             <Route path="home-loans" element={<HomeLoan />} />
             <Route path="emi-calculator" element={<Emi />} />
             <Route path="contact-form" element={<ContactForm />} />
+            <Route path="loan-form" element={<LoanForm />} />
             <Route path="coming-soon" element={<ComingSoon />} />
+             <Route path="itr-filing" element={<ITRFiling />} />
+                <Route path="pan-aadhaar-linking" element={<PanAadhaarLinking />} />
+                 <Route path="gst-registration" element={<GstRegistration />} />
+                  <Route path="food-license" element={<FoodLicense />} />
+                   <Route path="udyam-msme-registration" element={<UdyamMsmeRegistration />} />
+                   <Route path="company-registration" element={<CompanyRegistration />} />
+                   
+             
             <Route path="personal-loans" element={<PersonalLoan />} />
             <Route path="loan-against-property" element={<LoanAgainstProperty />} />
             <Route path="mortgage-loan" element={<MortgageLoan />} />
             <Route path="balance-transfer" element={<BalanceTransfer />} />
-            <Route path="balance-transfer/details" element={<BalanceTransferDetails />} />
-            <Route path="balance-transfer/offers" element={<BalanceTransferOffers />} />
-            <Route path="balance-transfer/review" element={<BalanceTransferReview />} />
-            <Route path="balance-transfer/analysis" element={<BalanceTransferAnalysis />} />
-            <Route path="balance-transfer/comparison" element={<BalanceTransferComparison />} />
-            <Route path="balance-transfer/detailed-table" element={<BalanceTransferDetailedTable />} />
-            <Route path="balance-transfer/amortization" element={<BalanceTransferAmortization />} />
-            <Route path="balance-transfer/ready" element={<BalanceTransferReady />} />
-            <Route path="balance-transfer/application-portal" element={<BalanceTransferApplicationPortal />} />
-            <Route path="balance-transfer/application-portal/income-documents" element={<BalanceTransferIncomeDocuments />} />
-            <Route path="balance-transfer/application-portal/existing-loan-documents" element={<BalanceTransferExistingLoanDocuments />} />
-            <Route path="balance-transfer/application-portal/co-applicant-details" element={<BalanceTransferCoApplicantDetails />} />
-            <Route path="balance-transfer/application-portal/review-submit" element={<BalanceTransferReviewSubmit />} />
-            <Route path="balance-transfer/application-portal/submitted" element={<BalanceTransferSubmitted />} />
-
-            <Route path="itr-filing" element={<ITRFiling />} />
-            <Route path="company-registration" element={<CompanyRegistration />} />
-            <Route path="gst-registration" element={<GstRegistration />} />
-            <Route path="udyam-msme-registration" element={<UdyamMsmeRegistration />} />
-            <Route path="food-license" element={<FoodLicense />} />
-            <Route path="pan-aadhaar-linking" element={<PanAadhaarLinking />} />
 
             {/* 404 */}
             <Route
@@ -174,4 +180,3 @@ function App() {
 }
 
 export default App;
-
