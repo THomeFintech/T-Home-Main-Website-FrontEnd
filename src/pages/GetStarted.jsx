@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import "../App.css";
 
+
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 /* ══════════════════════════════════════
    SHARED CARD SHELL
 ══════════════════════════════════════ */
@@ -188,7 +191,7 @@ function SignupPage({ onLogin, onContinue }) {
 
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:8000/auth/register", {
+      const res = await fetch(`${BASE_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -389,7 +392,7 @@ function OtpPage({ email, onVerify, onBack }) {
 
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:8000/auth/verify-otp", {
+      const res = await fetch(`${BASE_URL}/auth/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp: otpString }),
