@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { ShieldCheck, ChevronDown } from "lucide-react";
-import { Link } from "react-router-dom";
 
 export default function ContactForm({
   contactData = {},
@@ -73,7 +72,6 @@ export default function ContactForm({
         error = "Please accept the privacy policy to continue";
       }
     }
-
     return error;
   };
 
@@ -125,11 +123,12 @@ export default function ContactForm({
     if (!validateForm()) return;
 
     setContactData(formData);
-    onNext();
+localStorage.setItem("contact_data", JSON.stringify(formData));
+onNext(formData.service);
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#040814] px-4 pb-10 pt-28 sm:px-6 md:pt-32 lg:px-8 lg:pt-36">
+    <section className="relative min-h-screen overflow-hidden bg-[#040814] px-4 pt-28 pb-10 sm:px-6 md:pt-32 lg:px-8 lg:pt-36">
       {/* BACKGROUND EFFECTS */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(52,84,168,0.45),transparent_42%)]" />
@@ -139,25 +138,25 @@ export default function ContactForm({
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center">
         {/* HEADER */}
         <div className="mb-8 text-center md:mb-10">
-          <h1 className="text-[22px] font-semibold leading-tight tracking-[-0.02em] text-white sm:text-[28px] md:text-[40px] lg:text-[52px]">
+          <h1 className="text-[22px] sm:text-[28px] md:text-[40px] lg:text-[52px] font-semibold leading-tight tracking-[-0.02em] text-white">
             {title}
           </h1>
 
-          <p className="mt-2 px-2 text-xs font-normal text-white/85 sm:text-sm md:text-[15px]">
+          <p className="mt-2 text-xs sm:text-sm md:text-[15px] font-normal text-white/85 px-2">
             Provide your details to access our advanced financial planning tools.
           </p>
         </div>
 
         {/* FORM CARD */}
-        <div className="w-full max-w-[92%] rounded-[20px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.06)_100%)] px-4 py-5 shadow-[0_20px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:max-w-[420px] sm:rounded-[24px] sm:px-6 sm:py-6 md:max-w-[480px] md:px-7 md:py-7 lg:max-w-[520px]">
-          <h2 className="text-center text-[20px] font-semibold text-white sm:text-[24px] md:text-[28px]">
+        <div className="w-full max-w-[92%] sm:max-w-[420px] md:max-w-[480px] lg:max-w-[520px] rounded-[20px] sm:rounded-[24px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.06)_100%)] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 shadow-[0_20px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl">
+          <h2 className="text-center text-[20px] sm:text-[24px] md:text-[28px] font-semibold text-white">
             Fill This form
           </h2>
 
           <div className="mt-4 flex justify-center">
-            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#3f7dff] bg-[rgba(37,99,235,0.10)] px-3 py-1.5 text-[10px] text-[#6fb0ff] shadow-[0_0_18px_rgba(59,130,246,0.35)] sm:text-[11px]">
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#3f7dff] bg-[rgba(37,99,235,0.10)] px-3 py-1.5 text-[10px] sm:text-[11px] text-[#6fb0ff] shadow-[0_0_18px_rgba(59,130,246,0.35)]">
               <ShieldCheck size={12} className="shrink-0" />
-              <span className="whitespace-normal text-center sm:whitespace-nowrap">
+              <span className="whitespace-normal sm:whitespace-nowrap text-center">
                 256-bit SSL secured · No data sharing · No spam calls
               </span>
             </div>
@@ -166,7 +165,7 @@ export default function ContactForm({
           <form onSubmit={handleSubmit} className="mt-6 space-y-3 sm:space-y-4">
             {/* NAME */}
             <div>
-              <label className="mb-1.5 block text-[12px] font-normal text-white/85 sm:text-[13px]">
+              <label className="mb-1.5 block text-[12px] sm:text-[13px] font-normal text-white/85">
                 Name as per Adhaar
               </label>
               <input
@@ -175,7 +174,7 @@ export default function ContactForm({
                 placeholder="Your Name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`h-[44px] w-full rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 text-[13px] text-white placeholder:text-white/50 outline-none transition sm:h-[46px] sm:px-4 sm:text-[14px] ${
+                className={`h-[44px] sm:h-[46px] w-full rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 text-[13px] sm:text-[14px] text-white placeholder:text-white/50 outline-none transition ${
                   errors.name
                     ? "border-red-400 focus:border-red-400"
                     : "border-white/15 focus:border-[#4d8cff]"
@@ -188,17 +187,17 @@ export default function ContactForm({
 
             {/* PHONE */}
             <div>
-              <label className="mb-1.5 block text-[12px] font-normal text-white/85 sm:text-[13px]">
+              <label className="mb-1.5 block text-[12px] sm:text-[13px] font-normal text-white/85">
                 Phone
               </label>
               <div
-                className={`flex h-[44px] w-full overflow-hidden rounded-[10px] border bg-[rgba(255,255,255,0.08)] sm:h-[46px] ${
+                className={`flex h-[44px] sm:h-[46px] w-full overflow-hidden rounded-[10px] border bg-[rgba(255,255,255,0.08)] ${
                   errors.phone
                     ? "border-red-400"
                     : "border-white/15 focus-within:border-[#4d8cff]"
                 }`}
               >
-                <div className="flex w-[40px] items-center justify-center border-r border-white/20 text-[13px] text-white/75 sm:w-[48px] sm:text-[14px]">
+                <div className="flex w-[40px] sm:w-[48px] items-center justify-center border-r border-white/20 text-[13px] sm:text-[14px] text-white/75">
                   +91
                 </div>
                 <input
@@ -207,7 +206,7 @@ export default function ContactForm({
                   placeholder="98765 43210"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="h-full w-full bg-transparent px-3 text-[13px] text-white placeholder:text-white/50 outline-none sm:px-4 sm:text-[14px]"
+                  className="h-full w-full bg-transparent px-3 sm:px-4 text-[13px] sm:text-[14px] text-white placeholder:text-white/50 outline-none"
                 />
               </div>
               {errors.phone && (
@@ -217,7 +216,7 @@ export default function ContactForm({
 
             {/* EMAIL */}
             <div>
-              <label className="mb-1.5 block text-[12px] font-normal text-white/85 sm:text-[13px]">
+              <label className="mb-1.5 block text-[12px] sm:text-[13px] font-normal text-white/85">
                 Email
               </label>
               <input
@@ -226,7 +225,7 @@ export default function ContactForm({
                 placeholder="your@email.com"
                 value={formData.email}
                 onChange={handleChange}
-                className={`h-[44px] w-full rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 text-[13px] text-white placeholder:text-white/50 outline-none transition sm:h-[46px] sm:px-4 sm:text-[14px] ${
+                className={`h-[44px] sm:h-[46px] w-full rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 text-[13px] sm:text-[14px] text-white placeholder:text-white/50 outline-none transition ${
                   errors.email
                     ? "border-red-400 focus:border-red-400"
                     : "border-white/15 focus:border-[#4d8cff]"
@@ -239,7 +238,7 @@ export default function ContactForm({
 
             {/* SERVICE */}
             <div>
-              <label className="mb-1.5 block text-[12px] font-normal text-white/85 sm:text-[13px]">
+              <label className="mb-1.5 block text-[12px] sm:text-[13px] font-normal text-white/85">
                 Service
               </label>
               <div className="relative">
@@ -247,7 +246,7 @@ export default function ContactForm({
                   name="service"
                   value={formData.service}
                   onChange={handleChange}
-                  className={`h-[44px] w-full appearance-none rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 pr-10 text-[13px] text-white outline-none transition sm:h-[46px] sm:px-4 sm:text-[14px] ${
+                  className={`h-[44px] sm:h-[46px] w-full appearance-none rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 pr-10 text-[13px] sm:text-[14px] text-white outline-none transition ${
                     errors.service
                       ? "border-red-400 focus:border-red-400"
                       : "border-white/20 focus:border-[#4d8cff]"
@@ -283,7 +282,7 @@ export default function ContactForm({
                   onChange={handleChange}
                   className="mt-1 h-4 w-4 rounded border border-white/30 bg-transparent accent-[#2f73ff]"
                 />
-                <span className="text-[11px] leading-5 text-white/65 sm:text-[12px]">
+                <span className="text-[11px] sm:text-[12px] leading-5 text-white/65">
                   I Solely agree the T&C and the predictions are Totally basing on my Inputs given.
                 </span>
               </label>
@@ -293,7 +292,7 @@ export default function ContactForm({
               )}
             </div>
 
-            {/* CHECKBOX 2 */}
+            {/* CHECKBOX 2 (with links) */}
             <div className="pt-1">
               <label className="flex items-start gap-2.5">
                 <input
@@ -303,22 +302,12 @@ export default function ContactForm({
                   onChange={handleChange}
                   className="mt-1 h-4 w-4 rounded border border-white/30 bg-transparent accent-[#2f73ff]"
                 />
-                <span className="text-[11px] leading-5 text-white/65 sm:text-[12px]">
-                  * I agree to the{" "}
-                  <Link
-                    to="/privacy-policy"
-                    className="text-[#50a2ff] underline hover:text-[#2563ff]"
-                  >
-                    Privacy Policy
-                  </Link>{" "}
-                  and{" "}
-                  <Link
-                    to="/terms-and-conditions"
-                    className="text-[#50a2ff] underline hover:text-[#2563ff]"
-                  >
-                    Terms & Conditions
-                  </Link>{" "}
-                  of T-Home Fintech.
+                <span className="text-[11px] sm:text-[12px] leading-5 text-white/65">
+                  * I agree to the{' '}
+                  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#50a2ff] underline hover:text-[#2563ff]">Privacy Policy</a>
+                  {' '}and{' '}
+                  <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-[#50a2ff] underline hover:text-[#2563ff]">Terms & Conditions</a>
+                  {' '}of T-Home Fintech.
                 </span>
               </label>
               {errors.policyAgree && (
@@ -329,7 +318,7 @@ export default function ContactForm({
             {/* BUTTON */}
             <button
               type="submit"
-              className="mt-2 flex h-[44px] w-full items-center justify-center gap-2 rounded-[10px] bg-[#2563ff] text-[14px] font-medium text-white shadow-[0_10px_30px_rgba(37,99,255,0.45)] transition hover:bg-[#1d56e4] sm:h-[46px] sm:text-[16px]"
+              className="mt-2 flex h-[44px] sm:h-[46px] w-full items-center justify-center gap-2 rounded-[10px] bg-[#2563ff] text-[14px] sm:text-[16px] font-medium text-white shadow-[0_10px_30px_rgba(37,99,255,0.45)] transition hover:bg-[#1d56e4]"
             >
               {submitText}
             </button>
