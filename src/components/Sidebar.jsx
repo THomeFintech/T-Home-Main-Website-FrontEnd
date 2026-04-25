@@ -99,7 +99,7 @@ export default function Sidebar({ activePage, onNavigate, onLogout }) {
 
   return (
     <aside
-      className="w-52 flex-shrink-0 flex flex-col py-6 px-3 min-h-screen"
+      className="sticky top-0 h-screen w-60 flex-shrink-0 flex flex-col py-6 px-4 overflow-y-auto"
       style={{
         background:
           "linear-gradient(180deg, rgba(17,38,70,0.62) 0%, rgba(10,27,53,0.56) 100%)",
@@ -110,26 +110,21 @@ export default function Sidebar({ activePage, onNavigate, onLogout }) {
           "inset -1px 0 0 rgba(170,205,255,0.12), 10px 0 28px rgba(0,0,0,0.32)",
       }}
     >
-
-      {/* 🔹 LOGO + LOGOUT */}
-      <div className="px-1 pb-2">
-
-        {/* LOGO */}
+      {/* LOGO */}
+      <div className="mb-6 px-1">
         <div
           onClick={() => navigate("/")}
-          className="flex items-center gap-2 mb-5 px-2 cursor-pointer group"
+          className="flex items-center gap-3 cursor-pointer group"
         >
           <img
             src="/home/logo.png"
             alt="T-Home"
-            className="w-9 h-9 rounded-md"
+            className="w-12 h-12 rounded-md"
           />
-          <span className="text-white font-semibold text-sm group-hover:text-blue-300 transition">
+          <span className="text-white font-bold text-xl tracking-wide group-hover:text-blue-300 transition">
             T-HOME
           </span>
         </div>
-
-        
       </div>
 
       {/* NAV ITEMS */}
@@ -141,7 +136,7 @@ export default function Sidebar({ activePage, onNavigate, onLogout }) {
             </p>
           )}
 
-          <div className="space-y-0.5">
+          <div className="space-y-1">
             {section.items.map((item) => {
               const isActive = activePage === item.id;
 
@@ -173,34 +168,34 @@ export default function Sidebar({ activePage, onNavigate, onLogout }) {
               );
             })}
           </div>
-          
         </div>
       ))}
+
       {/* LOGOUT */}
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-xl border border-white/15 bg-white/[0.06] px-3 py-2.5 text-sm font-medium text-slate-200 transition-all hover:border-red-300/35 hover:bg-red-500/10 hover:text-white"
-          style={{
-            boxShadow:
-              "inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.18)",
-          }}
-        >
-          <span className="text-red-300">
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.9"
-            >
-              <path d="M10 17l5-5-5-5" />
-              <path d="M15 12H3" />
-              <path d="M21 5v14a2 2 0 01-2 2h-6" />
-            </svg>
-          </span>
-          Logout
-        </button>
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="mt-6 flex w-full items-center gap-3 rounded-xl border border-white/15 bg-white/[0.06] px-3 py-2.5 text-sm font-medium text-slate-200 transition-all hover:border-red-300/35 hover:bg-red-500/10 hover:text-white"
+        style={{
+          boxShadow:
+            "inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.18)",
+        }}
+      >
+        <span className="text-red-300">
+          <svg
+            className="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.9"
+          >
+            <path d="M10 17l5-5-5-5" />
+            <path d="M15 12H3" />
+            <path d="M21 5v14a2 2 0 01-2 2h-6" />
+          </svg>
+        </span>
+        Logout
+      </button>
     </aside>
   );
 }
