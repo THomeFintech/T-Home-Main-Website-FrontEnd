@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   PieChart,
   Pie,
@@ -353,8 +354,37 @@ const Table = ({ data, showAll, onToggle }) => (
 );
 
 // ---------- MAIN ----------
+
+const convertToWords = (num) => {
+  if (!num || num <= 0) return "";
+
+  const a = [
+    "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight",
+    "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen",
+    "Sixteen", "Seventeen", "Eighteen", "Nineteen",
+  ];
+
+  const b = [
+    "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy",
+    "Eighty", "Ninety",
+  ];
+
+  const words = (n) => {
+    if (n < 20) return a[n];
+    if (n < 100) return `${b[Math.floor(n / 10)]} ${a[n % 10]}`.trim();
+    if (n < 1000) return `${a[Math.floor(n / 100)]} Hundred ${words(n % 100)}`.trim();
+    if (n < 100000) return `${words(Math.floor(n / 1000))} Thousand ${words(n % 1000)}`.trim();
+    if (n < 10000000) return `${words(Math.floor(n / 100000))} Lakh ${words(n % 100000)}`.trim();
+    return `${words(Math.floor(n / 10000000))} Crore ${words(n % 10000000)}`.trim();
+  };
+
+  return `${words(Math.floor(Number(num)))} Rupees`;
+};
 export default function EMIPage() {
+  const navigate = useNavigate();
+  
   const [loanType, setLoanType] = useState("home loan");
+  const [firstPaymentCustomDate, setFirstPaymentCustomDate] = useState("");
 
   const initialThreshold = loanThresholds[loanType];
 
@@ -399,15 +429,20 @@ export default function EMIPage() {
     [amount, interest]
   );
 
-  const firstPaymentDate =
-    schedule.length > 0
-      ? schedule[0].dateLabel
-      : formatDateDisplay(addMonthsSafe(new Date(), 1));
+ const firstPaymentDateValue =
+  firstPaymentCustomDate && firstPaymentCustomDate !== ""
+    ? firstPaymentCustomDate
+    : schedule.length > 0
+    ? schedule[0].date.toISOString().split("T")[0]
+    : new Date().toISOString().split("T")[0];
 
-  const lastPaymentDate =
-    schedule.length > 0
-      ? schedule[schedule.length - 1].dateLabel
-      : formatDateDisplay(addMonthsSafe(new Date(), months));
+const safeDate = new Date(firstPaymentDateValue);
+
+const firstPaymentDate = formatDateDisplay(safeDate);
+
+const lastPaymentDate = formatDateDisplay(
+  addMonthsSafe(safeDate, months - 1)
+);
 
   const incomeNumber = Number(monthlyIncome) || 0;
   const existingEmiNumber = Number(existingEmis) || 0;
@@ -428,6 +463,7 @@ export default function EMIPage() {
   );
 
   const displayedRows = showAllRows ? schedule : schedule.slice(0, 12);
+  
 
   const downloadPDFStatement = () => {
     const doc = new jsPDF({
@@ -542,8 +578,8 @@ export default function EMIPage() {
       <div
         className={
           showAnalytics
-            ? "grid lg:grid-cols-3 gap-4 sm:gap-6 mt-6 sm:mt-8"
-            : "flex justify-center items-center min-h-[60vh]"
+            ? "grid lg:grid-cols-3 gap-4 sm:gap-6 mt-[50px] sm:mt-[60px]"
+: "flex justify-center items-center min-h-[60vh] mt-[50px] sm:mt-[60px]"
         }
       >
         {/* LEFT */}
@@ -557,7 +593,7 @@ export default function EMIPage() {
             Loan Details
           </h2>
           <p className="text-[12px] sm:text-sm text-white/70 mt-2 mb-6 sm:mb-6 leading-[1.35]">
-            Adjust the sliders to calculate your EMI
+          
           </p>
 
           {/* SERVICE TYPE */}
@@ -585,100 +621,105 @@ export default function EMIPage() {
           </div>
 
           {/* LOAN AMOUNT */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-[13px] text-white/75 font-medium">
-                Loan Amount
-              </span>
-              <span className="bg-white/90 text-blue-600 text-[13px] px-3 py-1 rounded-[8px] font-semibold">
-                ₹{amount.toLocaleString()}
-              </span>
-            </div>
+<div className="mb-6">
+  <div className="flex justify-between items-center mb-2">
+    <span className="text-[13px] text-white/75 font-medium">
+      Loan Amount
+    </span>
+    <span className="bg-white/90 text-blue-600 text-[13px] px-3 py-1 rounded-[8px] font-semibold">
+      ₹{amount.toLocaleString()}
+    </span>
+  </div>
 
-            <input
-              type="range"
-              min={currentThreshold.minAmount}
-              max={currentThreshold.maxAmount}
-              step={1000}
-              value={amount}
-              onChange={(e) => setAmount(+e.target.value)}
-              className="w-full accent-blue-500"
-            />
+  <input
+    type="number"
+    min={currentThreshold.minAmount}
+    max={currentThreshold.maxAmount}
+    step={1000}
+    value={amount}
+    onChange={(e) => setAmount(Number(e.target.value))}
+    placeholder="Enter loan amount"
+    className="w-full h-[44px] rounded-[10px] border border-white/20 bg-white/90 px-3 text-[14px] font-semibold text-black outline-none focus:border-blue-400"
+  />
 
-            <div className="flex justify-between text-[12px] text-white/40 mt-1">
-              <span>₹{currentThreshold.minAmount.toLocaleString()}</span>
-              <span>₹{currentThreshold.maxAmount.toLocaleString()}</span>
-            </div>
-          </div>
+  <p className="mt-2 text-[12px] text-blue-300">
+    {convertToWords(amount)}
+  </p>
 
-          {/* INTEREST RATE */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-[13px] text-white/75 font-medium">
-                Interest Rate (%)
-              </span>
-              <span className="bg-white/90 text-blue-600 text-[13px] px-3 py-1 rounded-[8px] font-semibold">
-                {rate}%
-              </span>
-            </div>
+  <div className="flex justify-between text-[12px] text-white/40 mt-1">
+    <span>₹{currentThreshold.minAmount.toLocaleString()}</span>
+    <span>₹{currentThreshold.maxAmount.toLocaleString()}</span>
+  </div>
+</div>
 
-            <input
-              type="range"
-              min={currentThreshold.minInterest}
-              max={currentThreshold.maxInterest}
-              step={0.1}
-              value={rate}
-              onChange={(e) => setRate(+e.target.value)}
-              className="w-full accent-blue-500"
-            />
+{/* INTEREST RATE */}
+<div className="mb-6">
+  <div className="flex justify-between items-center mb-2">
+    <span className="text-[13px] text-white/75 font-medium">
+      Interest Rate (%)
+    </span>
+    <span className="bg-white/90 text-blue-600 text-[13px] px-3 py-1 rounded-[8px] font-semibold">
+      {rate}%
+    </span>
+  </div>
 
-            <div className="flex justify-between text-[12px] text-white/40 mt-1">
-              <span>{currentThreshold.minInterest}%</span>
-              <span>{currentThreshold.maxInterest}%</span>
-            </div>
-          </div>
+  <input
+    type="number"
+    min={currentThreshold.minInterest}
+    max={currentThreshold.maxInterest}
+    step={0.1}
+    value={rate}
+    onChange={(e) => setRate(Number(e.target.value))}
+    placeholder="Enter interest rate"
+    className="w-full h-[44px] rounded-[10px] border border-white/20 bg-white/90 px-3 text-[14px] font-semibold text-black outline-none focus:border-blue-400"
+  />
 
-          {/* TENURE */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-[13px] text-white/75 font-medium">
-                Loan Tenure
-              </span>
+  <div className="flex justify-between text-[12px] text-white/40 mt-1">
+    <span>{currentThreshold.minInterest}%</span>
+    <span>{currentThreshold.maxInterest}%</span>
+  </div>
+</div>
 
-              <div className="flex bg-white/10 rounded-[8px] overflow-hidden text-[11px] border border-white/15">
-                <button type="button" className="px-3 py-1 bg-white text-black font-semibold">
-                  Years
-                </button>
-                <button type="button" className="px-3 py-1 text-white/60 font-semibold">
-                  Months
-                </button>
-              </div>
-            </div>
+{/* TENURE */}
+<div className="mb-6">
+  <div className="flex justify-between items-center mb-2">
+    <span className="text-[13px] text-white/75 font-medium">
+      Loan Tenure
+    </span>
 
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-blue-400 text-[20px] font-semibold leading-none">
-                {years} Years
-              </span>
-              <span className="bg-white/90 text-blue-600 text-[13px] px-3 py-1 rounded-[8px] font-semibold">
-                {years}
-              </span>
-            </div>
+    <div className="flex bg-white/10 rounded-[8px] overflow-hidden text-[11px] border border-white/15">
+      <button type="button" className="px-3 py-1 bg-white text-black font-semibold">
+        Years
+      </button>
+      
+    </div>
+  </div>
 
-            <input
-              type="range"
-              min={currentThreshold.minTenure}
-              max={currentThreshold.maxTenure}
-              step={1}
-              value={years}
-              onChange={(e) => setYears(+e.target.value)}
-              className="w-full accent-blue-500"
-            />
+  <div className="flex justify-between items-center mb-2">
+    <span className="text-blue-400 text-[20px] font-semibold leading-none">
+      {years} Years
+    </span>
+    <span className="bg-white/90 text-blue-600 text-[13px] px-3 py-1 rounded-[8px] font-semibold">
+      {years}
+    </span>
+  </div>
 
-            <div className="flex justify-between text-[12px] text-white/40 mt-1">
-              <span>{currentThreshold.minTenure} Year</span>
-              <span>{currentThreshold.maxTenure} Years</span>
-            </div>
-          </div>
+  <input
+    type="number"
+    min={currentThreshold.minTenure}
+    max={currentThreshold.maxTenure}
+    step={1}
+    value={years}
+    onChange={(e) => setYears(Number(e.target.value))}
+    placeholder="Enter tenure"
+    className="w-full h-[44px] rounded-[10px] border border-white/20 bg-white/90 px-3 text-[14px] font-semibold text-black outline-none focus:border-blue-400"
+  />
+
+  <div className="flex justify-between text-[12px] text-white/40 mt-1">
+    <span>{currentThreshold.minTenure} Year</span>
+    <span>{currentThreshold.maxTenure} Years</span>
+  </div>
+</div>
 
           <div className="mt-6 space-y-3.5">
             <button
@@ -691,9 +732,12 @@ export default function EMIPage() {
               Calculate Now
             </button>
 
-            <button className="w-full rounded-[16px] border border-white/35 py-3.5 text-white/90 text-[15px] font-semibold hover:bg-white/10 transition-all">
-              ▶ Apply for Loan
-            </button>
+            <button
+  onClick={() => navigate("/tools?tool=loan-prediction")}
+  className="w-full rounded-[16px] border border-white/35 py-3.5 text-white/90 text-[15px] font-semibold hover:bg-white/10 transition-all"
+>
+  ▶ Apply for Loan
+</button>
           </div>
         </motion.div>
 
@@ -738,9 +782,12 @@ export default function EMIPage() {
 
                   <div className="flex justify-between items-center bg-white/90 text-black rounded-md px-4 py-3 mb-3">
                     <span className="text-sm font-medium">📅 First Payment</span>
-                    <span className="text-sm font-semibold">
-                      {firstPaymentDate}
-                    </span>
+                    <input
+  type="date"
+  value={firstPaymentDateValue}
+  onChange={(e) => setFirstPaymentCustomDate(e.target.value)}
+  className="rounded-md bg-white px-2 py-1 text-sm font-semibold text-black outline-none"
+/>
                   </div>
 
                   <div className="flex justify-between items-center bg-white/90 text-black rounded-md px-4 py-3 mb-3">
