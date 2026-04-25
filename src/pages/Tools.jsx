@@ -22,8 +22,8 @@ export default function Tools() {
   const [selectedBank, setSelectedBank] = useState(null);
   const [showBankCards, setShowBankCards] = useState(false);
   const [isSelectingBank, setIsSelectingBank] = useState(false);
-
-  const API_BASE = import.meta.env.VITE_API_URL;
+  const [selectedService, setSelectedService] = useState("");
+   const API_BASE = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -300,29 +300,44 @@ useEffect(() => {
 
       <div className="relative z-10">
         {step === 1 && (
-          <ContactForm
-            contactData={contactData}
-            setContactData={setContactData}
-            onNext={nextStep}
-            onBack={prevStep}
-          />
+         <ContactForm
+  contactData={contactData}
+  setContactData={setContactData}
+  onNext={(service) => {
+    setSelectedService(service);
+    setContactData((prev) => ({
+      ...prev,
+      service,
+    }));
+    nextStep();
+  }}
+/>
         )}
 
         {step === 2 && (
           <section className="px-4 pb-20 pt-32">
             <div className="mx-auto max-w-[1400px]">
-              <div className="grid gap-6 rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-3 shadow-[0_22px_50px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-4 lg:grid-cols-[1.6fr_1fr]">
-                <LoanForm
-                  loanData={loanData}
-                  setLoanData={setLoanData}
-                  onSubmit={handleLoanResult}
-                  onBack={prevStep}
-                />
-                <div className="sticky top-28 h-fit space-y-5">
-                  <Meter result={predictionResult} />
-                  <Decision result={predictionResult} />
-                </div>
-              </div>
+             <div
+  className={
+    predictionResult
+      ? "grid gap-6 rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-3 shadow-[0_22px_50px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-4 lg:grid-cols-[1.6fr_1fr]"
+      : "mx-auto max-w-[820px] rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-3 shadow-[0_22px_50px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-4"
+  }
+>
+  <LoanForm
+    loanData={loanData}
+    setLoanData={setLoanData}
+    onSubmit={handleLoanResult}
+    service={selectedService}
+  />
+
+  {predictionResult && (
+    <div className="sticky top-28 h-fit space-y-5">
+      <Meter result={predictionResult} />
+      <Decision result={predictionResult} />
+    </div>
+  )}
+</div>
 
               {showBankCards && formattedBanks.length > 0 && (
                 <div className="mt-12">
