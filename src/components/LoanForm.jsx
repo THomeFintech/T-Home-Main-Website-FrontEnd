@@ -1,38 +1,29 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { FileText, ChevronDown, Zap } from "lucide-react";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
+export default function LoanForm({ onSubmit, loading, onOpenCibil, service }){
+ const mapServiceToLoanType = (service) => {
+  if (!service) return "";
 
+  const clean = service.trim().toLowerCase();
 
-function numberToWords(num) {
-  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
-    "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen",
-    "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-  const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty",
-    "Sixty", "Seventy", "Eighty", "Ninety"];
+  const map = {
+    "home loan": "Home",
+    "personal loan": "Personal",
+    "business loan": "Business",
+    "loan against property": "LAP",
+  };
 
-  if (!num || num === 0) return "Zero";
-  num = Math.floor(Number(num));
-
-  function convert(n) {
-    if (n < 20)       return ones[n];
-    if (n < 100)      return tens[Math.floor(n / 10)] + (n % 10 ? " " + ones[n % 10] : "");
-    if (n < 1000)     return ones[Math.floor(n / 100)] + " Hundred" + (n % 100 ? " " + convert(n % 100) : "");
-    if (n < 100000)   return convert(Math.floor(n / 1000)) + " Thousand" + (n % 1000 ? " " + convert(n % 1000) : "");
-    if (n < 10000000) return convert(Math.floor(n / 100000)) + " Lakh" + (n % 100000 ? " " + convert(n % 100000) : "");
-    return convert(Math.floor(n / 10000000)) + " Crore" + (n % 10000000 ? " " + convert(n % 10000000) : "");
-  }
-
-  return convert(num) + " Rupees";
-}
-
-export default function LoanForm({ onSubmit, loading, onOpenCibil }) {
+  return map[clean] || "";
+};
+const passedLoanType = mapServiceToLoanType(service);
   const [formData, setFormData] = useState({
     age: "",
     employmentType: "",
     annualIncome: "",
-    loanType: "",
+   loanType: passedLoanType || "",
     loanAmount: "",
     activeLoans: "",
     cibilScore: "",
@@ -41,6 +32,15 @@ export default function LoanForm({ onSubmit, loading, onOpenCibil }) {
 
   const [activeLoanDetails, setActiveLoanDetails] = useState([]);
   const [currentLoanIndex, setCurrentLoanIndex] = useState(0);
+
+  useEffect(() => {
+  if (passedLoanType) {
+    setFormData((prev) => ({
+      ...prev,
+      loanType: passedLoanType,
+    }));
+  }
+}, [passedLoanType]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -179,27 +179,32 @@ export default function LoanForm({ onSubmit, loading, onOpenCibil }) {
       };
 
       console.log("Sending to /applications/loan/create:", loanCreatePayload);
-      const token = localStorage.getItem("token");
 
+      // ✅ Get token
+const token = localStorage.getItem("token");
+console.log("🔑 TOKEN:", token);
+
+// ✅ Stop if not logged in
 if (!token) {
-  alert("Please login first");
+  alert("You are not logged in. Please login first.");
   return;
 }
 
-      const loanCreateRes = await fetch(`${API_BASE}/applications/loan/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, 
-        },
-        body: JSON.stringify(loanCreatePayload),
-      });
+// ✅ API call with auth
+const loanCreateRes = await fetch(`${API_BASE}/applications/loan/create`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`, // 🔥 FIX
+  },
+  body: JSON.stringify(loanCreatePayload),
+});
 
       if (!loanCreateRes.ok) {
-        const errorText = await loanCreateRes.text();
-        console.error("Loan Create API Error:", errorText);
-        throw new Error("Loan creation failed");
-      }
+  const errorText = await loanCreateRes.text();
+  console.error("❌ Loan Create API Error:", errorText);
+  throw new Error(errorText || "Loan creation failed");
+}
 
       const loanCreateData = await loanCreateRes.json();
       console.log("Loan Create Response:", loanCreateData);
@@ -354,13 +359,16 @@ if (!token) {
             </label>
             <div className="relative">
               <select
-                id="loanType"
-                name="loanType"
-                value={formData.loanType}
-                onChange={handleChange}
-                required
-                className={`${inputClass} appearance-none pr-10 sm:pr-12`}
-              >
+  id="loanType"
+  name="loanType"
+  value={formData.loanType}
+  onChange={handleChange}
+  required
+  disabled={!!passedLoanType}
+  className={`${inputClass} appearance-none pr-10 sm:pr-12 ${
+    passedLoanType ? "opacity-70 cursor-not-allowed" : ""
+  }`}
+>
                 <option value="">Select</option>
                 <option value="Personal">Personal Loan</option>
                 <option value="Home">Home Loan</option>
@@ -387,11 +395,6 @@ if (!token) {
             min="0"
             className={inputClass}
           />
-          {formData.loanAmount > 0 && (
-            <p className="mt-1.5 text-xs text-blue-400/80 font-medium">
-              ₹ {numberToWords(formData.loanAmount)}
-            </p>
-          )}
         </div>
 
         <div>
