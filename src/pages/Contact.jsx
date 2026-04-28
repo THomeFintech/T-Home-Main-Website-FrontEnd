@@ -16,23 +16,29 @@ export default function ContactPage() {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
- const handleChange = (e) => {
-  const { name, value } = e.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-  let finalValue = value;
+    let finalValue = value;
 
-  if (name === "phone") {
-    finalValue = value.replace(/\D/g, "").slice(0, 10);
-  }
+    if (name === "phone") {
+      finalValue = value.replace(/\D/g, "").slice(0, 10);
+    }
 
-  setFormData((p) => ({ ...p, [name]: finalValue }));
-};
+    setFormData((p) => ({ ...p, [name]: finalValue }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setSuccessMsg("");
     setErrorMsg("");
+
+    if (!formData.message.trim()) {
+      setErrorMsg("Message is required.");
+      return;
+    }
+
+    setLoading(true);
 
     const payload = {
       name: formData.name.trim(),
@@ -82,135 +88,135 @@ export default function ContactPage() {
 
       <div className="relative z-10 font-outfit selection:bg-blue-500/30">
 
-      {/* 1. HERO SECTION */}
-      <section className="relative pt-24 md:pt-32 pb-8 md:pb-12 text-center overflow-hidden">
-        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[600px] md:w-[1000px] h-[300px] md:h-[500px] bg-blue-600/10 blur-[80px] md:blur-[120px] rounded-full pointer-events-none" />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">Contact Us</h1>
-          <p className="text-gray-200 text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-light px-2">
-            Comprehensive financial solutions detailed to meet your personal and business growth needs.
-          </p>
-        </div>
-      </section>
+        {/* 1. HERO SECTION */}
+        <section className="relative pt-24 md:pt-32 pb-8 md:pb-12 text-center overflow-hidden">
+          <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[600px] md:w-[1000px] h-[300px] md:h-[500px] bg-blue-600/10 blur-[80px] md:blur-[120px] rounded-full pointer-events-none" />
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">Contact Us</h1>
+            <p className="text-gray-200 text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-light px-2">
+              Comprehensive financial solutions detailed to meet your personal and business growth needs.
+            </p>
+          </div>
+        </section>
 
-      {/* 2. MAIN CONTACT SECTION */}
-      <div className="relative bg-transparent">
+        {/* 2. MAIN CONTACT SECTION */}
+        <div className="relative bg-transparent">
 
-        <section className="relative z-10 px-4 sm:px-6 md:px-20 pt-10 md:pt-16 pb-12">
-          <div className="max-w-[1200px] mx-auto grid lg:grid-cols-[0.7fr_1.3fr] gap-12 lg:gap-16 items-stretch text-center lg:text-left">
+          <section className="relative z-10 px-4 sm:px-6 md:px-20 pt-10 md:pt-16 pb-12">
+            <div className="max-w-[1200px] mx-auto grid lg:grid-cols-[0.7fr_1.3fr] gap-12 lg:gap-16 items-stretch text-center lg:text-left">
 
-            {/* Left Side: Text and Image */}
-            <div className="flex flex-col h-full">
-              <div className="mb-8">
-                <span className="inline-block px-3 py-1 rounded bg-blue-500/10 text-blue-400 text-[10px] md:text-[11px] font-bold tracking-[0.2em] mb-4 border border-blue-500/20 uppercase">
-                  CONTACT US
-                </span>
-                <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold leading-[1.2] lg:leading-[1.1] mb-4">
-                  Your Dream Home is <br className="hidden sm:block" />
-                  <span className="text-blue-500">Just a Loan Away!</span>
-                </h2>
-                <p className="text-gray-400 text-sm leading-relaxed max-w-sm mx-auto lg:mx-0 font-light">
-                  Turn your dream of owning a home into reality with our hassle-free home loan solutions.
-                  Get quick approval and the best interest rates.
-                </p>
-              </div>
-
-              <div className="w-full max-w-[480px]">
-                <img
-                  src="/home/contact img.png"
-                  alt="Support Specialist"
-                  className="w-full h-auto rounded-[32px] shadow-2xl border border-white/5"
-                />
-              </div>
-            </div>
-
-            {/* Right Side: Form Card */}
-            <div className="bg-white/[0.05] backdrop-blur-[24px] border border-white/10 rounded-[16px] p-6 sm:p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] w-full mx-auto lg:mx-0 text-left">
-              <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <FormInput label="Name" name="name" value={formData.name} onChange={handleChange} placeholder="Enter your name" />
-                  <FormInput
-                    label="Phone Number"
-                    name="phone"
-                    type="tel"
-                    maxLength={10}
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="7645839566"
-                  />
+              {/* Left Side: Text and Image */}
+              <div className="flex flex-col h-full">
+                <div className="mb-8">
+                  <span className="inline-block px-3 py-1 rounded bg-blue-500/10 text-blue-400 text-[10px] md:text-[11px] font-bold tracking-[0.2em] mb-4 border border-blue-500/20 uppercase">
+                    CONTACT US
+                  </span>
+                  <h2 className="text-3xl md:text-4xl lg:text-[40px] font-bold leading-[1.2] lg:leading-[1.1] mb-4">
+                    Your Dream Home is <br className="hidden sm:block" />
+                    <span className="text-blue-500">Just a Loan Away!</span>
+                  </h2>
+                  <p className="text-gray-400 text-sm leading-relaxed max-w-sm mx-auto lg:mx-0 font-light">
+                    Turn your dream of owning a home into reality with our hassle-free home loan solutions.
+                    Get quick approval and the best interest rates.
+                  </p>
                 </div>
 
-                <FormInput label="Your Email" name="email" value={formData.email} onChange={handleChange} placeholder="Email@Example.com" type="email" />
+                <div className="w-full max-w-[480px]">
+                  <img
+                    src="/home/contact img.png"
+                    alt="Support Specialist"
+                    className="w-full h-auto rounded-[32px] shadow-2xl border border-white/5"
+                  />
+                </div>
+              </div>
 
-                <div>
-                  <label className="text-[10px] md:text-[11px] text-gray-400 mb-1.5 block font-semibold uppercase tracking-widest">Select Your Service</label>
-                  <div className="relative">
-                    <select
-                      name="service"
-                      value={formData.service}
+              {/* Right Side: Form Card */}
+              <div className="bg-white/[0.05] backdrop-blur-[24px] border border-white/10 rounded-[16px] p-6 sm:p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] w-full mx-auto lg:mx-0 text-left">
+                <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    <FormInput label="Name" name="name" value={formData.name} onChange={handleChange} placeholder="Enter your name" />
+                    <FormInput
+                      label="Phone Number"
+                      name="phone"
+                      type="tel"
+                      maxLength={10}
+                      value={formData.phone}
                       onChange={handleChange}
-                      className="w-full h-12 md:h-13 px-4 rounded-xl bg-white/[0.05] border border-white/10 text-sm text-white focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer font-light"
-                    >
-                      {services.map((s) => <option key={s} value={s} className="bg-[#020617]">{s}</option>)}
-                    </select>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 text-xs">▼</div>
+                      placeholder="7645839566"
+                    />
                   </div>
-                </div>
 
-                <div>
-                  <label className="text-[10px] md:text-[11px] text-gray-400 mb-1.5 block font-semibold uppercase tracking-widest">Message</label>
-                  <textarea
-                    name="message"
-                    rows="3"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="How can we help you?"
-                    className="w-full px-4 py-3 rounded-xl bg-white/[0.05] border border-white/10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500 resize-none transition-all font-light"
-                  />
-                </div>
+                  <FormInput label="Your Email" name="email" value={formData.email} onChange={handleChange} placeholder="Email@Example.com" type="email" />
 
-                {successMsg && (
-                  <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">
-                    ✓ {successMsg}
+                  <div>
+                    <label className="text-[10px] md:text-[11px] text-gray-400 mb-1.5 block font-semibold uppercase tracking-widest">Select Your Service</label>
+                    <div className="relative">
+                      <select
+                        name="service"
+                        value={formData.service}
+                        onChange={handleChange}
+                        className="w-full h-12 md:h-13 px-4 rounded-xl bg-white/[0.05] border border-white/10 text-sm text-white focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer font-light"
+                      >
+                        {services.map((s) => <option key={s} value={s} className="bg-[#020617]">{s}</option>)}
+                      </select>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 text-xs">▼</div>
+                    </div>
                   </div>
-                )}
-                {errorMsg && (
-                  <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
-                    ✕ {errorMsg}
-                  </div>
-                )}
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-12 md:h-13 mt-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed rounded-xl text-[12px] md:text-[13px] font-bold tracking-widest text-white transition-all uppercase shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2"
-                >
-                  {loading ? (
-                    <>
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Processing...
-                    </>
-                  ) : (
-                    "Submit Request"
+                  <div>
+                    <label className="text-[10px] md:text-[11px] text-gray-400 mb-1.5 block font-semibold uppercase tracking-widest">Message</label>
+                    <textarea
+                      name="message"
+                      rows="3"
+                      value={formData.message}
+                      onChange={handleChange}
+                      placeholder="How can we help you?"
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.05] border border-white/10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500 resize-none transition-all font-light"
+                    />
+                  </div>
+
+                  {successMsg && (
+                    <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">
+                      ✓ {successMsg}
+                    </div>
                   )}
-                </button>
-              </form>
-            </div>
-          </div>
-        </section>
+                  {errorMsg && (
+                    <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+                      ✕ {errorMsg}
+                    </div>
+                  )}
 
-        {/* 3. TRUST & ICON SECTION */}
-        <section className="relative z-10 pt-4 pb-12 border-t border-white/5">
-          <p className="text-gray-300 text-center text-[10px] sm:text-xs md:text-sm mb-8 md:mb-12 font-bold uppercase tracking-[0.2em] px-4">
-            Trusted by startups and growing businesses worldwide
-          </p>
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row flex-wrap items-center md:items-start justify-center gap-10 md:gap-20 lg:gap-36 px-6">
-            <ContactDetail icon={<Mail size={32} className="md:w-[42px] md:h-[42px]" />} title="Email Support" value="info@thome.co.in" />
-            <ContactDetail icon={<Phone size={32} className="md:w-[42px] md:h-[42px]" />} title="Phone" value="+91 70321 83836" />
-            <ContactDetail icon={<MessageCircle size={32} className="md:w-[42px] md:h-[42px]" />} title="Live Chat" value="Available 24/7" />
-          </div>
-        </section>
-      </div>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full h-12 md:h-13 mt-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed rounded-xl text-[12px] md:text-[13px] font-bold tracking-widest text-white transition-all uppercase shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                        Processing...
+                      </>
+                    ) : (
+                      "Submit Request"
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          {/* 3. TRUST & ICON SECTION */}
+          <section className="relative z-10 pt-4 pb-12 border-t border-white/5">
+            <p className="text-gray-300 text-center text-[10px] sm:text-xs md:text-sm mb-8 md:mb-12 font-bold uppercase tracking-[0.2em] px-4">
+              Trusted by startups and growing businesses worldwide
+            </p>
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row flex-wrap items-center md:items-start justify-center gap-10 md:gap-20 lg:gap-36 px-6">
+              <ContactDetail icon={<Mail size={32} className="md:w-[42px] md:h-[42px]" />} title="Email Support" value="info@thome.co.in" />
+              <ContactDetail icon={<Phone size={32} className="md:w-[42px] md:h-[42px]" />} title="Phone" value="+91 70321 83836" />
+              <ContactDetail icon={<MessageCircle size={32} className="md:w-[42px] md:h-[42px]" />} title="Live Chat" value="Available 24/7" />
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   );
