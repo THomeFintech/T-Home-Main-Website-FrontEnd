@@ -608,8 +608,8 @@ async function handleContactSave() {
     >
 
       <div className="max-w-6xl mx-auto mb-8">
-        <h1 className="text-2xl font-bold text-white tracking-tight">Profile Settings</h1>
-        <p className="text-sm text-slate-400 mt-1">Manage your personal information and preferences</p>
+        <h1 className="text-2xl font-bold text-white tracking-tight">Profile</h1>
+        <p className="text-sm text-slate-400 mt-1">Manage your personal information, KYC status, and preferences</p>
       </div>
 
       <div className="max-w-6xl mx-auto space-y-6">
@@ -633,8 +633,9 @@ async function handleContactSave() {
               <p className="text-sm text-slate-400 mt-0.5">{contact.email}</p>
               <span className="inline-flex items-center gap-1 mt-2 text-[11px] font-bold px-2.5 py-1 rounded-full text-emerald-300"
                 style={{ background: "rgba(16,185,129,0.18)", border: "1px solid rgba(16,185,129,0.35)" }}>
-                <Icon type="check" className="w-3 h-3" /> KYC Verified
+                <Icon type="check" className="w-3 h-3" /> KYC Initiated
               </span>
+              <p className="mt-2 text-sm text-amber-200/90">Admin approval pending</p>
             </div>
 
             <div className="flex gap-3 flex-shrink-0">

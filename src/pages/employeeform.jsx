@@ -92,9 +92,9 @@ export default function HiringForm() {
 
   /* ================= STYLES ================= */
   const inputClass =
-    "w-full rounded-xl border border-white/30 bg-white/20 backdrop-blur-md px-4 py-3 text-white placeholder:text-white/60 outline-none transition focus:border-white/60 focus:ring-2 focus:ring-white/30 shadow-inner";
+    "w-full rounded-xl border border-white/30 bg-white/20 backdrop-blur-md px-4 py-3 text-[12px] sm:text-[16px] text-white placeholder:text-white/60 outline-none transition focus:border-white/60 focus:ring-2 focus:ring-white/30 shadow-inner";
 
-  const labelClass = "mb-2 block text-sm font-medium text-white/80";
+  const labelClass = "mb-2 block text-sm sm:text-[16px] font-medium text-white/80";
 
   return (
   <div className="min-h-screen pt-28 pb-10 px-4 flex items-start justify-center bg-[radial-gradient(circle,#1E2447_0%,#000000_70%)]">

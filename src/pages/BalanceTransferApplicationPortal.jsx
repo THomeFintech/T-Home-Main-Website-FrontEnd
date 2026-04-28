@@ -189,7 +189,7 @@ export default function BalanceTransferApplicationPortal() {
 }
 
 const inputClass =
-  "h-11 w-full rounded-[8px] border border-white/20 bg-[rgba(255,255,255,0.08)] px-3 text-[13px] text-white placeholder:text-white/45 outline-none focus:border-[#5b93ff]";
+  "h-11 w-full rounded-[8px] border border-white/20 bg-[rgba(255,255,255,0.08)] px-3 text-[12px] sm:text-[16px] text-white placeholder:text-white/45 outline-none focus:border-[#5b93ff]";
 
 function SectionTitle({ icon, title, className = "", badge }) {
   return (

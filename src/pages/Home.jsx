@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 // Safe navigate helper — works with ANY router version or no router at all
 
@@ -7,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 function Home() {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [serviceStart, setServiceStart] = useState(0);
   const [testimonialStart, setTestimonialStart] = useState(0);
 
   const circleItems = [
@@ -26,81 +26,22 @@ function Home() {
 
   const services = [
     {
-      title: "Home Loans",
-      description:
-        "Compare loan offers from multiple banks and get the lowest interest rates with fast approvals.",
-      button: "Apply Now",
-      path: "/home-loans",
-    },
-    {
-      title: "Personal Loans",
-      description:
-        "Quick approvals and flexible repayment options for your personal financial needs.",
-      button: "Apply Now",
-      path: "/personal-loans",
-    },
-    {
-      title: "Loan Against Property",
-      description:
-        "Unlock the value of your property with flexible loans and competitive interest rates.",
-      button: "Check Eligibility",
-      path: "/loan-against-property",
-    },
-    {
-      title: "Income Tax Filing",
-      description:
-        "File your ITR easily with expert guidance and accurate tax calculations.",
-      button: "File ITR",
-      path: "/itr-filing",
-    },
-    {
-      title: "Mortgage Loan",
-      description:
-        "Flexible mortgage solutions tailored to your unique financial requirements.",
-      button: "Get Started",
-      path: "/mortgage-loan",
-    },
-    {
-      title: "Business Loans",
-      description:
-        "Access working capital and growth funding with simplified processing.",
-      button: "Apply Now",
+      title: "Loans",
+      description: "Calculate your monthly EMI and understand your repayment plan.",
+      button: "View All",
       path: "/services",
     },
     {
-      title: "GST Services",
-      description:
-        "End-to-end GST filing, registration, and compliance support for businesses.",
-      button: "Get Help",
-      path: "/gst-registration",
+      title: "Tax & Compliance",
+      description: "Understand your loan approval chances with smart predictions.",
+      button: "View All",
+      path: "/services",
     },
     {
-      title: "MSME Services",
-      description:
-        "Specialized support and funding solutions designed for MSME businesses.",
-      button: "Explore",
-      path: "/udyam-msme-registration",
-    },
-    {
-      title: "Company Registration",
-      description:
-        "Start your company with complete registration assistance and legal support.",
-      button: "Register Now",
-      path: "/company-registration",
-    },
-    {
-      title: "Food License",
-      description:
-        "Get FSSAI registration and licensing support quickly and accurately.",
-      button: "Apply Now",
-      path: "/food-license",
-    },
-    {
-      title: "PAN Aadhaar Linking",
-      description:
-        "Complete PAN and Aadhaar linking without confusion through guided support.",
-      button: "Link Now",
-      path: "/pan-aadhaar-linking",
+      title: "Business Registrations",
+      description: "See how much you can save by switching to a low-interest loan.",
+      button: "View All",
+      path: "/services",
     },
   ];
 
@@ -125,20 +66,6 @@ function Home() {
     },
   ];
 
-  const visibleCards = 5;
-
-  const nextServices = () => {
-    if (serviceStart + visibleCards < services.length) {
-      setServiceStart((prev) => prev + 1);
-    }
-  };
-
-  const prevServices = () => {
-    if (serviceStart > 0) {
-      setServiceStart((prev) => prev - 1);
-    }
-  };
-
   const nextTestimonials = () => {
     setTestimonialStart((prev) => (prev + 1) % testimonials.length);
   };
@@ -147,11 +74,55 @@ function Home() {
     setTestimonialStart((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  const visibleTestimonials = Array.from({ length: 3 }, (_, i) =>
-    testimonials[(testimonialStart + i) % testimonials.length]
-  );
+  const testimonialTrack = [...testimonials, ...testimonials];
 
   const activeTestimonial = testimonials[testimonialStart];
+  const renderTestimonialCard = (t, i, key) => {
+    const isCenter = i % testimonials.length === (testimonialStart + 1) % testimonials.length;
+
+    return (
+    <div
+      key={key}
+      className={`rounded-[16px] border px-8 py-10 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_34px_rgba(0,0,0,0.3)] backdrop-blur-md transition-transform duration-700 ease-in-out ${
+        isCenter
+          ? "border-[#7ea7ff]/70 bg-[linear-gradient(180deg,rgba(58,95,218,0.96)_0%,rgba(39,68,184,0.96)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_18px_40px_rgba(8,20,60,0.42)]"
+          : "border-[#c9dcff]/52 bg-[linear-gradient(180deg,rgba(24,34,84,0.84)_0%,rgba(14,22,58,0.9)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_34px_rgba(2,8,28,0.34)]"
+      }`}
+    >
+      <div
+        className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full text-[28px] font-semibold leading-none ${
+          isCenter ? "bg-[#3d59b6] text-[#cfe0ff]" : "bg-[#1b336f] text-[#4f7fd7]"
+        }`}
+      >
+        <span className="block -translate-y-px leading-none">"</span>
+      </div>
+      <p
+        className={`mx-auto mt-6 max-w-[320px] leading-[1.45] ${
+          isCenter ? "text-white/95" : "text-white/75"
+        }`}
+        style={{ fontSize: "clamp(13px, 0.85vw, 16px)" }}
+      >
+        {t.text}
+      </p>
+  
+      <img
+        src={t.img}
+        alt={t.name}
+        className="mx-auto mt-4 h-16 w-16 rounded-full border border-white/30 object-cover"
+      />
+      <h3 className="mt-4 font-semibold text-white" style={{ fontSize: "clamp(14px, 0.95vw, 18px)" }}>
+        {t.name}
+      </h3>
+      <p
+        className={`mt-1 text-sm font-semibold uppercase tracking-wide ${
+          isCenter ? "text-[#69bbff]" : "text-[#4e95ff]"
+        }`}
+      >
+        {t.location}
+      </p>
+    </div>
+    );
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -171,14 +142,16 @@ function Home() {
   return (
     <div style={{ fontFamily: "'Outfit', sans-serif" }}>
       {/* ── HERO SECTION ── */}
-      <section className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden pb-16 pt-16 text-center md:min-h-[100svh] md:pb-16 md:pt-20">
+      <section className="relative flex min-h-[100svh] w-full items-start justify-center overflow-hidden py-[100px] text-center md:min-h-[100svh] md:py-[100px] bg-[#081a49]">
         <img
           src="/home/bg image.png"
           alt="background"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_37%,#2a55c4_0%,#16367f_40%,#081a49_68%,#050d2a_100%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,12,38,0.78)_0%,rgba(4,18,58,0.88)_46%,rgba(2,8,28,0.94)_100%)] md:hidden"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(163,205,255,0.22)_0%,rgba(123,181,255,0.12)_38%,rgba(123,181,255,0)_72%)]"></div>
+        <div className="absolute inset-0 bg-[#020b24]/35 md:hidden"></div>
         <div
           className="absolute inset-0 opacity-34"
           style={{
@@ -208,8 +181,8 @@ function Home() {
           className="absolute left-1/2 top-[16%] w-[470px] -translate-x-1/2 opacity-36 mix-blend-screen md:left-[30%] md:top-[8%] md:w-[610px] md:translate-x-0"
         />
 
-        <div className="relative z-30 -mt-56 max-w-4xl px-6 md:-mt-40">
-          <div className="mx-auto mb-6 inline-flex items-center gap-3 rounded-full border border-[#4b9dff]/30 bg-black/65 px-4 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+        <div className="relative z-30 max-w-4xl px-6">
+          <div className="mx-auto mb-2 inline-flex items-center gap-3 rounded-full border border-[#4b9dff]/30 bg-black/65 px-4 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl">
             <span className="rounded-full bg-[#4ea3ff] px-2 py-[3px] text-[10px] font-bold uppercase tracking-wide text-black">
               NEW
             </span>
@@ -218,7 +191,7 @@ function Home() {
             </span>
           </div>
 
-          <h1 className="text-5xl font-semibold leading-[0.98] tracking-[-0.03em] text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] md:text-[66px]">
+          <h1 className="text-5xl md:text-6xl font-semibold text-white leading-tight mb-6 drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]" style={{fontFamily: "'Outfit', sans-serif"}}>
             Get Your Home Loan
             <br />
             <span className="bg-gradient-to-b from-[#e4f0ff] via-[#9ac6ff] to-[#66abff] bg-clip-text text-transparent">
@@ -230,7 +203,7 @@ function Home() {
             Low interest rates, quick approvals, and zero hidden charges. Apply online in just 5 minutes.
           </p>
 
-          <div className="mt-7 -mb-3 flex flex-wrap justify-center gap-4 md:-mb-4">
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
             <button
              onClick={() => navigate("/home-loans")}
               className="rounded-full bg-gradient-to-r from-[#3e8fee] to-[#2869df] px-9 py-2.5 text-sm font-semibold text-white shadow-[0_12px_34px_rgba(46,113,218,0.5)] transition duration-300 hover:scale-[1.02] hover:shadow-[0_14px_44px_rgba(55,128,232,0.6)]"
@@ -269,14 +242,14 @@ function Home() {
 
       {/* ── RECOGNITION SECTION ── */}
       <section
-        className="relative w-full overflow-hidden bg-cover bg-center py-20"
+        className="relative w-full overflow-hidden bg-cover bg-center py-[100px]"
         style={{ backgroundImage: "url('/home/bg image.png')" }}
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(33,74,174,0.34)_0%,rgba(15,35,96,0.64)_52%,rgba(5,13,40,0.88)_100%)]"></div>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,12,36,0.42)_0%,rgba(4,10,31,0.76)_100%)]"></div>
 
         <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-6 text-center">
-          <h2 className="mb-10 text-3xl font-semibold tracking-[-0.02em] text-white drop-shadow-[0_10px_24px_rgba(0,0,0,0.45)] md:text-5xl">
+          <h2 className="mb-10 text-4xl md:text-5xl font-semibold text-white drop-shadow-[0_10px_24px_rgba(0,0,0,0.45)]" style={{fontFamily: "'Outfit', sans-serif"}}>
             Officially Recognized. Nationally Trusted.
           </h2>
 
@@ -294,10 +267,10 @@ function Home() {
       </section>
 
       {/* ── SERVICES SECTION ── */}
-      <section className="relative w-full overflow-hidden bg-[linear-gradient(90deg,#000000_0%,#1E2447_50%,#000000_100%)] py-20">
+      <section className="relative w-full overflow-hidden bg-[linear-gradient(90deg,#000000_0%,#1E2447_50%,#000000_100%)] py-[100px]">
         <div className="mx-auto max-w-[1500px] px-6">
           <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-4xl md:text-6xl font-semibold leading-tight text-white">
+            <h2 className="text-4xl md:text-5xl font-semibold text-white leading-tight mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
               Smart Financial Services for
               <br />
               Individuals & Businesses
@@ -311,27 +284,28 @@ function Home() {
 
           <div className="relative mt-16 flex items-center justify-center">
             <button
-              onClick={prevServices}
-              disabled={serviceStart === 0}
-              className="absolute left-0 z-20 flex h-14 w-14 items-center justify-center rounded-full border border-white/30 bg-[linear-gradient(180deg,rgba(34,41,66,0.98)_0%,rgba(18,22,37,0.98)_100%)] text-4xl text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_24px_rgba(5,9,28,0.42)] transition hover:border-[#4f72e0]/55 hover:bg-[linear-gradient(180deg,rgba(47,67,160,0.96)_0%,rgba(36,53,136,0.96)_100%)] disabled:opacity-40"
+              className="hidden"
+              aria-hidden="true"
             >
               <span className="block -translate-y-px leading-none">‹</span>
             </button>
 
-            <div className="mx-16 w-full overflow-hidden">
-              <div className="flex gap-6">
-                {services
-                  .slice(serviceStart, serviceStart + visibleCards)
-                  .map((service, index) => (
+            <div className="w-full max-w-6xl overflow-hidden">
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                {services.map((service, index) => (
                     <div
                       key={index}
-                      className="group h-[320px] min-w-[210px] flex-1 rounded-[16px] border border-[#d6e6ff]/62 bg-[linear-gradient(180deg,rgba(44,66,132,0.74)_0%,rgba(25,42,102,0.68)_100%)] p-7 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_14px_38px_rgba(0,0,0,0.34)] backdrop-blur-md grid grid-rows-[auto_1fr_auto] transition-all duration-300 hover:border-[#63a9ff]/75 hover:bg-[linear-gradient(180deg,rgba(65,124,235,0.96)_0%,rgba(38,87,214,0.92)_100%)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.32),0_0_34px_rgba(72,149,255,0.38),0_18px_44px_rgba(0,0,0,0.36)]"
+                      className={`group h-[280px] rounded-[16px] p-7 text-center backdrop-blur-md grid grid-rows-[auto_1fr_auto] transition-all duration-300 hover:border-[#63a9ff]/75 hover:bg-[linear-gradient(180deg,rgba(65,124,235,0.96)_0%,rgba(38,87,214,0.92)_100%)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.32),0_0_34px_rgba(72,149,255,0.38),0_18px_44px_rgba(0,0,0,0.36)] ${
+                        index === 1
+                          ? "border border-[#213972]/36 bg-[linear-gradient(180deg,rgba(43,75,163,0.76)_0%,rgba(19,36,91,0.82)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_18px_42px_rgba(0,0,0,0.42)]"
+                          : "border border-[#536dff]/80 bg-[linear-gradient(180deg,rgba(19,27,63,0.58)_0%,rgba(9,15,38,0.64)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_14px_38px_rgba(0,0,0,0.28)]"
+                      }`}
                     >
                       <div>
-                        <h3 className="min-h-[56px] text-[20px] font-semibold leading-snug text-[#f5f9ff] transition-colors duration-300 group-hover:text-white">
+                        <h3 className="min-h-[48px] text-[20px] font-semibold leading-snug text-[#f5f9ff] transition-colors duration-300 group-hover:text-white">
                           {service.title}
                         </h3>
-                        <p className="mt-4 h-[124px] overflow-hidden text-[15px] leading-8 text-[#e3eeff]/86 transition-colors duration-300 group-hover:text-white/95">
+                        <p className="mt-4 h-[96px] overflow-hidden text-[15px] leading-7 text-[#e3eeff]/86 transition-colors duration-300 group-hover:text-white/95">
                           {service.description}
                         </p>
                       </div>
@@ -349,9 +323,8 @@ function Home() {
             </div>
 
             <button
-              onClick={nextServices}
-              disabled={serviceStart + visibleCards >= services.length}
-              className="absolute right-0 z-20 flex h-14 w-14 items-center justify-center rounded-full border border-white/30 bg-[linear-gradient(180deg,rgba(34,41,66,0.98)_0%,rgba(18,22,37,0.98)_100%)] text-4xl text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_24px_rgba(5,9,28,0.42)] transition hover:border-[#4f72e0]/55 hover:bg-[linear-gradient(180deg,rgba(47,67,160,0.96)_0%,rgba(36,53,136,0.96)_100%)] disabled:opacity-40"
+              className="hidden"
+              aria-hidden="true"
             >
               <span className="block -translate-y-px leading-none">›</span>
             </button>
@@ -360,10 +333,10 @@ function Home() {
       </section>
 
       {/* ── HOW T-HOME WORKS ── */}
-      <section className="relative w-full py-20 bg-[linear-gradient(90deg,#000000_0%,#1E2447_50%,#000000_100%)]">
+      <section className="relative w-full py-[100px] bg-[linear-gradient(90deg,#000000_0%,#1E2447_50%,#000000_100%)]">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6">
-          <h2 className="text-center text-2xl md:text-4xl font-semibold text-white">
+          <h2 className="text-center text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
             How T-Home Works
           </h2>
 
@@ -484,12 +457,12 @@ function Home() {
 
       {/* ── WHY CHOOSE T-HOME ── */}
       <section
-        className="relative w-full overflow-hidden py-24 bg-cover bg-center"
+        className="relative w-full overflow-hidden py-[100px] bg-cover bg-center"
         style={{ backgroundImage: "url('/home/bg image.png')" }}
       >
         <div className="absolute inset-0 bg-[#040814]/84"></div>
         <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
-          <h2 className="text-3xl md:text-5xl font-semibold text-white">Why Choose T-Home</h2>
+          <h2 className="text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>Why Choose T-Home</h2>
           <p className="mx-auto mt-5 max-w-2xl text-sm md:text-lg text-white/70 leading-relaxed">
             Everything you need to manage payments, compliance, and finances —
             all powered by intelligent automation.
@@ -556,7 +529,7 @@ function Home() {
 
       {/* ── TESTIMONIALS ── */}
       <section
-        className="relative w-full overflow-hidden py-20 bg-cover bg-center"
+        className="relative w-full overflow-hidden py-[100px] bg-cover bg-center"
         style={{ backgroundImage: "url('/home/bg image.png')" }}
       >
         <div className="absolute inset-0 bg-[#040814]/82"></div>
@@ -566,7 +539,7 @@ function Home() {
               Testimonials
             </span>
           </div>
-          <h2 className="mt-6 text-center text-2xl md:text-5xl font-semibold text-white">
+          <h2 className="mt-6 text-center text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
             What Our Client Says
           </h2>
           <p className="mx-auto mt-5 max-w-3xl text-center text-sm md:text-xl leading-7 md:leading-9 text-white/75">
@@ -581,51 +554,16 @@ function Home() {
               ‹
             </button>
 
-            <div className="mx-16 grid w-full grid-cols-1 gap-6 md:grid-cols-3">
-              {visibleTestimonials.map((t, i) => (
-                <div
-                  key={i}
-                  className={`rounded-[16px] border px-8 py-10 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_34px_rgba(0,0,0,0.3)] backdrop-blur-md transition-colors duration-300 ${
-                    i === 1
-                      ? "border-[#7ea7ff]/70 bg-[linear-gradient(180deg,rgba(58,95,218,0.96)_0%,rgba(39,68,184,0.96)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_18px_40px_rgba(8,20,60,0.42)]"
-                      : "border-[#c9dcff]/52 bg-[linear-gradient(180deg,rgba(24,34,84,0.84)_0%,rgba(14,22,58,0.9)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_34px_rgba(2,8,28,0.34)]"
-                  }`}
-                >
-                  <div
-                    className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full text-[28px] font-semibold leading-none ${
-                      i === 1
-                        ? "bg-[#3d59b6] text-[#cfe0ff]"
-                        : "bg-[#1b336f] text-[#4f7fd7]"
-                    }`}
-                  >
-                    <span className="block -translate-y-px leading-none">"</span>
-                  </div>
-                  <p
-                    className={`mx-auto mt-6 max-w-[320px] text-[33px] leading-[1.45] md:text-[32px] ${
-                      i === 1 ? "text-white/95" : "text-white/75"
-                    }`}
-                    style={{ fontSize: "clamp(22px, 1.22vw, 32px)" }}
-                  >
-                    {t.text}
-                  </p>
-                  <div className="mt-5 flex justify-center gap-1 text-lg text-[#ffcc33]">
-                    ★ ★ ★ ★ ★
-                  </div>
-                  <img
-                    src={t.img}
-                    alt={t.name}
-                    className="mx-auto mt-4 h-16 w-16 rounded-full border border-white/30 object-cover"
-                  />
-                  <h3 className="mt-4 text-lg font-semibold text-white md:text-[30px]" style={{ fontSize: "clamp(20px, 1.1vw, 30px)" }}>{t.name}</h3>
-                  <p
-                    className={`mt-1 text-sm font-semibold uppercase tracking-wide ${
-                      i === 1 ? "text-[#69bbff]" : "text-[#4e95ff]"
-                    }`}
-                  >
-                    📍 {t.location}
-                  </p>
-                </div>
-              ))}
+            <div className="mx-16 w-full overflow-hidden">
+               <div
+                 className="grid auto-cols-[calc((100%-48px)/3)] grid-flow-col gap-6"
+                 style={{
+                   transform: `translateX(calc(-${testimonialStart} * ((100% - 48px) / 3 + 24px)))`,
+                   transition: 'none'
+                 }}
+               >
+                 {testimonialTrack.map((t, i) => renderTestimonialCard(t, i, `${i}-${t.name}`))}
+               </div>
             </div>
 
             <button
@@ -662,10 +600,10 @@ function Home() {
       </section>
 
       {/* ── CTA SECTION ── */}
-      <section className="relative flex w-full justify-center overflow-hidden px-6 py-20">
+      <section className="relative flex w-full justify-center overflow-hidden px-6 py-[100px]">
         <div className="w-full max-w-6xl rounded-[14px] border border-[#5374df]/55 bg-[linear-gradient(90deg,#2438c8_0%,#3249d6_52%,#2438c8_100%)] px-6 py-12 text-center shadow-[0_22px_55px_rgba(6,14,44,0.45)] md:px-12 md:py-16">
 
-          <h2 className="text-2xl font-semibold text-white md:text-5xl">
+          <h2 className="text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
             Start Your Financial Journey Today
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm text-white/85 md:text-[34px]" style={{ fontSize: "clamp(18px, 1.05vw, 34px)" }}>

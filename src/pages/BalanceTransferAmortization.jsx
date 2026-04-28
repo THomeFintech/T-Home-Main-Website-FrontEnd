@@ -70,7 +70,7 @@ export default function BalanceTransferAmortization() {
     popup.document.write(`
       <html>
         <head><title>Amortization Schedule</title></head>
-        <body style="font-family:Arial;padding:16px;">
+        <body style="font-family:'Outfit', sans-serif;padding:16px;">
           <h2>Amortization Schedule</h2>
           <table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;">
             <thead>
