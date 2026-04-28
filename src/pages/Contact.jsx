@@ -13,13 +13,14 @@ export default function ContactPage() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
  const handleChange = (e) => {
   const { name, value } = e.target;
 
   let finalValue = value;
 
-  // ✅ PHONE VALIDATION
   if (name === "phone") {
     finalValue = value.replace(/\D/g, "").slice(0, 10);
   }
@@ -27,10 +28,41 @@ export default function ContactPage() {
   setFormData((p) => ({ ...p, [name]: finalValue }));
 };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => setLoading(false), 1500);
+    setSuccessMsg("");
+    setErrorMsg("");
+
+    const payload = {
+      name: formData.name.trim(),
+      phone: formData.phone.trim(),
+      email: formData.email.trim(),
+      service: formData.service,
+      message: formData.message.trim(),
+    };
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => null);
+        const detail = errData?.detail || `Server error: ${res.status}`;
+        throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
+      }
+
+      await res.json();
+      setSuccessMsg("Thank you! We'll get back to you shortly.");
+      setFormData({ name: "", phone: "", email: "", service: services[0], message: "" });
+    } catch (err) {
+      setErrorMsg(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,11 +97,10 @@ export default function ContactPage() {
       <div className="relative bg-transparent">
 
         <section className="relative z-10 px-4 sm:px-6 md:px-20 pt-10 md:pt-16 pb-12">
-          {/* Use items-stretch to ensure both columns have the exact same height */}
           <div className="max-w-[1200px] mx-auto grid lg:grid-cols-[0.7fr_1.3fr] gap-12 lg:gap-16 items-stretch text-center lg:text-left">
 
             {/* Left Side: Text and Image */}
-            <div className="flex flex-col h-full"> {/* Added h-full to parent */}
+            <div className="flex flex-col h-full">
               <div className="mb-8">
                 <span className="inline-block px-3 py-1 rounded bg-blue-500/10 text-blue-400 text-[10px] md:text-[11px] font-bold tracking-[0.2em] mb-4 border border-blue-500/20 uppercase">
                   CONTACT US
@@ -84,7 +115,6 @@ export default function ContactPage() {
                 </p>
               </div>
 
-              {/* IMAGE CONTAINER: Fixed for exact overlap */}
               <div className="w-full max-w-[480px]">
                 <img
                   src="/home/contact img.png"
@@ -93,20 +123,21 @@ export default function ContactPage() {
                 />
               </div>
             </div>
+
             {/* Right Side: Form Card */}
             <div className="bg-white/[0.05] backdrop-blur-[24px] border border-white/10 rounded-[16px] p-6 sm:p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] w-full mx-auto lg:mx-0 text-left">
               <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <FormInput label="Name" name="name" value={formData.name} onChange={handleChange} placeholder="Enter your name" />
-                  <FormInput 
-  label="Phone Number" 
-  name="phone" 
-  type="tel"
-  maxLength={10}
-  value={formData.phone} 
-  onChange={handleChange} 
-  placeholder="7645839566" 
-/>
+                  <FormInput
+                    label="Phone Number"
+                    name="phone"
+                    type="tel"
+                    maxLength={10}
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="7645839566"
+                  />
                 </div>
 
                 <FormInput label="Your Email" name="email" value={formData.email} onChange={handleChange} placeholder="Email@Example.com" type="email" />
@@ -138,12 +169,30 @@ export default function ContactPage() {
                   />
                 </div>
 
+                {successMsg && (
+                  <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">
+                    ✓ {successMsg}
+                  </div>
+                )}
+                {errorMsg && (
+                  <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+                    ✕ {errorMsg}
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-12 md:h-13 mt-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-[12px] md:text-[13px] font-bold tracking-widest text-white transition-all uppercase shadow-lg shadow-blue-600/30"
+                  className="w-full h-12 md:h-13 mt-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed rounded-xl text-[12px] md:text-[13px] font-bold tracking-widest text-white transition-all uppercase shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2"
                 >
-                  {loading ? "Processing..." : "Submit Request"}
+                  {loading ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      Processing...
+                    </>
+                  ) : (
+                    "Submit Request"
+                  )}
                 </button>
               </form>
             </div>
