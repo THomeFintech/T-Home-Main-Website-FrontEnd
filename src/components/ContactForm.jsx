@@ -174,7 +174,7 @@ onNext(formData.service);
                 placeholder="Your Name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`h-[44px] sm:h-[46px] w-full rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 text-[13px] sm:text-[14px] text-white placeholder:text-white/50 outline-none transition ${
+                className={`h-[44px] sm:h-[46px] w-full rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 text-[12px] sm:text-[16px] text-white placeholder:text-white/50 outline-none transition ${
                   errors.name
                     ? "border-red-400 focus:border-red-400"
                     : "border-white/15 focus:border-[#4d8cff]"
@@ -197,7 +197,7 @@ onNext(formData.service);
                     : "border-white/15 focus-within:border-[#4d8cff]"
                 }`}
               >
-                <div className="flex w-[40px] sm:w-[48px] items-center justify-center border-r border-white/20 text-[13px] sm:text-[14px] text-white/75">
+                <div className="flex w-[40px] sm:w-[48px] items-center justify-center border-r border-white/20 text-[12px] sm:text-[16px] text-white/75">
                   +91
                 </div>
                 <input
@@ -206,7 +206,7 @@ onNext(formData.service);
                   placeholder="98765 43210"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="h-full w-full bg-transparent px-3 sm:px-4 text-[13px] sm:text-[14px] text-white placeholder:text-white/50 outline-none"
+                  className="h-full w-full bg-transparent px-3 sm:px-4 text-[12px] sm:text-[16px] text-white placeholder:text-white/50 outline-none"
                 />
               </div>
               {errors.phone && (
@@ -225,7 +225,7 @@ onNext(formData.service);
                 placeholder="your@email.com"
                 value={formData.email}
                 onChange={handleChange}
-                className={`h-[44px] sm:h-[46px] w-full rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 text-[13px] sm:text-[14px] text-white placeholder:text-white/50 outline-none transition ${
+                className={`h-[44px] sm:h-[46px] w-full rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 text-[12px] sm:text-[16px] text-white placeholder:text-white/50 outline-none transition ${
                   errors.email
                     ? "border-red-400 focus:border-red-400"
                     : "border-white/15 focus:border-[#4d8cff]"
@@ -246,11 +246,11 @@ onNext(formData.service);
                   name="service"
                   value={formData.service}
                   onChange={handleChange}
-                  className={`h-[44px] sm:h-[46px] w-full appearance-none rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 pr-10 text-[13px] sm:text-[14px] text-white outline-none transition ${
-                    errors.service
-                      ? "border-red-400 focus:border-red-400"
-                      : "border-white/20 focus:border-[#4d8cff]"
-                  }`}
+                  className={`h-[44px] sm:h-[46px] w-full appearance-none rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 pr-10 text-[12px] sm:text-[16px] text-white outline-none transition ${
+                      errors.service
+                        ? "border-red-400 focus:border-red-400"
+                        : "border-white/20 focus:border-[#4d8cff]"
+                    }`}
                 >
                   <option value="" className="text-black">
                     Select a service
@@ -318,7 +318,7 @@ onNext(formData.service);
             {/* BUTTON */}
             <button
               type="submit"
-              className="mt-2 flex h-[44px] sm:h-[46px] w-full items-center justify-center gap-2 rounded-[10px] bg-[#2563ff] text-[14px] sm:text-[16px] font-medium text-white shadow-[0_10px_30px_rgba(37,99,255,0.45)] transition hover:bg-[#1d56e4]"
+              className="mt-2 flex h-[44px] sm:h-[46px] w-full items-center justify-center gap-2 rounded-[10px] bg-[#2563ff] text-[12px] sm:text-[16px] font-medium text-white shadow-[0_10px_30px_rgba(37,99,255,0.45)] transition hover:bg-[#1d56e4]"
             >
               {submitText}
             </button>

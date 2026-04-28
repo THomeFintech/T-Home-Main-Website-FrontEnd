@@ -1,8 +1,74 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body, html, h1, h2, h3, h4, h5, h6, p, span, div, button, input, textarea, a {
+  font-family: 'Outfit', 'Segoe UI', system-ui, -apple-system, sans-serif !important;
+}
+
+:root {
+  --thome-page-x: 100px;
+  --thome-section-y: 100px;
+  --thome-button-radius: 12px;
+}
+
+section {
+  scroll-margin-top: 100px;
+}
+
+button {
+  border-radius: var(--thome-button-radius);
+  font-size: 16px;
+}
+
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+.thome-page-pad {
+  padding-left: var(--thome-page-x);
+  padding-right: var(--thome-page-x);
+}
+
+.thome-section-pad {
+  padding-top: var(--thome-section-y);
+  padding-bottom: var(--thome-section-y);
+}
+
+.thome-button {
+  min-height: 44px;
+  border-radius: var(--thome-button-radius);
+  padding: 10px 24px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --thome-page-x: 48px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --thome-page-x: 16px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 12px;
+  }
+
+  button {
+    font-size: 12px;
+  }
+}
 
 @layer components {
   .glass-card {

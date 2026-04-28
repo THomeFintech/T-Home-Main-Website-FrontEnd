@@ -273,10 +273,10 @@ if (!token) {
   const currentLoan = activeLoanDetails[currentLoanIndex];
 
   const inputClass =
-    "w-full rounded-xl border border-white/15 bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-[15px] text-white outline-none transition placeholder:text-white/50 focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/30 [&>option]:text-slate-900";
+    "w-full rounded-xl border border-white/15 bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 py-2.5 sm:py-3 text-[12px] sm:text-[16px] text-white outline-none transition placeholder:text-white/50 focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/30 [&>option]:text-slate-900";
 
   const labelClass =
-    "mb-2 block text-sm sm:text-[15px] font-medium text-white/90";
+    "mb-2 block text-sm sm:text-[16px] font-medium text-white/90";
 
   return (
     <div className="w-full rounded-[22px] sm:rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(15,23,42,0.88),rgba(52,64,110,0.82),rgba(17,24,39,0.88))] p-4 sm:p-6 md:p-8 lg:p-10 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl">
@@ -348,7 +348,7 @@ if (!token) {
                     textAnchor="middle"
                     fontSize="14"
                     fill="#fff"
-                    fontFamily="Arial"
+                    fontFamily="'Outfit', sans-serif"
                     fontWeight="bold"
                   >
                     i

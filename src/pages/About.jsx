@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Flag, Eye } from "lucide-react";
+import Aboutus from "../assets/Aboutus.png";
 
 const About = () => {
   return (
@@ -20,10 +21,10 @@ const About = () => {
       <div className="relative z-10">
 
       {/* HERO SECTION */}
-      <section className="relative h-[90vh] flex items-center justify-center text-center overflow-hidden">
+      <section className="relative h-screen flex items-center justify-center text-center overflow-hidden">
 
         <img
-          src="https://images.unsplash.com/photo-1560518883-ce09059eeffa"
+          src={Aboutus}
           alt="hero"
           className="absolute w-full h-full object-cover brightness-110"
         />

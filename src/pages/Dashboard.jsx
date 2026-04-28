@@ -67,6 +67,7 @@ function Skeleton({ className = "" }) {
 
 // ── Status badge color map ──
 const STATUS_BADGE = {
+  "Initiated":    "bg-sky-500/15 text-sky-400 border-sky-400/20",
   "Under Review": "bg-orange-500/15 text-orange-400 border-orange-400/20",
   "Approved":     "bg-green-500/15 text-green-400 border-green-400/20",
   "Submitted":    "bg-blue-500/15 text-blue-400 border-blue-400/20",
@@ -96,6 +97,33 @@ const LOAN_ICON = {
 
 function loanIcon(type) {
   return LOAN_ICON[type] || LOAN_ICON["Personal"];
+}
+
+const APPLICATION_STEPS = [
+  "Initiated",
+  "Under Review",
+  "Verified",
+  "Submitted",
+  "Approved",
+  "Disbursed",
+];
+
+function normaliseApplicationSteps(apiSteps, currentStatus) {
+  const currentIndex = Math.max(APPLICATION_STEPS.indexOf(currentStatus), 0);
+
+  if (!Array.isArray(apiSteps) || apiSteps.length === 0) {
+    return APPLICATION_STEPS.map((label, index) => ({
+      label,
+      status: index < currentIndex ? "done" : index === currentIndex ? "active" : "pending",
+    }));
+  }
+
+  const apiStatusByLabel = new Map(apiSteps.map((step) => [step.label, step.status]));
+  return APPLICATION_STEPS.map((label, index) => ({
+    label,
+    status: apiStatusByLabel.get(label)
+      ?? (index < currentIndex ? "done" : index === currentIndex ? "active" : "pending"),
+  }));
 }
 
 export default function Dashboard() {
@@ -191,8 +219,10 @@ export default function Dashboard() {
     red:    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>,
   };
 
-  const currentStatus = progress?.current_status ?? "Submitted";
-  const steps         = progress?.steps ?? [];
+  const currentStatus = APPLICATION_STEPS.includes(progress?.current_status)
+    ? progress.current_status
+    : "Initiated";
+  const steps         = normaliseApplicationSteps(progress?.steps, currentStatus);
   const expectedDays  = progress?.expected_days;
 
   return (
@@ -269,7 +299,7 @@ export default function Dashboard() {
 
             {loadingProgress ? (
               <div className="flex justify-between gap-2">
-                {[...Array(5)].map((_, i) => (
+                {[...Array(6)].map((_, i) => (
                   <div key={i} className="flex flex-col items-center flex-1 gap-2">
                     <Skeleton className="w-7 h-7 rounded-full" />
                     <Skeleton className="h-3 w-12" />

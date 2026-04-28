@@ -139,7 +139,8 @@ export default function CareerSection() {
     <div
       className="relative min-h-screen overflow-hidden text-white font-['Outfit',sans-serif]"
       style={{
-        background: "linear-gradient(269.67deg, #000000 0.26%, #1E2447 49.98%, #000000 99.69%)",
+        background:
+          "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
       <div className="pointer-events-none absolute inset-0">
@@ -267,7 +268,7 @@ export default function CareerSection() {
         </section>
 
         <section className="mt-12 text-center">
-          <span className="inline-flex rounded-full border border-[#4f84ff]/35 bg-[#2459c8]/18 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#7badff]">
+          <span className="inline-flex rounded-full border  bg-[#1f4fa3]/80 border-[#4f84ff]/35 bg-[#2459c8]/18 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#7badff]">
             Employee Testimonials
           </span>
           <h2 className="mt-3 text-[46px] font-semibold">Real Experiences. Real Growth.</h2>
@@ -275,19 +276,26 @@ export default function CareerSection() {
             Our employees share how their careers have evolved and how they&apos;ve found purpose here.
           </p>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
-            {testimonials.map((person) => (
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            {testimonials.map((person, index) => (
               <article
                 key={person.name}
-                className="rounded-[12px] border border-white/10 bg-white/[0.04] px-5 py-5 text-left backdrop-blur-[12px] shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
+                className={`rounded-[16px] border px-6 py-7 text-center backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_34px_rgba(0,0,0,0.3)] ${
+                  index === 1
+                    ? "border-[#7ea7ff]/70 bg-[linear-gradient(180deg,rgba(58,95,218,0.96)_0%,rgba(39,68,184,0.96)_100%)]"
+                    : "border-[#c9dcff]/52 bg-[linear-gradient(180deg,rgba(24,34,84,0.84)_0%,rgba(14,22,58,0.9)_100%)]"
+                }`}
               >
-                <p className="text-[13px] leading-[1.55] text-[#d6e1f7]">“{person.text}”</p>
+                <div className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full text-[28px] font-semibold leading-none ${index === 1 ? "bg-[#3d59b6] text-[#cfe0ff]" : "bg-[#1b336f] text-[#4f7fd7]"}`}>
+                  <span className="block -translate-y-px leading-none">"</span>
+                </div>
+                <p className="mx-auto mt-6 max-w-[320px] text-[15px] leading-7 text-[#d6e1f7]">{person.text}</p>
 
-                <div className="mt-4 flex items-center gap-3">
+                <div className="mt-5 flex items-center justify-center gap-3">
                   <div className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#9fc1ff]">
                     <User size={16} />
                   </div>
-                  <div>
+                  <div className="text-left">
                     <h4 className="text-[14px] font-semibold">{person.name}</h4>
                     <p className="text-[12px] text-[#b8c9eb]">{person.role}</p>
                   </div>
@@ -322,3 +330,4 @@ export default function CareerSection() {
     </div>
   );
 }
+

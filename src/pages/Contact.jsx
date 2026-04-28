@@ -37,7 +37,8 @@ export default function ContactPage() {
     <div
       className="relative min-h-screen overflow-hidden text-white"
       style={{
-        background: "linear-gradient(269.67deg, #000000 0.26%, #1E2447 49.98%, #000000 99.69%)",
+        background:
+          "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
       <div className="pointer-events-none absolute inset-0">
@@ -193,7 +194,7 @@ function ContactDetail({ icon, title, value }) {
       </div>
       <div className="flex flex-col text-left">
         <h4 className="text-base md:text-lg font-bold text-white leading-tight tracking-tight">{title}</h4>
-        <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-200 transition-colors font-light">{value}</p>
+        <p className="text-gray-400 text-[18px] font-normal mt-1 group-hover:text-gray-200 transition-colors">{value}</p>
       </div>
     </div>
   );

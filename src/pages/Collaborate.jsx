@@ -366,7 +366,7 @@ const CollaboratePage = () => {
                     value={form.fullName}
                     onChange={handleChange}
                     placeholder="Enter your full name"
-                    className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
                     style={{
                       background: "rgba(255,255,255,0.06)",
                       border: "1px solid rgba(255,255,255,0.1)",
@@ -381,7 +381,7 @@ const CollaboratePage = () => {
                     value={form.companyName}
                     onChange={handleChange}
                     placeholder="Enter your company name"
-                    className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
                     style={{
                       background: "rgba(255,255,255,0.06)",
                       border: "1px solid rgba(255,255,255,0.1)",
@@ -396,7 +396,7 @@ const CollaboratePage = () => {
                       name="partnerType"
                       value={form.partnerType}
                       onChange={handleChange}
-                      className="w-full rounded-lg px-4 py-3 text-sm text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
+                      className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
                       style={{
                         background: "rgba(255,255,255,0.06)",
                         border: "1px solid rgba(255,255,255,0.1)",
@@ -416,7 +416,7 @@ const CollaboratePage = () => {
                       name="experience"
                       value={form.experience}
                       onChange={handleChange}
-                      className="w-full rounded-lg px-4 py-3 text-sm text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
+                      className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
                       style={{
                         background: "rgba(255,255,255,0.06)",
                         border: "1px solid rgba(255,255,255,0.1)",
@@ -439,7 +439,7 @@ const CollaboratePage = () => {
                     onChange={handleChange}
                     rows={4}
                     placeholder="Tell us about your goals..."
-                    className="w-full resize-none rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full resize-none rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
                     style={{
                       background: "rgba(255,255,255,0.06)",
                       border: "1px solid rgba(255,255,255,0.1)",
@@ -449,7 +449,7 @@ const CollaboratePage = () => {
 
                 <button
                   onClick={handleSubmit}
-                  className="w-full rounded-lg bg-blue-500 py-3 text-sm font-semibold text-white transition hover:bg-blue-600"
+                  className="w-full rounded-lg bg-blue-500 py-3 text-[12px] sm:text-[16px] font-semibold text-white transition hover:bg-blue-600"
                 >
                   Submit Application
                 </button>
