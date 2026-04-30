@@ -3,7 +3,7 @@ import { Mail, Phone, MessageCircle } from "lucide-react";
 
 export default function ContactPage() {
  const services = [
-  "Home Loan",
+  "Home Loans",
   "Mortgage Loan",
   "Loan Against Property",
   "Personal Loan",
