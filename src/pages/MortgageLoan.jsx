@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import MortgageLoanImage from "../assets/Mortgage Loans.png"
 
 export default function MortgageLoan() {
   const navigate = useNavigate(); // ✅ CORRECT PLACE
@@ -11,88 +10,113 @@ export default function MortgageLoan() {
     >
 
       {/* HERO */}
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-12 items-center">
 
-        <div>
-          <p className="text-blue-400 text-xs mb-3 tracking-wide">
-            SECURED FINANCING
-          </p>
+  {/* LEFT CONTENT */}
+  <div>
+    <p className="text-blue-400 text-xs mb-3 tracking-wide">
+      SECURED FINANCING
+    </p>
 
-          <h1 className="text-5xl font-bold mb-4 leading-tight">
-            Mortgage Loan
-          </h1>
+    <h1 className="text-5xl font-bold mb-4 leading-tight">
+      Mortgage Loan
+    </h1>
 
-          <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-            Leverage your property to access funds easily with Mortgage Loans. Enjoy competitive interest rates, flexible repayment terms, and quick approvals.
-          </p>
+    <p className="text-gray-400 mb-6 text-sm leading-relaxed">
+      Leverage your property to access funds easily with Mortgage Loans.
+      Enjoy competitive interest rates, flexible repayment terms, and quick approvals.
+    </p>
 
-          <div className="flex gap-4 mb-6">
-            <button
-              onClick={() => navigate("/tools?tool=loan-prediction")}
-              className="bg-blue-600 px-6 py-2 rounded-full text-sm"
-            >
-              Apply Now
-            </button>
+    <div className="flex gap-4 mb-6">
+      <button
+        onClick={() => navigate("/tools?tool=loan-prediction")}
+        className="bg-blue-600 px-6 py-2 rounded-full text-sm hover:bg-blue-700 transition"
+      >
+        Apply Now
+      </button>
 
-            <button
-              onClick={() => navigate("/emi-calculator")}
-              className="bg-white/10 px-6 py-2 rounded-full text-sm"
-            >
-              Calculate EMI
-            </button>
-          </div>
+      <button
+        onClick={() => navigate("/emi-calculator")}
+        className="bg-white/10 px-6 py-2 rounded-full text-sm hover:bg-white/20 transition"
+      >
+        Calculate EMI
+      </button>
+    </div>
 
-          <div className="flex gap-10 text-sm text-gray-300">
-            <div>
-              <p className="text-xl font-bold text-white">9%</p>
-              <p>Interest</p>
-            </div>
-            <div>
-              <p className="text-xl font-bold text-white">Fast</p>
-              <p>Processing</p>
-            </div>
-            <div>
-              <p className="text-xl font-bold text-white">Zero</p>
-              <p>Hidden Charges</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)]">
-          <img
-            src={MortgageLoanImage}
-            alt="mortgage loan"
-            className="w-full h-full object-cover"
-          />
-        </div>
+    <div className="flex gap-10 text-sm text-gray-300">
+      <div>
+        <p className="text-xl font-bold text-white">9%</p>
+        <p>Interest</p>
       </div>
-
-      {/* WHY CHOOSE */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <h2 className="text-center text-lg font-semibold mb-10">
-          Why Choose T-Home?
-        </h2>
-
-        <div className="grid md:grid-cols-4 gap-6">
-          {[
-            { title: "Lowest Rates", desc: "Affordable rates backed by your property.", icon: "💰" },
-            { title: "Zero Hidden Fees", desc: "Transparent pricing with no hidden costs.", icon: "🧾" },
-            { title: "Doorstep Pickup", desc: "We collect documents from your location.", icon: "🚚" },
-            { title: "Legal Assistance", desc: "Complete support for property verification.", icon: "⚖️" }
-          ].map((item, i) => (
-            <div key={i} className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-5 flex flex-col gap-3 hover:bg-white/[0.11] transition">
-              <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-600/20 text-lg">
-                {item.icon}
-              </div>
-              <h3 className="font-semibold">{item.title}</h3>
-              <p className="text-gray-400 text-xs">{item.desc}</p>
-            </div>
-          ))}
-        </div>
+      <div>
+        <p className="text-xl font-bold text-white">Fast</p>
+        <p>Processing</p>
       </div>
+      <div>
+        <p className="text-xl font-bold text-white">Zero</p>
+        <p>Hidden Charges</p>
+      </div>
+    </div>
+  </div>
+
+  {/* RIGHT IMAGE */}
+         <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] h-[360px]">
+    <img
+      src="https://images.unsplash.com/photo-1560518883-ce09059eeffa"
+      alt="mortgage loan"
+      className="w-full h-full object-cover"
+    />
+  </div>
+</div>
+
+
+{/* WHY CHOOSE SECTION */}
+<div className="max-w-7xl mx-auto px-6 py-10">
+  <h2 className="text-center text-lg font-semibold mb-10">
+    Why Choose T-Home?
+  </h2>
+
+  <div className="grid md:grid-cols-4 gap-6">
+    {[
+      {
+        title: "Lowest Rates",
+        desc: "Affordable rates backed by your property.",
+        icon: "💰",
+      },
+      {
+        title: "Zero Hidden Fees",
+        desc: "Transparent pricing with no hidden costs.",
+        icon: "🧾",
+      },
+      {
+        title: "Doorstep Pickup",
+        desc: "We collect documents from your location.",
+        icon: "🚚",
+      },
+      {
+        title: "Legal Assistance",
+        desc: "Complete support for property verification.",
+        icon: "⚖️",
+      },
+    ].map((item, i) => (
+      <div
+        key={i}
+        className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-5 flex flex-col gap-3 hover:bg-white/[0.11] transition"
+      >
+        <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-600/20 text-lg">
+          {item.icon}
+        </div>
+
+        <h3 className="font-semibold">{item.title}</h3>
+
+        <p className="text-gray-400 text-xs">{item.desc}</p>
+      </div>
+    ))}
+  </div>
+</div>
 
       {/* PROCESS */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-[100px] py-[100px]">
+      <div className="max-w-5xl mx-auto px-6 py-12">
   <h2 className="text-center text-lg font-semibold mb-2">Simple Process</h2>
   <p className="text-center text-gray-400 text-xs mb-12">
     Getting your home loan is easier than ever
@@ -130,7 +154,7 @@ export default function MortgageLoan() {
 </div>
 
       {/* ELIGIBILITY + DOCUMENTS */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-[100px] py-[100px] grid md:grid-cols-2 gap-6">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-6">
 
         <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-6">
           <h3 className="font-semibold mb-4">Eligibility Criteria</h3>
@@ -142,7 +166,7 @@ export default function MortgageLoan() {
             <li>Stable income & repayment capacity</li>
           </ul>
 
-          <button onClick={() => navigate("/contact")} className="mt-5 w-full thome-button bg-blue-600 text-white">
+          <button className="mt-5 w-full bg-blue-600 py-2 rounded-full text-sm">
             Check Eligibility Free
           </button>
         </div>
@@ -161,7 +185,7 @@ export default function MortgageLoan() {
       </div>
 
       {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-4 sm:px-8 lg:px-[100px] py-[100px]">
+      <div className="max-w-3xl mx-auto px-6 py-12">
         <h2 className="text-center text-lg font-semibold mb-6">
           Frequently Asked Questions
         </h2>
@@ -180,7 +204,7 @@ export default function MortgageLoan() {
       </div>
 
       {/* CTA */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-[100px] pb-[100px]">
+      <div className="max-w-5xl mx-auto px-6 pb-16">
         <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-10 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
           <h2 className="text-2xl font-bold mb-2">
             Ready to take the next step?
@@ -204,5 +228,3 @@ export default function MortgageLoan() {
     </div>
   );
 }
-
-
