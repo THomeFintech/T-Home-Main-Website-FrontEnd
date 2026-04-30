@@ -191,12 +191,19 @@ export default function LoanAgainstProperty() {
           </p>
 
           <div className="flex justify-center gap-4">
-            <button className="bg-white text-black px-6 py-2 rounded-full text-sm">
-              Start Application
-            </button>
-            <button className="border border-white px-6 py-2 rounded-full text-sm">
-              Contact Support
-            </button>
+           <button
+  onClick={() => navigate("/tools?tool=loan-prediction")}
+  className="bg-white text-black px-6 py-2 rounded-full text-sm"
+>
+  Start Application
+</button>
+
+<button
+  onClick={() => navigate("/contact")}
+  className="border border-white px-6 py-2 rounded-full text-sm"
+>
+  Contact Support
+</button>
           </div>
         </div>
       </div>
