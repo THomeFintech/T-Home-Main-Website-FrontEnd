@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import PersonalLoanImage from "../assets/personal loan.png"
 
 export default function PersonalLoan() {
   const navigate = useNavigate();
@@ -14,7 +13,7 @@ export default function PersonalLoan() {
       }}
     >
       {/* HERO */}
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-12 items-center">
         <div>
           <p className="text-blue-400 text-xs mb-3 tracking-wide">
             FAST APPROVAL LOANS
@@ -60,9 +59,9 @@ export default function PersonalLoan() {
           </div>
         </div>
 
-        <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)]">
+                <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] h-[360px]">
           <img
-            src={PersonalLoanImage}
+            src="https://images.unsplash.com/photo-1556745757-8d76bdb6984b"
             alt="personal loan"
             className="w-full h-full object-cover"
           />
@@ -97,7 +96,7 @@ export default function PersonalLoan() {
       </div>
 
       {/* PROCESS */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-[100px] py-[100px]">
+      <div className="max-w-5xl mx-auto px-6 py-12">
         <h2 className="text-center text-lg font-semibold mb-2">Simple Process</h2>
         <p className="text-center text-gray-400 text-xs mb-12">
           Getting your home loan is easier than ever
@@ -129,7 +128,7 @@ export default function PersonalLoan() {
       </div>
 
       {/* ELIGIBILITY + DOCUMENTS */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-[100px] py-[100px] grid md:grid-cols-2 gap-6">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-6">
         <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-6">
           <h3 className="font-semibold mb-4">Eligibility Criteria</h3>
 
@@ -140,7 +139,7 @@ export default function PersonalLoan() {
             <li>Good credit score</li>
           </ul>
 
-          <button onClick={() => navigate("/contact")} className="mt-5 w-full thome-button bg-blue-600 text-white">
+          <button className="mt-5 w-full bg-blue-600 py-2 rounded-full text-sm">
             Check Eligibility Free
           </button>
         </div>
@@ -162,7 +161,7 @@ export default function PersonalLoan() {
       </div>
 
       {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-4 sm:px-8 lg:px-[100px] py-[100px]">
+      <div className="max-w-3xl mx-auto px-6 py-12">
         <h2 className="text-center text-lg font-semibold mb-6">
           Frequently Asked Questions
         </h2>
@@ -185,7 +184,7 @@ export default function PersonalLoan() {
       </div>
 
       {/* CTA */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-[100px] pb-[100px]">
+      <div className="max-w-5xl mx-auto px-6 pb-16">
         <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-10 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
           <h2 className="text-2xl font-bold mb-2">
             Ready to take the next step?
@@ -208,5 +207,3 @@ export default function PersonalLoan() {
     </div>
   );
 }
-
-
