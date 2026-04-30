@@ -192,7 +192,10 @@ export default function UdyamMSMERegistration() {
 >
               Start Now
             </button>
-            <button className="border border-white px-6 py-2 rounded-full text-sm">
+           <button
+  onClick={() => navigate("/contact")}
+  className="border border-white px-6 py-2 rounded-full text-sm"
+>
               Talk to Expert
             </button>
           </div>
