@@ -34,16 +34,16 @@ function Navbar() {
 
   const serviceLinks = [
     { label: "Home Loan", to: "/home-loans", icon: Home },
+    { label: "Company Registration", to: "/company-registration", icon: Building },
+    { label: "Mortgage Loan", to: "/mortgage-loan", icon: Building2 },
+    { label: "GST Registration", to: "/gst-registration", icon: Banknote },
+    { label: "Loan Against Property", to: "/loan-against-property", icon: Landmark },
+    { label: "UDYAM/MSME Registration", to: "/udyam-msme-registration", icon: BadgePercent },
     { label: "Personal Loan", to: "/personal-loans", icon: Briefcase },
     { label: "ITR Tax Filing", to: "/itr-filing", icon: FileText },
-    { label: "Loan Against Property", to: "/loan-against-property", icon: Landmark },
-    { label: "PAN & Aadhaar Linking", to: "/pan-aadhaar-linking", icon: LucideLink },
-    { label: "Food License", to: "/food-license", icon: Utensils },
-    { label: "Mortgage Loan", to: "/mortgage-loan", icon: Building2 },
-    { label: "UDYAM/MSME Registration", to: "/udyam-msme-registration", icon: BadgePercent },
-    { label: "Company Registration", to: "/company-registration", icon: Building },
-    { label: "GST Registration", to: "/gst-registration", icon: Banknote },
     { label: "Balance Transfer", to: "/coming-soon", icon: Repeat },
+    { label: "Food License", to: "/food-license", icon: Utensils },
+    { label: "PAN & Aadhaar Linking", to: "/pan-aadhaar-linking", icon: LucideLink },
   ];
 
   useEffect(() => {
