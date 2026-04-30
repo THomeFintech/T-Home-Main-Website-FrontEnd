@@ -2,8 +2,19 @@ import React, { useState } from "react";
 import { Mail, Phone, MessageCircle } from "lucide-react";
 
 export default function ContactPage() {
-  const services = ["Home Loans", "Loan Against Property", "Income Tax Filing", "Business Registration"];
-
+ const services = [
+  "Home Loan",
+  "Mortgage Loan",
+  "Loan Against Property",
+  "Personal Loan",
+  "Balance Transfer",
+  "PAN & Aadhaar Linking",
+  "Company Registration",
+  "GST Registration",
+  "UDYAM/MSME Registration",
+  "ITR Tax Filing",
+  "Food License"
+];
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
