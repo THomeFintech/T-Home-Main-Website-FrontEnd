@@ -221,15 +221,7 @@ export default function Services() {
                           <button className="hidden items-center gap-2 rounded-lg px-3 py-2 text-base font-semibold text-blue-400 opacity-80 transition-all group-hover:translate-x-1 group-hover:opacity-100 sm:flex relative z-10 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
                             View Details <ChevronRight size={14} />
                           </button>
-                          <button
-                            className="rounded-lg border border-blue-400/20 px-3 py-2 text-sm sm:text-base font-semibold text-blue-400 hover:text-blue-300 transition"
-                            onClick={e => {
-                              e.stopPropagation();
-                              if (item.link) navigate(item.link);
-                            }}
-                          >
-                            View Eligibility
-                          </button>
+                          
                         </div>
                       </div>
                     ))}
