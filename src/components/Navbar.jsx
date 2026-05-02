@@ -206,14 +206,14 @@ function Navbar() {
       }`}
     >
       <div className="w-full max-w-[95%] sm:max-w-[92%]">
-        <nav
+<nav
           className="
             rounded-2xl border border-[#d8ecff]/44
-            bg-[linear-gradient(120deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_42%,rgba(255,255,255,0.04)_100%)]
+            bg-[linear-gradient(120deg,rgba(20,35,75,0.85)_0%,rgba(12,22,55,0.92)_42%,rgba(8,16,40,0.95)_100%)]
             px-4 py-[11px]
-            shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_0_0_1px_rgba(180,220,255,0.2),0_16px_40px_rgba(5,16,46,0.45)]
+            shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_0_0_1px_rgba(80,120,200,0.25),0_16px_40px_rgba(5,16,46,0.45)]
             backdrop-blur-[16px]
-            sm:rounded-full sm:px-6 lg:px-8
+            sm:rounded-full sm:px-6 sm:bg-[linear-gradient(120deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_42%,rgba(255,255,255,0.04)_100%)] sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.3)] lg:px-8
           "
         >
           <div className="flex items-center justify-between">

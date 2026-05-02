@@ -123,13 +123,19 @@ export default function Services() {
             })}
           </div>
 
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+<div className="relative w-full md:w-80 flex items-center">
+            <button
+              type="button"
+              aria-label="Search"
+              className="absolute left-3 z-10 flex h-10 w-10 items-center justify-center rounded-lg text-white transition-all hover:bg-white/10 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+            >
+              <Search size={22} />
+            </button>
             <input
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               placeholder="Search services..."
-              className="w-full rounded-xl border border-white/15 bg-white/[0.06] pl-12 pr-4 py-3 text-base outline-none backdrop-blur-2xl shadow-[0_10px_30px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.08)] placeholder:text-gray-500 transition-all focus:border-blue-400"
+              className="w-full rounded-xl border border-white/15 bg-white/[0.06] pl-12 pr-4 py-3 text-base outline-none backdrop-blur-2xl shadow-[0_10px_30px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.08)] placeholder:text-gray-400 transition-all focus:border-blue-400 text-white"
             />
           </div>
         </div>

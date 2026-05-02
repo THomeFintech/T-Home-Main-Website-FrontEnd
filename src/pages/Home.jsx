@@ -175,10 +175,10 @@ function Home() {
           />
         </div>
 
-        <img
+<img
           src="/home/telangana map.png"
           alt="map"
-          className="absolute left-1/2 top-[16%] w-[470px] -translate-x-1/2 opacity-36 mix-blend-screen md:left-[30%] md:top-[8%] md:w-[610px] md:translate-x-0"
+          className="absolute left-1/2 top-[15%] w-[620px] -translate-x-1/2 opacity-36 mix-blend-screen md:left-[30%] md:top-[8%] md:w-[610px] md:translate-x-0"
         />
 
         <div className="relative z-30 max-w-4xl px-6">
