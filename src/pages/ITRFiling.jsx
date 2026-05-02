@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import EligibilityCriteria from "../components/EligibilityCriteria";
 
 export default function ITRFiling() {
   const navigate = useNavigate();
@@ -124,35 +125,9 @@ export default function ITRFiling() {
   </div>
 </div>
 
-      {/* ELIGIBILITY + DOCUMENTS */}
-      <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-6">
-
-        <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-6">
-          <h3 className="font-semibold mb-4">Eligibility Criteria</h3>
-
-          <ul className="space-y-2 text-gray-400 text-sm">
-            <li>Individuals with taxable income</li>
-            <li>Salaried or self-employed</li>
-            <li>Business owners</li>
-            <li>Freelancers</li>
-          </ul>
-
-          <button className="mt-5 w-full bg-blue-600 py-2 rounded-full text-sm">
-            Check Eligibility Free
-          </button>
-        </div>
-
-        <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-6">
-          <h3 className="font-semibold mb-4">Required Documents</h3>
-
-          <div className="space-y-3">
-            {["PAN Card", "Aadhaar Card", "Bank Statements", "Form 16 / Income Proof"].map((doc, i) => (
-              <div key={i} className="bg-white/10 p-3 rounded-lg text-sm">
-                {doc}
-              </div>
-            ))}
-          </div>
-        </div>
+{/* ELIGIBILITY */}
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <EligibilityCriteria />
       </div>
 
       {/* FAQ */}

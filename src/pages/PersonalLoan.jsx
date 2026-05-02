@@ -128,24 +128,9 @@ export default function PersonalLoan() {
         </div>
       </div>
 
-{/* ELIGIBILITY + DOCUMENTS */}
-      <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-6">
+{/* ELIGIBILITY */}
+      <div className="max-w-7xl mx-auto px-6 py-12">
         <EligibilityCriteria />
-
-        <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-6">
-          <h3 className="font-semibold mb-4">Required Documents</h3>
-
-          <div className="space-y-3">
-            {["KYC Proof", "Income Proof", "Bank Statements"].map((doc, i) => (
-              <div
-                key={i}
-                className="rounded-lg border border-white/20 bg-white/[0.08] backdrop-blur-xl p-3 text-sm"
-              >
-                {doc}
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* FAQ */}

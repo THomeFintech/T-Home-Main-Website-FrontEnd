@@ -411,21 +411,27 @@ function Navbar() {
                     </button>
                   </div>
 
-                  {mobileServicesOpen && (
+{mobileServicesOpen && (
                     <div className="ml-3 mt-2 flex flex-col gap-1 rounded-lg border border-white/10 bg-white/5 p-2">
-                      {serviceLinks.map((item) => (
-                        <Link
-                          key={`mobile-${item.to}`}
-                          to={item.to}
-                          onClick={() => {
-                            setMenuOpen(false);
-                            setMobileServicesOpen(false);
-                          }}
-                          className="rounded-md px-2 py-1.5 text-sm text-white/80 transition hover:bg-[#213a7a]/45 hover:text-[#4f72e0]"
-                        >
-                          {item.label}
-                        </Link>
-                      ))}
+                      {serviceLinks.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                          <Link
+                            key={`mobile-${item.to}`}
+                            to={item.to}
+                            onClick={() => {
+                              setMenuOpen(false);
+                              setMobileServicesOpen(false);
+                            }}
+                            className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-white/80 transition hover:bg-[#213a7a]/45 hover:text-[#4f72e0]"
+                          >
+                            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white/10">
+                              <Icon className="h-4 w-4" />
+                            </span>
+                            {item.label}
+                          </Link>
+                        );
+                      })}
                     </div>
                   )}
                 </div>

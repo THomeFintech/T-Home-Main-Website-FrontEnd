@@ -3,10 +3,16 @@ import {
   Calendar, 
   Briefcase, 
   Wallet, 
-  CreditCard
+  CreditCard,
+  CheckCircle2,
+  Building2,
+  FileText,
+  Home,
+  Shield
 } from "lucide-react";
 
-const eligibilityItems = [
+// Default eligibility items for loan products
+const defaultEligibilityItems = [
   {
     icon: Calendar,
     heading: "Age Requirement",
@@ -29,10 +35,30 @@ const eligibilityItems = [
   }
 ];
 
+// Icon mapping for custom items (string icons)
+const iconMap = {
+  calendar: Calendar,
+  briefcase: Briefcase,
+  wallet: Wallet,
+  creditcard: CreditCard,
+  check: CheckCircle2,
+  building: Building2,
+  file: FileText,
+  home: Home,
+  shield: Shield
+};
+
 export default function EligibilityCriteria({ 
   title = "Eligibility Criteria",
-  subtitle = "Check if you meet our basic requirements for this loan product"
+  subtitle = "Check if you meet our basic requirements for this loan product",
+  customItems = null
 }) {
+  // Use custom items if provided, otherwise use default
+  const items = customItems || defaultEligibilityItems;
+
+  // Determine if using custom string-based items or component items
+  const isCustomString = customItems && customItems.length > 0 && typeof customItems[0].icon === 'string';
+
   return (
     <section className="w-full max-w-[1000px] mx-auto px-4">
       {/* Glass Effect Container with Enhanced White Morphism & Glow */}
@@ -58,35 +84,47 @@ export default function EligibilityCriteria({
           </p>
         </div>
 
-        {/* Free Text Format - Grid Layout with Increased Spacing */}
+        {/* Grid Layout with Increased Spacing */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {eligibilityItems.map((item, index) => (
-            <div
-              key={index}
-              className="flex items-start gap-4 p-3"
-            >
-              {/* Icon */}
-              <div className="flex shrink-0 mt-1">
-                <item.icon 
-                  size={22} 
-                  className="text-blue-400" 
-                />
-              </div>
+          {items.map((item, index) => {
+            // Get the appropriate icon
+            let IconComponent;
+            if (isCustomString) {
+              // For custom string-based items
+              IconComponent = iconMap[item.icon] || CheckCircle2;
+            } else {
+              // For default component-based items
+              IconComponent = item.icon || CheckCircle2;
+            }
 
-              {/* Content with increased spacing */}
-              <div>
-                <h3 
-                  className="font-semibold text-white text-base mb-1"
-                  style={{ fontFamily: "'Outfit', sans-serif" }}
-                >
-                  {item.heading}
-                </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  {item.description}
-                </p>
+            return (
+              <div
+                key={index}
+                className="flex items-start gap-4 p-3"
+              >
+                {/* Icon */}
+                <div className="flex shrink-0 mt-1">
+                  <IconComponent 
+                    size={22} 
+                    className="text-blue-400" 
+                  />
+                </div>
+
+                {/* Content with increased spacing */}
+                <div>
+                  <h3 
+                    className="font-semibold text-white text-base mb-1"
+                    style={{ fontFamily: "'Outfit', sans-serif" }}
+                  >
+                    {item.heading}
+                  </h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
