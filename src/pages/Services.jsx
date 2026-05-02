@@ -16,7 +16,7 @@ const data = [
       { name: "Mortgage Loan", tag: "RECOMMENDED", description: "Flexible mortgage solutions tailored to your unique financial requirements.", icon: <KeyRound size={24} />, link: "/mortgage-loan" },
       { name: "LAP (Loan Against Property)", description: "Unlock the value of your property with flexible loans and competitive interest rates.", icon: <Building2 size={24} />, link: "/loan-against-property" },
       { name: "PL (Personal Loan)", description: "Quick approvals and flexible repayment options for your personal financial needs.", icon: <User size={24} />, link: "/personal-loans" },
-      { name: "BT (Balance Transfer)", description: "Lower your existing interest rates seamlessly.", icon: <ArrowRightLeft size={24} />, link: "/balance-transfer" },
+      { name: "BT (Balance Transfer)", description: "Lower your existing interest rates seamlessly.", icon: <ArrowRightLeft size={24} />, link: "/coming-soon" },
     ],
   },
   {
