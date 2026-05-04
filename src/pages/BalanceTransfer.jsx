@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import { ArrowRightLeft } from "lucide-react";
+import BalanceTransferImg from "../assets/Balance transfer.png";
 
 export default function BalanceTransfer() {
   const navigate = useNavigate();
@@ -60,8 +61,8 @@ export default function BalanceTransfer() {
         </div>
 
         <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] h-[360px]">
-          <img
-            src="/src/assets/Balance transfer.png"
+  <img
+            src={BalanceTransferImg}
             alt="Balance Transfer"
             className="w-full h-full object-cover"
           />
@@ -99,12 +100,11 @@ export default function BalanceTransfer() {
       <div className="max-w-5xl mx-auto px-4 py-12">
         <h2 className="text-center text-lg font-semibold mb-2 text-white">Simple Process</h2>
         <p className="text-center text-gray-400 text-xs mb-12">
-          Getting your balance transfer is easier than ever
+          
         </p>
 
-        <div className="relative flex flex-col sm:flex-row justify-between items-start gap-8 sm:gap-0">
-          <div className="absolute top-4 left-0 w-full h-[2px] bg-white/20 hidden sm:block"></div>
-          <div className="w-full h-[2px] bg-white/20 sm:hidden mb-6"></div>
+        <div className="relative flex justify-center items-start max-w-4xl mx-auto">
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 w-full max-w-[400px] h-[2px] bg-white/20 rounded-full"></div>
 
           {[
             { title: "Application", desc: "Fill out the online form with your current loan details." },
