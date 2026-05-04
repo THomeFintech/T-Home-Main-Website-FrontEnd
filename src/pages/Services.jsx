@@ -16,7 +16,7 @@ const data = [
       { name: "Mortgage Loan", tag: "RECOMMENDED", description: "Flexible mortgage solutions tailored to your unique financial requirements.", icon: <KeyRound size={24} />, link: "/mortgage-loan" },
       { name: "LAP (Loan Against Property)", description: "Unlock the value of your property with flexible loans and competitive interest rates.", icon: <Building2 size={24} />, link: "/loan-against-property" },
       { name: "PL (Personal Loan)", description: "Quick approvals and flexible repayment options for your personal financial needs.", icon: <User size={24} />, link: "/personal-loans" },
-      { name: "BT (Balance Transfer)", description: "Lower your existing interest rates seamlessly.", icon: <ArrowRightLeft size={24} />, link: "/coming-soon" },
+{ name: "BT (Balance Transfer)", description: "Lower your existing interest rates seamlessly.", icon: <ArrowRightLeft size={24} />, link: "/balance-transfer" },
     ],
   },
   {
@@ -123,7 +123,7 @@ export default function Services() {
             })}
           </div>
 
-<div className="relative w-full md:w-80 flex items-center">
+          <div className="relative w-full md:w-80 flex items-center">
             <button
               type="button"
               aria-label="Search"
@@ -178,19 +178,7 @@ export default function Services() {
                     {section.items.map((item, index) => (
                       <div
                         key={index}
-                        onClick={() => {
-                          if (item.link) {
-                            navigate(item.link);
-                          } else {
-                            navigate(
-                              section.key === "loans"
-                                ? item.name === "Balance Transfer"
-                                  ? "/coming-soon"
-                                  : "/tools?tool=loan-prediction"
-                                : item.link
-                            );
-                          }
-                        }}
+                        onClick={() => navigate(item.link)}
                         className="group relative flex cursor-pointer items-center justify-between gap-4 overflow-hidden rounded-xl border border-white/10 bg-white/[0.05] px-4 py-4 transition-all duration-500 hover:border-blue-400/30 hover:bg-white/[0.09] sm:px-5"
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/[0.03] to-blue-600/0 opacity-0 group-hover:opacity-100 transition-opacity" />

@@ -41,7 +41,7 @@ function Navbar() {
     { label: "UDYAM/MSME Registration", to: "/udyam-msme-registration", icon: BadgePercent },
     { label: "Personal Loan", to: "/personal-loans", icon: Briefcase },
     { label: "ITR Tax Filing", to: "/itr-filing", icon: FileText },
-    { label: "Balance Transfer", to: "/coming-soon", icon: Repeat },
+  { label: "Balance Transfer", to: "/balance-transfer", icon: Repeat },
     { label: "Food License", to: "/food-license", icon: Utensils },
     { label: "PAN & Aadhaar Linking", to: "/pan-aadhaar-linking", icon: LucideLink },
   ];
