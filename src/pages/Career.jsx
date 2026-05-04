@@ -239,15 +239,15 @@ export default function CareerSection() {
               >
                 <div>
                   <h3 className="text-[15px] font-semibold leading-tight">{job.title}</h3>
-                  <div className="mt-1 flex flex-wrap items-center gap-2.5 text-[9px] uppercase tracking-wide text-[#e2e8f7]">
+                  <p className="text-xs uppercase tracking-wide text-[#e2e8f7] mt-1">{job.category}</p>
+                  <p className="mt-1 text-[11px] leading-[1.45] text-[#d0dbf4]">{job.description}</p>
+                  <div className="flex flex-wrap gap-2 mt-2 text-xs">
                     <span className="inline-flex items-center gap-1"><MapPin size={10} /> {job.mode}</span>
                     <span className="inline-flex items-center gap-1"><Briefcase size={10} /> {job.type}</span>
                     <span className="inline-flex items-center gap-1"><CalendarClock size={10} /> {job.exp}</span>
                   </div>
-                  <p className="mt-1 text-[11px] leading-[1.45] text-[#d0dbf4]">{job.description}</p>
                 </div>
-
-<button
+                <button
                   type="button"
                   onClick={() => {
                     localStorage.setItem("selectedJob", JSON.stringify(job));

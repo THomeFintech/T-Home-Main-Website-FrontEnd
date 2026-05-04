@@ -68,9 +68,9 @@ export default function BalanceTransferStart() {
 
       {/* WHY CHOOSE */}
       <div className="max-w-7xl mx-auto px-6 py-10">
-        <h2 className="text-center text-lg font-semibold mb-10 text-white">
+<h1 className="text-center text-3xl font-bold mb-10 text-white">
           Why Choose T-Home Balance Transfer?
-        </h2>
+        </h1>
 
         <div className="grid md:grid-cols-4 gap-6">
           {[
@@ -95,7 +95,7 @@ export default function BalanceTransferStart() {
 
       {/* PROCESS */}
       <div className="max-w-5xl mx-auto px-6 py-12">
-        <h2 className="text-center text-lg font-semibold mb-2 text-white">Simple 5-Step Process</h2>
+<h1 className="text-center text-3xl font-bold mb-10 text-white">Simple 5-Step Process</h1>
         <p className="text-center text-gray-400 text-xs mb-12">
           Switch to better rates without hassle
         </p>
@@ -132,9 +132,9 @@ export default function BalanceTransferStart() {
 
       {/* FAQ */}
       <div className="max-w-3xl mx-auto px-6 py-12">
-        <h2 className="text-center text-lg font-semibold mb-6 text-white">
+<h1 className="text-center text-3xl font-bold mb-10 text-white">
           Frequently Asked Questions
-        </h2>
+        </h1>
 
         <div className="space-y-3">
           {[
