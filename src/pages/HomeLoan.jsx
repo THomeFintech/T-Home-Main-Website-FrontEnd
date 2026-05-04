@@ -69,9 +69,9 @@ export default function HomeLoan() {
 
       {/* WHY CHOOSE */}
       <div className="max-w-7xl mx-auto px-6 py-10">
-        <h2 className="text-center text-lg font-semibold mb-10">
+<h1 className="text-center text-3xl font-bold mb-10 text-white">
           Why Choose T-Home?
-        </h2>
+        </h1>
 
         <div className="grid md:grid-cols-4 gap-6">
           {[
@@ -96,7 +96,7 @@ export default function HomeLoan() {
 
       {/* PROCESS */}
       <div className="max-w-5xl mx-auto px-6 py-12">
-        <h2 className="text-center text-lg font-semibold mb-2">Simple Process</h2>
+<h1 className="text-center text-3xl font-bold mb-10 text-white">Simple Process</h1>
         <p className="text-center text-gray-400 text-xs mb-12">
           Getting your home loan is easier than ever
         </p>
@@ -133,9 +133,9 @@ export default function HomeLoan() {
 
       {/* FAQ */}
       <div className="max-w-3xl mx-auto px-6 py-12">
-        <h2 className="text-center text-lg font-semibold mb-6">
+<h1 className="text-center text-3xl font-bold mb-10 text-white">
           Frequently Asked Questions
-        </h2>
+        </h1>
 
         <div className="space-y-3">
           {[

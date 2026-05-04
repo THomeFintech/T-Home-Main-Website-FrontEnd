@@ -73,9 +73,9 @@ export default function MortgageLoan() {
 
 {/* WHY CHOOSE SECTION */}
 <div className="max-w-7xl mx-auto px-6 py-10">
-  <h2 className="text-center text-lg font-semibold mb-10">
+<h1 className="text-center text-3xl font-bold mb-10 text-white">
     Why Choose T-Home?
-  </h2>
+  </h1>
 
   <div className="grid md:grid-cols-4 gap-6">
     {[
