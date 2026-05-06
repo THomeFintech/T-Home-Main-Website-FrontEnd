@@ -102,6 +102,24 @@ const joinBenefits = [
 
 const testimonials = [
   {
+    name: "Sai Susritha Vemuri",
+    role: "Product Architect Intern",
+    image: "/home/testimonial-1.png",
+    text: "Over the past few months at T-Home, my experience has been extremely positive and rewarding. The recruitment process was smooth and transparent, and the team has been very supportive and encouraging. The mentorship helped me gain valuable real-world insights into machine learning.",
+  },
+  {
+    name: "Akhil Kumar Rotta",
+    role: "Designer",
+    image: "/home/testimonial-2.png",
+    text: "The last five months at T-Home have been a meaningful experience. With constant support and guidance, I’ve grown in confidence and creativity. The workplace feels comfortable and inspiring, and I’m grateful to be part of such a positive team.",
+  },
+  {
+    name: "P. Siri Chandana",
+    role: "Machine Learning Intern",
+    image: "/home/testimonial-3.png",
+    text: "My experience at T-Home has been enriching and rewarding. I gained hands-on exposure to real-time projects and bridged the gap between theory and practice. The team is supportive and always ready to guide.",
+  },
+  {
     name: "Shivani",
     role: "ML Intern",
     image: "/home/testimonial-1.png",
@@ -120,6 +138,7 @@ const testimonials = [
     text: "My journey at T-Home has been enriching, with strong mentorship improving my skills. The supportive culture inspired growth, collaboration, and continuous improvement every day.",
   },
 ];
+
 
 export default function CareerSection() {
   const navigate = useNavigate();
