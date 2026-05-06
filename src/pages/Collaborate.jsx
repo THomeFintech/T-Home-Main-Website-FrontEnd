@@ -62,9 +62,20 @@ const CollaboratePage = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    alert("Application submitted!");
-  };
+  const handleSubmit = (e) => {
+  e.preventDefault();
+
+  alert("Application submitted!");
+
+  // ✅ RESET FORM
+  setForm({
+    fullName: "",
+    companyName: "",
+    partnerType: "",
+    experience: "",
+    message: "",
+  });
+};
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -325,139 +336,153 @@ const CollaboratePage = () => {
           </div>
         </section>
 
-        {/* ─── APPLICATION FORM ─── */}
-        <section ref={formRef} className="px-6 py-20">
-          <div className="mx-auto flex max-w-5xl flex-col items-start gap-12 md:flex-row">
-            <div className="flex-1">
-              <h2 className="mb-4 text-3xl font-bold">Ready to take next step?</h2>
-              <p className="mb-8 text-sm leading-relaxed text-gray-400">
-                Fill out the application form to express your interest. Our partnership team will review your details and reach out within 24 hours to discuss the next steps.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  "No upfront fees or commitments",
-                  "Customized commission structures",
-                  "Full access to marketing resources",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm text-gray-300">
-                    <span className="text-blue-400">
-                      <CheckCircleIcon />
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+       {/* ─── APPLICATION FORM ─── */}
+<section ref={formRef} className="px-6 py-20">
+  <div className="mx-auto flex max-w-5xl flex-col items-start gap-12 md:flex-row">
+    
+    {/* LEFT SIDE */}
+    <div className="flex-1">
+      <h2 className="mb-4 text-3xl font-bold">Ready to take next step?</h2>
+      <p className="mb-8 text-sm leading-relaxed text-gray-400">
+        Fill out the application form to express your interest. Our partnership team will review your details and reach out within 24 hours.
+      </p>
 
-            <div
-              className="w-full flex-1 rounded-2xl p-8"
+      <ul className="space-y-3">
+        {[
+          "No upfront fees or commitments",
+          "Customized commission structures",
+          "Full access to marketing resources",
+        ].map((item, i) => (
+          <li key={i} className="flex items-center gap-3 text-sm text-gray-300">
+            <span className="text-blue-400">
+              <CheckCircleIcon />
+            </span>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    {/* RIGHT SIDE FORM */}
+    <div
+      className="w-full flex-1 rounded-2xl p-8"
+      style={{
+        background: "rgba(255,255,255,0.04)",
+        backdropFilter: "blur(16px)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.4)",
+      }}
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
+
+        {/* FULL NAME */}
+        <div>
+          <label className="mb-1 block text-xs text-gray-400">Full Name</label>
+          <input
+            required
+            name="fullName"
+            value={form.fullName}
+            onChange={handleChange}
+            placeholder="Enter your full name"
+            className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.1)",
+            }}
+          />
+        </div>
+
+        {/* COMPANY */}
+        <div>
+          <label className="mb-1 block text-xs text-gray-400">Company Name</label>
+          <input
+            required
+            name="companyName"
+            value={form.companyName}
+            onChange={handleChange}
+            placeholder="Enter your company name"
+            className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.1)",
+            }}
+          />
+        </div>
+
+        {/* DROPDOWNS */}
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <label className="mb-1 block text-xs text-gray-400">Type of Partner</label>
+            <select
+              required
+              name="partnerType"
+              value={form.partnerType}
+              onChange={handleChange}
+              className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
               style={{
-                background: "rgba(255,255,255,0.04)",
-                backdropFilter: "blur(16px)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.4)",
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.1)",
               }}
             >
-              <div className="space-y-4">
-                <div>
-                  <label className="mb-1 block text-xs text-gray-400">Full Name</label>
-                  <input
-                    name="fullName"
-                    value={form.fullName}
-                    onChange={handleChange}
-                    placeholder="Enter your full name"
-                    className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
-                    style={{
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-xs text-gray-400">Company Name</label>
-                  <input
-                    name="companyName"
-                    value={form.companyName}
-                    onChange={handleChange}
-                    placeholder="Enter your company name"
-                    className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
-                    style={{
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                    }}
-                  />
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <label className="mb-1 block text-xs text-gray-400">Type of Partner</label>
-                    <select
-                      name="partnerType"
-                      value={form.partnerType}
-                      onChange={handleChange}
-                      className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
-                      style={{
-                        background: "rgba(255,255,255,0.06)",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                      }}
-                    >
-                      <option value="">Select partner type</option>
-                      <option value="institution">Financial Institution</option>
-                      <option value="broker">Loan Agent / Broker</option>
-                      <option value="freelancer">Freelancer</option>
-                      <option value="startup">Startup</option>
-                    </select>
-                  </div>
-
-                  <div className="flex-1">
-                    <label className="mb-1 block text-xs text-gray-400">Experience Level</label>
-                    <select
-                      name="experience"
-                      value={form.experience}
-                      onChange={handleChange}
-                      className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
-                      style={{
-                        background: "rgba(255,255,255,0.06)",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                      }}
-                    >
-                      <option value="">Years of experience</option>
-                      <option value="0-1">0–1 years</option>
-                      <option value="1-3">1–3 years</option>
-                      <option value="3-5">3–5 years</option>
-                      <option value="5+">5+ years</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-xs text-gray-400">Message (Optional)</label>
-                  <textarea
-                    name="message"
-                    value={form.message}
-                    onChange={handleChange}
-                    rows={4}
-                    placeholder="Tell us about your goals..."
-                    className="w-full resize-none rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
-                    style={{
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                    }}
-                  />
-                </div>
-
-                <button
-                  onClick={handleSubmit}
-                  className="w-full rounded-lg bg-blue-500 py-3 text-[12px] sm:text-[16px] font-semibold text-white transition hover:bg-blue-600"
-                >
-                  Submit Application
-                </button>
-              </div>
-            </div>
+              <option value="">Select partner type</option>
+              <option value="institution">Financial Institution</option>
+              <option value="broker">Loan Agent / Broker</option>
+              <option value="freelancer">Freelancer</option>
+              <option value="startup">Startup</option>
+            </select>
           </div>
-        </section>
 
+          <div className="flex-1">
+            <label className="mb-1 block text-xs text-gray-400">Experience Level</label>
+            <select
+              required
+              name="experience"
+              value={form.experience}
+              onChange={handleChange}
+              className="w-full rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.1)",
+              }}
+            >
+              <option value="">Years of experience</option>
+              <option value="0-1">0–1 years</option>
+              <option value="1-3">1–3 years</option>
+              <option value="3-5">3–5 years</option>
+              <option value="5+">5+ years</option>
+            </select>
+          </div>
+        </div>
+
+        {/* MESSAGE */}
+        <div>
+          <label className="mb-1 block text-xs text-gray-400">Message (Optional)</label>
+          <textarea
+            name="message"
+            value={form.message}
+            onChange={handleChange}
+            rows={4}
+            placeholder="Tell us about your goals..."
+            className="w-full resize-none rounded-lg px-4 py-3 text-[12px] sm:text-[16px] text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.1)",
+            }}
+          />
+        </div>
+
+        {/* BUTTON */}
+        <button
+          type="submit"
+          className="w-full rounded-lg bg-blue-500 py-3 text-[12px] sm:text-[16px] font-semibold text-white transition hover:bg-blue-600"
+        >
+          Submit Application
+        </button>
+
+      </form>
+    </div>
+  </div>
+</section>
         {/* ─── CTA BANNER ─── */}
         <section className="mb-12 px-6 py-16">
           <div
