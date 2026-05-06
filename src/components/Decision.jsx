@@ -149,21 +149,7 @@ export default function DecisionPanel({ result, loading }) {
         </div>
       )}
 
-      {/* BANKS */}
-      {Array.isArray(result?.recommended_banks) &&
-        result.recommended_banks.length > 0 && (
-          <div className="grid md:grid-cols-3 gap-4">
-            {result.recommended_banks.map((bank, index) => (
-              <div key={index} className="p-4 bg-white/5 rounded-lg">
-                <h3 className="font-semibold">
-                  {bank.name || "Bank"}
-                </h3>
-                <p>Interest: {bank.interestRate || "N/A"}</p>
-                <p>EMI: {bank.monthlyEmi || "N/A"}</p>
-              </div>
-            ))}
-          </div>
-        )}
+      
 
     </div>
   );
