@@ -334,33 +334,45 @@ export default function CareerSection() {
                  {testimonialTrack.map((t, i) => {
                    const isCenter = i % testimonials.length === (testimonialStart + 1) % testimonials.length;
                    return (
-                     <article
-                       key={`${i}-${t.name}`}
-                       className={`rounded-[16px] border px-6 py-7 text-center backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_34px_rgba(0,0,0,0.3)] transition-transform duration-700 ease-in-out ${
-                         isCenter
-                           ? "border-[#7ea7ff]/70 bg-[linear-gradient(180deg,rgba(58,95,218,0.96)_0%,rgba(39,68,184,0.96)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_18px_40px_rgba(8,20,60,0.42)]"
-                           : "border-[#c9dcff]/52 bg-[linear-gradient(180deg,rgba(24,34,84,0.84)_0%,rgba(14,22,58,0.9)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_34px_rgba(2,8,28,0.34)]"
-                       }`}
-                     >
-                       <div className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full text-[28px] font-semibold leading-none ${
-                         isCenter ? "bg-[#3d59b6] text-[#cfe0ff]" : "bg-[#1b336f] text-[#4f7fd7]"
-                       }`}>
-                         <span className="block -translate-y-px leading-none">"</span>
-                       </div>
-                       <p className={`mx-auto mt-6 max-w-[320px] text-[15px] leading-7 ${
-                         isCenter ? "text-white/95" : "text-white/75"
-                       }`}>{t.text}</p>
+                    <article
+  key={`${i}-${t.name}`}
+  className={`flex h-[360px] flex-col justify-between rounded-[16px] border px-6 py-7 text-center backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_34px_rgba(0,0,0,0.3)] transition-transform duration-700 ease-in-out ${
+    isCenter
+      ? "border-[#7ea7ff]/70 bg-[linear-gradient(180deg,rgba(58,95,218,0.96)_0%,rgba(39,68,184,0.96)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_18px_40px_rgba(8,20,60,0.42)]"
+      : "border-[#c9dcff]/52 bg-[linear-gradient(180deg,rgba(24,34,84,0.84)_0%,rgba(14,22,58,0.9)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_34px_rgba(2,8,28,0.34)]"
+  }`}
+>
+  {/* TOP CONTENT */}
+  <div>
+    <div
+      className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full text-[28px] font-semibold ${
+        isCenter ? "bg-[#3d59b6] text-[#cfe0ff]" : "bg-[#1b336f] text-[#4f7fd7]"
+      }`}
+    >
+      "
+    </div>
 
-                       <div className="mt-5 flex items-center justify-center gap-3">
-                         <div className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#9fc1ff]">
-                           <User size={16} />
-                         </div>
-                         <div className="text-left">
-                           <h4 className="text-[14px] font-semibold">{t.name}</h4>
-                           <p className="text-[12px] text-[#b8c9eb]">{t.role}</p>
-                         </div>
-                       </div>
-                     </article>
+    <p
+      className={`mx-auto mt-6 max-w-[320px] text-[15px] leading-7 ${
+        isCenter ? "text-white/95" : "text-white/75"
+      }`}
+    >
+      {t.text}
+    </p>
+  </div>
+
+  {/* BOTTOM (ALWAYS SAME POSITION) */}
+  <div className="mt-6 flex items-center justify-center gap-3">
+    <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#9fc1ff]">
+      <User size={16} />
+    </div>
+
+    <div className="text-left">
+      <h4 className="text-[15px] font-semibold">{t.name}</h4>
+      <p className="text-[13px] text-[#b8c9eb]">{t.role}</p>
+    </div>
+  </div>
+</article>
                    );
                  })}
                </div>
