@@ -55,23 +55,31 @@ useEffect(() => {
     setIsSelectingBank(false);
   }
 }, [location]);
+  useEffect(() => {
+  if (step === 2) {
+    const savedLoan = localStorage.getItem("loanData");
+    if (savedLoan) {
+      setLoanData(JSON.parse(savedLoan));
+    }
+  }
+}, [step]);
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
 
   const handleLoanResult = (data, formValues) => {
-    console.log("Prediction result:", data);
-    console.log("Form values:", formValues);
+  setPredictionResult(data);
+  setLoanData(formValues);
 
-    setPredictionResult(data);
-    setLoanData(formValues);
+  // ✅ SAVE DATA
+  localStorage.setItem("loanData", JSON.stringify(formValues));
 
-    if (["Approved", "Partially Approved"].includes(data?.decision)) {
-      setShowBankCards(true);
-    } else {
-      setShowBankCards(false);
-    }
-  };
+  if (["Approved", "Partially Approved"].includes(data?.decision)) {
+    setShowBankCards(true);
+  } else {
+    setShowBankCards(false);
+  }
+};
 
   const formattedBanks = useMemo(() => {
     if (!predictionResult?.recommended_banks) return [];
