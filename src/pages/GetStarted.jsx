@@ -172,14 +172,31 @@ function SignupPage({ onLogin, onContinue }) {
   });
 
   const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const { name, value } = e.target;
+
+  if (name === "phone") {
+    const onlyNumbers = value.replace(/\D/g, "").slice(0, 10);
+    setForm((prev) => ({
+      ...prev,
+      phone: onlyNumbers,
+    }));
+    return;
+  }
+
+  setForm((prev) => ({ ...prev, [name]: value }));
+};
 
   const handleContinue = async () => {
     if (!form.fullName || !form.email || !form.phone || !form.password || !form.confirmPassword) {
       alert("Please fill in all fields");
       return;
     }
+     const phoneRegex = /^[6-9]\d{9}$/;
+
+      if (!phoneRegex.test(form.phone)) {
+        alert("Enter valid 10-digit Indian number (starts with 6-9)");
+        return;
+      }
     if (form.password !== form.confirmPassword) {
       alert("Passwords do not match");
       return;
@@ -261,13 +278,16 @@ function SignupPage({ onLogin, onContinue }) {
           <div className="input-box">
             <IconPhone />
             <input
-              className="inp"
-              type="tel"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              placeholder="Enter your mobile number"
-            />
+  className="inp"
+  type="tel"
+  name="phone"
+  value={form.phone}
+  onChange={handleChange}
+  placeholder="Enter your mobile number"
+  maxLength={10}
+  inputMode="numeric"
+  pattern="[6-9][0-9]{9}"
+/>
           </div>
         </div>
 
