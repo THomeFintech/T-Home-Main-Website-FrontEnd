@@ -58,6 +58,12 @@ export default function ContactPage() {
       service: formData.service,
       message: formData.message.trim(),
     };
+   const phoneRegex = /^[6-9]\d{9}$/;
+
+if (!phoneRegex.test(formData.phone)) {
+  setErrorMsg("Enter a valid 10-digit mobile number (starts with 6-9)");
+  return;
+}
 
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/contact`, {
@@ -147,14 +153,16 @@ export default function ContactPage() {
                   <div className="grid sm:grid-cols-2 gap-5">
                     <FormInput label="Name" name="name" value={formData.name} onChange={handleChange} placeholder="Enter your name" />
                     <FormInput
-                      label="Phone Number"
-                      name="phone"
-                      type="tel"
-                      maxLength={10}
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="7645839566"
-                    />
+                     label="Phone Number"
+                     name="phone"
+                     type="tel"
+                     maxLength={10}
+                     inputMode="numeric"
+                     pattern="[6-9][0-9]{9}"
+                     value={formData.phone}
+                     onChange={handleChange}
+                     placeholder="Enter 10-digit mobile"
+                   />
                   </div>
 
                   <FormInput label="Your Email" name="email" value={formData.email} onChange={handleChange} placeholder="Email@Example.com" type="email" />
