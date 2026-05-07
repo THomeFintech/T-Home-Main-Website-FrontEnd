@@ -632,15 +632,48 @@ const lastPaymentDate = formatDateDisplay(
   </div>
 
   <input
-    type="number"
-    min={currentThreshold.minAmount}
-    max={currentThreshold.maxAmount}
-    step={1000}
-    value={amount}
-    onChange={(e) => setAmount(Number(e.target.value))}
-    placeholder="Enter loan amount"
-    className="w-full h-[44px] rounded-[10px] border border-white/20 bg-white/90 px-3 text-[14px] font-semibold text-black outline-none focus:border-blue-400"
-  />
+  type="number"
+  min={currentThreshold.minAmount}
+  max={currentThreshold.maxAmount}
+  step={1000}
+  value={amount === 0 ? "" : amount}
+  onChange={(e) => {
+    let value = e.target.value;
+
+    // If empty (backspace), set 0
+    if (value === "") {
+      setAmount(0);
+      return;
+    }
+
+    // Remove leading zeros
+    value = value.replace(/^0+/, "");
+
+    const num = Number(value);
+
+    if (isNaN(num)) return;
+
+    // Clamp values
+    if (num > currentThreshold.maxAmount) {
+      setAmount(currentThreshold.maxAmount);
+      return;
+    }
+
+    if (num < 0) {
+      setAmount(0);
+      return;
+    }
+
+    setAmount(num);
+  }}
+  onBlur={() => {
+    if (amount === 0) {
+      setAmount(currentThreshold.minAmount);
+    }
+  }}
+  placeholder="Enter loan amount"
+  className="w-full h-[44px] rounded-[10px] border border-white/20 bg-white/90 px-3 text-[14px] font-semibold text-black outline-none focus:border-blue-400"
+/>
 
   <p className="mt-2 text-[12px] text-blue-300">
     {convertToWords(amount)}
@@ -664,15 +697,41 @@ const lastPaymentDate = formatDateDisplay(
   </div>
 
   <input
-    type="number"
-    min={currentThreshold.minInterest}
-    max={currentThreshold.maxInterest}
-    step={0.1}
-    value={rate}
-    onChange={(e) => setRate(Number(e.target.value))}
-    placeholder="Enter interest rate"
-    className="w-full h-[44px] rounded-[10px] border border-white/20 bg-white/90 px-3 text-[14px] font-semibold text-black outline-none focus:border-blue-400"
-  />
+  type="number"
+  value={rate === 0 ? "" : rate}
+  onChange={(e) => {
+    let value = e.target.value;
+
+    if (value === "") {
+      setRate(0);
+      return;
+    }
+
+    value = value.replace(/^0+/, "");
+
+    const num = Number(value);
+
+    if (isNaN(num)) return;
+
+    if (num > currentThreshold.maxInterest) {
+      setRate(currentThreshold.maxInterest);
+      return;
+    }
+
+    if (num < 0) {
+      setRate(0);
+      return;
+    }
+
+    setRate(num);
+  }}
+  onBlur={() => {
+    if (rate === 0) {
+      setRate(currentThreshold.defaults.interest);
+    }
+  }}
+  className="w-full h-[44px] rounded-[10px] border border-white/20 bg-white/90 px-3 text-[14px] font-semibold text-black outline-none focus:border-blue-400"
+/>
 
   <div className="flex justify-between text-[12px] text-white/40 mt-1">
     <span>{currentThreshold.minInterest}%</span>
@@ -705,15 +764,45 @@ const lastPaymentDate = formatDateDisplay(
   </div>
 
   <input
-    type="number"
-    min={currentThreshold.minTenure}
-    max={currentThreshold.maxTenure}
-    step={1}
-    value={years}
-    onChange={(e) => setYears(Number(e.target.value))}
-    placeholder="Enter tenure"
-    className="w-full h-[44px] rounded-[10px] border border-white/20 bg-white/90 px-3 text-[14px] font-semibold text-black outline-none focus:border-blue-400"
-  />
+  type="number"
+  min={currentThreshold.minTenure}
+  max={currentThreshold.maxTenure}
+  step={1}
+  value={years === 0 ? "" : years}
+  onChange={(e) => {
+    let value = e.target.value;
+
+    if (value === "") {
+      setYears(0);
+      return;
+    }
+
+    value = value.replace(/^0+/, "");
+
+    const num = Number(value);
+
+    if (Number.isNaN(num)) return;
+
+    if (num > currentThreshold.maxTenure) {
+      setYears(currentThreshold.maxTenure);
+      return;
+    }
+
+    if (num < 0) {
+      setYears(0);
+      return;
+    }
+
+    setYears(num);
+  }}
+  onBlur={() => {
+    if (years === 0 || years < currentThreshold.minTenure) {
+      setYears(currentThreshold.minTenure);
+    }
+  }}
+  placeholder="Enter tenure"
+  className="w-full h-[44px] rounded-[10px] border border-white/20 bg-white/90 px-3 text-[14px] font-semibold text-black outline-none focus:border-blue-400"
+/>
 
   <div className="flex justify-between text-[12px] text-white/40 mt-1">
     <span>{currentThreshold.minTenure} Year</span>
