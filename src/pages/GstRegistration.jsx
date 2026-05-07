@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
+import FaqAccordion from "../components/FaqAccordion";
 
 export default function GSTRegistration() {
   const navigate = useNavigate();
@@ -29,11 +30,11 @@ export default function GSTRegistration() {
           <div className="flex gap-4 mb-6">
            <button
   onClick={() => navigate("/contact")}
-  className="bg-blue-600 px-6 py-2 rounded-full text-sm"
+className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
 >
   Apply Now
 </button>
-            <button className="bg-white/10 px-6 py-2 rounded-full text-sm">
+<button className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300">
               Get Assistance
             </button>
           </div>
@@ -132,21 +133,22 @@ export default function GSTRegistration() {
 
       {/* FAQ */}
       <div className="max-w-3xl mx-auto px-6 py-12">
-<h1 className="text-center text-3xl font-bold mb-10 text-white">
+        <h1 className="text-center text-3xl font-bold mb-10 text-white">
           Frequently Asked Questions
         </h1>
 
-        <div className="space-y-3">
-          {[
-            "Is GST mandatory for all businesses?",
-            "Can I register online?"
-          ].map((q, i) => (
-            <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">{q}</summary>
-              <p className="text-gray-400 text-xs mt-2">Detailed answer goes here.</p>
-            </details>
-          ))}
-        </div>
+        <FaqAccordion
+          items={[
+            {
+              q: "Is GST mandatory for all businesses?",
+              a: "GST is mandatory based on turnover and the nature of the business. Many businesses must register once they cross the threshold or fall under specific categories.",
+            },
+            {
+              q: "Can I register online?",
+              a: "Yes. GST registration can be completed online through the official GST portal with documents like PAN, address proof, and bank account details.",
+            },
+          ]}
+        />
       </div>
 
       {/* CTA */}

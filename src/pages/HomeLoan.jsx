@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
+import FaqAccordion from "../components/FaqAccordion";
 
 export default function HomeLoan() {
   const navigate = useNavigate();
@@ -133,25 +134,26 @@ export default function HomeLoan() {
 
       {/* FAQ */}
       <div className="max-w-3xl mx-auto px-6 py-12">
-<h1 className="text-center text-3xl font-bold mb-10 text-white">
+        <h1 className="text-center text-3xl font-bold mb-10 text-white">
           Frequently Asked Questions
         </h1>
 
-        <div className="space-y-3">
-          {[
-            "What is the maximum tenure for a home loan?",
-            "Can I prepay my home loan?",
-            "Do I need a co-applicant?"
-          ].map((q, i) => (
-            <details
-              key={i}
-              className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]"
-            >
-              <summary className="cursor-pointer text-sm">{q}</summary>
-              <p className="text-gray-400 text-xs mt-2">Detailed answer goes here.</p>
-            </details>
-          ))}
-        </div>
+        <FaqAccordion
+          items={[
+            {
+              q: "What is the maximum tenure for a home loan?",
+              a: "Home loan tenure typically ranges up to 30 years depending on the lender and your eligibility.",
+            },
+            {
+              q: "Can I prepay my home loan?",
+              a: "Yes, most lenders allow part/full prepayment. Terms, charges (if any), and eligibility apply.",
+            },
+            {
+              q: "Do I need a co-applicant?",
+              a: "Not always. A co-applicant can help improve eligibility and increase loan approval chances.",
+            },
+          ]}
+        />
       </div>
 
       {/* CTA */}
