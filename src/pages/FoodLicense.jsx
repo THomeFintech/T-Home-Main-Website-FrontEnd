@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
+import FaqAccordion from "../components/FaqAccordion";
 
 export default function FoodLicense() {
   const navigate = useNavigate();
@@ -29,11 +30,11 @@ export default function FoodLicense() {
           <div className="flex gap-4 mb-6">
             <button
   onClick={() => navigate("/contact")}
-  className="bg-blue-600 px-6 py-2 rounded-full text-sm"
+className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
 >
   Apply Now
 </button>
-            <button className="bg-white/10 px-6 py-2 rounded-full text-sm">
+<button className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300">
               Get Assistance
             </button>
           </div>
@@ -132,21 +133,22 @@ export default function FoodLicense() {
 
       {/* FAQ */}
       <div className="max-w-3xl mx-auto px-6 py-12">
-<h1 className="text-center text-3xl font-bold mb-10 text-white">
+        <h1 className="text-center text-3xl font-bold mb-10 text-white">
           Frequently Asked Questions
         </h1>
 
-        <div className="space-y-3">
-          {[
-            "Which license is required for small food businesses?",
-            "What is validity of FSSAI license?"
-          ].map((q, i) => (
-            <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">{q}</summary>
-              <p className="text-gray-400 text-xs mt-2">Detailed answer goes here.</p>
-            </details>
-          ))}
-        </div>
+        <FaqAccordion
+          items={[
+            {
+              q: "Which license is required for small food businesses?",
+              a: "Most small food businesses need an FSSAI license or registration depending on their annual turnover and type of food operations. Our team can help you determine which one you need.",
+            },
+            {
+              q: "What is validity of FSSAI license?",
+              a: "FSSAI licenses are typically valid for 1 to 5 years, depending on the applicant’s choice and regulatory requirements. Renewals should be done before expiry.",
+            },
+          ]}
+        />
       </div>
 
       {/* CTA */}

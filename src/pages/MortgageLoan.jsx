@@ -31,14 +31,14 @@ export default function MortgageLoan() {
     <div className="flex gap-4 mb-6">
       <button
         onClick={() => navigate("/tools?tool=loan-prediction")}
-        className="bg-blue-600 px-6 py-2 rounded-full text-sm hover:bg-blue-700 transition"
+className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
       >
         Apply Now
       </button>
 
       <button
         onClick={() => navigate("/emi-calculator")}
-        className="bg-white/10 px-6 py-2 rounded-full text-sm hover:bg-white/20 transition"
+className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300"
       >
         Calculate EMI
       </button>
@@ -171,7 +171,9 @@ export default function MortgageLoan() {
             "How is eligibility calculated?"
           ].map((q, i) => (
             <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">{q}</summary>
+              <summary className="cursor-pointer text-sm">
+                {q}
+              </summary>
               <p className="text-gray-400 text-xs mt-2">Detailed answer goes here.</p>
             </details>
           ))}

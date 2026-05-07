@@ -30,11 +30,11 @@ export default function CompanyRegistration() {
           <div className="flex gap-4 mb-6">
             <button
   onClick={() => navigate("/contact")}
-  className="bg-blue-600 px-6 py-2 rounded-full text-sm"
+className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
 >
   Apply Now
 </button>
-            <button className="bg-white/10 px-6 py-2 rounded-full text-sm">
+<button className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300">
               Get Assistance
             </button>
           </div>
@@ -127,22 +127,26 @@ export default function CompanyRegistration() {
 
       {/* FAQ */}
       <div className="max-w-3xl mx-auto px-6 py-12">
-<h1 className="text-center text-3xl font-bold mb-10 text-white">
+        <h1 className="text-center text-3xl font-bold mb-10 text-white">
           Frequently Asked Questions
         </h1>
 
-        <div className="space-y-3">
-          {[
-            "How long does company registration take?",
-            "What type of company should I choose?",
-            "Is GST mandatory?"
-          ].map((q, i) => (
-            <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">{q}</summary>
-              <p className="text-gray-400 text-xs mt-2">Detailed answer goes here.</p>
-            </details>
-          ))}
-        </div>
+        <FaqAccordion
+          items={[
+            {
+              q: "How long does company registration take?",
+              a: "Company registration timelines vary by document readiness and approvals, but it often takes a few weeks from submission to certificate issuance.",
+            },
+            {
+              q: "What type of company should I choose?",
+              a: "The best structure depends on ownership, funding, and operational needs. Common options include Pvt. Ltd., LLP, and partnership—choose based on your business goals.",
+            },
+            {
+              q: "Is GST mandatory?",
+              a: "GST registration is required based on turnover and business nature. Many businesses need GST if they cross the eligibility threshold or operate in specific categories.",
+            },
+          ]}
+        />
       </div>
 
       {/* CTA */}

@@ -142,7 +142,9 @@ export default function PanAadhaarLinking() {
             "What if details don’t match?"
           ].map((q, i) => (
             <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">{q}</summary>
+              <summary className="cursor-pointer text-sm">
+                {q}
+              </summary>
               <p className="text-gray-400 text-xs mt-2">Detailed answer goes here.</p>
             </details>
           ))}

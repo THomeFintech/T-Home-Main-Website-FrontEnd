@@ -29,11 +29,11 @@ export default function ITRFiling() {
           <div className="flex gap-4 mb-6">
             <button
   onClick={() => navigate("/contact")}
-  className="bg-blue-600 px-6 py-2 rounded-full text-sm"
+className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
 >
   File Now
 </button>
-            <button className="bg-white/10 px-6 py-2 rounded-full text-sm hover:bg-white/20">
+<button className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300">
               Get Assistance
             </button>
           </div>
@@ -143,7 +143,9 @@ export default function ITRFiling() {
             "Can I revise my ITR?"
           ].map((q, i) => (
             <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">{q}</summary>
+              <summary className="cursor-pointer text-sm">
+                {q}
+              </summary>
               <p className="text-gray-400 text-xs mt-2">Detailed explanation goes here.</p>
             </details>
           ))}

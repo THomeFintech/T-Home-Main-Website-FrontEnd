@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
+import FaqAccordion from "../components/FaqAccordion";
+
 import { ArrowRightLeft } from "lucide-react";
 import BalanceTransferImg from "../assets/Balance transfer.png";
 
@@ -135,26 +137,30 @@ export default function BalanceTransfer() {
 
       {/* FAQ */}
       <div className="max-w-3xl mx-auto px-4 py-12">
-<h1 className="text-center text-3xl font-bold mb-10 text-white">
+        <h1 className="text-center text-3xl font-bold mb-10 text-white">
           Frequently Asked Questions
         </h1>
 
-        <div className="space-y-3">
-          {[
-            "What is the maximum tenure for a balance transfer?",
-            "Can I prepay my balance transfer loan?",
-            "Do I need a co-applicant?",
-            "What is the processing time?"
-          ].map((q, i) => (
-            <details
-              key={i}
-              className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)] cursor-pointer"
-            >
-              <summary className="cursor-pointer text-sm font-medium text-white">{q}</summary>
-              <p className="text-gray-400 text-xs mt-2 pt-2 border-t border-white/10">Detailed answer goes here.</p>
-            </details>
-          ))}
-        </div>
+        <FaqAccordion
+          items={[
+            {
+              q: "What is the maximum tenure for a balance transfer?",
+              a: "Tenure is based on eligibility and the remaining period of your existing loan. Typically, lenders offer flexible tenures within their approved range.",
+            },
+            {
+              q: "Can I prepay my balance transfer loan?",
+              a: "Yes. Prepayment options are usually available, subject to lender terms and applicable charges (if any).",
+            },
+            {
+              q: "Do I need a co-applicant?",
+              a: "Not always. A co-applicant can help improve eligibility and increase approval chances depending on your profile.",
+            },
+            {
+              q: "What is the processing time?",
+              a: "Processing time varies by bank and document readiness, but many applications move quickly after verification and required documents are submitted.",
+            },
+          ]}
+        />
       </div>
 
       {/* CTA */}
