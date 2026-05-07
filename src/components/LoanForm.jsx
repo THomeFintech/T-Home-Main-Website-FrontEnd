@@ -27,7 +27,14 @@ function numberToWords(num) {
   return convert(num) + " Rupees";
 }
 
-export default function LoanForm({ onSubmit, loading, onOpenCibil, service })  {
+export default function LoanForm({
+  loanData,
+  setLoanData,
+  onSubmit,
+  loading,
+  onOpenCibil,
+  service,
+})  {
   const mapServiceToLoanType = (service) => {
   if (!service) return "";
 
@@ -44,71 +51,49 @@ export default function LoanForm({ onSubmit, loading, onOpenCibil, service })  {
 };
 
 const passedLoanType = mapServiceToLoanType(service);
-  const [formData, setFormData] = useState({
-    age: "",
-    employmentType: "",
-    annualIncome: "",
-    loanType: passedLoanType || "",
-    loanAmount: "",
-    activeLoans: "",
-    cibilScore: "",
-    tenure: 3,
-  });
+  const formData = loanData || {};
 
   const [activeLoanDetails, setActiveLoanDetails] = useState([]);
   const [currentLoanIndex, setCurrentLoanIndex] = useState(0);
 
   useEffect(() => {
-  if (passedLoanType) {
-    setFormData((prev) => ({
+  if (passedLoanType && setLoanData) {
+    setLoanData((prev) => ({
       ...prev,
-      loanType: passedLoanType,
+      loanType: prev?.loanType || passedLoanType,
+      tenure: prev?.tenure ?? 3,
     }));
   }
-}, [passedLoanType]);
+}, [passedLoanType, setLoanData]);
+const handleChange = useCallback((e) => {
+  const { name, value } = e.target;
 
-  const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
+  const numericFields = [
+    "age",
+    "annualIncome",
+    "loanAmount",
+    "activeLoans",
+    "cibilScore",
+    "tenure",
+  ];
 
-    const numericFields = [
-      "age",
-      "annualIncome",
-      "loanAmount",
-      "activeLoans",
-      "cibilScore",
-      "tenure",
-    ];
+  let processedValue = numericFields.includes(name)
+    ? value === ""
+      ? ""
+      : Number(value)
+    : value;
 
-    let processedValue = numericFields.includes(name)
-      ? value === ""
-        ? ""
-        : Number(value)
-      : value;
+  if (name === "tenure") {
+    if (processedValue > 30) processedValue = 30;
+    if (processedValue < 0) processedValue = 0;
+  }
 
-    if (name === "tenure") {
-      if (processedValue > 30) processedValue = 30;
-      if (processedValue < 0) processedValue = 0;
-    }
+  setLoanData((prev) => ({
+    ...prev,
+    [name]: processedValue,
+  }));
+}, [setLoanData]);
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: processedValue,
-    }));
-
-    if (name === "activeLoans") {
-      const count = Number(value) || 0;
-
-      setActiveLoanDetails(
-        Array.from({ length: count }, () => ({
-          emi: "",
-          outstandingAmount: "",
-          tenureLeft: "",
-        }))
-      );
-
-      setCurrentLoanIndex(0);
-    }
-  }, []);
 
   const handleLoanDetailChange = useCallback(
     (field, value) => {
