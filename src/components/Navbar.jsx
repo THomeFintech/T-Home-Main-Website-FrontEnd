@@ -46,6 +46,24 @@ function Navbar() {
     { label: "PAN & Aadhaar Linking", to: "/pan-aadhaar-linking", icon: LucideLink },
   ];
 
+  const mobileServiceOrder = [
+  "Home Loan",
+  "Mortgage Loan",
+  "Loan Against Property",
+  "Personal Loan",
+  "Balance Transfer",
+  "Company Registration",
+  "PAN & Aadhaar Linking",
+  "GST Registration",
+  "UDYAM/MSME Registration",
+  "ITR Tax Filing",
+  "Food License",
+];
+
+const orderedMobileServices = mobileServiceOrder.map((label) =>
+  serviceLinks.find((item) => item.label === label)
+);
+
   useEffect(() => {
     setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
     setUser(JSON.parse(localStorage.getItem("user") || "{}"));
@@ -413,7 +431,7 @@ function Navbar() {
 
 {mobileServicesOpen && (
                     <div className="ml-3 mt-2 flex flex-col gap-1 rounded-lg border border-white/10 bg-white/5 p-2">
-                      {serviceLinks.map((item) => {
+                      {orderedMobileServices.filter(Boolean).map((item) => {
                         const Icon = item.icon;
                         return (
                           <Link
