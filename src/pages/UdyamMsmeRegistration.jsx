@@ -138,14 +138,25 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
         <div className="space-y-3">
           {[
-            "Is Udyam registration mandatory?",
-            "Is it valid for lifetime?"
-          ].map((q, i) => (
-            <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">
-                {q}
-              </summary>
-              <p className="text-gray-400 text-xs mt-2">Detailed answer goes here.</p>
+            {
+              q: "What is Udyam MSME registration?",
+              a: "It is a government recognition for micro, small, and medium enterprises.Registered businesses can access various official benefits and schemes.",
+            },
+            {
+              q: "Is Aadhaar mandatory for Udyam registration?",
+              a: "Aadhaar details are commonly required during the online application process.Business information must also match government records correctly.",
+            },
+            {
+              q: "What benefits do MSMEs receive after registration?",
+              a: "Registered businesses may receive easier loan access and subsidy support.Some tenders and schemes also provide special preferences.",
+            },
+          ].map((faq, i) => (
+            <details
+              key={i}
+              className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]"
+            >
+              <summary className="cursor-pointer text-sm">{faq.q}</summary>
+              <p className="text-gray-200 text-xs mt-2 leading-relaxed whitespace-pre-line">{faq.a}</p>
             </details>
           ))}
         </div>

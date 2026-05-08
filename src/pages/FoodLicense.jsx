@@ -140,12 +140,16 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
         <FaqAccordion
           items={[
             {
-              q: "Which license is required for small food businesses?",
-              a: "Most small food businesses need an FSSAI license or registration depending on their annual turnover and type of food operations. Our team can help you determine which one you need.",
+              q: "Why is a food license important?",
+              a: "It confirms that the business follows food safety regulations and standards.\nLicensed businesses build stronger customer trust and compliance.",
             },
             {
-              q: "What is validity of FSSAI license?",
-              a: "FSSAI licenses are typically valid for 1 to 5 years, depending on the applicant’s choice and regulatory requirements. Renewals should be done before expiry.",
+              q: "Who needs FSSAI registration?",
+              a: "Restaurants, food manufacturers, and small food vendors usually require it.\nThe registration type depends on turnover and operations.",
+            },
+            {
+              q: "How long does food license approval take?",
+              a: "Processing duration varies according to license category and verification.\nIncorrect documents can delay the approval process further.",
             },
           ]}
         />

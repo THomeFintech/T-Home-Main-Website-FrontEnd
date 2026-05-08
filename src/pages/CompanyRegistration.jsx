@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import EligibilityCriteria from "../components/EligibilityCriteria";
+import FaqAccordion from "../components/FaqAccordion";
+
 
 export default function CompanyRegistration() {
   const navigate = useNavigate();
@@ -134,19 +136,20 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
         <FaqAccordion
           items={[
             {
-              q: "How long does company registration take?",
-              a: "Company registration timelines vary by document readiness and approvals, but it often takes a few weeks from submission to certificate issuance.",
+              q: "Which documents are required for company registration?",
+              a: "You typically submit KYC of directors and registered office proof.\nDepending on the company type, additional forms are filed.",
             },
             {
-              q: "What type of company should I choose?",
-              a: "The best structure depends on ownership, funding, and operational needs. Common options include Pvt. Ltd., LLP, and partnership—choose based on your business goals.",
+              q: "What impacts the approval timeline?",
+              a: "Name availability, DSC readiness, and completeness of incorporation papers slow or speed up processing.\nFaster submission reduces back-and-forth during verification.",
             },
             {
-              q: "Is GST mandatory?",
-              a: "GST registration is required based on turnover and business nature. Many businesses need GST if they cross the eligibility threshold or operate in specific categories.",
+              q: "Will you help after incorporation with compliances?",
+              a: "We guide next steps like PAN/TAN updates and initial registrations.\nWe also support ongoing compliance planning for your entity.",
             },
           ]}
         />
+
       </div>
 
       {/* CTA */}

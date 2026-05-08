@@ -142,15 +142,25 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
         <div className="space-y-3">
           {[
-            "What property types are accepted?",
-            "Is this different from a personal loan?",
-            "Can I use property during loan tenure?"
-          ].map((q, i) => (
-            <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">
-                {q}
-              </summary>
-              <p className="text-gray-400 text-xs mt-2">Detailed answer goes here.</p>
+            {
+              q: "What types of properties are accepted?",
+              a: "Residential, commercial, and selected industrial properties are considered.Property condition and ownership verification are also important.",
+            },
+            {
+              q: "How much loan can be obtained against property?",
+              a: "Loan amounts are usually approved based on market valuation percentages.Income and repayment capability also affect the final sanction.",
+            },
+            {
+              q: "Can the property still be used during repayment?",
+              a: "Borrowers generally continue using the property while repaying the loan.Ownership remains with the applicant unless repayment defaults occur.",
+            },
+          ].map((faq, i) => (
+            <details
+              key={i}
+              className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]"
+            >
+              <summary className="cursor-pointer text-sm">{faq.q}</summary>
+              <p className="text-gray-200 text-xs mt-2 leading-relaxed whitespace-pre-line">{faq.a}</p>
             </details>
           ))}
         </div>

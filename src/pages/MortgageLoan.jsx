@@ -167,18 +167,30 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
 
         <div className="space-y-3">
           {[
-            "What is a mortgage loan?",
-            "How is eligibility calculated?"
-          ].map((q, i) => (
-            <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">
-                {q}
-              </summary>
-              <p className="text-gray-400 text-xs mt-2">Detailed answer goes here.</p>
+            {
+              q: "What is a mortgage loan?",
+              a: "It is a loan secured using residential or commercial property as collateral.\nLoan value is usually based on the property's market worth.",
+            },
+            {
+              q: "How is mortgage loan eligibility calculated?",
+              a: "Banks assess income consistency, repayment history, and property valuation.\nExisting liabilities also affect the sanctioned amount.",
+            },
+            {
+              q: "What documents are needed for mortgage processing?",
+              a: "Property papers, identity proof, and income records are commonly required.\nAdditional verification documents may be requested during review.",
+            },
+          ].map((faq, i) => (
+            <details
+              key={i}
+              className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]"
+            >
+              <summary className="cursor-pointer text-sm">{faq.q}</summary>
+              <p className="text-gray-200 text-xs mt-2 leading-relaxed whitespace-pre-line">{faq.a}</p>
             </details>
           ))}
         </div>
       </div>
+
 
       {/* CTA */}
       <div className="max-w-5xl mx-auto px-6 pb-16">

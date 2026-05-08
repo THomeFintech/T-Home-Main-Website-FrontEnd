@@ -138,14 +138,25 @@ export default function PanAadhaarLinking() {
 
         <div className="space-y-3">
           {[
-            "Is linking mandatory?",
-            "What if details don’t match?"
-          ].map((q, i) => (
-            <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">
-                {q}
-              </summary>
-              <p className="text-gray-400 text-xs mt-2">Detailed answer goes here.</p>
+            {
+              q: "Why should PAN be linked with Aadhaar?",
+              a: "Linking helps maintain valid tax records and identity verification compliance.Unlinked PAN cards may face restrictions in certain services.",
+            },
+            {
+              q: "Is there a deadline for PAN-Aadhaar linking?",
+              a: "Government authorities periodically announce official linking deadlines.Late linking may attract penalties or service interruptions.",
+            },
+            {
+              q: "Can linking be completed online?",
+              a: "The process is available through official government online portals.Basic identity details must match correctly in both records.",
+            },
+          ].map((faq, i) => (
+            <details
+              key={i}
+              className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]"
+            >
+              <summary className="cursor-pointer text-sm">{faq.q}</summary>
+              <p className="text-gray-200 text-xs mt-2 leading-relaxed whitespace-pre-line">{faq.a}</p>
             </details>
           ))}
         </div>

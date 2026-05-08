@@ -22,10 +22,12 @@ export default function FaqAccordion({ items = [] }) {
             </button>
 
             {isOpen && (
-              <div className="px-4 pb-4">
-                <p className="text-gray-400 text-xs mt-0 pt-0 border-t border-white/10 leading-relaxed">
-                  {item.a}
-                </p>
+              <div className="px-4 pb-5 pt-1">
+                <div className="border-t border-white/10 pt-4">
+                  <p className="text-gray-200 text-xs leading-relaxed">
+                    {item.a}
+                  </p>
+                </div>
               </div>
             )}
           </div>
