@@ -141,18 +141,25 @@ export default function PersonalLoan() {
 
         <div className="space-y-3">
           {[
-            "How much personal loan can I get?",
-            "Is there a foreclosure charge?",
-            "Do I need security?"
-          ].map((q, i) => (
+            {
+              q: "Is collateral required for a personal loan?",
+              a: "Personal loans are generally unsecured and do not need property pledging.Approval mainly depends on financial background and credit score.",
+            },
+            {
+              q: "How quickly is a personal loan disbursed?",
+              a: "Many lenders process approved applications within a few working days.Timing varies according to verification and bank procedures.",
+            },
+            {
+              q: "Can self-employed applicants get personal loans?",
+              a: "Business owners and freelancers can apply with proper income proof.Stable earnings improve the chances of loan approval.",
+            },
+          ].map((faq, i) => (
             <details
               key={i}
               className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]"
             >
-              <summary className="cursor-pointer text-sm">
-                {q}
-              </summary>
-              <p className="text-gray-400 text-xs mt-2">Detailed answer goes here.</p>
+              <summary className="cursor-pointer text-sm">{faq.q}</summary>
+              <p className="text-gray-200 text-xs mt-2 leading-relaxed whitespace-pre-line">{faq.a}</p>
             </details>
           ))}
         </div>

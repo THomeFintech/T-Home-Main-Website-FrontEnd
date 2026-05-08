@@ -19,9 +19,7 @@ export default function HomeLoan() {
         <div>
           <p className="text-blue-400 text-xs mb-3">TRUSTED FINANCIAL SERVICES</p>
 
-          <h1 className="text-5xl font-bold mb-4 leading-tight">
-            Home Loans
-          </h1>
+          <h1 className="text-5xl font-bold mb-4 leading-tight">Home Loans</h1>
 
           <p className="text-gray-400 mb-6 text-sm leading-relaxed">
             Turn your dream of owning a home into reality with affordable home loan options. Enjoy competitive interest rates, flexible repayment plans, and quick approvals through a simple and transparent process.
@@ -59,7 +57,7 @@ export default function HomeLoan() {
           </div>
         </div>
 
-                <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] h-[360px]">
+        <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] h-[360px]">
           <img
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
             alt="family"
@@ -70,16 +68,32 @@ export default function HomeLoan() {
 
       {/* WHY CHOOSE */}
       <div className="max-w-7xl mx-auto px-6 py-10">
-<h1 className="text-center text-3xl font-bold mb-10 text-white">
+        <h1 className="text-center text-3xl font-bold mb-10 text-white">
           Why Choose T-Home?
         </h1>
 
         <div className="grid md:grid-cols-4 gap-6">
           {[
-            { title: "Lowest Rates", desc: "Competitive interest rates starting from just 8.5% p.a.", icon: "💰" },
-            { title: "Zero Hidden Fees", desc: "Absolute transparency with every penny. No surprise costs.", icon: "🧾" },
-            { title: "Doorstep Pickup", desc: "We collect your documents from your preferred location.", icon: "🚚" },
-            { title: "Legal Assistance", desc: "Expert legal verification for your property.", icon: "⚖️" }
+            {
+              title: "Lowest Rates",
+              desc: "Competitive interest rates starting from just 8.5% p.a.",
+              icon: "💰",
+            },
+            {
+              title: "Zero Hidden Fees",
+              desc: "Absolute transparency with every penny. No surprise costs.",
+              icon: "🧾",
+            },
+            {
+              title: "Doorstep Pickup",
+              desc: "We collect your documents from your preferred location.",
+              icon: "🚚",
+            },
+            {
+              title: "Legal Assistance",
+              desc: "Expert legal verification for your property.",
+              icon: "⚖️",
+            },
           ].map((item, i) => (
             <div
               key={i}
@@ -97,7 +111,9 @@ export default function HomeLoan() {
 
       {/* PROCESS */}
       <div className="max-w-5xl mx-auto px-6 py-12">
-<h1 className="text-center text-3xl font-bold mb-10 text-white">Simple Process</h1>
+        <h1 className="text-center text-3xl font-bold mb-10 text-white">
+          Simple Process
+        </h1>
         <p className="text-center text-gray-400 text-xs mb-12">
           Getting your home loan is easier than ever
         </p>
@@ -106,13 +122,31 @@ export default function HomeLoan() {
           <div className="absolute top-4 left-0 w-full h-[2px] bg-white/20"></div>
 
           {[
-            { title: "Application", desc: "Fill out the online application form with basic details." },
-            { title: "Document Collection", desc: "Submit KYC, income proof, and property papers." },
-            { title: "Verification", desc: "Bank verifies documents and credit score." },
-            { title: "Sanction", desc: "Loan is approved with terms and conditions." },
-            { title: "Disbursement", desc: "Loan amount is disbursed after agreement." }
+            {
+              title: "Application",
+              desc: "Fill out the online application form with basic details.",
+            },
+            {
+              title: "Document Collection",
+              desc: "Submit KYC, income proof, and property papers.",
+            },
+            {
+              title: "Verification",
+              desc: "Bank verifies documents and credit score.",
+            },
+            {
+              title: "Sanction",
+              desc: "Loan is approved with terms and conditions.",
+            },
+            {
+              title: "Disbursement",
+              desc: "Loan amount is disbursed after agreement.",
+            },
           ].map((step, i) => (
-            <div key={i} className="relative flex flex-col items-center text-center w-full">
+            <div
+              key={i}
+              className="relative flex flex-col items-center text-center w-full"
+            >
               <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold z-10">
                 {String(i + 1).padStart(2, "0")}
               </div>
@@ -127,7 +161,7 @@ export default function HomeLoan() {
         </div>
       </div>
 
-{/* ELIGIBILITY */}
+      {/* ELIGIBILITY */}
       <div className="max-w-7xl mx-auto px-6 py-12">
         <EligibilityCriteria />
       </div>
@@ -141,16 +175,16 @@ export default function HomeLoan() {
         <FaqAccordion
           items={[
             {
-              q: "What is the maximum tenure for a home loan?",
-              a: "Home loan tenure typically ranges up to 30 years depending on the lender and your eligibility.",
+              q: "Who can apply for a home loan?",
+              a: "✅ Salaried employees, self-employed individuals, and business owners can apply.\n\nEligibility depends on income stability and repayment capacity.",
             },
             {
-              q: "Can I prepay my home loan?",
-              a: "Yes, most lenders allow part/full prepayment. Terms, charges (if any), and eligibility apply.",
+              q: "What factors affect home loan approval?",
+              a: "✅ Credit score, monthly salary, and existing debts are commonly evaluated.\n\nProperty value and employment history also influence approval.",
             },
             {
-              q: "Do I need a co-applicant?",
-              a: "Not always. A co-applicant can help improve eligibility and increase loan approval chances.",
+              q: "Can I prepay my home loan early?",
+              a: "✅ Most lenders allow partial or full prepayment before tenure completion.\n\nSome banks may apply conditions based on the loan type.",
             },
           ]}
         />
@@ -159,9 +193,7 @@ export default function HomeLoan() {
       {/* CTA */}
       <div className="max-w-5xl mx-auto px-6 pb-16">
         <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-10 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
-          <h2 className="text-2xl font-bold mb-2">
-            Ready to Buy Your Dream Home?
-          </h2>
+          <h2 className="text-2xl font-bold mb-2">Ready to Buy Your Dream Home?</h2>
           <p className="text-white/80 mb-6 text-sm">
             Experience the future of home financing. Get started now and get a decision in minutes.
           </p>
@@ -182,8 +214,7 @@ export default function HomeLoan() {
           </div>
         </div>
       </div>
-
-      
     </div>
   );
 }
+

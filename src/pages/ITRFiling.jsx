@@ -1,4 +1,4 @@
-import React from "react";
+ import React from "react";
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 
@@ -138,15 +138,25 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
         <div className="space-y-3">
           {[
-            "What is the due date for ITR filing?",
-            "What happens if I don’t file ITR?",
-            "Can I revise my ITR?"
-          ].map((q, i) => (
-            <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">
-                {q}
-              </summary>
-              <p className="text-gray-400 text-xs mt-2">Detailed explanation goes here.</p>
+            {
+              q: "Who should file an income tax return?",
+              a: "Individuals earning taxable income must file returns within the deadline.Businesses and freelancers may also have mandatory filing requirements.",
+            },
+            {
+              q: "What documents are required for ITR filing?",
+              a: "PAN card, Aadhaar, bank statements, and Form 16 are commonly needed.Additional documents depend on income sources and deductions claimed.",
+            },
+            {
+              q: "What happens if I file ITR after the due date?",
+              a: "Late filing may result in penalties and delayed refund processing.\Certain losses and deductions may also become unavailable.",
+            },
+          ].map((faq, i) => (
+            <details
+              key={i}
+              className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]"
+            >
+              <summary className="cursor-pointer text-sm">{faq.q}</summary>
+              <p className="text-gray-200 text-xs mt-2 leading-relaxed whitespace-pre-line">{faq.a}</p>
             </details>
           ))}
         </div>
