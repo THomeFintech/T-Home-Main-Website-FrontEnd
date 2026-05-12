@@ -152,8 +152,8 @@ function Footer() {
 
         <div className="mt-5 border-t border-[#5a6588]/60 pt-4">
           <div className="flex flex-col items-start justify-between gap-3 text-[#dde6ff] md:flex-row md:items-center">
-            <p className="text-4xl font-semibold" style={{ fontSize: "clamp(19px,1vw,40px)" }}>All Rights Reserved by T-HOME@2026</p>
-            <div className="flex gap-8 text-4xl font-semibold" style={{ fontSize: "clamp(19px,1vw,40px)" }}>
+            <p className="text-4xl font-semibold" style={{ fontSize: "clamp(12px,1vw,40px)" }}>All Rights Reserved by T-HOME@2026</p>
+            <div className="flex gap-8 text-4xl font-semibold" style={{ fontSize: "clamp(12px,1vw,40px)" }}>
               <Link to="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link>
               <Link to="/terms-and-conditions" className="hover:text-white transition">Terms & Conditions</Link>
             </div>
