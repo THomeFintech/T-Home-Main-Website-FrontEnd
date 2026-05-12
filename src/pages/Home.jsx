@@ -45,6 +45,10 @@ function Home() {
     },
   ];
 
+  const baseFinancialCard =
+    "border border-[#536dff]/80 bg-[linear-gradient(180deg,rgba(19,27,63,0.58)_0%,rgba(9,15,38,0.64)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_14px_38px_rgba(0,0,0,0.28)] hover:border-[#63a9ff]/75 hover:bg-[linear-gradient(180deg,rgba(65,124,235,0.96)_0%,rgba(38,87,214,0.92)_100%)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.32),0_0_34px_rgba(72,149,255,0.38),0_18px_44px_rgba(0,0,0,0.36)]";
+
+
   const testimonials = [
     {
       text: `"Dear Mr. Ravinder, Your assistance in applying for, processing, and disbursing my SVC Indraprastha Apartments housing loan is amazing. You gave the list at once to prevent document submission disturbances."`,
@@ -270,12 +274,10 @@ function Home() {
       <section className="relative w-full overflow-hidden bg-[linear-gradient(90deg,#000000_0%,#1E2447_50%,#000000_100%)] py-[100px]">
         <div className="mx-auto max-w-[1500px] px-6">
           <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-4xl md:text-5xl font-semibold text-white leading-tight mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
-              Smart Financial Services for
-              <br />
-              Individuals & Businesses
+            <h2 className="mb-5 text-3xl font-semibold leading-tight text-white md:text-4xl" style={{fontFamily: "'Outfit', sans-serif"}}>
+              Our Financial Services 
             </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-base md:text-2xl leading-8 text-white/80">
+            <p className="mx-auto max-w-2xl text-sm leading-7 text-white/80 md:text-lg">
               Expert solution to streamlines and optimize
               <br className="hidden md:block" />
               your company's financial operations
@@ -290,36 +292,28 @@ function Home() {
               <span className="block -translate-y-px leading-none">‹</span>
             </button>
 
-            <div className="w-full max-w-6xl overflow-hidden">
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-                {services.map((service, index) => (
-                    <div
-                      key={index}
-                      className={`group h-[280px] rounded-[16px] p-7 text-center backdrop-blur-md grid grid-rows-[auto_1fr_auto] transition-all duration-300 hover:border-[#63a9ff]/75 hover:bg-[linear-gradient(180deg,rgba(65,124,235,0.96)_0%,rgba(38,87,214,0.92)_100%)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.32),0_0_34px_rgba(72,149,255,0.38),0_18px_44px_rgba(0,0,0,0.36)] ${
-                        index === 1
-                          ? "border border-[#213972]/36 bg-[linear-gradient(180deg,rgba(43,75,163,0.76)_0%,rgba(19,36,91,0.82)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_18px_42px_rgba(0,0,0,0.42)]"
-                          : "border border-[#536dff]/80 bg-[linear-gradient(180deg,rgba(19,27,63,0.58)_0%,rgba(9,15,38,0.64)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_14px_38px_rgba(0,0,0,0.28)]"
-                      }`}
-                    >
-                      <div>
-                        <h3 className="min-h-[48px] text-[20px] font-semibold leading-snug text-[#f5f9ff] transition-colors duration-300 group-hover:text-white">
-                          {service.title}
-                        </h3>
-                        <p className="mt-4 h-[96px] overflow-hidden text-[15px] leading-7 text-[#e3eeff]/86 transition-colors duration-300 group-hover:text-white/95">
-                          {service.description}
-                        </p>
-                      </div>
-                      <div className="self-end">
-                        <button
-  onClick={() => navigate(service.path)}
-  className="rounded-lg border border-[#83bcff]/55 bg-[linear-gradient(180deg,rgba(77,143,255,0.58)_0%,rgba(47,105,236,0.48)_100%)] px-6 py-2 text-sm font-medium text-[#f3f8ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)] transition duration-300 hover:border-white/50 hover:bg-[linear-gradient(180deg,rgba(100,173,255,0.9)_0%,rgba(56,130,255,0.86)_100%)] hover:shadow-[0_0_26px_rgba(86,156,255,0.42)]"
->
-  {service.button}
-</button>
-                      </div>
-                    </div>
-                  ))}
-              </div>
+            <div className="grid w-full max-w-6xl grid-cols-1 items-stretch gap-8 md:grid-cols-3">
+              {services.map((service, index) => (
+                <div
+                  key={index}
+                  className={`group flex h-full min-h-[280px] flex-col rounded-[16px] p-7 text-center backdrop-blur-md transition-all duration-300 hover:-translate-y-1 ${baseFinancialCard}`}
+                >
+                  <div className="flex flex-1 flex-col">
+                    <h3 className="min-h-[56px] text-[20px] font-semibold leading-snug text-[#f5f9ff] transition-colors duration-300 group-hover:text-white">
+                      {service.title}
+                    </h3>
+                    <p className="mt-4 flex-1 text-[15px] leading-7 text-[#e3eeff]/86 transition-colors duration-300 group-hover:text-white/95">
+                      {service.description}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => navigate(service.path)}
+                    className="mx-auto mt-7 rounded-lg border border-[#83bcff]/55 bg-[linear-gradient(180deg,rgba(77,143,255,0.58)_0%,rgba(47,105,236,0.48)_100%)] px-6 py-2 text-sm font-medium text-[#f3f8ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)] transition duration-300 hover:border-white/50 hover:bg-[linear-gradient(180deg,rgba(100,173,255,0.9)_0%,rgba(56,130,255,0.86)_100%)] hover:shadow-[0_0_26px_rgba(86,156,255,0.42)]"
+                  >
+                    {service.button}
+                  </button>
+                </div>
+              ))}
             </div>
 
             <button
@@ -462,7 +456,7 @@ function Home() {
       >
         <div className="absolute inset-0 bg-[#040814]/84"></div>
         <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>Why Choose T-Home</h2>
+          <h2 className="text-3xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>Why Choose T-Home</h2>
           <p className="mx-auto mt-5 max-w-2xl text-sm md:text-lg text-white/70 leading-relaxed">
             Everything you need to manage payments, compliance, and finances —
             all powered by intelligent automation.
