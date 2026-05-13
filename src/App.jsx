@@ -38,7 +38,7 @@ import PersonalLoan from "./pages/PersonalLoan";
 import LoanAgainstProperty from "./pages/LoanAgainstProperty";
 import MortgageLoan from "./pages/MortgageLoan";
 import BalanceTransfer from "./pages/BalanceTransfer";
-
+import BalanceTransferContact from "./pages/BalanceTransferContact";
 import BalanceTransferDetails from "./pages/BalanceTransferDetails";
 import BalanceTransferOffers from "./pages/BalanceTransferOffers";
 import BalanceTransferReview from "./pages/BalanceTransferReview";
@@ -162,6 +162,7 @@ function App() {
             <Route path="loan-against-property" element={<LoanAgainstProperty />} />
             <Route path="mortgage-loan" element={<MortgageLoan />} />
             <Route path="balance-transfer" element={<BalanceTransfer />} />
+                       <Route path="balance-transfer-contact" element={<BalanceTransferContact />} />
 
 
             {/* 404 */}
