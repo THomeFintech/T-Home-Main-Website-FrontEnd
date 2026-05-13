@@ -163,65 +163,7 @@ function App() {
             <Route path="mortgage-loan" element={<MortgageLoan />} />
             <Route path="balance-transfer" element={<BalanceTransfer />} />
                        <Route path="balance-transfer-contact" element={<BalanceTransferContact />} />
-             <Route
-            path="/balance-transfer/details"
-            element={<BalanceTransferDetails />}
-          />
-          <Route
-            path="/balance-transfer/offers"
-            element={<BalanceTransferOffers />}
-          />
-          <Route
-            path="/balance-transfer/review"
-            element={<BalanceTransferReview />}
-          />
-          <Route
-            path="/balance-transfer/analysis"
-            element={<BalanceTransferAnalysis />}
-          />
-          <Route
-            path="/balance-transfer/comparison"
-            element={<BalanceTransferComparison />}
-          />
-          <Route
-            path="/balance-transfer/detailed-table"
-            element={<BalanceTransferDetailedTable />}
-          />
-          <Route
-            path="/balance-transfer/amortization"
-            element={<BalanceTransferAmortization />}
-          />
-          <Route
-            path="/balance-transfer/ready"
-            element={<BalanceTransferReady />}
-          />
-
-          <Route
-            path="/balance-transfer/application-portal"
-            element={<BalanceTransferApplicationPortal />}
-          />
-          <Route
-            path="/balance-transfer/application-portal/income-documents"
-            element={<BalanceTransferIncomeDocuments />}
-          />
-          <Route
-            path="/balance-transfer/application-portal/existing-loan-documents"
-            element={<BalanceTransferExistingLoanDocuments />}
-          />
-          <Route
-            path="/balance-transfer/application-portal/co-applicant-details"
-            element={<BalanceTransferCoApplicantDetails />}
-          />
-          <Route
-            path="/balance-transfer/application-portal/review-submit"
-            element={<BalanceTransferReviewSubmit />}
-          />
-          <Route
-            path="/balance-transfer/application-portal/submitted"
-            element={<BalanceTransferSubmitted />}
-          />
-
-
+            
             {/* 404 */}
             <Route
               path="*"
