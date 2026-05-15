@@ -103,7 +103,36 @@ export default function PersonalLoan() {
           Getting your home loan is easier than ever
         </p>
 
-        <div className="relative flex justify-between items-start">
+        {/* MOBILE (vertical timeline) */}
+        <div className="space-y-6 md:hidden">
+          {[
+            { title: "Application", desc: "Fill out the online application form with basic details." },
+            { title: "Document Collection", desc: "Submit KYC, income proof, and property papers." },
+            { title: "Verification", desc: "Bank verifies documents and credit score." },
+            { title: "Sanction", desc: "Loan is approved with terms and conditions." },
+            { title: "Disbursement", desc: "Loan amount is disbursed after agreement." }
+          ].map((step, i) => (
+            <div key={i} className="flex gap-4 items-start">
+              <div className="flex flex-col items-center">
+                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold">
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+                {i !== 4 && <div className="w-[2px] h-16 bg-white/20"></div>}
+              </div>
+
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 w-full hover:bg-white/10 transition">
+                <p className="text-blue-400 text-xs mb-1">
+                  STEP {String(i + 1).padStart(2, "0")}
+                </p>
+                <h4 className="font-semibold text-sm mb-1">{step.title}</h4>
+                <p className="text-gray-400 text-xs">{step.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* DESKTOP (horizontal timeline) */}
+        <div className="relative flex justify-between items-start hidden md:flex">
           <div className="absolute top-4 left-0 w-full h-[2px] bg-white/20"></div>
 
           {[
@@ -113,7 +142,10 @@ export default function PersonalLoan() {
             { title: "Sanction", desc: "Loan is approved with terms and conditions." },
             { title: "Disbursement", desc: "Loan amount is disbursed after agreement." }
           ].map((step, i) => (
-            <div key={i} className="relative flex flex-col items-center text-center w-full">
+            <div
+              key={i}
+              className="relative flex flex-col items-center text-center w-full"
+            >
               <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold z-10">
                 {String(i + 1).padStart(2, "0")}
               </div>
@@ -127,6 +159,7 @@ export default function PersonalLoan() {
           ))}
         </div>
       </div>
+
 
 {/* ELIGIBILITY */}
       <div className="max-w-7xl mx-auto px-6 py-12">
