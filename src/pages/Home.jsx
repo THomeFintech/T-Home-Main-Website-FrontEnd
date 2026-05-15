@@ -179,10 +179,10 @@ function Home() {
           />
         </div>
 
-<img
+        <img
           src="/home/telangana map.png"
           alt="map"
-          className="absolute left-1/2 top-[15%] w-[620px] -translate-x-1/2 opacity-36 mix-blend-screen md:left-[30%] md:top-[8%] md:w-[610px] md:translate-x-0"
+          className="absolute left-1/2 top-[15%] z-10 w-[560px] -translate-x-1/2 opacity-30 mix-blend-screen md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
         />
 
         <div className="relative z-30 max-w-4xl px-6">
@@ -203,7 +203,7 @@ function Home() {
             </span>
           </h1>
 
-          <p className="mx-auto mt-5 max-w-[640px] text-base font-normal leading-8 text-[#dfeeff] drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)] md:text-[17px] md:leading-8">
+          <p className="mx-auto mt-5 max-w-[640px] leading-8 text-[#dfeeff] drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]">
             Low interest rates, quick approvals, and zero hidden charges. Apply online in just 5 minutes.
           </p>
 
@@ -223,8 +223,8 @@ function Home() {
           </div>
         </div>
 
-        {/* GLASS RINGS */}
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-end justify-center">
+        {/* GLASS RINGS (mobile only inner ring visible) */}
+        <div className="pointer-events-none absolute inset-0 z-10 items-end justify-center flex">
           <div className="absolute bottom-[-398px] h-[930px] w-[930px] rounded-full bg-[radial-gradient(circle,rgba(50,105,220,0.5)_0%,rgba(32,77,181,0.42)_44%,rgba(15,49,132,0.3)_70%,rgba(8,28,84,0.18)_88%,rgba(6,18,52,0)_100%)] animate-pulseSlow md:bottom-[-384px] md:h-[980px] md:w-[980px]" />
           <div className="absolute bottom-[-320px] h-[760px] w-[760px] rounded-full bg-[radial-gradient(circle,rgba(52,110,216,0.48)_0%,rgba(28,79,184,0.44)_44%,rgba(13,53,154,0.36)_72%,rgba(7,27,87,0.24)_90%,rgba(6,18,46,0)_100%)] animate-pulseSlow delay-150 md:bottom-[-306px] md:h-[800px] md:w-[800px]" />
           <div className="absolute bottom-[-245px] h-[610px] w-[610px] rounded-full bg-[radial-gradient(circle,rgba(84,143,232,0.32)_0%,rgba(56,113,210,0.3)_26%,rgba(33,89,188,0.3)_56%,rgba(16,58,162,0.25)_78%,rgba(7,21,62,0)_100%)] backdrop-blur-[1.5px] animate-pulseSlow delay-300 md:bottom-[-232px] md:h-[650px] md:w-[650px]" />
@@ -277,7 +277,7 @@ function Home() {
             <h2 className="mb-5 text-3xl font-semibold leading-tight text-white md:text-4xl" style={{fontFamily: "'Outfit', sans-serif"}}>
               Our Financial Services 
             </h2>
-            <p className="mx-auto max-w-2xl text-sm leading-7 text-white/80 md:text-lg">
+          <p className="mx-auto max-w-2xl leading-7 text-white/80">
               Expert solution to streamlines and optimize
               <br className="hidden md:block" />
               your company's financial operations
@@ -296,7 +296,7 @@ function Home() {
               {services.map((service, index) => (
                 <div
                   key={index}
-                  className={`group flex h-full min-h-[280px] flex-col rounded-[16px] p-7 text-center backdrop-blur-md transition-all duration-300 hover:-translate-y-1 ${baseFinancialCard}`}
+                  className={`group flex h-full min-h-[240px] flex-col rounded-[16px] p-6 sm:p-7 text-center backdrop-blur-md transition-all duration-300 hover:-translate-y-1 ${baseFinancialCard}`}
                 >
                   <div className="flex flex-1 flex-col">
                     <h3 className="min-h-[56px] text-[20px] font-semibold leading-snug text-[#f5f9ff] transition-colors duration-300 group-hover:text-white">
@@ -402,7 +402,7 @@ function Home() {
           <h2 className="text-center text-2xl md:text-4xl font-semibold text-white">
             Smart Financial Tools
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-center text-sm md:text-base leading-7 text-white/90">
+          <p className="mx-auto mt-6 max-w-2xl text-center leading-7 text-white/90">
             Use our powerful tools to plan and manage
             <br className="hidden md:block" />
             your finances better.
@@ -434,7 +434,7 @@ function Home() {
                 className="group rounded-[18px] border border-[#c9dcff]/36 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] px-6 py-8 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md transition-colors duration-300 hover:border-[#4e83ff]/60 hover:bg-[linear-gradient(180deg,rgba(50,78,205,0.84)_0%,rgba(33,52,159,0.8)_100%)]"
               >
                 <h3 className="text-base md:text-lg font-semibold text-white">{tool.title}</h3>
-                <p className="mx-auto mt-4 max-w-[220px] text-sm leading-6 text-white/90">
+          <p className="mx-auto mt-4 max-w-[220px] leading-6 text-white/90">
                   {tool.desc}
                 </p>
                 <button
@@ -457,7 +457,7 @@ function Home() {
         <div className="absolute inset-0 bg-[#040814]/84"></div>
         <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
           <h2 className="text-3xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>Why Choose T-Home</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-sm md:text-lg text-white/70 leading-relaxed">
+          <p className="mx-auto mt-5 max-w-2xl text-white/70 leading-relaxed">
             Everything you need to manage payments, compliance, and finances —
             all powered by intelligent automation.
           </p>
@@ -536,7 +536,7 @@ function Home() {
           <h2 className="mt-6 text-center text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
             What Our Client Says
           </h2>
-          <p className="mx-auto mt-5 max-w-3xl text-center text-sm md:text-xl leading-7 md:leading-9 text-white/75">
+          <p className="mx-auto mt-5 max-w-3xl text-center leading-7 text-white/75">
             Our clients trust us for hassle-free home loans with quick approvals and excellent service.
           </p>
 

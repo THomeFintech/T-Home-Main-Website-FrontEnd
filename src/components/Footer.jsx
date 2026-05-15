@@ -64,7 +64,7 @@ function Footer() {
               <h2 className="text-4xl font-semibold text-white">T-HOME</h2>
             </div>
 
-            <p className="mt-4 max-w-[290px] text-[30px] leading-[1.5] text-[#aebad4]" style={{ fontSize: "clamp(15px,0.82vw,30px)" }}>
+<p className="mt-4 max-w-[290px] leading-[1.5] text-[#aebad4]">
               T-HOME provides innovative and reliable financial solutions for your home needs.
               We combine technology, trust, and expertise to simplify your financial journey.
             </p>
@@ -118,7 +118,7 @@ function Footer() {
           {/* Subscribe */}
           <div>
             <h3 className="mb-2 text-4xl font-semibold text-white" style={{ fontSize: "clamp(20px,1.08vw,40px)" }}>Subscribe to Updates</h3>
-            <p className="mb-3 max-w-[430px] text-[27px] leading-[1.45] text-[#aebad4]" style={{ fontSize: "clamp(13px,0.74vw,27px)" }}>
+<p className="mb-3 max-w-[430px] leading-[1.45] text-[#aebad4]">
               Subscribe to receive updates and financial tips directly to your inbox.
             </p>
 
@@ -144,7 +144,7 @@ function Footer() {
               </p>
             )}
 
-            <p className="mt-3 text-xs text-[#8ea1c7]">
+<p className="mt-3 text-[#8ea1c7]">
               © We respect your privacy and never share your email.
             </p>
           </div>
@@ -152,8 +152,8 @@ function Footer() {
 
         <div className="mt-5 border-t border-[#5a6588]/60 pt-4">
           <div className="flex flex-col items-start justify-between gap-3 text-[#dde6ff] md:flex-row md:items-center">
-            <p className="text-4xl font-semibold" style={{ fontSize: "clamp(12px,1vw,40px)" }}>All Rights Reserved by T-HOME@2026</p>
-            <div className="flex gap-8 text-4xl font-semibold" style={{ fontSize: "clamp(12px,1vw,40px)" }}>
+            <p className="text-4xl" style={{ fontSize: "clamp(12px,1vw,40px)" }}>All Rights Reserved by T-HOME@2026</p>
+            <div className="flex gap-8 text-4xl" style={{ fontSize: "clamp(12px,1vw,40px)" }}>
               <Link to="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link>
               <Link to="/terms-and-conditions" className="hover:text-white transition">Terms & Conditions</Link>
             </div>

@@ -92,10 +92,11 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
       {/* PROCESS */}
       <div className="max-w-4xl mx-auto px-6 py-12">
-<h1 className="text-center text-3xl font-bold mb-10 text-white">Simple Process</h1>
+        <h1 className="text-center text-3xl font-bold mb-10 text-white">Simple Process</h1>
         <p className="text-center text-gray-400 text-xs mb-10">Register your company in a few easy steps</p>
 
-        <div className="space-y-6">
+        {/* MOBILE (vertical timeline) */}
+        <div className="space-y-6 md:hidden">
           {[
             { title: "DSC & DIN", desc: "Obtain Digital Signature & Director Identification Number." },
             { title: "Name Approval", desc: "Choose and reserve your company name." },
@@ -103,24 +104,47 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
             { title: "Certificate", desc: "Receive your company registration certificate." }
           ].map((step, i) => (
             <div key={i} className="flex gap-4 items-start">
-
               <div className="flex flex-col items-center">
                 <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold">
-                  {String(i + 1).padStart(2, '0')}
+                  {String(i + 1).padStart(2, "0")}
                 </div>
                 {i !== 3 && <div className="w-[2px] h-16 bg-white/20"></div>}
               </div>
 
               <div className="bg-white/5 border border-white/10 rounded-xl p-4 w-full hover:bg-white/10 transition">
-                <p className="text-blue-400 text-xs mb-1">STEP {String(i + 1).padStart(2, '0')}</p>
+                <p className="text-blue-400 text-xs mb-1">
+                  STEP {String(i + 1).padStart(2, "0")}
+                </p>
                 <h4 className="font-semibold text-sm mb-1">{step.title}</h4>
                 <p className="text-gray-400 text-xs">{step.desc}</p>
               </div>
+            </div>
+          ))}
+        </div>
 
+        {/* DESKTOP (horizontal timeline) */}
+        <div className="relative flex justify-between items-start hidden md:flex">
+          <div className="absolute top-4 left-0 w-full h-[2px] bg-white/20"></div>
+          {[
+            { title: "DSC & DIN", desc: "Obtain Digital Signature & Director Identification Number." },
+            { title: "Name Approval", desc: "Choose and reserve your company name." },
+            { title: "Incorporation", desc: "Submit incorporation documents and forms." },
+            { title: "Certificate", desc: "Receive your company registration certificate." }
+          ].map((step, i) => (
+            <div key={i} className="relative flex flex-col items-center text-center w-full">
+              <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold z-10">
+                {String(i + 1).padStart(2, "0")}
+              </div>
+              <p className="text-blue-400 text-xs mt-4">
+                STEP {String(i + 1).padStart(2, "0")}
+              </p>
+              <h4 className="font-semibold text-sm mb-1">{step.title}</h4>
+              <p className="text-gray-400 text-xs max-w-[140px]">{step.desc}</p>
             </div>
           ))}
         </div>
       </div>
+
 
 {/* ELIGIBILITY */}
       <div className="max-w-7xl mx-auto px-6 py-12">

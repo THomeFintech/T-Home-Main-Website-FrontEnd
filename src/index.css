@@ -30,6 +30,70 @@ textarea {
   font-size: 16px;
 }
 
+/* Typography standard */
+html {
+  font-size: 16px;
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Standard heading sizes (global) */
+h1 {
+  font-size: 30px; /* within 28–32px */
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 24px; /* within 22–26px */
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 20px; /* within 18–22px */
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 17px; /* within 16–18px */
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+h5 {
+  font-size: 15px; /* within 14–16px */
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+h6 {
+  font-size: 13px; /* within 12–14px */
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+/* Tailwind/inline overrides can force larger text on headings.
+   These “ratio enforced” classes can be used to keep strict H1–H6 ranges. */
+.thome-ratio-h1 { font-size: 30px !important; }
+.thome-ratio-h2 { font-size: 24px !important; }
+.thome-ratio-h3 { font-size: 20px !important; }
+.thome-ratio-h4 { font-size: 17px !important; }
+.thome-ratio-h5 { font-size: 15px !important; }
+.thome-ratio-h6 { font-size: 13px !important; }
+
+
+
+
 .thome-page-pad {
   padding-left: var(--thome-page-x);
   padding-right: var(--thome-page-x);
