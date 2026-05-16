@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
+import panAadhaarLinkImg from "../assets/PAN & Aadhaar Linking.png";
 
 export default function PanAadhaarLinking() {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ export default function PanAadhaarLinking() {
 
                 <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] h-[360px]">
           <img
-            src="https://images.unsplash.com/photo-1611078489935-0cb964de46d6"
+            src={panAadhaarLinkImg}
             alt="pan aadhaar"
             className="w-full h-full object-cover"
           />

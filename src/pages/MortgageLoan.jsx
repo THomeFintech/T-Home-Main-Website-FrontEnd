@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import EligibilityCriteria from "../components/EligibilityCriteria";
+import mortgageLoanImg from "../assets/Mortgage Loans.png";
 
 export default function MortgageLoan() {
   const navigate = useNavigate(); // ✅ CORRECT PLACE
@@ -61,9 +62,9 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
   </div>
 
   {/* RIGHT IMAGE */}
-         <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] h-[360px]">
+      <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] h-[360px]">
     <img
-      src="https://images.unsplash.com/photo-1560518883-ce09059eeffa"
+      src={mortgageLoanImg}
       alt="mortgage loan"
       className="w-full h-full object-cover"
     />
