@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
+import personalLoanImg from "../assets/personal loan.png";
 
 export default function PersonalLoan() {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ export default function PersonalLoan() {
 
                 <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] h-[360px]">
           <img
-            src="https://images.unsplash.com/photo-1556745757-8d76bdb6984b"
+            src={personalLoanImg}
             alt="personal loan"
             className="w-full h-full object-cover"
           />

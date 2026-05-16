@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import FaqAccordion from "../components/FaqAccordion";
-
+import companyRegImg from "../assets/Company Registration.png";
 
 export default function CompanyRegistration() {
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
                 <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] h-[360px]">
           <img
-            src="https://images.unsplash.com/photo-1556761175-b413da4baf72"
+            src={companyRegImg}
             alt="company registration"
             className="w-full h-full object-cover"
           />
