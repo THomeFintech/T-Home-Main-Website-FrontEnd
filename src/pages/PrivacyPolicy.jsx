@@ -59,7 +59,7 @@ export default function PrivacyPolicy() {
     <div
       className="min-h-screen text-white font-['Outfit',sans-serif]"
       style={{
-        background: "linear-gradient(269.67deg, #000000 0.26%, #1E2447 49.98%, #000000 99.69%)",
+        background: "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
       <div className="mx-auto max-w-[1180px] px-6 pb-20 pt-28">

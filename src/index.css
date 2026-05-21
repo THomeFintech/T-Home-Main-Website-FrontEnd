@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:wght@400;500;600;700&display=swap");
 
 
 @tailwind base;
@@ -38,6 +38,9 @@ html {
 body {
   font-size: 16px;
   line-height: 1.6;
+  background: radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%);
+  background-attachment: fixed;
+  color: #ffffff;
 }
 
 p {
@@ -121,6 +124,8 @@ h6 {
 @media (max-width: 640px) {
   :root {
     --thome-page-x: 16px;
+    /* Reduce vertical spacing on mobile without touching desktop */
+    --thome-section-y: 56px;
   }
 
   input,
@@ -132,7 +137,21 @@ h6 {
   button {
     font-size: 12px;
   }
+
+  /* Tighten spacing between stacked sections on the mobile homepage */
+  section {
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+
+  /* If any wrapper uses classic margin-top/bottom, clamp it on mobile */
+  .landing-footer,
+  .logo-area {
+    margin-top: 0.8rem !important;
+    margin-bottom: 0.8rem !important;
+  }
 }
+
 
 @layer components {
   .glass-card {

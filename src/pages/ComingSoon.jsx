@@ -8,8 +8,8 @@ export default function ComingSoon() {
   return (
     <section className="relative min-h-screen overflow-hidden px-4 pb-10 pt-28 font-['Outfit',sans-serif] sm:px-6 md:pt-32 lg:px-8">
       {/* Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle,#1E2447_0%,#000000_70%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(132,172,237,0.72),transparent_60%)] opacity-70" />
+      <div className="absolute inset-0 bg-[radial-gradient(1200px_680px_at_20%_-10%,rgba(90,140,255,0.18),transparent_62%),radial-gradient(980px_580px_at_100%_0%,rgba(36,107,198,0.14),transparent_60%),linear-gradient(180deg,#071327_0%,#08162b_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(132,172,237,0.40),transparent_60%)] opacity-70" />
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.02),transparent_30%,rgba(255,255,255,0.01))]" />
 
       {/* Floating glow */}

@@ -85,7 +85,7 @@ const CollaboratePage = () => {
     <div
       className="relative min-h-screen overflow-hidden text-white"
       style={{
-        background: "linear-gradient(269.67deg, #000000 0.26%, #1E2447 49.98%, #000000 99.69%)",
+        background: "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
       <div className="pointer-events-none absolute inset-0">
@@ -100,16 +100,8 @@ const CollaboratePage = () => {
         {/* ─── HERO SECTION ─── */}
         <section
           className="relative flex flex-col items-center justify-center px-6 py-28 text-center"
-          style={{ background: "linear-gradient(180deg, #0e2244 0%, #0a1628 100%)" }}
+          style={{ background: "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)" }}
         >
-          <div
-            className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 1px 1px, rgba(100,160,255,0.3) 1px, transparent 0)",
-              backgroundSize: "40px 40px",
-            }}
-          />
           <h1 className="relative mb-4 text-4xl font-bold leading-tight md:text-5xl">
             Partner with <span className="text-blue-400">T-Home</span> to Grow Together
           </h1>
@@ -188,7 +180,7 @@ const CollaboratePage = () => {
         </section>
 
         {/* ─── WHY PARTNER WITH US ─── */}
-        <section className="px-6 py-20 text-center" style={{ background: "rgba(0,0,0,0.25)" }}>
+        <section className="px-6 py-20 text-center" style={{ background: "rgba(255,255,255,0.02)" }}>
           <h2 className="mb-2 text-3xl font-bold md:text-4xl">Why Partner With Us</h2>
           <p className="mb-14 text-sm text-gray-400">
             We provide the tools, support, and financial incentives to help you succeed.
@@ -239,7 +231,7 @@ const CollaboratePage = () => {
           <p className="mb-14 text-sm text-gray-400">
             A simple, transparent process to get you up and running quickly.
           </p>
-          <div className="relative mx-auto flex max-w-3xl flex-col items-center justify-center gap-0 md:flex-row md:gap-0">
+          <div className="relative mx-auto flex max-w-3xl flex-col items-center justify-center gap-10 md:flex-row md:items-start md:gap-0">
             <div
               className="absolute left-[16.5%] right-[16.5%] top-7 hidden h-px md:block"
               style={{
@@ -252,31 +244,21 @@ const CollaboratePage = () => {
               { num: 2, title: "Get Verified", desc: "Our team reviews and approves your profile." },
               { num: 3, title: "Start Collaborating", desc: "Access the portal and begin earning." },
             ].map((step, i) => (
-              <div key={i} className="relative z-10 flex flex-1 flex-col items-center px-6">
+              <div key={i} className="relative z-10 flex flex-1 flex-col items-center px-4 text-center sm:px-6">
                 <div
-                  className={`mb-4 flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold ${
-                    step.num === 2 ? "bg-blue-500 text-white" : "text-blue-400"
-                  }`}
-                  style={
-                    step.num !== 2
-                      ? {
-                          border: "2px solid rgba(59,130,246,0.6)",
-                          background: "rgba(59,130,246,0.1)",
-                        }
-                      : {}
-                  }
+                  className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-[#5e8fe0]/55 bg-[linear-gradient(180deg,rgba(33,46,97,0.42)_0%,rgba(20,30,74,0.36)_100%)] text-lg font-bold text-[#9cc6ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-md transition-all duration-300 md:h-16 md:w-16 md:text-xl"
                 >
                   {step.num}
                 </div>
-                <h3 className="mb-1 text-sm font-semibold">{step.title}</h3>
-                <p className="text-xs text-gray-400">{step.desc}</p>
+                <h3 className="mb-1 text-sm font-semibold text-white md:text-base">{step.title}</h3>
+                <p className="max-w-[220px] text-xs leading-6 text-[#d7def3] md:text-sm">{step.desc}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* ─── TESTIMONIALS ─── */}
-        <section className="px-6 py-20 text-center" style={{ background: "rgba(0,0,0,0.2)" }}>
+        <section className="px-6 py-20 text-center" style={{ background: "rgba(255,255,255,0.02)" }}>
           <h2 className="mb-2 text-3xl font-bold md:text-4xl">Trusted by Partners</h2>
           <p className="mb-12 text-sm text-gray-400">
             Hear from professionals who are already growing with T-Home.
@@ -489,9 +471,9 @@ const CollaboratePage = () => {
             className="mx-auto max-w-3xl rounded-2xl px-8 py-14 text-center"
             style={{
               background:
-                "linear-gradient(135deg, rgba(30,58,138,0.5) 0%, rgba(17,24,80,0.6) 100%)",
+                "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.16), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.1), transparent 60%), linear-gradient(180deg, rgba(7,19,39,0.92) 0%, rgba(8,22,43,0.92) 100%)",
               backdropFilter: "blur(16px)",
-              border: "1px solid rgba(59,130,246,0.2)",
+              border: "1px solid rgba(89,144,255,0.18)",
               boxShadow: "0 8px 40px rgba(0,0,0,0.4)",
             }}
           >

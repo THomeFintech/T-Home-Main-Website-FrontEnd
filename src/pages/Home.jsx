@@ -48,6 +48,9 @@ function Home() {
   const baseFinancialCard =
     "border border-[#536dff]/80 bg-[linear-gradient(180deg,rgba(19,27,63,0.58)_0%,rgba(9,15,38,0.64)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_14px_38px_rgba(0,0,0,0.28)] hover:border-[#63a9ff]/75 hover:bg-[linear-gradient(180deg,rgba(65,124,235,0.96)_0%,rgba(38,87,214,0.92)_100%)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.32),0_0_34px_rgba(72,149,255,0.38),0_18px_44px_rgba(0,0,0,0.36)]";
 
+  const homeSectionBackground =
+    "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)";
+
 
   const testimonials = [
     {
@@ -146,7 +149,7 @@ function Home() {
   return (
     <div style={{ fontFamily: "'Outfit', sans-serif" }}>
       {/* ── HERO SECTION ── */}
-      <section className="relative flex min-h-[100svh] w-full items-start justify-center overflow-hidden py-[100px] text-center md:min-h-[100svh] md:py-[100px] bg-[#081a49]">
+      <section className="relative flex min-h-[100svh] w-full items-start justify-center overflow-hidden pt-[192px] pb-[100px] text-center md:min-h-[100svh] md:pt-[128px] md:pb-[100px] bg-[#081a49]">
         <img
           src="/home/bg image.png"
           alt="background"
@@ -182,11 +185,11 @@ function Home() {
         <img
           src="/home/telangana map.png"
           alt="map"
-          className="absolute left-1/2 top-[15%] z-10 w-[560px] -translate-x-1/2 opacity-30 mix-blend-screen md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
+          className="absolute left-1/2 top-[28%] z-10 hidden w-[430px] -translate-x-1/2 opacity-35 brightness-110 saturate-150 hue-rotate-6 mix-blend-screen md:block md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
         />
 
         <div className="relative z-30 max-w-4xl px-6">
-          <div className="mx-auto mb-2 inline-flex items-center gap-3 rounded-full border border-[#4b9dff]/30 bg-black/65 px-4 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+          <div className="mx-auto mt-12 mb-2 inline-flex items-center gap-3 rounded-full border border-[#4b9dff]/30 bg-black/65 px-4 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl md:mt-[10px]">
             <span className="rounded-full bg-[#4ea3ff] px-2 py-[3px] text-[10px] font-bold uppercase tracking-wide text-black">
               NEW
             </span>
@@ -195,41 +198,63 @@ function Home() {
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-semibold text-white leading-tight mb-6 drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]" style={{fontFamily: "'Outfit', sans-serif"}}>
-            Get Your Home Loan
-            <br />
-            <span className="bg-gradient-to-b from-[#e4f0ff] via-[#9ac6ff] to-[#66abff] bg-clip-text text-transparent">
+          <h1 className="text-4xl leading-tight font-semibold text-white mb-6 drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] sm:text-5xl md:text-6xl" style={{fontFamily: "'Outfit', sans-serif"}}>
+            Get Your Home Loan{' '}
+            <span className="whitespace-nowrap bg-gradient-to-b from-[#e4f0ff] via-[#9ac6ff] to-[#66abff] bg-clip-text text-transparent">
               Approved Faster
             </span>
           </h1>
+
+          <div className="relative z-40 mb-2 flex justify-center md:hidden">
+            <img
+              src="/home/telangana map.png"
+              alt="map"
+              className="w-[255px] max-w-[78vw] object-contain opacity-95 brightness-110 saturate-150 hue-rotate-6 drop-shadow-[0_14px_28px_rgba(0,0,0,0.22)]"
+            />
+          </div>
 
           <p className="mx-auto mt-5 max-w-[640px] leading-8 text-[#dfeeff] drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]">
             Low interest rates, quick approvals, and zero hidden charges. Apply online in just 5 minutes.
           </p>
 
-          <div className="mt-6 flex flex-wrap justify-center gap-4">
+          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:flex-nowrap sm:justify-center sm:gap-4">
             <button
              onClick={() => navigate("/home-loans")}
-              className="rounded-full bg-gradient-to-r from-[#3e8fee] to-[#2869df] px-9 py-2.5 text-sm font-semibold text-white shadow-[0_12px_34px_rgba(46,113,218,0.5)] transition duration-300 hover:scale-[1.02] hover:shadow-[0_14px_44px_rgba(55,128,232,0.6)]"
+              className="w-full rounded-[18px] bg-gradient-to-r from-[#3e8fee] to-[#5aa5ff] px-7 py-4 text-sm font-semibold text-[#08162f] shadow-[0_12px_34px_rgba(46,113,218,0.45)] transition duration-300 hover:scale-[1.01] hover:shadow-[0_14px_44px_rgba(55,128,232,0.55)] sm:min-w-[96px] sm:rounded-full sm:px-4 sm:py-2.5 sm:text-sm sm:text-white"
             >
               Apply Now
             </button>
             <button
               onClick={() => navigate("/emi-calculator")}
-              className="rounded-full border border-white/75 bg-transparent px-9 py-2.5 text-sm font-medium text-white backdrop-blur-md transition hover:bg-white/12"
+              className="w-full rounded-[18px] border border-white/22 bg-[rgba(6,12,34,0.45)] px-7 py-4 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md transition hover:bg-[rgba(12,20,50,0.6)] sm:min-w-[96px] sm:rounded-full sm:border-white/75 sm:bg-transparent sm:px-4 sm:py-2.5 sm:font-medium sm:text-sm sm:hover:bg-white/12"
             >
               Calculate EMI
             </button>
           </div>
+
+          <div className="relative mx-auto mt-8 flex h-[270px] w-full max-w-[330px] items-center justify-center md:hidden">
+            <div className="absolute bottom-0 flex h-[268px] w-[268px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
+              <div className="flex h-[66px] w-[66px] items-center justify-center overflow-hidden rounded-full border border-white/55 bg-[linear-gradient(160deg,rgba(255,255,255,0.46)_0%,rgba(220,236,255,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-xl">
+                <img
+                  src={circleItems[currentIndex].img}
+                  alt="loan"
+                  className="h-[48px] w-[48px] object-contain brightness-125 contrast-125 drop-shadow-[0_4px_14px_rgba(170,215,255,0.4)] transition-all duration-700 ease-in-out"
+                />
+              </div>
+              <p className="mt-4 max-w-[220px] px-4 text-center text-[19px] font-semibold leading-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
+                {circleItems[currentIndex].text}
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* GLASS RINGS (mobile only inner ring visible) */}
-        <div className="pointer-events-none absolute inset-0 z-10 items-end justify-center flex">
+        {/* GLASS RINGS (desktop only) */}
+        <div className="pointer-events-none absolute inset-0 z-10 hidden items-end justify-center md:flex">
           <div className="absolute bottom-[-398px] h-[930px] w-[930px] rounded-full bg-[radial-gradient(circle,rgba(50,105,220,0.5)_0%,rgba(32,77,181,0.42)_44%,rgba(15,49,132,0.3)_70%,rgba(8,28,84,0.18)_88%,rgba(6,18,52,0)_100%)] animate-pulseSlow md:bottom-[-384px] md:h-[980px] md:w-[980px]" />
           <div className="absolute bottom-[-320px] h-[760px] w-[760px] rounded-full bg-[radial-gradient(circle,rgba(52,110,216,0.48)_0%,rgba(28,79,184,0.44)_44%,rgba(13,53,154,0.36)_72%,rgba(7,27,87,0.24)_90%,rgba(6,18,46,0)_100%)] animate-pulseSlow delay-150 md:bottom-[-306px] md:h-[800px] md:w-[800px]" />
           <div className="absolute bottom-[-245px] h-[610px] w-[610px] rounded-full bg-[radial-gradient(circle,rgba(84,143,232,0.32)_0%,rgba(56,113,210,0.3)_26%,rgba(33,89,188,0.3)_56%,rgba(16,58,162,0.25)_78%,rgba(7,21,62,0)_100%)] backdrop-blur-[1.5px] animate-pulseSlow delay-300 md:bottom-[-232px] md:h-[650px] md:w-[650px]" />
 
-          <div className="absolute bottom-[-10px] flex h-[310px] w-[310px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
+          <div className="absolute bottom-[-10px] md:bottom-[-10px] flex h-[310px] w-[310px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
             <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-white/55 bg-[linear-gradient(160deg,rgba(255,255,255,0.46)_0%,rgba(220,236,255,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-xl">
               <img
                 src={circleItems[currentIndex].img}
@@ -246,11 +271,10 @@ function Home() {
 
       {/* ── RECOGNITION SECTION ── */}
       <section
-        className="relative w-full overflow-hidden bg-cover bg-center py-[100px]"
-        style={{ backgroundImage: "url('/home/bg image.png')" }}
+        className="relative w-full overflow-hidden py-[100px]"
+        style={{ background: homeSectionBackground }}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(33,74,174,0.34)_0%,rgba(15,35,96,0.64)_52%,rgba(5,13,40,0.88)_100%)]"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,12,36,0.42)_0%,rgba(4,10,31,0.76)_100%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_45%,transparent_76%)]"></div>
 
         <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-6 text-center">
           <h2 className="mb-10 text-4xl md:text-5xl font-semibold text-white drop-shadow-[0_10px_24px_rgba(0,0,0,0.45)]" style={{fontFamily: "'Outfit', sans-serif"}}>
@@ -271,7 +295,10 @@ function Home() {
       </section>
 
       {/* ── SERVICES SECTION ── */}
-      <section className="relative w-full overflow-hidden bg-[linear-gradient(90deg,#000000_0%,#1E2447_50%,#000000_100%)] py-[100px]">
+      <section
+        className="relative w-full overflow-hidden py-[100px]"
+        style={{ background: homeSectionBackground }}
+      >
         <div className="mx-auto max-w-[1500px] px-6">
           <div className="mx-auto max-w-4xl text-center">
             <h2 className="mb-5 text-3xl font-semibold leading-tight text-white md:text-4xl" style={{fontFamily: "'Outfit', sans-serif"}}>
@@ -327,8 +354,14 @@ function Home() {
       </section>
 
       {/* ── HOW T-HOME WORKS ── */}
-      <section className="relative w-full py-[100px] bg-[linear-gradient(90deg,#000000_0%,#1E2447_50%,#000000_100%)]">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <section
+        className="relative w-full py-[100px]"
+        style={{
+          background:
+            "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
+        }}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_45%,transparent_76%)]"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <h2 className="text-center text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
             How T-Home Works
@@ -396,8 +429,11 @@ function Home() {
       </section>
 
       {/* ── SMART FINANCIAL TOOLS ── */}
-      <section className="relative w-full py-20 bg-[linear-gradient(90deg,#000000_0%,#1E2447_50%,#000000_100%)]">
-        <div className="absolute inset-0 bg-black/12"></div>
+      <section
+        className="relative w-full py-20"
+        style={{ background: homeSectionBackground }}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_45%,transparent_76%)]"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <h2 className="text-center text-2xl md:text-4xl font-semibold text-white">
             Smart Financial Tools
@@ -451,10 +487,10 @@ function Home() {
 
       {/* ── WHY CHOOSE T-HOME ── */}
       <section
-        className="relative w-full overflow-hidden py-[100px] bg-cover bg-center"
-        style={{ backgroundImage: "url('/home/bg image.png')" }}
+        className="relative w-full overflow-hidden py-[100px]"
+        style={{ background: homeSectionBackground }}
       >
-        <div className="absolute inset-0 bg-[#040814]/84"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_45%,transparent_76%)]"></div>
         <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
           <h2 className="text-3xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>Why Choose T-Home</h2>
           <p className="mx-auto mt-5 max-w-2xl text-white/70 leading-relaxed">
@@ -523,10 +559,10 @@ function Home() {
 
       {/* ── TESTIMONIALS ── */}
       <section
-        className="relative w-full overflow-hidden py-[100px] bg-cover bg-center"
-        style={{ backgroundImage: "url('/home/bg image.png')" }}
+        className="relative w-full overflow-hidden py-[100px]"
+        style={{ background: homeSectionBackground }}
       >
-        <div className="absolute inset-0 bg-[#040814]/82"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_45%,transparent_76%)]"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <div className="flex justify-center">
             <span className="rounded-full bg-[#1f4fa3]/80 px-5 py-2 text-xs font-semibold uppercase tracking-wide text-[#7eb6ff]">
@@ -594,7 +630,7 @@ function Home() {
       </section>
 
       {/* ── CTA SECTION ── */}
-      <section className="relative flex w-full justify-center overflow-hidden px-6 py-[100px]">
+      <section className="relative flex w-full justify-center overflow-hidden px-6 py-[100px]" style={{ background: homeSectionBackground }}>
         <div className="w-full max-w-6xl rounded-[14px] border border-[#5374df]/55 bg-[linear-gradient(90deg,#2438c8_0%,#3249d6_52%,#2438c8_100%)] px-6 py-12 text-center shadow-[0_22px_55px_rgba(6,14,44,0.45)] md:px-12 md:py-16">
 
           <h2 className="text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
