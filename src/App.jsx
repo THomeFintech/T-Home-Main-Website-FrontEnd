@@ -82,7 +82,13 @@ function ScrollToTop() {
 ========================= */
 function Layout() {
   return (
-    <div className="min-h-screen bg-[#0b1a33] text-white flex flex-col">
+    <div
+      className="min-h-screen text-white flex flex-col"
+      style={{
+        background:
+          "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
+      }}
+    >
       <Navbar />
       <main className="flex-grow">
         <Outlet />

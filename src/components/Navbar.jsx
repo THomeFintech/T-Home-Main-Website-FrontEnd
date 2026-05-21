@@ -241,7 +241,10 @@ const orderedMobileServices = mobileServiceOrder.map((label) =>
                 alt="T-HOME Logo"
                 className="h-9 w-9 flex-shrink-0 sm:h-10 sm:w-10"
               />
-              <h1 className="truncate text-lg font-semibold text-white sm:text-xl lg:text-2xl">
+              <h1
+                className="truncate text-lg font-semibold text-white sm:text-xl lg:text-2xl"
+                style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}
+              >
                 T-HOME
               </h1>
             </Link>
