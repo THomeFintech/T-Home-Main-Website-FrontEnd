@@ -17,7 +17,7 @@ function Layout() {
       <Navbar />
 
       {/* 🔥 THIS FIXES YOUR ISSUE */}
-      <main className="flex-grow px-[100px]">
+      <main className="flex-grow px-4 sm:px-6 lg:px-16">
         <Outlet />
       </main>
 

@@ -12,7 +12,7 @@ export default function PanAadhaarLinking() {
     >
 
       {/* HERO */}
-      <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
 
         <div>
           <p className="text-blue-400 text-xs mb-3 tracking-wide">
@@ -39,7 +39,7 @@ export default function PanAadhaarLinking() {
             </button>
           </div>
 
-          <div className="flex gap-10 text-sm text-gray-300">
+          <div className="flex gap-6 text-sm text-gray-300">
             <div>
               <p className="text-xl font-bold text-white">99%</p>
               <p>Success</p>
@@ -65,20 +65,20 @@ export default function PanAadhaarLinking() {
       </div>
 
       {/* WHY CHOOSE */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         <h2 className="text-center text-lg font-semibold mb-10">
           Why Choose T-Home?
         </h2>
 
-        <div className="grid md:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-4 gap-4">
           {[
             { title: "Secure Process", desc: "Your data is protected with encryption.", icon: "🔐" },
             { title: "Zero Hidden Fees", desc: "Transparent pricing always.", icon: "🧾" },
             { title: "Quick Linking", desc: "Instant processing and updates.", icon: "⚡" },
             { title: "Expert Support", desc: "Assistance whenever you need.", icon: "👨‍💼" }
           ].map((item, i) => (
-            <div key={i} className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-5 flex flex-col gap-3 hover:bg-white/[0.11] transition">
-              <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-600/20 text-lg">
+            <div key={i} className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-4 flex flex-col gap-2.5 hover:bg-white/[0.11] transition">
+              <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600/20 text-base">
                 {item.icon}
               </div>
               <h3 className="font-semibold">{item.title}</h3>
@@ -89,7 +89,7 @@ export default function PanAadhaarLinking() {
       </div>
 
       {/* PROCESS */}
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="max-w-5xl mx-auto px-6 py-10">
         <h2 className="text-center text-lg font-semibold mb-2">Simple Process</h2>
         <p className="text-center text-gray-400 text-xs mb-12">
           Getting your home loan is easier than ever
@@ -124,7 +124,7 @@ export default function PanAadhaarLinking() {
         </div>
 
         {/* DESKTOP (horizontal timeline) */}
-        <div className="relative flex justify-between items-start hidden md:flex">
+        <div className="relative justify-between items-start hidden md:flex">
           <div className="absolute top-4 left-0 w-full h-[2px] bg-white/20"></div>
 
           {[
@@ -151,12 +151,12 @@ export default function PanAadhaarLinking() {
 
 
 {/* ELIGIBILITY */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         <EligibilityCriteria />
       </div>
 
       {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-6 py-12">
+      <div className="max-w-3xl mx-auto px-6 py-10">
         <h2 className="text-center text-lg font-semibold mb-6">
           Frequently Asked Questions
         </h2>
@@ -188,8 +188,8 @@ export default function PanAadhaarLinking() {
       </div>
 
       {/* CTA */}
-      <div className="max-w-5xl mx-auto px-6 pb-16">
-        <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-10 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
+      <div className="max-w-5xl mx-auto px-6 pb-12">
+        <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-7 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
           <h2 className="text-2xl font-bold mb-2">
             Ready to link your PAN & Aadhaar?
           </h2>

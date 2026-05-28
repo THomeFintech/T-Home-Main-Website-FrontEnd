@@ -12,7 +12,7 @@ export default function MortgageLoan() {
     >
 
       {/* HERO */}
-      <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
 
   {/* LEFT CONTENT */}
   <div>
@@ -45,7 +45,7 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
       </button>
     </div>
 
-    <div className="flex gap-10 text-sm text-gray-300">
+    <div className="flex gap-6 text-sm text-gray-300">
       <div>
         <p className="text-xl font-bold text-white">9%</p>
         <p>Interest</p>
@@ -118,7 +118,7 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
 </div>
 
       {/* PROCESS */}
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="max-w-5xl mx-auto px-6 py-10">
   <h2 className="text-center text-lg font-semibold mb-2">Simple Process</h2>
   <p className="text-center text-gray-400 text-xs mb-12">
     Getting your home loan is easier than ever
@@ -153,7 +153,7 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
   </div>
 
   {/* DESKTOP (horizontal timeline - original style) */}
-  <div className="relative flex justify-between items-start hidden md:flex">
+  <div className="relative h-0 overflow-hidden opacity-0 pointer-events-none md:h-auto md:opacity-100 md:pointer-events-auto md:flex justify-between items-start">
     <div className="absolute top-4 left-0 w-full h-[2px] bg-white/20"></div>
 
     {[
@@ -179,12 +179,12 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
 
 
 {/* ELIGIBILITY */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         <EligibilityCriteria />
       </div>
 
       {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-6 py-12">
+      <div className="max-w-3xl mx-auto px-6 py-10">
         <h2 className="text-center text-lg font-semibold mb-6">
           Frequently Asked Questions
         </h2>
@@ -218,7 +218,7 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
 
       {/* CTA */}
       <div className="max-w-5xl mx-auto px-6 pb-16">
-        <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-10 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
+        <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-7 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
           <h2 className="text-2xl font-bold mb-2">
             Ready to take the next step?
           </h2>

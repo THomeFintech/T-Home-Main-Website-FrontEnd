@@ -63,7 +63,7 @@ export default function EligibilityCriteria({
     <section className="w-full max-w-[1000px] mx-auto px-4">
       {/* Glass Effect Container with Enhanced White Morphism & Glow */}
       <div 
-        className="rounded-2xl p-8"
+        className="rounded-2xl p-6"
         style={{
           background: 'rgba(255, 255, 255, 0.18)',
           backdropFilter: 'blur(32px)',
@@ -72,7 +72,7 @@ export default function EligibilityCriteria({
         }}
       >
         {/* Header Section with Increased Spacing */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <h1 
             className="text-2xl font-bold text-white mb-3"
             style={{ fontFamily: "'Outfit', sans-serif" }}
@@ -85,7 +85,7 @@ export default function EligibilityCriteria({
         </div>
 
         {/* Grid Layout with Increased Spacing */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {items.map((item, index) => {
             // Get the appropriate icon
             let IconComponent;
@@ -100,7 +100,7 @@ export default function EligibilityCriteria({
             return (
               <div
                 key={index}
-                className="flex items-start gap-4 p-3"
+                className="flex items-start gap-3 p-2"
               >
                 {/* Icon */}
                 <div className="flex shrink-0 mt-1">
