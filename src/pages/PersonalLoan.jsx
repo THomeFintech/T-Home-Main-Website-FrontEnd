@@ -15,7 +15,7 @@ export default function PersonalLoan() {
       }}
     >
       {/* HERO */}
-      <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
         <div>
           <p className="text-blue-400 text-xs mb-3 tracking-wide">
             FAST APPROVAL LOANS
@@ -45,7 +45,7 @@ export default function PersonalLoan() {
             </button>
           </div>
 
-          <div className="flex gap-10 text-sm text-gray-300">
+          <div className="flex gap-6 text-sm text-gray-300">
             <div>
               <p className="text-xl font-bold text-white">10%</p>
               <p>Interest</p>
@@ -71,7 +71,7 @@ export default function PersonalLoan() {
       </div>
 
       {/* WHY CHOOSE */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         <h2 className="text-center text-lg font-semibold mb-10">
           Why Choose T-Home?
         </h2>
@@ -98,7 +98,7 @@ export default function PersonalLoan() {
       </div>
 
       {/* PROCESS */}
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="max-w-5xl mx-auto px-6 py-10">
         <h2 className="text-center text-lg font-semibold mb-2">Simple Process</h2>
         <p className="text-center text-gray-400 text-xs mb-12">
           Getting your home loan is easier than ever
@@ -163,12 +163,12 @@ export default function PersonalLoan() {
 
 
 {/* ELIGIBILITY */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         <EligibilityCriteria />
       </div>
 
       {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-6 py-12">
+      <div className="max-w-3xl mx-auto px-6 py-10">
         <h2 className="text-center text-lg font-semibold mb-6">
           Frequently Asked Questions
         </h2>
@@ -201,7 +201,7 @@ export default function PersonalLoan() {
 
       {/* CTA */}
       <div className="max-w-5xl mx-auto px-6 pb-16">
-        <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-10 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
+        <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-7 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
           <h2 className="text-2xl font-bold mb-2">
             Ready to take the next step?
           </h2>

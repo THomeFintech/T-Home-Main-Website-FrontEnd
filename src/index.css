@@ -10,8 +10,8 @@ body, html, h1, h2, h3, h4, h5, h6, p, span, div, button, input, textarea, a {
 }
 
 :root {
-  --thome-page-x: 100px;
-  --thome-section-y: 100px;
+  --thome-page-x: 84px;
+  --thome-section-y: 72px;
   --thome-button-radius: 12px;
 }
 
@@ -117,15 +117,15 @@ h6 {
 
 @media (max-width: 1024px) {
   :root {
-    --thome-page-x: 48px;
+    --thome-page-x: 32px;
   }
 }
 
 @media (max-width: 640px) {
   :root {
-    --thome-page-x: 16px;
+    --thome-page-x: 14px;
     /* Reduce vertical spacing on mobile without touching desktop */
-    --thome-section-y: 56px;
+    --thome-section-y: 44px;
   }
 
   input,
@@ -140,8 +140,8 @@ h6 {
 
   /* Tighten spacing between stacked sections on the mobile homepage */
   section {
-    padding-top: 40px !important;
-    padding-bottom: 40px !important;
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
   }
 
   /* If any wrapper uses classic margin-top/bottom, clamp it on mobile */
@@ -149,6 +149,16 @@ h6 {
   .logo-area {
     margin-top: 0.8rem !important;
     margin-bottom: 0.8rem !important;
+  }
+}
+
+.desktop-only-timeline {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .desktop-only-timeline {
+    display: flex;
   }
 }
 
@@ -160,7 +170,7 @@ h6 {
     border border-white/10
     backdrop-blur-[20px]
     text-[#F0F6FF]
-    p-8
+    p-6
     relative 
     overflow-hidden
     transition-all 

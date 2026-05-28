@@ -16,7 +16,7 @@ export default function HomeLoan() {
       }}
     >
       {/* HERO */}
-      <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
         <div>
           <p className="text-blue-400 text-xs mb-3">TRUSTED FINANCIAL SERVICES</p>
 
@@ -42,7 +42,7 @@ export default function HomeLoan() {
             </button>
           </div>
 
-          <div className="flex gap-10 text-sm text-gray-300">
+          <div className="flex gap-6 text-sm text-gray-300">
             <div>
               <p className="text-xl font-bold text-white">98%</p>
               <p>Approvals</p>
@@ -111,7 +111,7 @@ export default function HomeLoan() {
       </div>
 
       {/* PROCESS */}
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="max-w-5xl mx-auto px-6 py-10">
         <h1 className="text-center text-3xl font-bold mb-10 text-white">
           Simple Process
         </h1>
@@ -206,12 +206,12 @@ export default function HomeLoan() {
       </div>
 
       {/* ELIGIBILITY */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         <EligibilityCriteria />
       </div>
 
       {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-6 py-12">
+      <div className="max-w-3xl mx-auto px-6 py-10">
         <h1 className="text-center text-3xl font-bold mb-10 text-white">
           Frequently Asked Questions
         </h1>
@@ -236,7 +236,7 @@ export default function HomeLoan() {
 
       {/* CTA */}
       <div className="max-w-5xl mx-auto px-6 pb-16">
-        <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-10 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
+        <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-7 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
           <h2 className="text-2xl font-bold mb-2">Ready to Buy Your Dream Home?</h2>
           <p className="text-white/80 mb-6 text-sm">
             Experience the future of home financing. Get started now and get a decision in minutes.

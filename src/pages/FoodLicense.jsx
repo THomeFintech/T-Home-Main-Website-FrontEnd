@@ -13,7 +13,7 @@ export default function FoodLicense() {
     >
 
       {/* HERO */}
-      <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
 
         <div>
           <p className="text-blue-400 text-xs mb-3 tracking-wide">
@@ -40,7 +40,7 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
             </button>
           </div>
 
-          <div className="flex gap-10 text-sm text-gray-300">
+          <div className="flex gap-6 text-sm text-gray-300">
             <div>
               <p className="text-xl font-bold text-white">95%</p>
               <p>Success Rate</p>
@@ -66,20 +66,20 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
       </div>
 
       {/* WHY CHOOSE */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6 py-12">
 <h1 className="text-center text-3xl font-bold mb-10 text-white">
           Why Choose T-Home?
         </h1>
 
-        <div className="grid md:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-4 gap-4">
           {[
             { title: "Affordable Pricing", desc: "Cost-effective FSSAI registration plans.", icon: "🍽️" },
             { title: "Zero Hidden Fees", desc: "Transparent pricing structure.", icon: "🧾" },
             { title: "Quick Processing", desc: "Fast approvals with minimal delay.", icon: "⚡" },
             { title: "Expert Guidance", desc: "Support from compliance experts.", icon: "👨‍🍳" }
           ].map((item, i) => (
-            <div key={i} className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-5 flex flex-col gap-3 hover:bg-white/[0.11] transition">
-              <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-600/20 text-lg">
+            <div key={i} className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-4 flex flex-col gap-2.5 hover:bg-white/[0.11] transition">
+              <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600/20 text-base">
                 {item.icon}
               </div>
               <h3 className="font-semibold">{item.title}</h3>
@@ -90,7 +90,7 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
       </div>
 
       {/* PROCESS */}
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="max-w-5xl mx-auto px-6 py-10">
         <h1 className="text-center text-3xl font-bold mb-10 text-white">Simple Process</h1>
         <p className="text-center text-gray-400 text-xs mb-12">
           Getting your home loan is easier than ever
@@ -155,12 +155,12 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
 
 {/* ELIGIBILITY */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         <EligibilityCriteria />
       </div>
 
       {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-6 py-12">
+      <div className="max-w-3xl mx-auto px-6 py-10">
         <h1 className="text-center text-3xl font-bold mb-10 text-white">
           Frequently Asked Questions
         </h1>
@@ -184,8 +184,8 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
       </div>
 
       {/* CTA */}
-      <div className="max-w-5xl mx-auto px-6 pb-16">
-        <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-10 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
+      <div className="max-w-5xl mx-auto px-6 pb-12">
+        <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-7 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
           <h2 className="text-2xl font-bold mb-2">
             Ready to get your Food License?
           </h2>

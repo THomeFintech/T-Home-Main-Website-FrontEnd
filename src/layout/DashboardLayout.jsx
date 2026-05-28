@@ -65,7 +65,7 @@ function DashboardLayout() {
         )}
       </div>
 
-      <main className="flex-1 overflow-y-auto backdrop-blur-[2px]">
+      <main className="flex-1 overflow-y-auto px-4 sm:px-6 backdrop-blur-[2px]">
         <Outlet />
       </main>
     </div>
