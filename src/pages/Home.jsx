@@ -185,7 +185,7 @@ function Home() {
         <img
           src="/home/telangana map.png"
           alt="map"
-          className="absolute left-1/2 top-[28%] z-30 hidden w-[430px] -translate-x-1/2 opacity-40 brightness-150 saturate-150 hue-rotate-6 mix-blend-screen md:block md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
+          className="absolute left-1/2 top-[28%] z-10 hidden w-[430px] -translate-x-1/2 opacity-55 brightness-110 saturate-150 hue-rotate-6 mix-blend-screen md:block md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
         />
 
         <div className="relative z-30 max-w-4xl px-6 -mt-8">
@@ -209,7 +209,11 @@ function Home() {
             <img
               src="/home/telangana map.png"
               alt="map"
-              className="w-[255px] max-w-[78vw] object-contain opacity-95 brightness-110 saturate-150 hue-rotate-6 drop-shadow-[0_14px_28px_rgba(0,0,0,0.22)]"
+              className="w-[255px] max-w-[78vw] object-contain opacity-95"
+              style={{
+                filter:
+                  "drop-shadow(0 0 3px rgba(123, 198, 255, 0.95)) drop-shadow(0 0 8px rgba(84, 172, 255, 0.86)) drop-shadow(0 0 16px rgba(56, 146, 255, 0.56))",
+              }}
             />
           </div>
 
@@ -458,12 +462,12 @@ function Home() {
                 btn: "Check Eligibility",
                 path: "/tools?tool=loan-prediction",
               },
-              {
-                title: "Balance Transfer",
-                desc: "Estimate your savings quickly and plan your loan transfer better.",
-                btn: "Calculate Transfer",
-                path: "/coming-soon",
-              },
+            {
+  title: "Balance Transfer",
+  desc: "Estimate your savings quickly and plan your loan transfer better.",
+  btn: "Calculate Transfer",
+  path: "https://btv1-frontend.onrender.com",
+}
             ].map((tool, i) => (
               <div
                 key={i}
@@ -474,11 +478,17 @@ function Home() {
                   {tool.desc}
                 </p>
                 <button
-                  onClick={() => navigate(tool.path)}
-                  className="mt-6 rounded-lg border border-[#5ea6ff]/45 bg-[linear-gradient(180deg,rgba(58,108,197,0.46)_0%,rgba(36,73,148,0.4)_100%)] px-5 py-2 text-sm font-medium text-[#e8f2ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]"
-                >
-                  {tool.btn}
-                </button>
+  onClick={() => {
+    if (tool.path.startsWith("http")) {
+      window.location.href = tool.path;
+    } else {
+      navigate(tool.path);
+    }
+  }}
+  className="mt-6 rounded-lg border border-[#5ea6ff]/45 bg-[linear-gradient(180deg,rgba(58,108,197,0.46)_0%,rgba(36,73,148,0.4)_100%)] px-5 py-2 text-sm font-medium text-[#e8f2ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]"
+>
+  {tool.btn}
+</button>
               </div>
             ))}
           </div>
@@ -498,7 +508,7 @@ function Home() {
             all powered by intelligent automation.
           </p>
 
-          <div className="mt-16 grid gap-8 md:grid-cols-3">
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
             {[
               {
                 icon: "⚙️",
@@ -527,9 +537,9 @@ function Home() {
             ].map((card, i) => (
               <div
                 key={i}
-                className={`group rounded-2xl border border-white/10 bg-gradient-to-b from-[#0b1a3a]/80 to-[#050c1f]/80 p-8 backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 ${card.hoverClass}`}
+                className={`group rounded-2xl border border-white/10 bg-gradient-to-b from-[#0b1a3a]/80 to-[#050c1f]/80 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 ${card.hoverClass}`}
               >
-                <div className={`mb-6 mx-auto flex h-12 w-12 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
+                <div className={`mb-4 mx-auto flex h-11 w-11 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
                   {card.icon}
                 </div>
                 <h3 className="text-xl font-semibold text-white">{card.title}</h3>
@@ -547,7 +557,7 @@ function Home() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-6 backdrop-blur-xl"
+                className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-5 backdrop-blur-xl"
               >
                 <h4 className="text-3xl font-semibold text-white">{item.value}</h4>
                 <p className="mt-2 text-sm text-white/70">{item.label}</p>
@@ -559,7 +569,7 @@ function Home() {
 
       {/* ── TESTIMONIALS ── */}
       <section
-        className="relative w-full overflow-hidden py-[100px]"
+        className="relative w-full overflow-hidden py-[72px]"
         style={{ background: homeSectionBackground }}
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_45%,transparent_76%)]"></div>
@@ -630,8 +640,8 @@ function Home() {
       </section>
 
       {/* ── CTA SECTION ── */}
-      <section className="relative flex w-full justify-center overflow-hidden px-6 py-[100px]" style={{ background: homeSectionBackground }}>
-        <div className="w-full max-w-6xl rounded-[14px] border border-[#5374df]/55 bg-[linear-gradient(90deg,#2438c8_0%,#3249d6_52%,#2438c8_100%)] px-6 py-12 text-center shadow-[0_22px_55px_rgba(6,14,44,0.45)] md:px-12 md:py-16">
+      <section className="relative flex w-full justify-center overflow-hidden px-6 py-[72px]" style={{ background: homeSectionBackground }}>
+        <div className="w-full max-w-6xl rounded-[14px] border border-[#5374df]/55 bg-[linear-gradient(90deg,#2438c8_0%,#3249d6_52%,#2438c8_100%)] px-5 py-10 text-center shadow-[0_22px_55px_rgba(6,14,44,0.45)] md:px-10 md:py-12">
 
           <h2 className="text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
             Start Your Financial Journey Today
@@ -639,7 +649,7 @@ function Home() {
           <p className="mx-auto mt-4 max-w-2xl text-sm text-white/85 md:text-[34px]" style={{ fontSize: "clamp(18px, 1.05vw, 34px)" }}>
             Join thousands of satisfied users who have transformed their financial experience with T-Home.
           </p>
-         <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
   <button
     onClick={() => navigate("/get-started")}
     className="rounded-lg border border-white/70 bg-white px-7 py-3 font-semibold text-[#1f4de2] shadow-[0_8px_20px_rgba(0,0,0,0.2)] transition hover:bg-[#f2f6ff]"
