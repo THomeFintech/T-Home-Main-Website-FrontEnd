@@ -42,13 +42,12 @@ export default function BalanceTransfer() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <button
-              onClick={() => navigate("/balance-transfer-contact")}
-              className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              Apply Now
-            </button>
-
+           <button
+  onClick={() => window.location.href = "https://btv1-frontend.onrender.com"}
+  className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+>
+  Apply Now
+</button>
             <button
               onClick={() => navigate("/emi-calculator")}
               className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300"
