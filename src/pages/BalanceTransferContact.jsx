@@ -12,14 +12,20 @@ export default function BalanceTransfer() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: formData.name,
-          phone: formData.phone,
-          email: formData.email,
-          service: formData.service || "Balance Transfer",
-        }),
+        full_name: formData.name,
+        country_code: "+91",
+        phone: formData.phone,
+        email: formData.email,
+        service: formData.service || "Balance Transfer",
+        accepted_terms: true
+      }),
       });
 
-      if (!res.ok) throw new Error("Failed to submit");
+      if (!res.ok) {
+  const error = await res.json();
+  console.log("Backend Error:", error);
+  throw new Error("Failed to submit");
+}
 
       const data = await res.json();
 
