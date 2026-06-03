@@ -462,12 +462,12 @@ function Home() {
                 btn: "Check Eligibility",
                 path: "/tools?tool=loan-prediction",
               },
-              {
-                title: "Balance Transfer",
-                desc: "Estimate your savings quickly and plan your loan transfer better.",
-                btn: "Calculate Transfer",
-                path: "/coming-soon",
-              },
+             {
+  title: "Balance Transfer",
+  desc: "Estimate your savings quickly and plan your loan transfer better.",
+  btn: "Calculate Transfer",
+  path: "https://btv1-frontend.onrender.com/",
+}
             ].map((tool, i) => (
               <div
                 key={i}
