@@ -466,7 +466,7 @@ function Home() {
   title: "Balance Transfer",
   desc: "Estimate your savings quickly and plan your loan transfer better.",
   btn: "Calculate Transfer",
-  path: "https://btv1-frontend.onrender.com/",
+  path: "/coming-soon",
 }
             ].map((tool, i) => (
               <div
