@@ -7,6 +7,7 @@ export default function BalanceTransfer() {
   const navigate = useNavigate();
 
   const handleNext = async (formData) => {
+     console.log("Form Data:", formData);
     try {
       const res = await fetch(`${BT_API_BASE}/contact-form/`, {
         method: "POST",
