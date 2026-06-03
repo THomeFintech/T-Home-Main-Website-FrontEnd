@@ -406,17 +406,23 @@ export default function EMIPage() {
     setShowAnalytics(false);
   }, [loanType]);
 
-  const months = years * 12;
+const months = years * 12;
 
-  const emi = useMemo(
-    () => calculateEMI(amount, rate, months),
-    [amount, rate, months]
-  );
+// SAFE INTEREST RATE
+const safeRate =
+  Number(rate) < currentThreshold.minInterest
+    ? currentThreshold.minInterest
+    : Number(rate);
 
-  const schedule = useMemo(
-    () => generateSchedule(amount, rate, months),
-    [amount, rate, months]
-  );
+const emi = useMemo(
+  () => calculateEMI(amount, safeRate, months),
+  [amount, safeRate, months]
+);
+
+const schedule = useMemo(
+  () => generateSchedule(amount, safeRate, months),
+  [amount, safeRate, months]
+);
 
   const total = useMemo(() => +(emi * months).toFixed(2), [emi, months]);
   const interest = useMemo(() => +(total - amount).toFixed(2), [total, amount]);
@@ -614,7 +620,11 @@ const lastPaymentDate = formatDateDisplay(
             >
               {Object.keys(loanThresholds).map((type) => (
                 <option key={type} value={type} className="text-black capitalize">
-                  {type}
+                  {type
+                    .split(" ")
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")
+                  }
                 </option>
               ))}
             </select>
@@ -696,43 +706,51 @@ const lastPaymentDate = formatDateDisplay(
     </span>
   </div>
 
-  <input
+<input
   type="number"
-  value={rate === 0 ? "" : rate}
+  min={currentThreshold.minInterest}
+  max={currentThreshold.maxInterest}
+  value={rate}
   onChange={(e) => {
-    let value = e.target.value;
+    const value = e.target.value;
 
+    // Allow empty while editing
     if (value === "") {
-      setRate(0);
+      setRate("");
       return;
     }
-
-    value = value.replace(/^0+/, "");
 
     const num = Number(value);
 
     if (isNaN(num)) return;
 
+    // Allow intermediate typing like 1 -> 11
+    // but block impossible values above max
+    if (num > currentThreshold.maxInterest) {
+      return;
+    }
+
+    setRate(value);
+  }}
+  onBlur={() => {
+    const num = Number(rate);
+
+    // Fix below minimum
+    if (num < currentThreshold.minInterest) {
+      setRate(currentThreshold.minInterest);
+      return;
+    }
+
+    // Fix above maximum
     if (num > currentThreshold.maxInterest) {
       setRate(currentThreshold.maxInterest);
       return;
     }
 
-    if (num < 0) {
-      setRate(0);
-      return;
-    }
-
     setRate(num);
-  }}
-  onBlur={() => {
-    if (rate === 0) {
-      setRate(currentThreshold.defaults.interest);
-    }
   }}
   className="w-full h-[44px] rounded-[10px] border border-white/20 bg-white/90 px-3 text-[14px] font-semibold text-black outline-none focus:border-blue-400"
 />
-
   <div className="flex justify-between text-[12px] text-white/40 mt-1">
     <span>{currentThreshold.minInterest}%</span>
     <span>{currentThreshold.maxInterest}%</span>

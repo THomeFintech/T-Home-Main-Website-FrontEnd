@@ -166,7 +166,7 @@ onNext(formData.service);
             {/* NAME */}
             <div>
               <label className="mb-1.5 block text-[12px] sm:text-[13px] font-normal text-white/85">
-                Name as per Adhaar
+                Name as per Aadhaar
               </label>
               <input
                 type="text"

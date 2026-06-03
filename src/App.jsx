@@ -1,4 +1,19 @@
 import Register from "./pages/Register";
+import BalanceTransfer from "./pages/BalanceTransfer";
+import BalanceTransferDetails from "./pages/BalanceTransferDetails";
+import BalanceTransferOffers from "./pages/BalanceTransferOffers";
+import BalanceTransferReview from "./pages/BalanceTransferReview";
+import BalanceTransferAnalysis from "./pages/BalanceTransferAnalysis";
+import BalanceTransferComparison from "./pages/BalanceTransferComparison";
+import BalanceTransferDetailedTable from "./pages/BalanceTransferDetailedTable";
+import BalanceTransferAmortization from "./pages/BalanceTransferAmortization";
+import BalanceTransferReady from "./pages/BalanceTransferReady";
+import BalanceTransferApplicationPortal from "./pages/BalanceTransferApplicationPortal";
+import BalanceTransferIncomeDocuments from "./pages/BalanceTransferIncomeDocuments";
+import BalanceTransferExistingLoanDocuments from "./pages/BalanceTransferExistingLoanDocuments";
+import BalanceTransferCoApplicantDetails from "./pages/BalanceTransferCoApplicantDetails";
+import BalanceTransferReviewSubmit from "./pages/BalanceTransferReviewSubmit";
+import BalanceTransferSubmitted from "./pages/BalanceTransferSubmitted";
 import { BrowserRouter, Routes, Route, Outlet, useParams, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -37,22 +52,9 @@ import HomeLoan from "./pages/HomeLoan";
 import PersonalLoan from "./pages/PersonalLoan";
 import LoanAgainstProperty from "./pages/LoanAgainstProperty";
 import MortgageLoan from "./pages/MortgageLoan";
-import BalanceTransfer from "./pages/BalanceTransfer";
+
 import BalanceTransferContact from "./pages/BalanceTransferContact";
-import BalanceTransferDetails from "./pages/BalanceTransferDetails";
-import BalanceTransferOffers from "./pages/BalanceTransferOffers";
-import BalanceTransferReview from "./pages/BalanceTransferReview";
-import BalanceTransferAnalysis from "./pages/BalanceTransferAnalysis";
-import BalanceTransferComparison from "./pages/BalanceTransferComparison";
-import BalanceTransferDetailedTable from "./pages/BalanceTransferDetailedTable";
-import BalanceTransferAmortization from "./pages/BalanceTransferAmortization";
-import BalanceTransferReady from "./pages/BalanceTransferReady";
-import BalanceTransferApplicationPortal from "./pages/BalanceTransferApplicationPortal";
-import BalanceTransferIncomeDocuments from "./pages/BalanceTransferIncomeDocuments";
-import BalanceTransferExistingLoanDocuments from "./pages/BalanceTransferExistingLoanDocuments";
-import BalanceTransferCoApplicantDetails from "./pages/BalanceTransferCoApplicantDetails";
-import BalanceTransferReviewSubmit from "./pages/BalanceTransferReviewSubmit";
-import BalanceTransferSubmitted from "./pages/BalanceTransferSubmitted";
+
 import Emi from "./pages/Emi";
 import ContactForm from "./components/ContactForm";
 import ComingSoon from "./pages/ComingSoon";
@@ -120,7 +122,77 @@ function App() {
 
         <Routes>
 
-          
+          <Route path="/balance-transfer" element={<BalanceTransfer />} />
+
+<Route
+  path="/balance-transfer/details"
+  element={<BalanceTransferDetails />}
+/>
+
+<Route
+  path="/balance-transfer/offers"
+  element={<BalanceTransferOffers />}
+/>
+
+<Route
+  path="/balance-transfer/review"
+  element={<BalanceTransferReview />}
+/>
+
+<Route
+  path="/balance-transfer/analysis"
+  element={<BalanceTransferAnalysis />}
+/>
+
+<Route
+  path="/balance-transfer/comparison"
+  element={<BalanceTransferComparison />}
+/>
+
+<Route
+  path="/balance-transfer/detailed-table"
+  element={<BalanceTransferDetailedTable />}
+/>
+
+<Route
+  path="/balance-transfer/amortization"
+  element={<BalanceTransferAmortization />}
+/>
+
+<Route
+  path="/balance-transfer/ready"
+  element={<BalanceTransferReady />}
+/>
+
+<Route
+  path="/balance-transfer/application-portal"
+  element={<BalanceTransferApplicationPortal />}
+/>
+
+<Route
+  path="/balance-transfer/application-portal/income-documents"
+  element={<BalanceTransferIncomeDocuments />}
+/>
+
+<Route
+  path="/balance-transfer/application-portal/existing-loan-documents"
+  element={<BalanceTransferExistingLoanDocuments />}
+/>
+
+<Route
+  path="/balance-transfer/application-portal/co-applicant-details"
+  element={<BalanceTransferCoApplicantDetails />}
+/>
+
+<Route
+  path="/balance-transfer/application-portal/review-submit"
+  element={<BalanceTransferReviewSubmit />}
+/>
+
+<Route
+  path="/balance-transfer/application-portal/submitted"
+  element={<BalanceTransferSubmitted />}
+/>
 
           {/* DASHBOARD ROUTES */}
           <Route element={<DashboardLayout />}>
