@@ -1,16 +1,17 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BT_API_BASE } from "../config";
 
 const initialState = {
-  loanType: "Personal Loan",
-  bankName: "Union Bank of India",
-  originalPrincipal: "500000",
-  amountPaid: "230000",
-  remainingTenure: "30",
-  currentInterestRate: "8.6",
-  monthlyIncome: "60000",
-  foreclosureFee: "2500",
-  cibilScore: "750",
+  loanType: "",
+  bankName: "",
+  originalPrincipal: "",
+  amountPaid: "",
+  remainingTenure: "",
+  currentInterestRate: "",
+  monthlyIncome: "",
+  foreclosureFee: "",
+  cibilScore: "",
 };
 
 function formatINR(value) {
@@ -20,24 +21,61 @@ function formatINR(value) {
 export default function BalanceTransferDetails() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(initialState);
-
-  const numbers = useMemo(() => {
-    const principal = Number(formData.originalPrincipal) || 0;
-    const paid = Number(formData.amountPaid) || 0;
-    const fee = Number(formData.foreclosureFee) || 0;
-    const rate = Number(formData.currentInterestRate) || 0;
-    const tenureMonths = Number(formData.remainingTenure) || 0;
-
-    const outstanding = Math.max(principal - paid + fee, 0);
-    const interestLoad = outstanding * (rate / 100) * (tenureMonths / 12);
-    const remainingOutflow = outstanding + interestLoad;
-
-    return {
-      outstanding,
-      remainingOutflow,
-      estimatedSaving: Math.max(remainingOutflow * 0.03, 0),
+  const [loanResult, setLoanResult] = useState(null);
+  
+  const handleAddOffers = async () => {
+  try {
+    const payload = {
+      loan_type: formData.loanType,
+      current_bank_name: formData.bankName,
+      original_principal: Number(formData.originalPrincipal),
+      amount_paid: Number(formData.amountPaid),
+      remaining_tenure_months: Number(formData.remainingTenure),
+      current_interest_rate: Number(formData.currentInterestRate),
+      net_monthly_income: Number(formData.monthlyIncome),
+      cibil_score: Number(formData.cibilScore),
+      foreclosure_fee: Number(formData.foreclosureFee),
     };
-  }, [formData]);
+
+    console.log("Sending Loan Data:", payload);
+
+    const res = await fetch(`${BT_API_BASE}/loan/loan`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      console.log("Loan API Error:", error);
+      throw new Error("Loan creation failed");
+    }
+
+    const data = await res.json();
+
+    console.log("Loan Response:", data);
+    setLoanResult(data);
+
+    localStorage.setItem(
+      "bt_loan_reference",
+      data.loan_reference
+    );
+
+    localStorage.setItem(
+      "bt_loan_id",
+      data.loan_id
+    );
+
+    //navigate("/balance-transfer/offers");
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to save loan details");
+  }
+};
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -70,6 +108,7 @@ export default function BalanceTransferDetails() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <Field label="Loan Type *">
                 <select name="loanType" value={formData.loanType} onChange={handleChange} className={inputClass}>
+                  <option value="">Select Loan Type</option>
                   <option>Personal Loan</option>
                   <option>Home Loan</option>
                   <option>Loan Against Property</option>
@@ -111,11 +150,19 @@ export default function BalanceTransferDetails() {
               <div className="mt-3 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <div className="min-w-[200px] rounded-[8px] border border-white/15 bg-white/[0.9] px-6 py-3">
                   <p className="text-[11px] text-[#6b7280]">Outstanding</p>
-                  <p className="text-[38px] font-semibold leading-none text-[#1f2937]">{formatINR(numbers.outstanding)}</p>
+                  <p className="text-[38px] font-semibold leading-none text-[#1f2937]">
+  {loanResult
+    ? formatINR(loanResult.outstanding_principal)
+    : "Rs0"}
+</p>
                 </div>
                 <div className="min-w-[220px] rounded-[8px] border border-white/15 bg-white/[0.9] px-6 py-3">
                   <p className="text-[11px] text-[#6b7280]">Remaining total Outflow</p>
-                  <p className="text-[38px] font-semibold leading-none text-[#04a36d]">{formatINR(numbers.remainingOutflow)}</p>
+                  <p className="text-[38px] font-semibold leading-none text-[#04a36d]">
+  {loanResult
+    ? formatINR(loanResult.remaining_outflow_current)
+    : "Rs0"}
+</p>
                 </div>
               </div>
             </div>
@@ -123,13 +170,19 @@ export default function BalanceTransferDetails() {
             <div className="rounded-[8px] border border-white/20 bg-white/[0.03] px-4 py-3 text-[11px] text-white/80">
               <p>• You are eligible for a higher loan</p>
               <p className="mt-1">• Consider balance transfer to reduce EMI</p>
-              <p className="mt-1">• You can save {formatINR(numbers.estimatedSaving)} with a lower interest rate</p>
+              <p className="mt-1">
+  • Maximum eligible loan amount:
+  {" "}
+  {loanResult
+    ? formatINR(loanResult.max_eligible_loan_amount)
+    : "Rs0"}
+</p>
             </div>
 
             <div className="pt-2 text-center">
               <button
                 type="button"
-                onClick={() => navigate("/balance-transfer/offers")}
+                onClick={handleAddOffers}
                 className="rounded-[9px] bg-[#1f6bff] px-7 py-2.5 text-[14px] font-medium text-white transition hover:bg-[#1c5ee0]"
               >
                 Add Bank Offers {"->"}
