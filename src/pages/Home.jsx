@@ -188,7 +188,7 @@ function Home() {
           className="absolute left-1/2 top-[28%] z-10 hidden w-[430px] -translate-x-1/2 opacity-55 brightness-110 saturate-150 hue-rotate-6 mix-blend-screen md:block md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
         />
 
-        <div className="relative z-30 max-w-4xl px-6">
+        <div className="relative z-30 max-w-4xl px-6 -mt-8">
           <div className="mx-auto mt-12 mb-2 inline-flex items-center gap-3 rounded-full border border-[#4b9dff]/30 bg-black/65 px-4 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl md:mt-[10px]">
             <span className="rounded-full bg-[#4ea3ff] px-2 py-[3px] text-[10px] font-bold uppercase tracking-wide text-black">
               NEW
@@ -198,7 +198,7 @@ function Home() {
             </span>
           </div>
 
-          <h1 className="text-4xl leading-tight font-semibold text-white mb-6 drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] sm:text-5xl md:text-6xl" style={{fontFamily: "'Outfit', sans-serif"}}>
+          <h1 className="text-5xl leading-tight font-semibold text-white mb-2 drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] sm:text-5xl md:text-[3.2rem]" style={{fontFamily: "'Outfit', sans-serif"}}>
             Get Your Home Loan{' '}
             <span className="whitespace-nowrap bg-gradient-to-b from-[#e4f0ff] via-[#9ac6ff] to-[#66abff] bg-clip-text text-transparent">
               Approved Faster
@@ -221,16 +221,16 @@ function Home() {
             Low interest rates, quick approvals, and zero hidden charges. Apply online in just 5 minutes.
           </p>
 
-          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:flex-nowrap sm:justify-center sm:gap-4">
+          <div className="mt-4 flex items-center justify-center gap-6">
             <button
              onClick={() => navigate("/home-loans")}
-              className="w-full rounded-[18px] bg-gradient-to-r from-[#3e8fee] to-[#5aa5ff] px-7 py-4 text-sm font-semibold text-[#08162f] shadow-[0_12px_34px_rgba(46,113,218,0.45)] transition duration-300 hover:scale-[1.01] hover:shadow-[0_14px_44px_rgba(55,128,232,0.55)] sm:min-w-[96px] sm:rounded-full sm:px-4 sm:py-2.5 sm:text-sm sm:text-white"
+             className="rounded-full bg-gradient-to-r from-[#3e8fee] to-[#5aa5ff] px-10 py-3 text-base font-semibold text-[#08162f] shadow-[0_12px_34px_rgba(46,113,218,0.45)] transition duration-300 hover:scale-[1.01] hover:shadow-[0_14px_44px_rgba(55,128,232,0.55)] text-white"
             >
               Apply Now
             </button>
             <button
               onClick={() => navigate("/emi-calculator")}
-              className="w-full rounded-[18px] border border-white/22 bg-[rgba(6,12,34,0.45)] px-7 py-4 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md transition hover:bg-[rgba(12,20,50,0.6)] sm:min-w-[96px] sm:rounded-full sm:border-white/75 sm:bg-transparent sm:px-4 sm:py-2.5 sm:font-medium sm:text-sm sm:hover:bg-white/12"
+              className="rounded-full border border-white/50 bg-[rgba(6,12,34,0.25)] px-10 py-3 text-base font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md transition hover:bg-[rgba(12,20,50,0.6)]"
             >
               Calculate EMI
             </button>
@@ -253,20 +253,20 @@ function Home() {
         </div>
 
         {/* GLASS RINGS (desktop only) */}
-        <div className="pointer-events-none absolute inset-0 z-10 hidden items-end justify-center md:flex">
+        <div className="pointer-events-none absolute inset-0 z-0 hidden items-end justify-center md:flex">
           <div className="absolute bottom-[-398px] h-[930px] w-[930px] rounded-full bg-[radial-gradient(circle,rgba(50,105,220,0.5)_0%,rgba(32,77,181,0.42)_44%,rgba(15,49,132,0.3)_70%,rgba(8,28,84,0.18)_88%,rgba(6,18,52,0)_100%)] animate-pulseSlow md:bottom-[-384px] md:h-[980px] md:w-[980px]" />
           <div className="absolute bottom-[-320px] h-[760px] w-[760px] rounded-full bg-[radial-gradient(circle,rgba(52,110,216,0.48)_0%,rgba(28,79,184,0.44)_44%,rgba(13,53,154,0.36)_72%,rgba(7,27,87,0.24)_90%,rgba(6,18,46,0)_100%)] animate-pulseSlow delay-150 md:bottom-[-306px] md:h-[800px] md:w-[800px]" />
           <div className="absolute bottom-[-245px] h-[610px] w-[610px] rounded-full bg-[radial-gradient(circle,rgba(84,143,232,0.32)_0%,rgba(56,113,210,0.3)_26%,rgba(33,89,188,0.3)_56%,rgba(16,58,162,0.25)_78%,rgba(7,21,62,0)_100%)] backdrop-blur-[1.5px] animate-pulseSlow delay-300 md:bottom-[-232px] md:h-[650px] md:w-[650px]" />
 
-          <div className="absolute bottom-[-10px] md:bottom-[-10px] flex h-[310px] w-[310px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
-            <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-white/55 bg-[linear-gradient(160deg,rgba(255,255,255,0.46)_0%,rgba(220,236,255,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-xl">
+          <div className="absolute bottom-[-20px] md:bottom-[-20px] flex h-[210px] w-[210px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
+            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border border-white/55 bg-[linear-gradient(160deg,rgba(255,255,255,0.46)_0%,rgba(220,236,255,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-xl">
               <img
                 src={circleItems[currentIndex].img}
                 alt="loan"
-                className="h-20 w-20 object-contain brightness-125 contrast-125 drop-shadow-[0_4px_14px_rgba(170,215,255,0.4)] transition-all duration-700 ease-in-out"
+                className="h-10 w-10 object-contain brightness-125 contrast-125 drop-shadow-[0_4px_14px_rgba(170,215,255,0.4)] transition-all duration-700 ease-in-out"
               />
             </div>
-            <p className="mt-5 text-2xl font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
+            <p className="mt-3 text-1g font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
               {circleItems[currentIndex].text}
             </p>
           </div>
@@ -392,7 +392,7 @@ function Home() {
                 icon: "/home/get offer.png",
                 title: "Get Offer",
                 desc: "Know your loan options instantly.",
-                active: true,
+                active: false,
               },
               {
                 number: "4",
@@ -417,7 +417,7 @@ function Home() {
                     <img
                       src={step.icon}
                       alt={step.title}
-                      className="h-8 w-8 object-contain opacity-80 transition-all duration-300 group-hover:opacity-100 group-hover:brightness-110"
+                      className="h-8 w-8 object-contain opacity-60 grayscale brightness-125 transition-all duration-300 group-hover:opacity-100"
                     />
                   </div>
                   <div className="absolute -right-2 -top-3 flex h-8 w-8 items-center justify-center rounded-lg bg-[#2f73ff] text-sm font-semibold text-white shadow-lg transition-transform duration-300 group-hover:scale-105">
@@ -474,7 +474,7 @@ function Home() {
                 className="group rounded-[18px] border border-[#c9dcff]/36 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] px-6 py-8 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md transition-colors duration-300 hover:border-[#4e83ff]/60 hover:bg-[linear-gradient(180deg,rgba(50,78,205,0.84)_0%,rgba(33,52,159,0.8)_100%)]"
               >
                 <h3 className="text-base md:text-lg font-semibold text-white">{tool.title}</h3>
-          <p className="mx-auto mt-4 max-w-[220px] leading-6 text-white/90">
+          <p className="mx-auto mt-4 min-h-[70px] max-w-[220px] leading-6 text-white/90">
                   {tool.desc}
                 </p>
                 <button
