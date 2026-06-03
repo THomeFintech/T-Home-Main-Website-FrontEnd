@@ -124,7 +124,7 @@ export default function ContactForm({
 
     setContactData(formData);
 localStorage.setItem("contact_data", JSON.stringify(formData));
-onNext(formData.service);
+onNext(formData);
   };
 
   return (
