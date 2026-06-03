@@ -462,11 +462,11 @@ function Home() {
                 btn: "Check Eligibility",
                 path: "/tools?tool=loan-prediction",
               },
-             {
+            {
   title: "Balance Transfer",
   desc: "Estimate your savings quickly and plan your loan transfer better.",
   btn: "Calculate Transfer",
-  path: "/coming-soon",
+  path: "https://btv1-frontend.onrender.com",
 }
             ].map((tool, i) => (
               <div
@@ -478,11 +478,17 @@ function Home() {
                   {tool.desc}
                 </p>
                 <button
-                  onClick={() => navigate(tool.path)}
-                  className="mt-6 rounded-lg border border-[#5ea6ff]/45 bg-[linear-gradient(180deg,rgba(58,108,197,0.46)_0%,rgba(36,73,148,0.4)_100%)] px-5 py-2 text-sm font-medium text-[#e8f2ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]"
-                >
-                  {tool.btn}
-                </button>
+  onClick={() => {
+    if (tool.path.startsWith("http")) {
+      window.location.href = tool.path;
+    } else {
+      navigate(tool.path);
+    }
+  }}
+  className="mt-6 rounded-lg border border-[#5ea6ff]/45 bg-[linear-gradient(180deg,rgba(58,108,197,0.46)_0%,rgba(36,73,148,0.4)_100%)] px-5 py-2 text-sm font-medium text-[#e8f2ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]"
+>
+  {tool.btn}
+</button>
               </div>
             ))}
           </div>
