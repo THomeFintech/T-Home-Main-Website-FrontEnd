@@ -644,11 +644,7 @@ async function handleContactSave() {
                 style={{ background: "rgba(20,35,70,0.65)", border: "1px solid rgba(80,130,220,0.25)" }}>
                 <Icon type="camera" className="w-3.5 h-3.5" /> Change Photo
               </button>
-              <button onClick={handleDownload}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition-all"
-                style={{ background: "rgba(20,35,70,0.65)", border: "1px solid rgba(80,130,220,0.25)" }}>
-                <Icon type="download" className="w-3.5 h-3.5" /> Download Data
-              </button>
+              
             </div>
           </div>
         </Card>
