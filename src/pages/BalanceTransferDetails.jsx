@@ -68,7 +68,7 @@ export default function BalanceTransferDetails() {
       data.loan_id
     );
 
-    //navigate("/balance-transfer/offers");
+    navigate("/balance-transfer/offers");
 
   } catch (err) {
     console.error(err);
