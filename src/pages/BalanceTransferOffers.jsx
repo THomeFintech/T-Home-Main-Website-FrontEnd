@@ -31,10 +31,10 @@ export default function BalanceTransferOffers() {
   const [aiSuggestedOffers, setAiSuggestedOffers] = useState([]);
   const [loadingOffers, setLoadingOffers] = useState(false);
   const [loadingAdd, setLoadingAdd] = useState(false);
-  const [loadingAi, setLoadingAi] = useState(false);
 
   const loanReference = localStorage.getItem("bt_loan_reference");
 
+  // ─── Load existing offers from backend on mount ───────────────────────────
   useEffect(() => {
     fetchOffers();
   }, []);
@@ -46,7 +46,8 @@ export default function BalanceTransferOffers() {
       if (!res.ok) return;
       const data = await res.json();
       console.log("Fetched Offers:", data);
-      const fetched = data.offers || [];
+      // Backend returns flat array [] or { offers: [] }
+      const fetched = Array.isArray(data) ? data : (data.offers || []);
       setNormalOffers(fetched);
       if (fetched.length > 0) setShowSuggestions(true);
     } catch (err) {
@@ -61,12 +62,11 @@ export default function BalanceTransferOffers() {
     setOffer((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ─── Add offer → POST to backend, then re-fetch ───────────────────────────
   const handleAddOffer = async () => {
     setLoadingAdd(true);
     try {
-      const payload = {
-        number_of_offers: 1,
-        offers: [
+      const offersList = [
           {
             bank_name: offer.bankName,
             interest_rate: Number(offer.rate),
@@ -74,7 +74,11 @@ export default function BalanceTransferOffers() {
             tenure_months: Number(offer.tenure),
             processing_fee: Number(offer.fee),
           },
-        ],
+        ];
+
+      const payload = {
+        number_of_offers: offersList.length,
+        offers: offersList,
       };
 
       console.log("POST Payload:", JSON.stringify(payload, null, 2));
@@ -103,31 +107,27 @@ export default function BalanceTransferOffers() {
     }
   };
 
-  const handleEditOffer = async (index, source) => {
+  // ─── Edit: populate form with existing values, remove from list ───────────
+  const handleEditOffer = (index, source) => {
     const list = source === "normal" ? normalOffers : aiSuggestedOffers;
     const item = list[index];
 
-    // Populate form with existing values for re-submission
     setOffer({
       bankName: item.bank_name ?? item.bankName ?? "",
-      rate: item.interest_rate ?? item.rate ?? "",
-      amount: item.loan_amount_offered ?? item.amount ?? "",
-      tenure: item.tenure_months ?? item.tenure ?? "",
-      fee: item.processing_fee ?? item.fee ?? "",
+      rate:     item.interest_rate ?? item.rate ?? "",
+      amount:   item.loan_amount_offered ?? item.amount ?? "",
+      tenure:   item.tenure_months ?? item.tenure ?? "",
+      fee:      item.processing_fee ?? item.fee ?? "",
     });
 
-    // TODO: If backend supports PUT /loan/{loanReference}/offers/{offerId},
-    // call it here using item.id or item.offer_id before removing from state.
-    // Example:
+    // TODO: Call PUT /loan/{loanReference}/offers/{item.id} when backend supports it
     // if (item.id) {
     //   await fetch(`${BT_API_BASE}/loan/${loanReference}/offers/${item.id}`, {
-    //     method: "PUT",
-    //     headers: { "Content-Type": "application/json" },
+    //     method: "PUT", headers: { "Content-Type": "application/json" },
     //     body: JSON.stringify({ ...updatedFields }),
     //   });
     // }
 
-    // Remove from local list so user can re-add with edits via the form
     if (source === "normal") {
       setNormalOffers((prev) => prev.filter((_, i) => i !== index));
     } else {
@@ -135,6 +135,7 @@ export default function BalanceTransferOffers() {
     }
   };
 
+  // ─── Delete: call backend DELETE, then remove from UI ────────────────────
   const handleDeleteOffer = async (index, source) => {
     const list = source === "normal" ? normalOffers : aiSuggestedOffers;
     const item = list[index];
@@ -158,8 +159,7 @@ export default function BalanceTransferOffers() {
         return;
       }
     } else {
-      // No id on this item — backend may not have returned one; remove locally only
-      console.warn("No offer id found on item — removing from UI only:", item);
+      console.warn("No offer id on item — removing from UI only:", item);
     }
 
     if (source === "normal") {
@@ -169,29 +169,9 @@ export default function BalanceTransferOffers() {
     }
   };
 
-  const handleAiSuggestOffer = async () => {
-    setLoadingAi(true);
-    try {
-      // TODO: Verify POST /loan/{loanReference}/ai-suggest-offers exists in Swagger
-      // If it doesn't exist, remove this function and the "AI Suggest Offer" button below
-      const res = await fetch(`${BT_API_BASE}/loan/${loanReference}/ai-suggest-offers`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        console.error("AI suggest endpoint error (does it exist in Swagger?):", data);
-        return;
-      }
-      console.log("AI Suggested Offers Response:", data);
-      setAiSuggestedOffers(data.offers || []);
-      setShowAiRecommended(true);
-    } catch (err) {
-      console.error("AI suggest endpoint unreachable — verify it exists in Swagger:", err);
-    } finally {
-      setLoadingAi(false);
-    }
-  };
+  // ─── AI Suggest: confirmed 404 — endpoint does not exist yet ─────────────
+  // When backend adds POST /loan/{loanReference}/ai-suggest-offers, restore this:
+  // const handleAiSuggestOffer = async () => { ... setAiSuggestedOffers(data.offers); setShowAiRecommended(true); }
 
   const inputClass =
     "h-[42px] w-full rounded-[8px] border border-white/15 bg-[rgba(255,255,255,0.07)] px-3 text-[13px] text-white placeholder:text-white/45 outline-none transition focus:border-[#5b93ff]";
@@ -212,6 +192,7 @@ export default function BalanceTransferOffers() {
             </p>
           </div>
 
+          {/* ── Add Offer Form ── */}
           <div className="mt-8 rounded-[12px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 shadow-[0_16px_40px_rgba(0,0,0,0.28)] sm:p-6">
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -281,12 +262,13 @@ export default function BalanceTransferOffers() {
             <p className="mt-4 text-[11px] text-emerald-300/80">✓ Inline validation and formatted values help reduce manual errors.</p>
           </div>
 
+          {/* ── Empty state / back panel ── */}
           {!showSuggestions ? (
             <div className="mt-6 rounded-[12px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.09)_0%,rgba(255,255,255,0.04)_100%)] px-4 py-6 text-center">
               {loadingOffers ? (
                 <p className="text-[16px] text-white/60">Loading saved offers...</p>
               ) : (
-                <p className="text-[16px] text-white">Add an offer above to get started, or go back to update loan details.</p>
+                <p className="text-[16px] text-white">if you don&apos;t have offers you can use AI Suggestions</p>
               )}
               <div className="mt-4 flex items-center justify-center gap-3">
                 <button
@@ -296,25 +278,32 @@ export default function BalanceTransferOffers() {
                 >
                   ← Back
                 </button>
+                {/* AI Suggest Banks button — restore when backend endpoint is live:
+                <button type="button" onClick={handleSuggestBanks}
+                  className="rounded-[8px] bg-[#1f6bff] px-4 py-2 text-[12px] font-medium text-white transition hover:bg-[#1c5ee0]">
+                  Suggest Banks
+                </button> */}
               </div>
             </div>
           ) : null}
 
+          {/* ── Offers list + AI section ── */}
           {showSuggestions ? (
             <>
+              {/* Normal / manually added offers */}
               {normalOffers.length > 0 ? (
                 <>
                   <h2 className="mt-10 text-center text-[42px] font-semibold text-white">Added Bank Offers</h2>
                   <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
                     {normalOffers.map((item, index) => (
                       <article
-                        key={`normal-${item.bank_name ?? item.bankName}-${index}`}
+                        key={`normal-${item.bank_name ?? item.bank}-${index}`}
                         className="rounded-[14px] border border-slate-200/80 bg-[#f8fafc] p-3 text-[#1f2937] shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
                       >
                         <div className="mb-2 flex items-start justify-between border-b border-slate-200 pb-2">
                           <div className="flex items-center gap-2">
                             <span className="inline-flex h-6 items-center rounded-sm bg-indigo-600 px-2 text-[10px] font-semibold text-white">
-                              {item.bank_name ?? item.bankName}
+                              {item.bank_name ?? item.bank}
                             </span>
                           </div>
                           <div className="flex items-center gap-2 text-slate-400">
@@ -341,8 +330,8 @@ export default function BalanceTransferOffers() {
 
                         <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
                           <div>
-                            <p className="flex items-center gap-1"><FileText size={12} /> Loan Amount</p>
-                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.loan_amount_offered ?? item.amount}</p>
+                            <p className="flex items-center gap-1"><FileText size={12} /> Amount to Customer</p>
+                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.loan_amount_offered ?? item.customerAmount ?? item.amount}</p>
                           </div>
                           <div>
                             <p className="flex items-center gap-1"><FileText size={12} /> Processing Fees</p>
@@ -355,36 +344,36 @@ export default function BalanceTransferOffers() {
                 </>
               ) : null}
 
+              {/* AI Suggest button — uncomment when POST /loan/{ref}/ai-suggest-offers is live in Swagger
               {!showAiRecommended ? (
                 <div className="mt-6 flex items-center justify-center">
                   <button
                     type="button"
-                    onClick={handleAiSuggestOffer}
-                    disabled={loadingAi}
-                    className="rounded-[9px] bg-[#1f6bff] px-5 py-2.5 text-[13px] font-medium text-white transition hover:bg-[#1c5ee0] disabled:opacity-60"
+                    onClick={() => setShowAiRecommended(true)}
+                    className="rounded-[9px] bg-[#1f6bff] px-5 py-2.5 text-[13px] font-medium text-white transition hover:bg-[#1c5ee0]"
                   >
-                    {loadingAi ? "Loading..." : "AI Suggest Offer"}
+                    AI Suggest Offer
                   </button>
                 </div>
               ) : null}
+              */}
 
+              {/* AI suggested offers — renders when backend endpoint is live and returns data */}
               {showAiRecommended && aiSuggestedOffers.length > 0 ? (
                 <>
                   <h2 className="mt-10 text-center text-[42px] font-semibold text-white">AI Suggested Bank Offers</h2>
                   <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
                     {aiSuggestedOffers.map((item, index) => (
                       <article
-                        key={`ai-${item.bank_name ?? item.bankName}-${index}`}
+                        key={`ai-${item.bank_name ?? item.bank}-${index}`}
                         className="rounded-[14px] border border-slate-200/80 bg-[#f8fafc] p-3 text-[#1f2937] shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
                       >
                         <div className="mb-2 flex items-start justify-between border-b border-slate-200 pb-2">
                           <div className="flex items-center gap-2">
                             <span className="inline-flex h-6 items-center rounded-sm bg-indigo-600 px-2 text-[10px] font-semibold text-white">
-                              {item.bank_name ?? item.bankName}
+                              {item.bank_name ?? item.bank}
                             </span>
-                            {item.tag && (
-                              <span className="rounded-full bg-blue-100 px-2 py-1 text-[10px] font-medium text-blue-700">{item.tag}</span>
-                            )}
+                            <span className="rounded-full bg-blue-100 px-2 py-1 text-[10px] font-medium text-blue-700">{item.tag}</span>
                           </div>
                           <div className="flex items-center gap-2 text-slate-400">
                             <button type="button" onClick={() => handleEditOffer(index, "ai")} className="rounded-full bg-slate-200 p-1"><Pencil size={11} /></button>
@@ -410,8 +399,8 @@ export default function BalanceTransferOffers() {
 
                         <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
                           <div>
-                            <p className="flex items-center gap-1"><FileText size={12} /> Loan Amount</p>
-                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.loan_amount_offered ?? item.amount}</p>
+                            <p className="flex items-center gap-1"><FileText size={12} /> Amount to Customer</p>
+                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.loan_amount_offered ?? item.customerAmount ?? item.amount}</p>
                           </div>
                           <div>
                             <p className="flex items-center gap-1"><FileText size={12} /> Processing Fees</p>
