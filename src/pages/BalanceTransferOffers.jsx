@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BT_API_BASE } from "../config";
 import {
   Building2,
   ShieldCheck,
@@ -16,162 +15,57 @@ import {
 
 const initialOffer = {
   bankName: "",
-  rate: "",
-  amount: "",
-  tenure: "",
-  fee: "",
+  rate: "7.25",
+  amount: "300000",
+  tenure: "30 Months",
+  fee: "5475",
 };
+
+const suggestedOffers = [
+  {
+    bank: "HDFC BANK",
+    tag: "",
+    amount: "5,00,000",
+    tenure: "48 Months",
+    rate: "10.45% p.a.",
+    customerAmount: "4,90,000",
+    fee: "10,000 (2%)",
+    accent: "bg-[#0f5fbf]",
+  },
+  {
+    bank: "AXIS BANK",
+    tag: "",
+    amount: "5,00,000",
+    tenure: "60 Months",
+    rate: "10.45% p.a.",
+    customerAmount: "4,92,500",
+    fee: "7,500 (1.5%)",
+    accent: "bg-[#a11b54]",
+  },
+  {
+    bank: "AXIS BANK",
+    tag: "Our Suggestion",
+    amount: "5,00,000",
+    tenure: "60 Months",
+    rate: "10.45% p.a.",
+    customerAmount: "4,92,500",
+    fee: "7,500 (1.5%)",
+    accent: "bg-[#a11b54]",
+  },
+];
 
 export default function BalanceTransferOffers() {
   const navigate = useNavigate();
   const [offer, setOffer] = useState(initialOffer);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showAiRecommended, setShowAiRecommended] = useState(false);
-  const [normalOffers, setNormalOffers] = useState([]);
-  const [aiSuggestedOffers, setAiSuggestedOffers] = useState([]);
-  const [loadingOffers, setLoadingOffers] = useState(false);
-  const [loadingAdd, setLoadingAdd] = useState(false);
-
-  const loanReference = localStorage.getItem("bt_loan_reference");
-
-  // ─── Load existing offers from backend on mount ───────────────────────────
-  useEffect(() => {
-    fetchOffers();
-  }, []);
-
-  const fetchOffers = async () => {
-    setLoadingOffers(true);
-    try {
-      const res = await fetch(`${BT_API_BASE}/loan/${loanReference}/offers`);
-      if (!res.ok) return;
-      const data = await res.json();
-      console.log("Fetched Offers:", data);
-      // Backend returns flat array [] or { offers: [] }
-      const fetched = Array.isArray(data) ? data : (data.offers || []);
-      setNormalOffers(fetched);
-      if (fetched.length > 0) setShowSuggestions(true);
-    } catch (err) {
-      console.error("Failed to fetch offers:", err);
-    } finally {
-      setLoadingOffers(false);
-    }
-  };
+  const normalOffers = suggestedOffers.filter((item) => !item.tag);
+  const aiSuggestedOffers = suggestedOffers.filter((item) => item.tag);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setOffer((prev) => ({ ...prev, [name]: value }));
   };
-
-  // ─── Add offer → POST to backend, then re-fetch ───────────────────────────
-  const handleAddOffer = async () => {
-    setLoadingAdd(true);
-    try {
-      const offersList = [
-          {
-            bank_name: offer.bankName,
-            interest_rate: Number(offer.rate),
-            loan_amount_offered: Number(offer.amount),
-            tenure_months: Number(offer.tenure),
-            processing_fee: Number(offer.fee),
-          },
-        ];
-
-      const payload = {
-        number_of_offers: offersList.length,
-        offers: offersList,
-      };
-
-      console.log("POST Payload:", JSON.stringify(payload, null, 2));
-
-      const res = await fetch(`${BT_API_BASE}/loan/${loanReference}/offers`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      console.log("Offer Saved Response:", data);
-
-      if (!res.ok) {
-        console.error("Backend validation error:", data);
-        return;
-      }
-
-      await fetchOffers();
-      setOffer(initialOffer);
-      setShowSuggestions(true);
-    } catch (err) {
-      console.error("Failed to add offer:", err);
-    } finally {
-      setLoadingAdd(false);
-    }
-  };
-
-  // ─── Edit: populate form with existing values, remove from list ───────────
-  const handleEditOffer = (index, source) => {
-    const list = source === "normal" ? normalOffers : aiSuggestedOffers;
-    const item = list[index];
-
-    setOffer({
-      bankName: item.bank_name ?? item.bankName ?? "",
-      rate:     item.interest_rate ?? item.rate ?? "",
-      amount:   item.loan_amount_offered ?? item.amount ?? "",
-      tenure:   item.tenure_months ?? item.tenure ?? "",
-      fee:      item.processing_fee ?? item.fee ?? "",
-    });
-
-    // TODO: Call PUT /loan/{loanReference}/offers/{item.id} when backend supports it
-    // if (item.id) {
-    //   await fetch(`${BT_API_BASE}/loan/${loanReference}/offers/${item.id}`, {
-    //     method: "PUT", headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({ ...updatedFields }),
-    //   });
-    // }
-
-    if (source === "normal") {
-      setNormalOffers((prev) => prev.filter((_, i) => i !== index));
-    } else {
-      setAiSuggestedOffers((prev) => prev.filter((_, i) => i !== index));
-    }
-  };
-
-  // ─── Delete: call backend DELETE, then remove from UI ────────────────────
-  const handleDeleteOffer = async (index, source) => {
-    const list = source === "normal" ? normalOffers : aiSuggestedOffers;
-    const item = list[index];
-    const offerId = item.id ?? item.offer_id ?? null;
-
-    // TODO: Verify DELETE /loan/{loanReference}/offers/{offerId} exists in Swagger
-    if (offerId) {
-      try {
-        const res = await fetch(
-          `${BT_API_BASE}/loan/${loanReference}/offers/${offerId}`,
-          { method: "DELETE" }
-        );
-        if (!res.ok) {
-          const err = await res.json();
-          console.error("Delete failed:", err);
-          return;
-        }
-        console.log(`Offer ${offerId} deleted from backend`);
-      } catch (err) {
-        console.error("Failed to delete offer:", err);
-        return;
-      }
-    } else {
-      console.warn("No offer id on item — removing from UI only:", item);
-    }
-
-    if (source === "normal") {
-      setNormalOffers((prev) => prev.filter((_, i) => i !== index));
-    } else {
-      setAiSuggestedOffers((prev) => prev.filter((_, i) => i !== index));
-    }
-  };
-
-  // ─── AI Suggest: confirmed 404 — endpoint does not exist yet ─────────────
-  // When backend adds POST /loan/{loanReference}/ai-suggest-offers, restore this:
-  // const handleAiSuggestOffer = async () => { ... setAiSuggestedOffers(data.offers); setShowAiRecommended(true); }
 
   const inputClass =
     "h-[42px] w-full rounded-[8px] border border-white/15 bg-[rgba(255,255,255,0.07)] px-3 text-[13px] text-white placeholder:text-white/45 outline-none transition focus:border-[#5b93ff]";
@@ -192,7 +86,6 @@ export default function BalanceTransferOffers() {
             </p>
           </div>
 
-          {/* ── Add Offer Form ── */}
           <div className="mt-8 rounded-[12px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 shadow-[0_16px_40px_rgba(0,0,0,0.28)] sm:p-6">
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -250,26 +143,19 @@ export default function BalanceTransferOffers() {
               </div>
               <button
                 type="button"
-                onClick={handleAddOffer}
-                disabled={loadingAdd}
-                className="inline-flex h-[42px] items-center justify-center gap-1.5 rounded-[9px] bg-[#1f6bff] px-5 text-[13px] font-medium text-white transition hover:bg-[#1c5ee0] disabled:opacity-60"
+                className="inline-flex h-[42px] items-center justify-center gap-1.5 rounded-[9px] bg-[#1f6bff] px-5 text-[13px] font-medium text-white transition hover:bg-[#1c5ee0]"
               >
                 <Plus size={14} />
-                {loadingAdd ? "Saving..." : "Add Offer"}
+                Add Offer
               </button>
             </div>
 
             <p className="mt-4 text-[11px] text-emerald-300/80">✓ Inline validation and formatted values help reduce manual errors.</p>
           </div>
 
-          {/* ── Empty state / back panel ── */}
           {!showSuggestions ? (
             <div className="mt-6 rounded-[12px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.09)_0%,rgba(255,255,255,0.04)_100%)] px-4 py-6 text-center">
-              {loadingOffers ? (
-                <p className="text-[16px] text-white/60">Loading saved offers...</p>
-              ) : (
-                <p className="text-[16px] text-white">if you don&apos;t have offers you can use AI Suggestions</p>
-              )}
+              <p className="text-[16px] text-white">if you don&apos;t have offers you can use AI Suggestions</p>
               <div className="mt-4 flex items-center justify-center gap-3">
                 <button
                   type="button"
@@ -278,64 +164,67 @@ export default function BalanceTransferOffers() {
                 >
                   ← Back
                 </button>
-                {/* AI Suggest Banks button — restore when backend endpoint is live:
-                <button type="button" onClick={handleSuggestBanks}
-                  className="rounded-[8px] bg-[#1f6bff] px-4 py-2 text-[12px] font-medium text-white transition hover:bg-[#1c5ee0]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSuggestions(true);
+                    setShowAiRecommended(false);
+                  }}
+                  className="rounded-[8px] bg-[#1f6bff] px-4 py-2 text-[12px] font-medium text-white transition hover:bg-[#1c5ee0]"
+                >
                   Suggest Banks
-                </button> */}
+                </button>
               </div>
             </div>
           ) : null}
 
-          {/* ── Offers list + AI section ── */}
           {showSuggestions ? (
             <>
-              {/* Normal / manually added offers */}
               {normalOffers.length > 0 ? (
                 <>
                   <h2 className="mt-10 text-center text-[42px] font-semibold text-white">Added Bank Offers</h2>
                   <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
                     {normalOffers.map((item, index) => (
                       <article
-                        key={`normal-${item.bank_name ?? item.bank}-${index}`}
+                        key={`normal-${item.bank}-${index}`}
                         className="rounded-[14px] border border-slate-200/80 bg-[#f8fafc] p-3 text-[#1f2937] shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
                       >
                         <div className="mb-2 flex items-start justify-between border-b border-slate-200 pb-2">
                           <div className="flex items-center gap-2">
-                            <span className="inline-flex h-6 items-center rounded-sm bg-indigo-600 px-2 text-[10px] font-semibold text-white">
-                              {item.bank_name ?? item.bank}
+                            <span className={`inline-flex h-6 items-center rounded-sm px-2 text-[10px] font-semibold text-white ${item.accent}`}>
+                              {item.bank}
                             </span>
                           </div>
                           <div className="flex items-center gap-2 text-slate-400">
-                            <button type="button" onClick={() => handleEditOffer(index, "normal")} className="rounded-full bg-slate-200 p-1"><Pencil size={11} /></button>
-                            <button type="button" onClick={() => handleDeleteOffer(index, "normal")} className="rounded-full bg-slate-200 p-1"><Trash2 size={11} /></button>
+                            <button type="button" className="rounded-full bg-slate-200 p-1"><Pencil size={11} /></button>
+                            <button type="button" className="rounded-full bg-slate-200 p-1"><Trash2 size={11} /></button>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-2 text-[11px]">
                           <div className="rounded-[9px] bg-[#eef3ff] p-2.5">
                             <p className="text-slate-500">Loan Amount</p>
-                            <p className="mt-1 flex items-center gap-1 text-[16px] font-semibold text-[#0f9f6a]"><IndianRupee size={14} /> {item.loan_amount_offered ?? item.amount}</p>
+                            <p className="mt-1 flex items-center gap-1 text-[16px] font-semibold text-[#0f9f6a]"><IndianRupee size={14} /> {item.amount}</p>
                           </div>
                           <div className="rounded-[9px] bg-[#f2f5fb] p-2.5">
                             <p className="text-slate-500">Tenure</p>
-                            <p className="mt-1 flex items-center gap-1 text-[16px] font-semibold"><CalendarDays size={14} /> {item.tenure_months ?? item.tenure}</p>
+                            <p className="mt-1 flex items-center gap-1 text-[16px] font-semibold"><CalendarDays size={14} /> {item.tenure}</p>
                           </div>
                         </div>
 
                         <div className="mt-2 rounded-[10px] border border-slate-200 bg-[#f1f5ff] p-2.5">
                           <p className="text-[11px] text-slate-500">Interest Rate</p>
-                          <p className="mt-1 flex items-center gap-2 text-[30px] font-bold leading-none text-[#111827]"><Percent size={16} className="text-indigo-600" /> {item.interest_rate ?? item.rate}</p>
+                          <p className="mt-1 flex items-center gap-2 text-[30px] font-bold leading-none text-[#111827]"><Percent size={16} className="text-indigo-600" /> {item.rate}</p>
                         </div>
 
                         <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
                           <div>
                             <p className="flex items-center gap-1"><FileText size={12} /> Amount to Customer</p>
-                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.loan_amount_offered ?? item.customerAmount ?? item.amount}</p>
+                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.customerAmount}</p>
                           </div>
                           <div>
                             <p className="flex items-center gap-1"><FileText size={12} /> Processing Fees</p>
-                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.processing_fee ?? item.fee}</p>
+                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.fee}</p>
                           </div>
                         </div>
                       </article>
@@ -344,7 +233,6 @@ export default function BalanceTransferOffers() {
                 </>
               ) : null}
 
-              {/* AI Suggest button — uncomment when POST /loan/{ref}/ai-suggest-offers is live in Swagger
               {!showAiRecommended ? (
                 <div className="mt-6 flex items-center justify-center">
                   <button
@@ -356,55 +244,53 @@ export default function BalanceTransferOffers() {
                   </button>
                 </div>
               ) : null}
-              */}
 
-              {/* AI suggested offers — renders when backend endpoint is live and returns data */}
               {showAiRecommended && aiSuggestedOffers.length > 0 ? (
                 <>
                   <h2 className="mt-10 text-center text-[42px] font-semibold text-white">AI Suggested Bank Offers</h2>
                   <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
                     {aiSuggestedOffers.map((item, index) => (
                       <article
-                        key={`ai-${item.bank_name ?? item.bank}-${index}`}
+                        key={`ai-${item.bank}-${index}`}
                         className="rounded-[14px] border border-slate-200/80 bg-[#f8fafc] p-3 text-[#1f2937] shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
                       >
                         <div className="mb-2 flex items-start justify-between border-b border-slate-200 pb-2">
                           <div className="flex items-center gap-2">
-                            <span className="inline-flex h-6 items-center rounded-sm bg-indigo-600 px-2 text-[10px] font-semibold text-white">
-                              {item.bank_name ?? item.bank}
+                            <span className={`inline-flex h-6 items-center rounded-sm px-2 text-[10px] font-semibold text-white ${item.accent}`}>
+                              {item.bank}
                             </span>
                             <span className="rounded-full bg-blue-100 px-2 py-1 text-[10px] font-medium text-blue-700">{item.tag}</span>
                           </div>
                           <div className="flex items-center gap-2 text-slate-400">
-                            <button type="button" onClick={() => handleEditOffer(index, "ai")} className="rounded-full bg-slate-200 p-1"><Pencil size={11} /></button>
-                            <button type="button" onClick={() => handleDeleteOffer(index, "ai")} className="rounded-full bg-slate-200 p-1"><Trash2 size={11} /></button>
+                            <button type="button" className="rounded-full bg-slate-200 p-1"><Pencil size={11} /></button>
+                            <button type="button" className="rounded-full bg-slate-200 p-1"><Trash2 size={11} /></button>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-2 text-[11px]">
                           <div className="rounded-[9px] bg-[#eef3ff] p-2.5">
                             <p className="text-slate-500">Loan Amount</p>
-                            <p className="mt-1 flex items-center gap-1 text-[16px] font-semibold text-[#0f9f6a]"><IndianRupee size={14} /> {item.loan_amount_offered ?? item.amount}</p>
+                            <p className="mt-1 flex items-center gap-1 text-[16px] font-semibold text-[#0f9f6a]"><IndianRupee size={14} /> {item.amount}</p>
                           </div>
                           <div className="rounded-[9px] bg-[#f2f5fb] p-2.5">
                             <p className="text-slate-500">Tenure</p>
-                            <p className="mt-1 flex items-center gap-1 text-[16px] font-semibold"><CalendarDays size={14} /> {item.tenure_months ?? item.tenure}</p>
+                            <p className="mt-1 flex items-center gap-1 text-[16px] font-semibold"><CalendarDays size={14} /> {item.tenure}</p>
                           </div>
                         </div>
 
                         <div className="mt-2 rounded-[10px] border border-slate-200 bg-[#f1f5ff] p-2.5">
                           <p className="text-[11px] text-slate-500">Interest Rate</p>
-                          <p className="mt-1 flex items-center gap-2 text-[30px] font-bold leading-none text-[#111827]"><Percent size={16} className="text-indigo-600" /> {item.interest_rate ?? item.rate}</p>
+                          <p className="mt-1 flex items-center gap-2 text-[30px] font-bold leading-none text-[#111827]"><Percent size={16} className="text-indigo-600" /> {item.rate}</p>
                         </div>
 
                         <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
                           <div>
                             <p className="flex items-center gap-1"><FileText size={12} /> Amount to Customer</p>
-                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.loan_amount_offered ?? item.customerAmount ?? item.amount}</p>
+                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.customerAmount}</p>
                           </div>
                           <div>
                             <p className="flex items-center gap-1"><FileText size={12} /> Processing Fees</p>
-                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.processing_fee ?? item.fee}</p>
+                            <p className="mt-1 text-[16px] font-semibold text-[#111827]">Rs {item.fee}</p>
                           </div>
                         </div>
                       </article>
