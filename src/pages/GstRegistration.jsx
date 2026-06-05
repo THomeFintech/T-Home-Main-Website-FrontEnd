@@ -44,7 +44,7 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
             <div>
               <p className="text-xl font-bold text-white">100%</p>
               <p>Compliance</p>
-            </div>
+            </div> 
             <div>
               <p className="text-xl font-bold text-white">Fast</p>
               <p>Processing</p>
