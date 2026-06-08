@@ -45,7 +45,7 @@ export default function Tools() {
 }, [location.pathname, location.search]);
 
 useEffect(() => {
-  if (location.pathname === "/tools" && location.state?.resetTools) {
+  if (location.state?.resetTools) {
     setStep(0);
     setContactData({});
     setLoanData({});
@@ -53,8 +53,10 @@ useEffect(() => {
     setSelectedBank(null);
     setShowBankCards(false);
     setIsSelectingBank(false);
+
+    navigate("/tools", { replace: true });
   }
-}, [location]);
+}, [location, navigate]);
   useEffect(() => {
   if (step === 2) {
     const savedLoan = localStorage.getItem("loanData");
