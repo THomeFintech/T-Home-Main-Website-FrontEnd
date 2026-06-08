@@ -302,9 +302,17 @@ const orderedMobileServices = mobileServiceOrder.map((label) =>
                 )}
               </div>
 
-              <NavLink to="/tools" className={navLinkClass} onClick={handleNavLink}>
-                Financial Tools
-              </NavLink>
+              <button
+  onClick={() => {
+    handleNavLink();
+    navigate("/tools", {
+      state: { resetTools: true },
+    });
+  }}
+  className="text-white/80 hover:text-[#4f72e0] transition"
+>
+  Financial Tools
+</button>
               <NavLink to="/about" className={navLinkClass} onClick={handleNavLink}>
                 About
               </NavLink>
