@@ -1,56 +1,109 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FileText } from "lucide-react";
+import { BT_API_BASE } from "../config";
 
-
-const requiredDocsProfessional = [
-  "ITR - YEAR 1*",
-  "ITR - YEAR 2*",
-  "DEGREE CERTIFICATE*",
-  "PROFESSIONAL REGISTRATION CERTIFICATE*",
-  "BANK STATEMENT (12 MONTHS)*",
-  "OFFICE / CLINIC ADDRESS PROOF*",
+const salariedRequiredDocs = [
+  { title: "Salary Slip 1*", key: "salarySlip1" },
+  { title: "Salary Slip 2*", key: "salarySlip2" },
+  { title: "Salary Slip 3*", key: "salarySlip3" },
+  { title: "Form 16*", key: "form16" },
+  { title: "Company ID Proof*", key: "companyIdProof" },
 ];
-
-const requiredDocsSelfEmployed = [
-  "ITR - YEAR 1*",
-  "ITR - YEAR 2*",
-  "MSME CERTIFICATE*",
-  "GST CERTIFICATE*",
-  "GSTR FILING STATEMENT(1 YEAR)*",
-];
-
-const optionalDocsProfessional = [
-  {
-    title: "GST REGISTRATION (IF APPLICABLE)",
-    key: "optionalGst"
-  }
-];
-
-const optionalDocsSelfEmployed = [
-  {
-    title: "LABOUR LICENSE (OPTIONAL)",
-    key: "optionalLabour"
-  }
-];
-
 
 export default function BalanceTransferIncomeDocuments() {
   const navigate = useNavigate();
   const location = useLocation();
+
   const [uploaded, setUploaded] = useState({});
+  const [filesMap, setFilesMap] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Employment type passed from previous page (if any)
-  const employmentType = location.state?.employmentType || "Professional";
+  const employmentType =
+    location.state?.employmentType ||
+    JSON.parse(localStorage.getItem("btApplicationDraft") || "{}")?.employment_type ||
+    "Salaried";
 
-  // Select docs based on employment type
-  const isSelfEmployed = employmentType === "Self-employed" || employmentType === "Self Employed";
-  const requiredDocs = isSelfEmployed ? requiredDocsSelfEmployed : requiredDocsProfessional;
-  const optionalDocs = isSelfEmployed ? optionalDocsSelfEmployed : optionalDocsProfessional;
+  const requiredDocs = useMemo(() => {
+    return salariedRequiredDocs;
+  }, []);
 
   const onUpload = (key, file) => {
     if (!file) return;
-    setUploaded((prev) => ({ ...prev, [key]: file.name }));
+
+    setUploaded((prev) => ({
+      ...prev,
+      [key]: file.name,
+    }));
+
+    setFilesMap((prev) => ({
+      ...prev,
+      [key]: file,
+    }));
+
+    setError("");
+  };
+
+  const handleNext = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const applicationReference = localStorage.getItem("btApplicationReference");
+
+      if (!applicationReference) {
+        setError("Application reference not found. Please go back and try again.");
+        return;
+      }
+
+      const requiredKeys = requiredDocs.map((doc) => doc.key);
+      const missingKeys = requiredKeys.filter((key) => !filesMap[key]);
+
+      if (missingKeys.length > 0) {
+        setError("Please upload all required documents.");
+        return;
+      }
+
+      const files = requiredKeys.map((key) => filesMap[key]);
+
+     const uploadForm = new FormData();
+
+uploadForm.append("document_group", "incomeDocuments");
+
+requiredKeys.forEach((key) => {
+  uploadForm.append("document_keys", key);
+});
+
+files.forEach((file) => {
+  uploadForm.append("files", file);
+});
+
+const response = await fetch(
+  `${BT_API_BASE}/application/${applicationReference}/documents`,
+  {
+    method: "POST",
+    body: uploadForm,
+  }
+);
+
+if (!response.ok) {
+  const errorData = await response.json();
+  console.log("Upload Error:", errorData);
+  throw new Error("Failed to upload documents");
+}
+
+const data = await response.json();
+console.log("Upload Success:", data);
+
+
+
+      navigate("/balance-transfer/application-portal/existing-loan-documents");
+    } catch (err) {
+  setError(err.message || "Failed to upload documents.");
+} finally {
+  setLoading(false);
+}
   };
 
   return (
@@ -60,7 +113,8 @@ export default function BalanceTransferIncomeDocuments() {
 
       <div className="relative z-10 mx-auto max-w-[1320px] rounded-[14px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0.06)_100%)] p-4 shadow-[0_18px_60px_rgba(0,0,0,0.48)] backdrop-blur-xl sm:p-6">
         <h1 className="text-center text-[30px] font-semibold leading-tight text-white sm:text-[38px] md:text-[52px]">
-          Balance Transfer <span className="text-[#1f6bff]">Application</span> Portal
+          Balance Transfer{" "}
+          <span className="text-[#1f6bff]">Application</span> Portal
         </h1>
 
         <div className="mt-5 overflow-x-auto">
@@ -77,12 +131,35 @@ export default function BalanceTransferIncomeDocuments() {
                   "CO-APPLICANT DETAILS",
                   "REVIEW & SUBMIT",
                 ];
+
                 return (
-                  <div key={step} className="flex w-full flex-col items-center text-center">
-                    <div className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border text-[12px] font-semibold ${active ? "border-[#2f78ff] bg-white text-[#1f6bff]" : done ? "border-emerald-500 bg-emerald-500 text-white" : "border-white/70 bg-white text-slate-700"}`}>
+                  <div
+                    key={step}
+                    className="flex w-full flex-col items-center text-center"
+                  >
+                    <div
+                      className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border text-[12px] font-semibold ${
+                        active
+                          ? "border-[#2f78ff] bg-white text-[#1f6bff]"
+                          : done
+                          ? "border-emerald-500 bg-emerald-500 text-white"
+                          : "border-white/70 bg-white text-slate-700"
+                      }`}
+                    >
                       {done ? "✓" : step}
                     </div>
-                    <p className={`mt-4 text-[10px] font-semibold ${active ? "text-[#2f78ff]" : done ? "text-emerald-400" : "text-white/55"}`}>{labels[step - 1]}</p>
+
+                    <p
+                      className={`mt-4 text-[10px] font-semibold ${
+                        active
+                          ? "text-[#2f78ff]"
+                          : done
+                          ? "text-emerald-400"
+                          : "text-white/55"
+                      }`}
+                    >
+                      {labels[step - 1]}
+                    </p>
                   </div>
                 );
               })}
@@ -91,32 +168,32 @@ export default function BalanceTransferIncomeDocuments() {
         </div>
 
         <div className="mx-auto mt-6 max-w-[980px] rounded-[12px] border border-white/15 bg-[rgba(255,255,255,0.05)] p-4 sm:p-5">
-          <h2 className="text-center text-[24px] font-semibold text-white sm:text-[28px]">Income Documents - {employmentType}</h2>
+          <h2 className="text-center text-[24px] font-semibold text-white sm:text-[28px]">
+            Income Documents - {employmentType}
+          </h2>
 
           <div className="mt-4 border-b border-white/25 pb-2">
-            <p className="text-[13px] font-semibold text-white/90">Required Documents</p>
+            <p className="text-[13px] font-semibold text-white/90">
+              Required Documents
+            </p>
           </div>
 
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {requiredDocs.map((doc) => (
-              <UploadCard key={doc} title={doc} subtitle={uploaded[doc] || "Drag & Drop or Click to Upload"} onChange={(file) => onUpload(doc, file)} />
-            ))}
-          </div>
-
-          <div className="mt-4 border-b border-white/25 pb-2">
-            <p className="text-[13px] font-semibold text-white/90">Optional Documents</p>
-          </div>
-
-          <div className="mt-3">
-            {optionalDocs.map((doc) => (
               <UploadCard
                 key={doc.key}
                 title={doc.title}
-                subtitle={uploaded[doc.key] || "Drag & Drop or Click to Upload"}
+                subtitle={uploaded?.[doc.key]}
                 onChange={(file) => onUpload(doc.key, file)}
               />
             ))}
           </div>
+
+          {error ? (
+            <p className="mt-4 text-[12px] text-red-400">
+              {typeof error === "string" ? error : "Something went wrong"}
+            </p>
+          ) : null}
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <button
@@ -131,18 +208,18 @@ export default function BalanceTransferIncomeDocuments() {
               <div className="h-1.5 w-full rounded-full bg-white/25">
                 <div className="h-full w-[40%] rounded-full bg-[#2f78ff]" />
               </div>
-              <p className="mt-1 text-center text-[10px] text-white/60">Step 2 of 5</p>
+              <p className="mt-1 text-center text-[10px] text-white/60">
+                Step 2 of 5
+              </p>
             </div>
 
             <button
               type="button"
-              onClick={() => navigate(
-                "/balance-transfer/application-portal/existing-loan-documents",
-                { state: { heading: employmentType } }
-              )}
-              className="rounded-[8px] bg-[#1f6bff] px-5 py-2 text-[13px] font-medium text-white hover:bg-[#1c5ee0]"
+              onClick={handleNext}
+              disabled={loading}
+              className="rounded-[8px] bg-[#1f6bff] px-5 py-2 text-[13px] font-medium text-white hover:bg-[#1c5ee0] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Existing Loan Documents →
+              {loading ? "Uploading..." : "Existing Loan Documents →"}
             </button>
           </div>
         </div>
@@ -155,12 +232,25 @@ function UploadCard({ title, subtitle, onChange }) {
   return (
     <label className="flex cursor-pointer items-center gap-2 rounded-[8px] border border-white/20 bg-[rgba(255,255,255,0.08)] p-3">
       <FileText size={14} className="text-[#5ea0ff]" />
+
       <div>
         <p className="text-[12px] font-semibold text-white">{title}</p>
-        <p className="text-[10px] text-white/60">{subtitle}</p>
+
+        <p className="text-[10px] text-white/60">
+          {typeof subtitle === "string" && subtitle.trim() !== ""
+            ? subtitle
+            : "Drag & Drop or Click to Upload"}
+        </p>
+
         <p className="text-[9px] text-white/45">PDF or image</p>
       </div>
-      <input type="file" className="hidden" onChange={(e) => onChange(e.target.files?.[0] || null)} />
+
+      <input
+        type="file"
+        className="hidden"
+        accept=".pdf,image/*"
+        onChange={(e) => onChange(e.target.files?.[0] || null)}
+      />
     </label>
   );
 }
