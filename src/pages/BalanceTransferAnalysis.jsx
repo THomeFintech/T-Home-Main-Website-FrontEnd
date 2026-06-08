@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CheckCircle2,
@@ -11,23 +11,208 @@ import {
   FileBarChart2,
   Send,
 } from "lucide-react";
+import { BT_API_BASE } from "../config";
+import { getBankLogo } from "../utils/Banklogos";
 
-const metrics = [
-  { title: "Current Loan", k1: "Current EMI", v1: "Rs10,022", k2: "Total Outflow", v2: "Rs3,00,654", icon: Shield },
-  { title: "New Plan", k1: "New EMI", v1: "Rs9,856", k2: "New Total Outflow", v2: "Rs2,95,688", icon: CircleDollarSign },
-  { title: "Your Benefits", k1: "Net Savings", v1: "Rs4,966", k2: "EMI Reduction", v2: "Rs166/month", icon: TrendingDown, accent: "text-emerald-500" },
-  { title: "Approval Chance", k1: "Credit Score", v1: "855", k2: "Approval Odds", v2: "High", icon: BadgeCheck, accent: "text-emerald-500" },
-];
+function formatINR(value) {
+  return `Rs${Number(value || 0).toLocaleString("en-IN", {
+    maximumFractionDigits: 2,
+  })}`;
+}
 
-const bars = [
-  { label: "Interest Rate", left: "8.5%", right: "7.6%", tag: "Lower", width: "64%" },
-  { label: "EMI", left: "Rs10,022", right: "Rs9,856", tag: "Reduced", width: "55%" },
-  { label: "Total Cost", left: "Rs3,00,654", right: "Rs2,95,688", tag: "Savings", width: "66%" },
-  { label: "Savings", left: "-", right: "Rs4,966", tag: "Positive", width: "47%" },
-];
+function getApprovalText(probability) {
+  const p = Number(probability || 0);
+  if (p >= 80) return "High";
+  if (p >= 50) return "Medium";
+  return "Low";
+}
+
+function getApprovalPercent(probability) {
+  return `${Math.round(Number(probability || 0))}%`;
+}
 
 export default function BalanceTransferAnalysis() {
   const navigate = useNavigate();
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loanResult = JSON.parse(localStorage.getItem("btLoanResult") || "{}");
+  const loanForm = JSON.parse(localStorage.getItem("btLoanForm") || "{}");
+
+  useEffect(() => {
+    const fetchReport = async () => {
+      try {
+        const loanReference = localStorage.getItem("btLoanReference");
+
+        if (!loanReference) {
+          setError("Loan reference missing.");
+          return;
+        }
+
+        const response = await fetch(
+  `${BT_API_BASE}/loan/${loanReference}/report`
+);
+
+if (!response.ok) {
+  throw new Error("Failed to load report");
+}
+
+const result = await response.json();
+console.log("REPORT API RESPONSE:", result);
+
+setReport(result);
+localStorage.setItem("btFinalReport", JSON.stringify(result));
+      } catch (err) {
+        setError(err?.response?.data?.detail || "Failed to load report.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReport();
+  }, []);
+
+  const recommendedLogo = useMemo(
+    () => getBankLogo(report?.recommended_bank_name),
+    [report]
+  );
+
+  const metrics = useMemo(() => {
+    if (!report) return [];
+
+    const currentEmi =
+      report?.bank_comparisons?.find((item) => item.offer_source === "CURRENT BANK")?.emi ||
+      loanResult?.current_emi ||
+      0;
+
+    const recommendedBankRow =
+      report?.bank_comparisons?.find(
+        (item) => item.bank_name === report.recommended_bank_name
+      ) || {};
+
+    const newEmi = recommendedBankRow?.emi || 0;
+    const emiReduction = Math.max(Number(currentEmi || 0) - Number(newEmi || 0), 0);
+
+    return [
+      {
+        title: "Current Loan",
+        k1: "Current EMI",
+        v1: formatINR(currentEmi),
+        k2: "Total Outflow",
+        v2: formatINR(report.current_bank_outflow),
+        icon: Shield,
+      },
+      {
+        title: "New Plan",
+        k1: "New EMI",
+        v1: formatINR(newEmi),
+        k2: "New Total Outflow",
+        v2: formatINR(report.recommended_bank_outflow),
+        icon: CircleDollarSign,
+      },
+      {
+        title: "Your Benefits",
+        k1: "Net Savings",
+        v1: formatINR(report.best_net_savings),
+        k2: "EMI Reduction",
+        v2: `${formatINR(emiReduction)}/month`,
+        icon: TrendingDown,
+        accent: "text-emerald-500",
+      },
+      {
+        title: "Approval Chance",
+        k1: "Credit Score",
+        v1: String(loanForm?.cibil_score || "-"),
+        k2: "Approval Odds",
+        v2: getApprovalText(report.transfer_success_probability),
+        icon: BadgeCheck,
+        accent: "text-emerald-500",
+      },
+    ];
+  }, [report, loanResult, loanForm]);
+
+  const bars = useMemo(() => {
+    if (!report) return [];
+
+    const currentEmi =
+      report?.bank_comparisons?.find((item) => item.offer_source === "CURRENT BANK")?.emi ||
+      loanResult?.current_emi ||
+      0;
+
+    const recommendedBankRow =
+      report?.bank_comparisons?.find(
+        (item) => item.bank_name === report.recommended_bank_name
+      ) || {};
+
+    const newEmi = recommendedBankRow?.emi || 0;
+
+    const currentOutflow = Number(report.current_bank_outflow || 0);
+    const newOutflow = Number(report.recommended_bank_outflow || 0);
+    const savings = Number(report.best_net_savings || 0);
+
+    const savingsRatio =
+      currentOutflow > 0 ? Math.min((savings / currentOutflow) * 100, 100) : 0;
+    const emiRatio =
+      Number(currentEmi || 0) > 0
+        ? Math.min((Math.abs(Number(currentEmi || 0) - Number(newEmi || 0)) / Number(currentEmi || 0)) * 100, 100)
+        : 0;
+
+    return [
+      {
+        label: "EMI",
+        left: formatINR(currentEmi),
+        right: formatINR(newEmi),
+        tag: Number(newEmi) < Number(currentEmi) ? "Reduced" : "Updated",
+        width: `${Math.max(emiRatio, 35)}%`,
+      },
+      {
+        label: "Total Cost",
+        left: formatINR(currentOutflow),
+        right: formatINR(newOutflow),
+        tag: newOutflow < currentOutflow ? "Savings" : "Updated",
+        width: `${Math.max(savingsRatio, 45)}%`,
+      },
+      {
+        label: "Savings",
+        left: "-",
+        right: formatINR(savings),
+        tag: savings > 0 ? "Positive" : "Neutral",
+        width: `${Math.max(savingsRatio, 30)}%`,
+      },
+      {
+        label: "Approval Probability",
+        left: "-",
+        right: getApprovalPercent(report.transfer_success_probability),
+        tag: getApprovalText(report.transfer_success_probability),
+        width: `${Math.max(Number(report.transfer_success_probability || 0), 35)}%`,
+      },
+    ];
+  }, [report, loanResult]);
+
+  if (loading) {
+    return (
+      <section className="relative min-h-screen overflow-hidden px-4 pb-10 pt-24 sm:px-6 md:pt-28 lg:px-8 lg:pt-32">
+        <div className="pointer-events-none absolute inset-0 bg-[#020918]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(47,77,167,0.34),transparent_60%)]" />
+        <div className="relative z-10 mx-auto max-w-[900px] rounded-[14px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0.06)_100%)] p-8 text-center text-white shadow-[0_18px_60px_rgba(0,0,0,0.48)] backdrop-blur-xl">
+          Loading analysis...
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !report) {
+    return (
+      <section className="relative min-h-screen overflow-hidden px-4 pb-10 pt-24 sm:px-6 md:pt-28 lg:px-8 lg:pt-32">
+        <div className="pointer-events-none absolute inset-0 bg-[#020918]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(47,77,167,0.34),transparent_60%)]" />
+        <div className="relative z-10 mx-auto max-w-[900px] rounded-[14px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0.06)_100%)] p-8 text-center text-red-300 shadow-[0_18px_60px_rgba(0,0,0,0.48)] backdrop-blur-xl">
+          {error || "Unable to load analysis."}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative min-h-screen overflow-hidden px-4 pb-10 pt-24 sm:px-6 md:pt-28 lg:px-8 lg:pt-32">
@@ -38,26 +223,42 @@ export default function BalanceTransferAnalysis() {
         <div className="rounded-[8px] border border-slate-200/80 bg-[#f7f9fc] p-4 text-[#1f2937]">
           <h2 className="text-[30px] font-semibold leading-none">Our Recommendation</h2>
 
-          <div className="mx-auto mt-4 max-w-[720px] text-center">
+          <div className="mx-auto mt-4 max-w-[760px] text-center">
             <div className="mx-auto inline-flex h-[46px] w-[380px] max-w-full items-center justify-center gap-2 rounded-[7px] bg-[#1ea84a] px-4 text-[22px] font-semibold text-white">
-              <CheckCircle2 size={18} /> Transfer Recommended
+              <CheckCircle2 size={18} /> {report.decision === "TRANSFER" ? "Transfer Recommended" : "Transfer Recommended"}
             </div>
 
-            <p className="mt-3 text-[32px] font-semibold text-slate-700">
-              <span className="inline-flex rounded-[3px] bg-[#8d1f50] px-2 py-0.5 text-[15px] font-semibold text-white">AXIS BANK</span>
-              <span className="ml-3">For Personal Loan</span>
-            </p>
+            <div className="mt-4 flex items-center justify-center gap-3">
+              {recommendedLogo ? (
+                <img
+                  src={recommendedLogo}
+                  alt={report.recommended_bank_name}
+                  className="h-12 w-12 rounded-full bg-white p-1 object-contain shadow-sm"
+                />
+              ) : null}
 
-            <p className="mt-1 text-[62px] font-bold leading-none text-[#111827]">
-              Rs4,966 <span className="text-[34px] font-semibold text-emerald-600">Total Savings</span>
+              <p className="text-[32px] font-semibold text-slate-700">
+                <span className="inline-flex rounded-[3px] bg-[#8d1f50] px-2 py-0.5 text-[15px] font-semibold text-white">
+                  {report.recommended_bank_name}
+                </span>
+                <span className="ml-3">For {loanForm?.loan_type || "Loan"}</span>
+              </p>
+            </div>
+
+            <p className="mt-2 text-[62px] font-bold leading-none text-[#111827]">
+              {formatINR(report.best_net_savings)}{" "}
+              <span className="text-[34px] font-semibold text-emerald-600">Total Savings</span>
             </p>
 
             <div className="mt-2 border-t border-slate-300" />
-            <p className="py-2 text-[28px] text-slate-700">Compared to continuing with your current bank.</p>
+            <p className="py-2 text-[28px] text-slate-700">
+              Compared to continuing with your current bank.
+            </p>
             <div className="border-t border-slate-300" />
 
             <p className="mt-2 text-[12px] text-slate-500">
-              This option offers lower interest, manageable EMI stress, and a high approval probability.
+              This option offers lower total outflow, manageable EMI stress, and an approval probability of{" "}
+              {getApprovalPercent(report.transfer_success_probability)}.
             </p>
           </div>
         </div>
@@ -66,7 +267,10 @@ export default function BalanceTransferAnalysis() {
           {metrics.map((m) => {
             const Icon = m.icon;
             return (
-              <article key={m.title} className="rounded-[12px] border border-slate-200/80 bg-[#f7f9fc] p-3 text-[#1f2937]">
+              <article
+                key={m.title}
+                className="rounded-[12px] border border-slate-200/80 bg-[#f7f9fc] p-3 text-[#1f2937]"
+              >
                 <div className="mx-auto mb-1 inline-flex h-7 w-7 items-center justify-center rounded-full bg-blue-100 text-blue-600">
                   <Icon size={13} />
                 </div>
@@ -93,13 +297,25 @@ export default function BalanceTransferAnalysis() {
               A quick explanation of the factors that improve your balance transfer outcome.
             </p>
             <ul className="mt-3 space-y-2 text-[14px] text-slate-700">
-              <li className="inline-flex gap-2"><CheckCircle2 size={14} className="mt-0.5 text-emerald-500" />Lower interest rate than your current loan, reducing finance charges over the remaining tenure.</li>
-              <li className="inline-flex gap-2"><CheckCircle2 size={14} className="mt-0.5 text-emerald-500" />Lower EMI burden improves monthly cash flow and keeps the repayment plan easier to manage.</li>
-              <li className="inline-flex gap-2"><CheckCircle2 size={14} className="mt-0.5 text-emerald-500" />Reduced total loan cost creates measurable savings even after considering transfer-related charges.</li>
-              <li className="inline-flex gap-2"><CheckCircle2 size={14} className="mt-0.5 text-emerald-500" />High approval probability based on your current credit score and financial profile.</li>
+              <li className="inline-flex gap-2">
+                <CheckCircle2 size={14} className="mt-0.5 text-emerald-500" />
+                Lower total outflow than your current loan, helping reduce your overall repayment burden.
+              </li>
+              <li className="inline-flex gap-2">
+                <CheckCircle2 size={14} className="mt-0.5 text-emerald-500" />
+                Better monthly repayment structure based on the recommended bank’s EMI outcome.
+              </li>
+              <li className="inline-flex gap-2">
+                <CheckCircle2 size={14} className="mt-0.5 text-emerald-500" />
+                Transfer success probability of {getApprovalPercent(report.transfer_success_probability)} based on your current financial profile.
+              </li>
+              <li className="inline-flex gap-2">
+                <CheckCircle2 size={14} className="mt-0.5 text-emerald-500" />
+                EMI stress level is marked as <strong>{report.emi_stress_level}</strong>, making the repayment plan easier to manage.
+              </li>
             </ul>
             <div className="mt-3 rounded-[6px] border border-blue-200 bg-blue-50 px-3 py-2 text-[12px] text-blue-700">
-              Decision Benefit: Lower total outflow compared to your current bank.
+              Decision Benefit: {report.decision || "Lower total outflow compared to your current bank."}
             </div>
           </article>
 
@@ -113,13 +329,20 @@ export default function BalanceTransferAnalysis() {
                 <div key={b.label}>
                   <div className="mb-1 flex items-center justify-between text-[12px] text-slate-600">
                     <span>{b.label}</span>
-                    <span>{b.left} {"->"} {b.right}</span>
+                    <span>
+                      {b.left} → {b.right}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-200">
-                      <div className="h-full rounded-full bg-[linear-gradient(90deg,#2f6fff,#284ec4)]" style={{ width: b.width }} />
+                      <div
+                        className="h-full rounded-full bg-[linear-gradient(90deg,#2f6fff,#284ec4)]"
+                        style={{ width: b.width }}
+                      />
                     </div>
-                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">{b.tag}</span>
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                      {b.tag}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -129,15 +352,21 @@ export default function BalanceTransferAnalysis() {
 
         <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
           <div className="rounded-[12px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-[12px] text-white/85">
-            <p className="inline-flex items-center gap-2 font-semibold"><Lock size={13} className="text-amber-400" /> Secure & Confidential</p>
+            <p className="inline-flex items-center gap-2 font-semibold">
+              <Lock size={13} className="text-amber-400" /> Secure & Confidential
+            </p>
             <p className="mt-1 text-white/65">Your loan analysis details stay protected and private.</p>
           </div>
           <div className="rounded-[12px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-[12px] text-white/85">
-            <p className="inline-flex items-center gap-2 font-semibold"><Brain size={13} className="text-blue-400" /> AI-Powered Analysis</p>
+            <p className="inline-flex items-center gap-2 font-semibold">
+              <Brain size={13} className="text-blue-400" /> AI-Powered Analysis
+            </p>
             <p className="mt-1 text-white/65">Recommendations are generated using structured financial comparisons.</p>
           </div>
           <div className="rounded-[12px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-[12px] text-white/85">
-            <p className="inline-flex items-center gap-2 font-semibold"><FileBarChart2 size={13} className="text-emerald-400" /> Transparent Results</p>
+            <p className="inline-flex items-center gap-2 font-semibold">
+              <FileBarChart2 size={13} className="text-emerald-400" /> Transparent Results
+            </p>
             <p className="mt-1 text-white/65">See every major number behind the recommendation before you proceed.</p>
           </div>
         </div>
@@ -152,10 +381,10 @@ export default function BalanceTransferAnalysis() {
           </button>
           <button
             type="button"
-            onClick={() => navigate("/balance-transfer/comparison")}
+            onClick={() => navigate("/balance-transfer/amortization")}
             className="inline-flex items-center gap-2 rounded-[8px] bg-[#1f6bff] px-7 py-2.5 text-[22px] font-medium text-white transition hover:bg-[#1c5ee0]"
           >
-            <Send size={16} /> View Detailed Comparison
+            <Send size={16} /> View Amortization
           </button>
         </div>
       </div>
