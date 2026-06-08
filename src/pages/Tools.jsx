@@ -218,7 +218,15 @@ useEffect(() => {
         "See how much you can save by switching to a lower interest loan over the remaining loan tenure.",
       buttonText: "Calculate Now",
       icon: TrendingUp,
-      onClick: () => navigate("/balance-transfer-contact"),
+     onClick: () => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+  if (isLoggedIn) {
+    navigate("/balance-transfer-contact");
+  } else {
+    navigate("/login");
+  }
+},
       theme: {
         border: "border-emerald-500/20",
         cardBorder: "border-emerald-500/10",
