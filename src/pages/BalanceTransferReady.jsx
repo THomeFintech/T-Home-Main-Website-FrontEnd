@@ -1,12 +1,29 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle2, Copy, FileText, FileSpreadsheet, Building2, UserRound } from "lucide-react";
+import {
+  CheckCircle2,
+  Copy,
+  Building2,
+  UserRound,
+} from "lucide-react";
+
+import { getBankLogo } from "../utils/Banklogos";
 
 export default function BalanceTransferReady() {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
-  const transferId = "BT-2026-1346";
+  const report = JSON.parse(localStorage.getItem("btFinalReport") || "{}");
+  const loanReference = localStorage.getItem("btLoanReference") || "";
+
+  const transferId = useMemo(() => {
+    return loanReference || `BT-${Date.now().toString().slice(-6)}`;
+  }, [loanReference]);
+
+  const recommendedBank = report?.recommended_bank_name || "-";
+  const estimatedSavings = Number(report?.best_net_savings || 0);
+  const statusText = report?.decision || "Transfer Approved";
+  const bankLogo = getBankLogo(recommendedBank);
 
   const handleCopyId = async () => {
     try {
@@ -16,31 +33,6 @@ export default function BalanceTransferReady() {
     } catch {
       setCopied(false);
     }
-  };
-
-  const downloadFile = (filename, content, mimeType) => {
-    const blob = new Blob([content], { type: mimeType });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(link.href);
-  };
-
-  const handleDownloadPdf = () => {
-    const html = `Balance Transfer Analysis\nID: ${transferId}\nRecommended Bank: AXIS BANK\nEstimated Net Savings: ₹4,966\nStatus: Transfer Approved`;
-    downloadFile("balance-transfer-analysis.txt", html, "text/plain;charset=utf-8;");
-  };
-
-  const handleDownloadCsv = () => {
-    const csv = [
-      "metric,value",
-      `transfer_id,${transferId}`,
-      "recommended_bank,AXIS BANK",
-      "estimated_net_savings,4966",
-      "status,Transfer Approved",
-    ].join("\n");
-    downloadFile("balance-transfer-analysis.csv", csv, "text/csv;charset=utf-8;");
   };
 
   return (
@@ -56,11 +48,34 @@ export default function BalanceTransferReady() {
           <h1 className="text-[30px] font-semibold leading-tight text-white sm:text-[36px] md:text-[42px]">
             Your <span className="text-[#1f6bff]">Balance Transfer Analysis</span> Is Ready
           </h1>
-          <p className="mt-1 text-[12px] text-white/65 sm:text-[13px]">You can download, share, or take the next step anytime.</p>
+          <p className="mt-1 text-[12px] text-white/65 sm:text-[13px]">
+            You can download, share, or take the next step anytime.
+          </p>
 
           <div className="mx-auto mt-4 max-w-[620px] rounded-[10px] border border-slate-200/70 bg-[#f8fafc] px-4 py-4 text-[#1f2937] sm:px-5">
-            <p className="text-[12px] sm:text-[13px]">Recommended Bank: <span className="rounded-sm bg-[#8d1f50] px-2 py-0.5 text-[10px] font-semibold text-white">AXIS BANK</span></p>
-            <p className="mt-2 text-[12px] sm:text-[13px]">Estimated Net Savings: <span className="font-semibold text-emerald-600">₹4,966</span> <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">Transfer Approved</span></p>
+            <div className="flex items-center justify-center gap-2 text-[12px] sm:text-[13px]">
+              <span>Recommended Bank:</span>
+              {bankLogo ? (
+                <img
+                  src={bankLogo}
+                  alt={recommendedBank}
+                  className="h-7 w-7 rounded-full bg-white p-1 object-contain"
+                />
+              ) : null}
+              <span className="rounded-sm bg-[#8d1f50] px-2 py-0.5 text-[10px] font-semibold text-white">
+                {recommendedBank}
+              </span>
+            </div>
+
+            <p className="mt-2 text-[12px] sm:text-[13px]">
+              Estimated Net Savings:{" "}
+              <span className="font-semibold text-emerald-600">
+                ₹{estimatedSavings.toLocaleString("en-IN")}
+              </span>{" "}
+              <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                {statusText}
+              </span>
+            </p>
           </div>
 
           <div className="mx-auto mt-4 max-w-[820px] rounded-[10px] border border-white/15 bg-[rgba(255,255,255,0.05)] px-4 py-3 text-left">
@@ -81,24 +96,6 @@ export default function BalanceTransferReady() {
         </div>
 
         <div className="mx-auto mt-6 max-w-[1180px]">
-          <h3 className="text-[24px] font-semibold text-white sm:text-[28px]">Export Your Report</h3>
-          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
-            <ActionCard
-              icon={<FileText size={28} className="text-rose-500" />}
-              title="Export as PDF"
-              subtitle="Advisor-ready report"
-              buttonText="Download PDF"
-              onClick={handleDownloadPdf}
-            />
-            <ActionCard
-              icon={<FileSpreadsheet size={28} className="text-emerald-500" />}
-              title="Export as CSV"
-              subtitle="For personal analysis"
-              buttonText="Download CSV"
-              onClick={handleDownloadCsv}
-            />
-          </div>
-
           <h3 className="mt-4 text-[24px] font-semibold text-white sm:text-[28px]">Take Next Step</h3>
           <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
             <ActionCard
@@ -113,7 +110,10 @@ export default function BalanceTransferReady() {
               title="Talk to a Loan Expert"
               subtitle="Get advice and discuss your options with our loan advisor."
               buttonText="Talk to an Expert"
-              onClick={() => navigate("/contact")}
+              onClick={() =>
+  window.location.href =
+    "https://t-home-main-website-front-end.vercel.app/contact"
+}
             />
           </div>
 
