@@ -128,18 +128,29 @@ console.log("Current Bank:", currentBank);
     setEditIndex(null);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setOffer((prev) => ({ ...prev, [name]: value }));
-  };
+ const handleChange = (e) => {
+  const { name, value } = e.target;
 
+  if (value !== "" && Number(value) < 0) {
+    return;
+  }
+
+  setOffer((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
   const handleAddOffer = () => {
     setError("");
-
-    if (!offer.bankName || !offer.rate || !offer.amount || !offer.tenure || !offer.fee) {
-      setError("Please fill all offer fields before adding.");
-      return;
-    }
+    if (
+  Number(offer.rate) < 0 ||
+  Number(offer.amount) < 0 ||
+  Number(offer.tenure) <= 0 ||
+  Number(offer.fee) < 0
+) {
+  setError("Please enter valid positive values.");
+  return;
+}
 
     const mappedOffer = {
       bank_name: offer.bankName,
