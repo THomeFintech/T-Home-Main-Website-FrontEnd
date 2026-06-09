@@ -147,9 +147,12 @@ const selectedService = location.state?.service || "";
   }, [formData]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const { name, value } = e.target;
+
+  // Don't allow negative numbers
+  if (value !== "" && Number(value) < 0) {
+    return;
+  }
 
   const handleAnalyzeLoan = async () => {
     try {
