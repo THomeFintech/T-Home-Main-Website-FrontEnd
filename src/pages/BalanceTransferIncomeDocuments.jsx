@@ -71,13 +71,10 @@ export default function BalanceTransferIncomeDocuments() {
 
 uploadForm.append("document_group", "incomeDocuments");
 
-requiredKeys.forEach((key) => {
-  uploadForm.append("document_keys", key);
-});
-
-files.forEach((file) => {
-  uploadForm.append("files", file);
-});
+for (let i = 0; i < requiredKeys.length; i++) {
+  uploadForm.append("document_keys", requiredKeys[i]);
+  uploadForm.append("files", files[i]);
+}
 
 const response = await fetch(
   `${BT_API_BASE}/application/${applicationReference}/documents`,
@@ -86,6 +83,7 @@ const response = await fetch(
     body: uploadForm,
   }
 );
+
 
 if (!response.ok) {
   const errorData = await response.json();
