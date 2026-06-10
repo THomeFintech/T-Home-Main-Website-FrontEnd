@@ -61,10 +61,10 @@ export default function BalanceTransferExistingLoanDocuments() {
 
 formData.append("document_group", "existingLoanDocuments");
 
-requiredKeys.forEach((key, index) => {
-  formData.append("document_keys", key);
-  formData.append("files", files[index]);
-});
+for (let i = 0; i < requiredKeys.length; i++) {
+  formData.append("document_keys", requiredKeys[i]);
+  formData.append("files", files[i]);
+}
 
 const response = await fetch(
   `${BT_API_BASE}/application/${applicationRef}/documents`,
@@ -73,6 +73,7 @@ const response = await fetch(
     body: formData,
   }
 );
+
 
 if (!response.ok) {
   const errorData = await response.json();
