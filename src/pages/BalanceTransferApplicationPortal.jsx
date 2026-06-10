@@ -245,6 +245,10 @@ const data = await response.json();
       body: uploadForm,
     }
   );
+  console.log("Upload status:", uploadResponse.status);
+
+const responseData = await uploadResponse.json();
+console.log("Upload response:", responseData);
 
   if (!uploadResponse.ok) {
     throw new Error("Failed to upload KYC documents");
