@@ -154,6 +154,11 @@ const selectedService = location.state?.service || "";
     return;
   }
 
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
   const handleAnalyzeLoan = async () => {
     try {
       setLoading(true);
