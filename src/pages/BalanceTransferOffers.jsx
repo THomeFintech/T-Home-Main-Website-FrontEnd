@@ -152,6 +152,11 @@ console.log("Current Bank:", currentBank);
   return;
 }
 
+    if (!offer.bankName || !offer.rate || !offer.amount || !offer.tenure || !offer.fee) {
+      setError("Please fill all offer fields before adding.");
+      return;
+    }
+
     const mappedOffer = {
       bank_name: offer.bankName,
       loan_amount_offered: Number(offer.amount),
