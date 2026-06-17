@@ -121,8 +121,20 @@ function App() {
         <ScrollToTop />
 
         <Routes>
+          {/* DASHBOARD ROUTES */}
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/applications" element={<TrackApplication />} />
+            <Route path="/applications/:applicationId" element={<TrackApplicationWithParam />} />
+            <Route path="/documents" element={<DocumentsPage />} />
+            <Route path="/profile" element={<Profilepage />} />
+            <Route path="/support" element={<Support />} />
+          </Route>
 
-          <Route path="/balance-transfer" element={<BalanceTransfer />} />
+          {/* MAIN LAYOUT ROUTES */}
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+              <Route path="/balance-transfer" element={<BalanceTransfer />} />
 
 <Route
   path="/balance-transfer/details"
@@ -193,20 +205,6 @@ function App() {
   path="/balance-transfer/application-portal/submitted"
   element={<BalanceTransferSubmitted />}
 />
-
-          {/* DASHBOARD ROUTES */}
-          <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/applications" element={<TrackApplication />} />
-            <Route path="/applications/:applicationId" element={<TrackApplicationWithParam />} />
-            <Route path="/documents" element={<DocumentsPage />} />
-            <Route path="/profile" element={<Profilepage />} />
-            <Route path="/support" element={<Support />} />
-          </Route>
-
-          {/* MAIN LAYOUT ROUTES */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
             <Route path="services" element={<Services />} />
             <Route path="tools" element={<Tools />} />
             <Route path="about" element={<About />} />
