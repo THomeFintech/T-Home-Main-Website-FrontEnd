@@ -8,7 +8,7 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
 
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      console.log("🔥 GOOGLE ACCESS TOKEN:", tokenResponse.access_token);
+      //console.log("🔥 GOOGLE ACCESS TOKEN:", tokenResponse.access_token);
       try {
         // 1️⃣ Get user info from Google
         const userInfoRes = await fetch(
