@@ -23,7 +23,7 @@ export default function Tools() {
   const [showBankCards, setShowBankCards] = useState(false);
   const [isSelectingBank, setIsSelectingBank] = useState(false);
   const [selectedService, setSelectedService] = useState("");
-   const API_BASE = import.meta.env.VITE_API_URL;
+  const API_BASE = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -39,7 +39,7 @@ export default function Tools() {
   }, [location.search, navigate]);
 
   useEffect(() => {
-  if (location.pathname === "/tools" && !location.search) {
+      if (location.pathname === "/tools" && !location.search) {
     setStep(0);
   }
 }, [location.pathname, location.search]);
@@ -57,7 +57,8 @@ useEffect(() => {
     navigate("/tools", { replace: true });
   }
 }, [location, navigate]);
-  useEffect(() => {
+
+useEffect(() => {
   if (step === 2) {
     const savedLoan = localStorage.getItem("loanData");
     if (savedLoan) {
@@ -65,28 +66,33 @@ useEffect(() => {
     }
   }
 }, [step]);
+  
+
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
 
   const handleLoanResult = (data, formValues) => {
-  setPredictionResult(data);
-  setLoanData(formValues);
+    setPredictionResult(data);
+    setLoanData(formValues);
 
-  // ✅ SAVE DATA
-  localStorage.setItem("loanData", JSON.stringify(formValues));
+    // ✅ SAVE DATA
+    localStorage.setItem("loanData", JSON.stringify(formValues));
 
-  if (["Approved", "Partially Approved"].includes(data?.decision)) {
-    setShowBankCards(true);
-  } else {
-    setShowBankCards(false);
-  }
-};
+    if (["Approved", "Partially Approved"].includes(data?.decision)) {
+      setShowBankCards(true);
+    } else {
+      setShowBankCards(false);
+    }
+  };
 
   const formattedBanks = useMemo(() => {
     if (!predictionResult?.recommended_banks) return [];
 
-    console.log("Recommended banks from backend:", predictionResult.recommended_banks);
+    console.log(
+      "Recommended banks from backend:",
+      predictionResult.recommended_banks,
+    );
 
     return predictionResult.recommended_banks.map((b, i) => ({
       id: i + 1,
@@ -114,13 +120,11 @@ useEffect(() => {
       }
 
       const interestRate = Number(
-        bank.interest_rate ??
-          String(bank.interestRate || "0").replace("%", "")
+        bank.interest_rate ?? String(bank.interestRate || "0").replace("%", ""),
       );
 
       const monthlyEmi = Number(
-        bank.monthly_emi ??
-          String(bank.monthlyEmi || "0").replace(/[₹,]/g, "")
+        bank.monthly_emi ?? String(bank.monthlyEmi || "0").replace(/[₹,]/g, ""),
       );
 
       const payload = {
@@ -185,8 +189,7 @@ useEffect(() => {
         text: "text-amber-500",
         hoverBg: "hover:bg-amber-500/10",
         btnBorder: "border-amber-500/30",
-        glow:
-          "hover:shadow-[0_0_56px_rgba(245,158,11,0.35),0_16px_36px_rgba(0,0,0,0.35)] active:shadow-[0_0_42px_rgba(245,158,11,0.28),0_12px_28px_rgba(0,0,0,0.32)]",
+        glow: "hover:shadow-[0_0_56px_rgba(245,158,11,0.35),0_16px_36px_rgba(0,0,0,0.35)] active:shadow-[0_0_42px_rgba(245,158,11,0.28),0_12px_28px_rgba(0,0,0,0.32)]",
       },
     },
     {
@@ -210,8 +213,7 @@ useEffect(() => {
         text: "text-blue-500",
         hoverBg: "hover:bg-blue-500/10",
         btnBorder: "border-blue-500/30",
-        glow:
-          "hover:shadow-[0_0_56px_rgba(59,130,246,0.35),0_16px_36px_rgba(0,0,0,0.35)] active:shadow-[0_0_42px_rgba(59,130,246,0.28),0_12px_28px_rgba(0,0,0,0.32)]",
+        glow: "hover:shadow-[0_0_56px_rgba(59,130,246,0.35),0_16px_36px_rgba(0,0,0,0.35)] active:shadow-[0_0_42px_rgba(59,130,246,0.28),0_12px_28px_rgba(0,0,0,0.32)]",
       },
     },
     {
@@ -235,8 +237,7 @@ useEffect(() => {
         text: "text-emerald-500",
         hoverBg: "hover:bg-emerald-500/10",
         btnBorder: "border-emerald-500/30",
-        glow:
-          "hover:shadow-[0_0_56px_rgba(16,185,129,0.35),0_16px_36px_rgba(0,0,0,0.35)] active:shadow-[0_0_42px_rgba(16,185,129,0.28),0_12px_28px_rgba(0,0,0,0.32)]",
+        glow: "hover:shadow-[0_0_56px_rgba(16,185,129,0.35),0_16px_36px_rgba(0,0,0,0.35)] active:shadow-[0_0_42px_rgba(16,185,129,0.28),0_12px_28px_rgba(0,0,0,0.32)]",
       },
     },
   ];
@@ -254,7 +255,8 @@ useEffect(() => {
             </h1>
 
             <p className="mx-auto max-w-2xl text-base font-normal leading-relaxed text-gray-400 md:text-lg">
-              Smart calculators and tools to help you make informed financial decisions with precision and clarity.
+              Smart calculators and tools to help you make informed financial
+              decisions with precision and clarity.
             </p>
 
             <div className="mt-16 grid gap-6 text-left lg:grid-cols-3">
@@ -281,7 +283,10 @@ useEffect(() => {
                     <div
                       className={`mb-8 flex h-12 w-12 items-center justify-center rounded-lg border bg-white/[0.03] transition-all duration-300 group-hover:scale-110 group-hover:bg-white/[0.08] group-active:scale-105 ${tool.theme.border}`}
                     >
-                      <Icon className={`h-5 w-5 ${tool.theme.text}`} strokeWidth={1.5} />
+                      <Icon
+                        className={`h-5 w-5 ${tool.theme.text}`}
+                        strokeWidth={1.5}
+                      />
                     </div>
 
                     <h2 className="mb-4 text-2xl font-semibold tracking-normal text-white transition-colors duration-300 group-hover:text-white/95">
@@ -318,44 +323,44 @@ useEffect(() => {
 
       <div className="relative z-10">
         {step === 1 && (
-         <ContactForm
-  contactData={contactData}
-  setContactData={setContactData}
-  onNext={(service) => {
-    setSelectedService(service);
-    setContactData((prev) => ({
-      ...prev,
-      service,
-    }));
-    nextStep();
-  }}
-/>
+          <ContactForm
+            contactData={contactData}
+            setContactData={setContactData}
+            onNext={(service) => {
+              setSelectedService(service);
+              setContactData((prev) => ({
+                ...prev,
+                service,
+              }));
+              nextStep();
+            }}
+          />
         )}
 
         {step === 2 && (
           <section className="px-4 pb-20 pt-32">
             <div className="mx-auto max-w-[1400px]">
-             <div
-  className={
-    predictionResult
-      ? "grid gap-6 rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-3 shadow-[0_22px_50px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-4 lg:grid-cols-[1.6fr_1fr]"
-      : "mx-auto max-w-[820px] rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-3 shadow-[0_22px_50px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-4"
-  }
->
-  <LoanForm
-    loanData={loanData}
-    setLoanData={setLoanData}
-    onSubmit={handleLoanResult}
-    service={selectedService}
-  />
+              <div
+                className={
+                  predictionResult
+                    ? "grid gap-6 rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-3 shadow-[0_22px_50px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-4 lg:grid-cols-[1.6fr_1fr]"
+                    : "mx-auto max-w-[820px] rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-3 shadow-[0_22px_50px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-4"
+                }
+              >
+                <LoanForm
+                  loanData={loanData}
+                  setLoanData={setLoanData}
+                  onSubmit={handleLoanResult}
+                  service={selectedService}
+                />
 
-  {predictionResult && (
-    <div className="sticky top-28 h-fit space-y-5">
-      <Meter result={predictionResult} />
-      <Decision result={predictionResult} />
-    </div>
-  )}
-</div>
+                {predictionResult && (
+                  <div className="sticky top-28 h-fit space-y-5">
+                    <Meter result={predictionResult} />
+                    <Decision result={predictionResult} />
+                  </div>
+                )}
+              </div>
 
               {showBankCards && formattedBanks.length > 0 && (
                 <div className="mt-12">
@@ -396,8 +401,12 @@ useEffect(() => {
         {step === 6 && (
           <div className="px-4 pt-40 text-center text-white">
             <div className="mx-auto max-w-2xl rounded-[22px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))] px-8 py-12 shadow-[0_20px_45px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
-              <h1 className="text-4xl font-bold">Balance Transfer Calculator</h1>
-              <p className="mt-6 text-lg text-gray-500">Feature coming soon 🚀</p>
+              <h1 className="text-4xl font-bold">
+                Balance Transfer Calculator
+              </h1>
+              <p className="mt-6 text-lg text-gray-500">
+                Feature coming soon 🚀
+              </p>
               <button
                 onClick={() => setStep(0)}
                 className="mt-8 rounded-xl border border-white/10 bg-white/5 px-10 py-4 font-semibold text-blue-400 transition-all hover:bg-white/10"
