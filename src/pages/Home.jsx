@@ -149,7 +149,7 @@ function Home() {
   return (
     <div style={{ fontFamily: "'Outfit', sans-serif" }}>
       {/* ── HERO SECTION ── */}
-      <section className="relative flex min-h-[100svh] w-full items-start justify-center overflow-hidden pt-[192px] pb-[100px] text-center md:min-h-[100svh] md:pt-[128px] md:pb-[100px] bg-[#081a49]">
+      <section className="relative flex min-h-[100svh] w-full items-start justify-center overflow-hidden pt-[192px] pb-[120px] text-center md:min-h-[100svh] md:pt-[128px] md:pb-[120px] bg-[#081a49]">
         <img
           src="/home/bg image.png"
           alt="background"
@@ -185,10 +185,10 @@ function Home() {
         <img
           src="/home/telangana map.png"
           alt="map"
-          className="absolute left-1/2 top-[28%] z-10 hidden w-[430px] -translate-x-1/2 opacity-55 brightness-110 saturate-150 hue-rotate-6 mix-blend-screen md:block md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
-        />
+className="absolute left-1/2 top-[28%] z-10 hidden w-[430px] -translate-x-1/2 opacity-55 brightness-110 saturate-150 hue-rotate-6 mix-blend-screen md:block md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
+/>
 
-        <div className="relative z-30 max-w-4xl px-6 -mt-8">
+        <div className="relative z-10 max-w-4xl px-6 -mt-8">
           <div className="mx-auto mt-12 mb-2 inline-flex items-center gap-3 rounded-full border border-[#4b9dff]/30 bg-black/65 px-4 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl md:mt-[10px]">
             <span className="rounded-full bg-[#4ea3ff] px-2 py-[3px] text-[10px] font-bold uppercase tracking-wide text-black">
               NEW
@@ -254,11 +254,11 @@ function Home() {
 
         {/* GLASS RINGS (desktop only) */}
         <div className="pointer-events-none absolute inset-0 z-0 hidden items-end justify-center md:flex">
-          <div className="absolute bottom-[-398px] h-[930px] w-[930px] rounded-full bg-[radial-gradient(circle,rgba(50,105,220,0.5)_0%,rgba(32,77,181,0.42)_44%,rgba(15,49,132,0.3)_70%,rgba(8,28,84,0.18)_88%,rgba(6,18,52,0)_100%)] animate-pulseSlow md:bottom-[-384px] md:h-[980px] md:w-[980px]" />
-          <div className="absolute bottom-[-320px] h-[760px] w-[760px] rounded-full bg-[radial-gradient(circle,rgba(52,110,216,0.48)_0%,rgba(28,79,184,0.44)_44%,rgba(13,53,154,0.36)_72%,rgba(7,27,87,0.24)_90%,rgba(6,18,46,0)_100%)] animate-pulseSlow delay-150 md:bottom-[-306px] md:h-[800px] md:w-[800px]" />
-          <div className="absolute bottom-[-245px] h-[610px] w-[610px] rounded-full bg-[radial-gradient(circle,rgba(84,143,232,0.32)_0%,rgba(56,113,210,0.3)_26%,rgba(33,89,188,0.3)_56%,rgba(16,58,162,0.25)_78%,rgba(7,21,62,0)_100%)] backdrop-blur-[1.5px] animate-pulseSlow delay-300 md:bottom-[-232px] md:h-[650px] md:w-[650px]" />
+          <div className="absolute bottom-[-300px] h-[760px] w-[760px] rounded-full bg-[radial-gradient(circle,rgba(50,105,220,0.5)_0%,rgba(32,77,181,0.42)_44%,rgba(15,49,132,0.3)_70%,rgba(8,28,84,0.18)_88%,rgba(6,18,52,0)_100%)] animate-pulseSlow md:bottom-[-180px] md:h-[760px] md:w-[760px]" />
+          <div className="absolute bottom-[-250px] h-[620px] w-[620px] rounded-full bg-[radial-gradient(circle,rgba(52,110,216,0.48)_0%,rgba(28,79,184,0.44)_44%,rgba(13,53,154,0.36)_72%,rgba(7,27,87,0.24)_90%,rgba(6,18,46,0)_100%)] animate-pulseSlow delay-150 md:bottom-[-140px] md:h-[620px] md:w-[620px]" />
+          <div className="absolute bottom-[-190px] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle,rgba(84,143,232,0.32)_0%,rgba(56,113,210,0.3)_26%,rgba(33,89,188,0.3)_56%,rgba(16,58,162,0.25)_78%,rgba(7,21,62,0)_100%)] backdrop-blur-[1.5px] animate-pulseSlow delay-300 md:bottom-[-100px] md:h-[500px] md:w-[500px]" />
 
-          <div className="absolute bottom-[-20px] md:bottom-[-20px] flex h-[210px] w-[210px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
+          <div className="absolute bottom-[-20px] md:bottom-[-20px] flex h-[200px] w-[200px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
             <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border border-white/55 bg-[linear-gradient(160deg,rgba(255,255,255,0.46)_0%,rgba(220,236,255,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-xl">
               <img
                 src={circleItems[currentIndex].img}
@@ -266,7 +266,7 @@ function Home() {
                 className="h-10 w-10 object-contain brightness-125 contrast-125 drop-shadow-[0_4px_14px_rgba(170,215,255,0.4)] transition-all duration-700 ease-in-out"
               />
             </div>
-            <p className="mt-3 text-1g font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
+            <p className="mt-3 text-lg font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
               {circleItems[currentIndex].text}
             </p>
           </div>

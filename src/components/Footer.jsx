@@ -110,8 +110,8 @@ function Footer() {
             <ul className="space-y-2 text-[29px] text-[#b4c2de]" style={{ fontSize: "clamp(14px,0.8vw,29px)" }}>
               <li><Link to="/tools" className="hover:text-white transition">EMI Calculator</Link></li>
               <li><Link to="/tools" className="hover:text-white transition">Loan Prediction System</Link></li>
-              <li><Link to="/balance-transfer" className="hover:text-white transition">Balance Transfer</Link></li>
-              <li><Link to="/tools" className="hover:text-white transition">Calculator</Link></li>
+              <li><Link to="/balance-transfer" className="hover:text-white transition">Balance Transfer Calculator</Link></li>
+              
             </ul>
           </div>
 
