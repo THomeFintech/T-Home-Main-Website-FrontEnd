@@ -6,19 +6,19 @@ import { BT_API_BASE } from "../config";
 export default function BalanceTransfer() {
   const navigate = useNavigate();
 
-  const handleNext = async (formData) => {
-    console.log("Form Data:", formData);
+  const handleNext = async (service) => {
+    const stored = JSON.parse(localStorage.getItem("contact_data") || "{}");
 
     const payload = {
-      full_name: formData.name,
+      full_name: stored.name,
       country_code: "+91",
-      phone: formData.phone,
-      email: formData.email,
-      service: formData.service || "Balance Transfer",
-      accepted_terms: true
+      phone: stored.phone,
+      email: stored.email,
+      service: service || "Balance Transfer",
+      accepted_terms: true,
     };
 
-    console.log("Sending payload:", JSON.stringify(payload)); // ← log 1
+    console.log("Sending payload:", JSON.stringify(payload));
 
     try {
       const res = await fetch(`${BT_API_BASE}/contact-form/`, {
@@ -29,7 +29,7 @@ export default function BalanceTransfer() {
 
       if (!res.ok) {
         const error = await res.json();
-        console.log("Validation errors:", JSON.stringify(error.detail, null, 2)); // ← log 2
+        console.log("Validation errors:", JSON.stringify(error.detail, null, 2));
         throw new Error("Failed to submit");
       }
 
@@ -40,7 +40,7 @@ export default function BalanceTransfer() {
       }
 
       navigate("/balance-transfer/details", {
-        state: { service: formData.service || "Balance Transfer" },
+        state: { service: service || "Balance Transfer" },
       });
 
     } catch (err) {
