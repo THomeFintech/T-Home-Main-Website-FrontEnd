@@ -3,5 +3,20 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: "./"   // ✅ ADD THIS LINE
+  base: "./",
+  build: {
+    sourcemap: true,   // temporary — lets us pinpoint the exact culprit if this doesn't fully fix it
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/lodash')) {
+            return 'lodash-vendor'
+          }
+        },
+      },
+    },
+  },
 })
