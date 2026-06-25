@@ -7,26 +7,31 @@ export default function BalanceTransfer() {
   const navigate = useNavigate();
 
   const handleNext = async (formData) => {
-     console.log("Form Data:", formData);
+    console.log("Form Data:", formData);
+
+    const payload = {
+      full_name: formData.name,
+      country_code: "+91",
+      phone: formData.phone,
+      email: formData.email,
+      service: formData.service || "Balance Transfer",
+      accepted_terms: true
+    };
+
+    console.log("Sending payload:", JSON.stringify(payload)); // ← log 1
+
     try {
       const res = await fetch(`${BT_API_BASE}/contact-form/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-        full_name: formData.name,
-        country_code: "+91",
-        phone: formData.phone,
-        email: formData.email,
-        service: formData.service || "Balance Transfer",
-        accepted_terms: true
-      }),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
-  const error = await res.json();
-  console.log("Backend Error:", error);
-  throw new Error("Failed to submit");
-}
+        const error = await res.json();
+        console.log("Validation errors:", JSON.stringify(error.detail, null, 2)); // ← log 2
+        throw new Error("Failed to submit");
+      }
 
       const data = await res.json();
 
