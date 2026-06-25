@@ -35,10 +35,12 @@ export default function LoanForm({
   onOpenCibil,
   service,
 })  {
-  const mapServiceToLoanType = (service) => {
+const mapServiceToLoanType = (service) => {
   if (!service) return "";
-
-  const clean = service.trim().toLowerCase();
+  if (typeof service === "object") {
+    service = service.value ?? service.label ?? "";
+  }
+  const clean = String(service).trim().toLowerCase();
 
   const map = {
     "home loan": "Home",
