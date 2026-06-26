@@ -3,8 +3,6 @@ import { FileText, ChevronDown, Zap } from "lucide-react";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
-
-
 function numberToWords(num) {
   const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
     "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen",
@@ -34,66 +32,66 @@ export default function LoanForm({
   loading,
   onOpenCibil,
   service,
-})  {
+}) {
   const mapServiceToLoanType = (service) => {
-  if (!service) return "";
+    if (!service) return "";
 
-  const clean = service.trim().toLowerCase();
+    const clean = service.trim().toLowerCase();
 
-  const map = {
-    "home loan": "Home",
-    "personal loan": "Personal",
-    "business loan": "Business",
-    "loan against property": "LAP",
+    const map = {
+      "home loan": "Home",
+      "personal loan": "Personal",
+      "business loan": "Business",
+      "loan against property": "LAP",
+    };
+
+    return map[clean] || "";
   };
 
-  return map[clean] || "";
-};
-
-const passedLoanType = mapServiceToLoanType(service);
+  const passedLoanType = mapServiceToLoanType(service);
   const formData = loanData || {};
 
   const [activeLoanDetails, setActiveLoanDetails] = useState([]);
   const [currentLoanIndex, setCurrentLoanIndex] = useState(0);
 
   useEffect(() => {
-  if (passedLoanType && setLoanData) {
+    if (passedLoanType && setLoanData) {
+      setLoanData((prev) => ({
+        ...prev,
+        loanType: prev?.loanType || passedLoanType,
+        tenure: prev?.tenure ?? 3,
+      }));
+    }
+  }, [passedLoanType, setLoanData]);
+
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
+
+    const numericFields = [
+      "age",
+      "annualIncome",
+      "loanAmount",
+      "activeLoans",
+      "cibilScore",
+      "tenure",
+    ];
+
+    let processedValue = numericFields.includes(name)
+      ? value === ""
+        ? ""
+        : Number(value)
+      : value;
+
+    if (name === "tenure") {
+      if (processedValue > 30) processedValue = 30;
+      if (processedValue < 0) processedValue = 0;
+    }
+
     setLoanData((prev) => ({
       ...prev,
-      loanType: prev?.loanType || passedLoanType,
-      tenure: prev?.tenure ?? 3,
+      [name]: processedValue,
     }));
-  }
-}, [passedLoanType, setLoanData]);
-const handleChange = useCallback((e) => {
-  const { name, value } = e.target;
-
-  const numericFields = [
-    "age",
-    "annualIncome",
-    "loanAmount",
-    "activeLoans",
-    "cibilScore",
-    "tenure",
-  ];
-
-  let processedValue = numericFields.includes(name)
-    ? value === ""
-      ? ""
-      : Number(value)
-    : value;
-
-  if (name === "tenure") {
-    if (processedValue > 30) processedValue = 30;
-    if (processedValue < 0) processedValue = 0;
-  }
-
-  setLoanData((prev) => ({
-    ...prev,
-    [name]: processedValue,
-  }));
-}, [setLoanData]);
-
+  }, [setLoanData]);
 
   const handleLoanDetailChange = useCallback(
     (field, value) => {
@@ -166,19 +164,23 @@ const handleChange = useCallback((e) => {
 
       const normalizedDecision = String(decision).toLowerCase();
 
-      // support different backend key styles
+      // Backend now guarantees loan_id for all outcomes (approved + rejected)
       const predictedLoanId =
         predictionData.loan_id ||
         predictionData.loanId ||
         null;
 
-      if (predictedLoanId) {
-        localStorage.setItem("loan_id", predictedLoanId);
+      // Hard fail if backend didn't return a loan_id — never fall back to stale localStorage
+      if (!predictedLoanId) {
+        throw new Error("Prediction did not return a valid loan ID. Please try again.");
       }
+
+      // Always overwrite with the fresh loan_id from this prediction
+      localStorage.setItem("loan_id", predictedLoanId);
 
       // 2) Create loan record so application flow has application_id + stable loan_id
       const loanCreatePayload = {
-        loan_id: predictedLoanId || localStorage.getItem("loan_id"),
+        loan_id: predictedLoanId,
         age: Number(formData.age) || 0,
         employment_type: formData.employmentType,
         income: Number(formData.annualIncome) || 0,
@@ -189,18 +191,19 @@ const handleChange = useCallback((e) => {
       };
 
       console.log("Sending to /applications/loan/create:", loanCreatePayload);
+
       const token = localStorage.getItem("access_token");
 
-if (!token) {
-  alert("Please login first");
-  return;
-}
+      if (!token) {
+        alert("Please login first");
+        return;
+      }
 
       const loanCreateRes = await fetch(`${API_BASE}/applications/loan/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, 
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify(loanCreatePayload),
       });
@@ -240,8 +243,9 @@ if (!token) {
       localStorage.removeItem("bank_selection_id");
 
       if (onSubmit) {
-  onSubmit(mergedResult, formData); // 🔥 SEND FORM DATA ALSO
-}
+        onSubmit(mergedResult, formData);
+      }
+
       // optional console guidance
       if (
         normalizedDecision !== "approved" &&
@@ -363,17 +367,17 @@ if (!token) {
               Loan Type
             </label>
             <div className="relative">
-             <select
-  id="loanType"
-  name="loanType"
-  value={formData.loanType}
-  onChange={handleChange}
-  required
-  disabled={!!passedLoanType}
-  className={`${inputClass} appearance-none pr-10 sm:pr-12 ${
-    passedLoanType ? "opacity-70 cursor-not-allowed" : ""
-  }`}
->
+              <select
+                id="loanType"
+                name="loanType"
+                value={formData.loanType}
+                onChange={handleChange}
+                required
+                disabled={!!passedLoanType}
+                className={`${inputClass} appearance-none pr-10 sm:pr-12 ${
+                  passedLoanType ? "opacity-70 cursor-not-allowed" : ""
+                }`}
+              >
                 <option value="">Select</option>
                 <option value="Personal">Personal Loan</option>
                 <option value="Home">Home Loan</option>
