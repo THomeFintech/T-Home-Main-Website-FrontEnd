@@ -3,9 +3,9 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: "./",
+  base: "/",
   build: {
-    sourcemap: true,   // temporary — lets us pinpoint the exact culprit if this doesn't fully fix it
+    sourcemap: true,
     commonjsOptions: {
       transformMixedEsModules: true,
     },
