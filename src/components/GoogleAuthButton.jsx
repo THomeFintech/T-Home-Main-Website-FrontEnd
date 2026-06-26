@@ -39,7 +39,7 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
         }
 
         // 3️⃣ Save token
-        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("access_token", data.access_token);
         localStorage.setItem("isLoggedIn", "true");
 
         // 4️⃣ Fetch user profile

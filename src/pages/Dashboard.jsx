@@ -13,7 +13,7 @@ async function apiFetch(url) {
   const headers = authHeaders();
   const r = await fetch(url, { headers });
   if (r.status === 401) {
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
     localStorage.removeItem("user");
     window.location.href = "/login";
     return null;
