@@ -126,6 +126,7 @@ console.log("Access Token:", data.access_token);
     const userData = await profileResponse.json();
 
     // Save correct user
+    
     localStorage.setItem("user", JSON.stringify(userData));
 
     // Notify app
