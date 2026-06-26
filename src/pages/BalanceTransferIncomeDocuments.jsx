@@ -94,9 +94,11 @@ if (!response.ok) {
 const data = await response.json();
 console.log("Upload Success:", data);
 
+const uploadedMap = {};
+requiredKeys.forEach((key) => { uploadedMap[key] = filesMap[key].name; });
+localStorage.setItem("btIncomeDocumentsDraft", JSON.stringify({ uploaded: uploadedMap }));
 
-
-      navigate("/balance-transfer/application-portal/existing-loan-documents");
+navigate("/balance-transfer/application-portal/existing-loan-documents");
     } catch (err) {
   setError(err.message || "Failed to upload documents.");
 } finally {
