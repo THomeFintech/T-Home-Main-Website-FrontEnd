@@ -189,7 +189,7 @@ className="absolute left-1/2 top-[28%] z-10 hidden w-[430px] -translate-x-1/2 op
 />
 
         <div className="relative z-10 max-w-4xl px-6 -mt-8">
-          <div className="mx-auto mt-12 mb-2 inline-flex items-center gap-3 rounded-full border border-[#4b9dff]/30 bg-black/65 px-4 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl md:mt-[10px]">
+          <div className="mx-auto mt-24 md:mt-[10px] mb-2 inline-flex items-center gap-3 rounded-full border border-[#4b9dff]/30 bg-black/65 px-4 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl">
             <span className="rounded-full bg-[#4ea3ff] px-2 py-[3px] text-[10px] font-bold uppercase tracking-wide text-black">
               NEW
             </span>

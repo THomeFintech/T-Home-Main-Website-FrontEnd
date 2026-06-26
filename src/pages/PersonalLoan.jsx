@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import personalLoanImg from "../assets/personal loan.png";
-
+import FaqAccordion from "../components/FaqAccordion";
 export default function PersonalLoan() {
   const navigate = useNavigate();
 
@@ -167,38 +167,29 @@ export default function PersonalLoan() {
         <EligibilityCriteria />
       </div>
 
-      {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-6 py-10">
-        <h2 className="text-center text-lg font-semibold mb-6">
-          Frequently Asked Questions
-        </h2>
+       {/* FAQ */}
+<div className="max-w-3xl mx-auto px-6 py-10">
+  <h2 className="text-center text-lg font-semibold mb-6">
+    Frequently Asked Questions
+  </h2>
 
-        <div className="space-y-3">
-          {[
-            {
-              q: "Is collateral required for a personal loan?",
-              a: "Personal loans are generally unsecured and do not need property pledging.Approval mainly depends on financial background and credit score.",
-            },
-            {
-              q: "How quickly is a personal loan disbursed?",
-              a: "Many lenders process approved applications within a few working days.Timing varies according to verification and bank procedures.",
-            },
-            {
-              q: "Can self-employed applicants get personal loans?",
-              a: "Business owners and freelancers can apply with proper income proof.Stable earnings improve the chances of loan approval.",
-            },
-          ].map((faq, i) => (
-            <details
-              key={i}
-              className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]"
-            >
-              <summary className="cursor-pointer text-sm">{faq.q}</summary>
-              <p className="text-gray-200 text-xs mt-2 leading-relaxed whitespace-pre-line">{faq.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-
+  <FaqAccordion
+    items={[
+      {
+        q: "Is collateral required for a personal loan?",
+        a: "Personal loans are generally unsecured and do not need property pledging. Approval mainly depends on financial background and credit score.",
+      },
+      {
+        q: "How quickly is a personal loan disbursed?",
+        a: "Many lenders process approved applications within a few working days. Timing varies according to verification and bank procedures.",
+      },
+      {
+        q: "Can self-employed applicants get personal loans?",
+        a: "Business owners and freelancers can apply with proper income proof. Stable earnings improve the chances of loan approval.",
+      },
+    ]}
+  />
+</div>
       {/* CTA */}
       <div className="max-w-5xl mx-auto px-6 pb-16">
         <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-7 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">

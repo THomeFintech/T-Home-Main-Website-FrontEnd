@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import UdyamImage from "../assets/UDYAM.png";
-
+import FaqAccordion from "../components/FaqAccordion";
 export default function UdyamMSMERegistration() {
   const navigate = useNavigate();
   return (
@@ -154,37 +154,28 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
       </div>
 
       {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-6 py-10">
-<h1 className="text-center text-3xl font-bold mb-10 text-white">
-          Frequently Asked Questions
-        </h1>
+<div className="max-w-3xl mx-auto px-6 py-10">
+  <h1 className="text-center text-3xl font-bold mb-10 text-white">
+    Frequently Asked Questions
+  </h1>
 
-        <div className="space-y-3">
-          {[
-            {
-              q: "What is Udyam MSME registration?",
-              a: "It is a government recognition for micro, small, and medium enterprises.Registered businesses can access various official benefits and schemes.",
-            },
-            {
-              q: "Is Aadhaar mandatory for Udyam registration?",
-              a: "Aadhaar details are commonly required during the online application process.Business information must also match government records correctly.",
-            },
-            {
-              q: "What benefits do MSMEs receive after registration?",
-              a: "Registered businesses may receive easier loan access and subsidy support.Some tenders and schemes also provide special preferences.",
-            },
-          ].map((faq, i) => (
-            <details
-              key={i}
-              className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-3.5 shadow-[0_10px_28px_rgba(5,16,38,0.25)]"
-            >
-              <summary className="cursor-pointer text-sm">{faq.q}</summary>
-              <p className="text-gray-200 text-xs mt-2 leading-relaxed whitespace-pre-line">{faq.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-
+  <FaqAccordion
+    items={[
+      {
+        q: "What is Udyam MSME registration?",
+        a: "It is a government recognition for micro, small, and medium enterprises. Registered businesses can access various official benefits and schemes.",
+      },
+      {
+        q: "Is Aadhaar mandatory for Udyam registration?",
+        a: "Aadhaar details are commonly required during the online application process. Business information must also match government records correctly.",
+      },
+      {
+        q: "What benefits do MSMEs receive after registration?",
+        a: "Registered businesses may receive easier loan access and subsidy support. Some tenders and schemes also provide special preferences.",
+      },
+    ]}
+  />
+</div>
       {/* CTA */}
       <div className="max-w-5xl mx-auto px-6 pb-12">
         <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-7 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">

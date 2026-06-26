@@ -248,8 +248,8 @@ useEffect(() => {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(56,92,188,0.22)_0%,_transparent_72%)]" />
 
       {step === 0 && (
-        <section className="relative z-10 px-6 pb-24 pt-36">
-          <div className="mx-auto max-w-[1200px] text-center">
+        <section className="relative z-10 px-6 pt-[180px] pb-24 md:pt-[144px]">
+          <div className="mx-auto max-w-[1200px] text-center mt-16 md:mt-0">
             <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
               Financial Tools
             </h1>
