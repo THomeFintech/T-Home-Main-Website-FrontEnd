@@ -42,13 +42,16 @@ export default function BalanceTransferReviewSubmit() {
     const email = draft.email || "-";
     const aadhaarRaw = draft.aadhaar_number || draft.aadhaar || "";
     const pan = draft.pan_number || draft.pan || "-";
-    const employmentType = draft.employment_type || draft.employmentType || "-";
+    const employmentType =
+      draft.employment_type || draft.employmentType || "-";
 
     setMainApplicant({
       fullName,
       mobile,
       email,
-      aadhaar: aadhaarRaw ? `XXXX XXXX ${String(aadhaarRaw).slice(-4)}` : "-",
+      aadhaar: aadhaarRaw
+        ? `XXXX XXXX ${String(aadhaarRaw).slice(-4)}`
+        : "-",
       pan,
     });
 
@@ -81,37 +84,38 @@ export default function BalanceTransferReviewSubmit() {
       },
       {
         name: "Passport Photo",
-        status: draft.passportPhoto || draft.passport_photo ? "Ready" : "Pending",
+        status:
+          draft.passportPhoto || draft.passport_photo ? "Ready" : "Pending",
       },
     ]);
 
     const incomeUploaded = incomeDraft?.uploaded || {};
     const incomeNames = Object.keys(incomeUploaded);
+
     setIncomeDocs(
       incomeNames.length
-        ? incomeNames.map((name) => ({ name, status: "Ready" }))
+        ? incomeNames.map((name) => ({
+            name,
+            status: "Ready",
+          }))
         : []
     );
 
     const loanUploaded = existingLoanDraft?.uploaded || {};
     const loanNames = Object.keys(loanUploaded);
+
     setLoanDocs(
       loanNames.length
-        ? loanNames.map((name) => ({ name, status: "Ready" }))
+        ? loanNames.map((name) => ({
+            name,
+            status: "Ready",
+          }))
         : []
     );
   }, []);
 
   const buildUpdatePayload = () => {
     const draft = JSON.parse(localStorage.getItem("btApplicationDraft") || "{}");
-
-    // Debug: log all bank-related keys to verify which one is populated
-    console.log("Draft bank keys:", {
-      recommended_bank_name: draft.recommended_bank_name,
-      recommendedBankName: draft.recommendedBankName,
-      bank_name: draft.bank_name,
-      bankName: draft.bankName,
-    });
 
     return {
       recommended_bank_name:
@@ -165,77 +169,64 @@ export default function BalanceTransferReviewSubmit() {
   };
 
   const handleSubmit = async () => {
-    try {
-      setLoading(true);
-      setError("");
+  try {
+    setLoading(true);
+    setError("");
 
-      const applicationReference = localStorage.getItem("btApplicationReference");
+    const applicationReference =
+      localStorage.getItem("btApplicationReference");
 
-      if (!applicationReference) {
-        setError("Application reference missing.");
-        return;
-      }
-
-      const payload = buildUpdatePayload();
-      console.log("BT_API_BASE =", BT_API_BASE);
-      console.log("Reference =", applicationReference);
-      console.log("PATCH Payload:", payload);
-
-      // Step 1: Update application
-      const updateResponse = await fetch(
-        `${BT_API_BASE}/application/${applicationReference}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (!updateResponse.ok) {
-        const errData = await updateResponse.json().catch(() => ({}));
-        const detail = errData?.detail;
-        throw new Error(
-          typeof detail === "string"
-            ? detail
-            : Array.isArray(detail)
-            ? detail.map((d) => d?.msg || JSON.stringify(d)).join(", ")
-            : "Failed to update application"
-        );
-      }
-
-      // Step 2: Submit application
-      const submitResponse = await fetch(
-        `${BT_API_BASE}/application/${applicationReference}/submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!submitResponse.ok) {
-        const errData = await submitResponse.json().catch(() => ({}));
-        console.error("Submit 400 response:", errData);
-        const detail = errData?.detail;
-        throw new Error(
-          typeof detail === "string"
-            ? detail
-            : Array.isArray(detail)
-            ? detail.map((d) => d?.msg || JSON.stringify(d)).join(", ")
-            : "Failed to submit application"
-        );
-      }
-
-      navigate("/balance-transfer/application-portal/submitted");
-    } catch (err) {
-      setError(err.message || "Submission failed");
-    } finally {
-      setLoading(false);
+    if (!applicationReference) {
+      setError("Application reference missing.");
+      return;
     }
-  };
+
+    const payload = buildUpdatePayload();
+    console.log("PATCH Payload:", payload);
+
+    // Update Application
+    const updateResponse = await fetch(
+      `${BT_API_BASE}/application/${applicationReference}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!updateResponse.ok) {
+      const errData = await updateResponse.json();
+      throw new Error(
+        errData?.detail || "Failed to update application"
+      );
+    }
+
+    // Submit Application
+    const submitResponse = await fetch(
+      `${BT_API_BASE}/application/${applicationReference}/submit`,
+      {
+        method: "POST",
+      }
+    );
+
+    if (!submitResponse.ok) {
+      const errData = await submitResponse.json();
+      throw new Error(
+        errData?.detail || "Failed to submit application"
+      );
+    }
+    console.log("BT_API_BASE =", BT_API_BASE);
+console.log("Reference =", applicationReference);
+
+    navigate("/balance-transfer/application-portal/submitted");
+  } catch (err) {
+    setError(err.message || "Submission failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section className="relative min-h-screen overflow-hidden px-4 pb-10 pt-24 font-['Outfit',sans-serif] sm:px-6 md:pt-28 lg:px-8 lg:pt-32">
@@ -296,7 +287,6 @@ export default function BalanceTransferReviewSubmit() {
             Verify all details before submitting your loan application
           </p>
 
-          {/* Main Applicant */}
           <div className="mb-2 border-b border-white/15 pb-2">
             <div className="mb-2 flex items-center gap-2">
               <User size={18} className="text-[#5ea0ff]" />
@@ -333,7 +323,6 @@ export default function BalanceTransferReviewSubmit() {
             </div>
           </div>
 
-          {/* Loan Details */}
           <div className="mb-2 border-b border-white/15 pb-2">
             <div className="mb-2 flex items-center gap-2">
               <FileText size={18} className="text-[#5ea0ff]" />
@@ -363,7 +352,6 @@ export default function BalanceTransferReviewSubmit() {
             </div>
           </div>
 
-          {/* Documents */}
           <div className="mb-2 border-b border-white/15 pb-2">
             <div className="mb-2 flex items-center gap-2">
               <FileText size={18} className="text-[#5ea0ff]" />
@@ -447,7 +435,6 @@ export default function BalanceTransferReviewSubmit() {
             </div>
           </div>
 
-          {/* Co-applicant */}
           <div className="mb-2 border-b border-white/15 pb-2">
             <div className="mb-2 flex items-center gap-2">
               <Users size={18} className="text-[#5ea0ff]" />
@@ -466,9 +453,7 @@ export default function BalanceTransferReviewSubmit() {
           </div>
 
           <div className="mb-4 mt-2 text-[12px] text-white/60">
-            By submitting this application, I confirm that all information provided is accurate and
-            truthful. I authorize the lender to verify my credit history and contact me regarding
-            this application and future financial products.
+            By submitting this application, I confirm that all information provided is accurate and truthful. I authorize the lender to verify my credit history and contact me regarding this application and future financial products.
           </div>
 
           {error ? (
