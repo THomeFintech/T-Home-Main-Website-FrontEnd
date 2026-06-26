@@ -4,22 +4,55 @@ import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 
 function authHeaders() {
-  const token = localStorage.getItem("access_token");
-  return { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return null;
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
 }
 
 // ── Centralised fetch with 401 redirect ──
+let isRedirecting = false;
+
 async function apiFetch(url) {
   const headers = authHeaders();
-  const r = await fetch(url, { headers });
-  if (r.status === 401) {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.href = "/login";
+
+  if (!headers) {
+    if (!isRedirecting) {
+      isRedirecting = true;
+      localStorage.clear();
+      window.location.replace("/login");
+    }
     return null;
   }
-  if (!r.ok) return null;
-  return r.json();
+
+  try {
+    const response = await fetch(url, { headers });
+
+    if (response.status === 401) {
+      if (!isRedirecting) {
+        isRedirecting = true;
+        localStorage.clear();
+        window.location.replace("/login");
+      }
+      return null;
+    }
+
+    if (!response.ok) {
+      console.error(`API Error (${response.status}): ${url}`);
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Network Error:", error);
+    return null;
+  }
 }
 
 // ── Format ISO date from DB ──
@@ -128,7 +161,13 @@ function normaliseApplicationSteps(apiSteps, currentStatus) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  let user = {};
+
+try {
+  user = JSON.parse(localStorage.getItem("user")) || {};
+} catch {
+  user = {};
+}
 
   // ── API state ──
   const [summary,       setSummary]       = useState(null);
@@ -149,18 +188,33 @@ export default function Dashboard() {
   const fetchAll = useCallback(async () => {
 
     // ✅ Auto-sync pending loan to current user
-    const pendingLoanId = localStorage.getItem("loan_id");
-    if (pendingLoanId) {
-      try {
-        await fetch(`${API}/dashboard/sync-loan/${pendingLoanId}`, {
-          method: "POST",
-          headers: authHeaders(),
-        });
-        localStorage.removeItem("loan_id"); // ✅ clear after sync
-      } catch (e) {
-        console.warn("Sync failed:", e);
+const pendingLoanId = localStorage.getItem("loan_id");
+
+if (pendingLoanId) {
+  const headers = authHeaders();
+
+  if (!headers) return;
+
+  try {
+    const response = await fetch(
+      `${API}/dashboard/sync-loan/${pendingLoanId}`,
+      {
+        method: "POST",
+        headers,
       }
+    );
+
+    if (response.status === 401) {
+      localStorage.clear();
+      window.location.replace("/login");
+      return;
     }
+
+    localStorage.removeItem("loan_id");
+  } catch (e) {
+    console.warn("Sync failed:", e);
+  }
+}
 
     // summary
     apiFetch(`${API}/dashboard/summary`)
@@ -193,7 +247,16 @@ export default function Dashboard() {
       .finally(() => setLoadingAdvisor(false)); // FIX 1: clear advisor loading
   }, []);
 
-  useEffect(() => { fetchAll(); }, [fetchAll]);
+useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    navigate("/login", { replace: true });
+    return;
+  }
+
+  fetchAll();
+}, [fetchAll, navigate]);
 
   const markRead = async (id) => {
     await fetch(`${API}/dashboard/notifications/${id}/read`, {
