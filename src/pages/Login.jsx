@@ -104,7 +104,7 @@ export default function Login() {
     }
 
     // Save token
-    localStorage.setItem("token", data.access_token);
+    localStorage.setItem("access_token", data.access_token);
 
     localStorage.setItem("isLoggedIn", "true");
     window.dispatchEvent(new Event("authChange"));
