@@ -107,10 +107,11 @@ console.log("Access Token:", data.access_token);
     }
 
     // Save token
-    localStorage.setItem("access_token", data.access_token);
-    console.log(
+// Save token
+localStorage.setItem("token", data.access_token);
+console.log(
   "Stored Token:",
-  localStorage.getItem("access_token")
+  localStorage.getItem("token")
 );
 
     localStorage.setItem("isLoggedIn", "true");
@@ -126,6 +127,7 @@ console.log("Access Token:", data.access_token);
     const userData = await profileResponse.json();
 
     // Save correct user
+    
     localStorage.setItem("user", JSON.stringify(userData));
 
     // Notify app
