@@ -23,7 +23,7 @@ import DashboardLayout from "./layout/DashboardLayout";
 // Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import ChatbotWidget from "./components/ChatbotWidget";
+// import ChatbotWidget from "./components/ChatbotWidget";
 
 // Pages
 import Home from "./pages/Home";
@@ -96,7 +96,7 @@ function Layout() {
         <Outlet />
       </main>
       <Footer />
-      <ChatbotWidget />
+      {/* <ChatbotWidget /> */}
     </div>
   );
 }
