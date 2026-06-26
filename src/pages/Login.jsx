@@ -97,6 +97,9 @@ export default function Login() {
 
     const data = await response.json();
 
+console.log("Login API Response:", data);
+console.log("Access Token:", data.access_token);
+
     if (!response.ok) {
       alert(data.detail || "Login failed");
       setLoading(false);
@@ -104,7 +107,11 @@ export default function Login() {
     }
 
     // Save token
-    localStorage.setItem("access_token", data.access_token);
+    localStorage.setItem("token", data.access_token);
+    console.log(
+  "Stored Token:",
+  localStorage.getItem("token")
+);
 
     localStorage.setItem("isLoggedIn", "true");
     window.dispatchEvent(new Event("authChange"));
