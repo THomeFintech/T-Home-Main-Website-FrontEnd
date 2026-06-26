@@ -192,7 +192,7 @@ export default function LoanForm({
 
       console.log("Sending to /applications/loan/create:", loanCreatePayload);
 
-      const token = localStorage.getItem("access_token");
+      const token = localStorage.getItem("token");
 
       if (!token) {
         alert("Please login first");
