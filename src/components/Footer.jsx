@@ -97,8 +97,8 @@ function Footer() {
           <div>
             <h3 className="mb-3 text-4xl font-semibold text-white" style={{ fontSize: "clamp(20px,1.08vw,40px)" }}>Services</h3>
             <ul className="space-y-2 text-[29px] text-[#b4c2de]" style={{ fontSize: "clamp(14px,0.8vw,29px)" }}>
-              <li><Link to="/tools?tool=loan-prediction" className="hover:text-white transition">Home Loans</Link></li>
-              <li><Link to="/tools?tool=loan-prediction" className="hover:text-white transition">Loan Against Property</Link></li>
+              <li><Link to="/home-loans" className="hover:text-white transition">Home Loans</Link></li>
+              <li><Link to="/loan-against-property" className="hover:text-white transition">Loan Against Property</Link></li>
               <li><Link to="/itr-filing" className="hover:text-white transition">Income Tax Filing</Link></li>
               <li><Link to="/company-registration" className="hover:text-white transition">Business Registration</Link></li>
             </ul>
@@ -110,7 +110,7 @@ function Footer() {
             <ul className="space-y-2 text-[29px] text-[#b4c2de]" style={{ fontSize: "clamp(14px,0.8vw,29px)" }}>
               <li><Link to="/tools" className="hover:text-white transition">EMI Calculator</Link></li>
               <li><Link to="/tools" className="hover:text-white transition">Loan Prediction System</Link></li>
-              <li><Link to="/balance-transfer" className="hover:text-white transition">Balance Transfer Calculator</Link></li>
+              <li><Link to="/tools" className="hover:text-white transition">Balance Transfer Calculator</Link></li>
               
             </ul>
           </div>
