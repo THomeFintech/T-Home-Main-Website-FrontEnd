@@ -10,49 +10,32 @@ function authHeaders() {
     return null;
   }
 
-  return {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  };
+  return { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
 }
 
 // ── Centralised fetch with 401 redirect ──
-let isRedirecting = false;
-
 async function apiFetch(url) {
   const headers = authHeaders();
 
   if (!headers) {
-    if (!isRedirecting) {
-      isRedirecting = true;
-      localStorage.clear();
-      window.location.replace("/login");
-    }
+    window.location.replace("/login");
     return null;
   }
 
-  try {
-    const response = await fetch(url, { headers });
+  const r = await fetch(url, { headers });
+  if (r.status === 401) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("isLoggedIn");
 
-    if (response.status === 401) {
-      if (!isRedirecting) {
-        isRedirecting = true;
-        localStorage.clear();
-        window.location.replace("/login");
-      }
-      return null;
-    }
+    window.dispatchEvent(new Event("authChange"));
 
-    if (!response.ok) {
-      console.error(`API Error (${response.status}): ${url}`);
-      return null;
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Network Error:", error);
+    window.location.replace("/login");
     return null;
   }
+  if (!r.ok) return null;
+  return r.json();
 }
 
 // ── Format ISO date from DB ──
@@ -161,13 +144,7 @@ function normaliseApplicationSteps(apiSteps, currentStatus) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  let user = {};
-
-try {
-  user = JSON.parse(localStorage.getItem("user")) || {};
-} catch {
-  user = {};
-}
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   // ── API state ──
   const [summary,       setSummary]       = useState(null);
@@ -183,38 +160,23 @@ try {
   const [loadingDocs,     setLoadingDocs]     = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(true);
   const [loadingNotifs,   setLoadingNotifs]   = useState(true);
-  const [loadingAdvisor,  setLoadingAdvisor]  = useState(true); // FIX 1: advisor loading state
+  const [loadingAdvisor,  setLoadingAdvisor]  = useState(true);
 
   const fetchAll = useCallback(async () => {
 
     // ✅ Auto-sync pending loan to current user
-const pendingLoanId = localStorage.getItem("loan_id");
-
-if (pendingLoanId) {
-  const headers = authHeaders();
-
-  if (!headers) return;
-
-  try {
-    const response = await fetch(
-      `${API}/dashboard/sync-loan/${pendingLoanId}`,
-      {
-        method: "POST",
-        headers,
+    const pendingLoanId = localStorage.getItem("loan_id");
+    if (pendingLoanId) {
+      try {
+        await fetch(`${API}/dashboard/sync-loan/${pendingLoanId}`, {
+          method: "POST",
+          headers: authHeaders(),
+        });
+        localStorage.removeItem("loan_id");
+      } catch (e) {
+        console.warn("Sync failed:", e);
       }
-    );
-
-    if (response.status === 401) {
-      localStorage.clear();
-      window.location.replace("/login");
-      return;
     }
-
-    localStorage.removeItem("loan_id");
-  } catch (e) {
-    console.warn("Sync failed:", e);
-  }
-}
 
     // summary
     apiFetch(`${API}/dashboard/summary`)
@@ -244,19 +206,10 @@ if (pendingLoanId) {
     // advisor — 404 returns null from apiFetch
     apiFetch(`${API}/dashboard/advisor`)
       .then(d => setAdvisor(d))
-      .finally(() => setLoadingAdvisor(false)); // FIX 1: clear advisor loading
+      .finally(() => setLoadingAdvisor(false));
   }, []);
 
-useEffect(() => {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    navigate("/login", { replace: true });
-    return;
-  }
-
-  fetchAll();
-}, [fetchAll, navigate]);
+  useEffect(() => { fetchAll(); }, [fetchAll]);
 
   const markRead = async (id) => {
     await fetch(`${API}/dashboard/notifications/${id}/read`, {
@@ -444,8 +397,6 @@ useEffect(() => {
                           <p className="text-xs text-white/30">A/C: {loan.account_number}</p>
                         </div>
                       </div>
-                      {/* FIX 3: View Details wired to loan route */}
-                      
                     </div>
 
                     <div className="grid grid-cols-3 gap-4 mb-4">
@@ -486,7 +437,7 @@ useEffect(() => {
             <h2 className="font-medium text-white mb-4">Quick Actions</h2>
             <div className="grid grid-cols-4 gap-3">
               {[
-                { label: "Apply for New Loan", onClick: () => { localStorage.setItem("isLoggedIn","true"); navigate("/services"); }, icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> },
+                { label: "Apply for New Loan", onClick: () => navigate("/services"), icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> },
                 { label: "Upload Documents",   onClick: () => navigate("/documents"),   icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> },
                 { label: "Check Eligibility",  onClick: () => navigate("/home-loans"),  icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg> },
                 { label: "Contact Advisor",    onClick: () => navigate("/contact"),     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg> },
@@ -516,7 +467,6 @@ useEffect(() => {
               ) : documents.length === 0 ? (
                 <p className="text-sm text-white/40 text-center py-4">No documents found</p>
               ) : (
-                // FIX 5: use doc.id ?? index as key to avoid label collision
                 documents.map((doc, i) => (
                   <div key={doc.id ?? i} className="flex items-center justify-between rounded-xl border border-white/20 bg-white/[0.06] backdrop-blur-xl px-4 py-3">
                     <div className="flex items-center gap-2.5 text-white/50">
@@ -567,7 +517,6 @@ useEffect(() => {
                     <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${NOTIF_DOT[n.color] ?? "bg-blue-500"}`} />
                     <div>
                       <p className="text-sm text-white/70">{n.message}</p>
-                      {/* FIX 2: format ISO date string from DB */}
                       <p className="text-xs text-white/30 mt-0.5">{fmtDate(n.created_at)}</p>
                     </div>
                   </div>
@@ -588,7 +537,6 @@ useEffect(() => {
               }
             </p>
 
-            {/* FIX 1: show skeleton while advisor loads */}
             {loadingAdvisor ? (
               <div className="flex items-center gap-3 mb-4">
                 <Skeleton className="w-9 h-9 rounded-full" />
