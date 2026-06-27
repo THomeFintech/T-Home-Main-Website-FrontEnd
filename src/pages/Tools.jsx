@@ -25,18 +25,20 @@ export default function Tools() {
   const [selectedService, setSelectedService] = useState("");
   const API_BASE = import.meta.env.VITE_API_URL;
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const tool = params.get("tool");
-    if (tool === "loan-prediction") {
-      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-      if (isLoggedIn) {
-        setStep(1);
-      } else {
-        navigate("/login");
-      }
+useEffect(() => {
+  const params = new URLSearchParams(location.search);
+  const tool = params.get("tool");
+
+  if (tool === "loan-prediction") {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      setStep(1);
+    } else {
+      navigate("/login");
     }
-  }, [location.search, navigate]);
+  }
+}, [location.search, navigate]);
 
   useEffect(() => {
       if (location.pathname === "/tools" && !location.search) {
@@ -140,14 +142,16 @@ useEffect(() => {
       }
 
       console.log("Calling /applications/select-bank with payload:", payload);
+const token = localStorage.getItem("token"); // Your login stores the token as "token"
 
-      const response = await fetch(`${API_BASE}/applications/select-bank`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+const response = await fetch(`${API_BASE}/applications/select-bank`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    ...(token && { Authorization: `Bearer ${token}` }),
+  },
+  body: JSON.stringify(payload),
+});
 
       const data = await response.json();
       console.log("Select bank API response:", data);
@@ -198,15 +202,15 @@ useEffect(() => {
         "Understand your chances of getting a loan with smart predictions powered by your financial details.",
       buttonText: "Check Eligibility",
       icon: Shield,
-      onClick: () => {
-        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+     onClick: () => {
+  const token = localStorage.getItem("token");
 
-        if (isLoggedIn) {
-          setStep(1);
-        } else {
-          navigate("/login");
-        }
-      },
+  if (token) {
+    setStep(1);
+  } else {
+    navigate("/login");
+  }
+},
       theme: {
         border: "border-blue-500/20",
         cardBorder: "border-blue-500/10",
@@ -223,13 +227,13 @@ useEffect(() => {
       buttonText: "Calculate Now",
       icon: TrendingUp,
      onClick: () => {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+const token = localStorage.getItem("token");
 
-  if (isLoggedIn) {
-    navigate("/balance-transfer-contact");
-  } else {
-    navigate("/login");
-  }
+if (token) {
+  navigate("/balance-transfer-contact");
+} else {
+  navigate("/login");
+}
 },
       theme: {
         border: "border-emerald-500/20",
@@ -248,8 +252,8 @@ useEffect(() => {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(56,92,188,0.22)_0%,_transparent_72%)]" />
 
       {step === 0 && (
-        <section className="relative z-10 px-6 pb-24 pt-36">
-          <div className="mx-auto max-w-[1200px] text-center">
+        <section className="relative z-10 px-6 pt-[180px] pb-24 md:pt-[144px]">
+          <div className="mx-auto max-w-[1200px] text-center mt-16 md:mt-0">
             <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
               Financial Tools
             </h1>
