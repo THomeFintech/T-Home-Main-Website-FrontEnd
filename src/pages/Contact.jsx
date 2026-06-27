@@ -49,21 +49,22 @@ export default function ContactPage() {
       return;
     }
 
-    setLoading(true);
-
-    const payload = {
-      name: formData.name.trim(),
-      phone: formData.phone.trim(),
-      email: formData.email.trim(),
-      service: formData.service,
-      message: formData.message.trim(),
-    };
    const phoneRegex = /^[6-9]\d{9}$/;
 
 if (!phoneRegex.test(formData.phone)) {
   setErrorMsg("Enter a valid 10-digit mobile number (starts with 6-9)");
   return;
 }
+
+setLoading(true);
+
+const payload = {
+  name: formData.name.trim(),
+  phone: formData.phone.trim(),
+  email: formData.email.trim(),
+  service: formData.service,
+  message: formData.message.trim(),
+};
 
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/contact`, {
@@ -106,9 +107,9 @@ if (!phoneRegex.test(formData.phone)) {
       <div className="relative z-10 font-outfit selection:bg-blue-500/30">
 
         {/* 1. HERO SECTION */}
-        <section className="relative pt-24 md:pt-32 pb-8 md:pb-12 text-center overflow-hidden">
+        <section className="relative pt-[180px] md:pt-[130px] pb-8 md:pb-12 text-center overflow-hidden">
           <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[600px] md:w-[1000px] h-[300px] md:h-[500px] bg-blue-600/10 blur-[80px] md:blur-[120px] rounded-full pointer-events-none" />
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 mt-16 md:mt-0">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">Contact Us</h1>
             <p className="text-gray-200 text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-light px-2">
               Comprehensive financial solutions detailed to meet your personal and business growth needs.
