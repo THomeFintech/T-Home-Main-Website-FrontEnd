@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import loanAgainstPropertyImg from "../assets/LoanAgainst.png";
-
+import FaqAccordion from "../components/FaqAccordion";
 export default function LoanAgainstProperty() {
    const navigate = useNavigate(); // ✅ CORRECT PLACE
   return (
@@ -164,37 +164,29 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
         <EligibilityCriteria />
       </div>
 
-      {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-6 py-10">
-<h1 className="text-center text-3xl font-bold mb-10 text-white">
-          Frequently Asked Questions
-        </h1>
+       {/* FAQ */}
+<div className="max-w-3xl mx-auto px-6 py-10">
+  <h1 className="text-center text-3xl font-bold mb-10 text-white">
+    Frequently Asked Questions
+  </h1>
 
-        <div className="space-y-3">
-          {[
-            {
-              q: "What types of properties are accepted?",
-              a: "Residential, commercial, and selected industrial properties are considered.Property condition and ownership verification are also important.",
-            },
-            {
-              q: "How much loan can be obtained against property?",
-              a: "Loan amounts are usually approved based on market valuation percentages.Income and repayment capability also affect the final sanction.",
-            },
-            {
-              q: "Can the property still be used during repayment?",
-              a: "Borrowers generally continue using the property while repaying the loan.Ownership remains with the applicant unless repayment defaults occur.",
-            },
-          ].map((faq, i) => (
-            <details
-              key={i}
-              className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]"
-            >
-              <summary className="cursor-pointer text-sm">{faq.q}</summary>
-              <p className="text-gray-200 text-xs mt-2 leading-relaxed whitespace-pre-line">{faq.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
+  <FaqAccordion
+    items={[
+      {
+        q: "What types of properties are accepted?",
+        a: "Residential, commercial, and selected industrial properties are considered. Property condition and ownership verification are also important.",
+      },
+      {
+        q: "How much loan can be obtained against property?",
+        a: "Loan amounts are usually approved based on market valuation percentages. Income and repayment capability also affect the final sanction.",
+      },
+      {
+        q: "Can the property still be used during repayment?",
+        a: "Borrowers generally continue using the property while repaying the loan. Ownership remains with the applicant unless repayment defaults occur.",
+      },
+    ]}
+  />
+</div>
 
       {/* CTA */}
       <div className="max-w-5xl mx-auto px-6 pb-16">
