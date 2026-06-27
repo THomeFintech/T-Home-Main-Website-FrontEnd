@@ -220,15 +220,15 @@ export default function HomeLoan() {
           items={[
             {
               q: "Who can apply for a home loan?",
-              a: "✅ Salaried employees, self-employed individuals, and business owners can apply.\n\nEligibility depends on income stability and repayment capacity.",
+              a: "Salaried employees, self-employed individuals, and business owners can apply.\n\nEligibility depends on income stability and repayment capacity.",
             },
             {
               q: "What factors affect home loan approval?",
-              a: "✅ Credit score, monthly salary, and existing debts are commonly evaluated.\n\nProperty value and employment history also influence approval.",
+              a: "Credit score, monthly salary, and existing debts are commonly evaluated.\n\nProperty value and employment history also influence approval.",
             },
             {
               q: "Can I prepay my home loan early?",
-              a: "✅ Most lenders allow partial or full prepayment before tenure completion.\n\nSome banks may apply conditions based on the loan type.",
+              a: "Most lenders allow partial or full prepayment before tenure completion.\n\nSome banks may apply conditions based on the loan type.",
             },
           ]}
         />
