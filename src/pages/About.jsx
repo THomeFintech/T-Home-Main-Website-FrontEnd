@@ -18,20 +18,20 @@ const About = () => {
       </div>
 
       <div className="relative z-10">
-        <section className="relative flex min-h-[88svh] items-center justify-center overflow-hidden px-6 py-24 text-center md:py-28">
+        <section className="relative flex min-h-[72svh] items-center justify-center overflow-hidden px-6 pt-36 pb-20 text-center md:pt-32 md:pb-24">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative z-10 mx-auto max-w-4xl"
+            className="relative z-10 mx-auto mt-4 md:mt-0 max-w-4xl"
           >
-            <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#89b6ff]/35 bg-white/5 px-4 py-2 text-[12px] font-medium tracking-wide text-[#cfe0ff] backdrop-blur-xl">
+            <div className="mx-auto mt-14 md:mt-0 inline-flex items-center gap-2 rounded-full border border-[#89b6ff]/35 bg-white/5 px-4 py-2 text-[12px] font-medium tracking-wide text-[#cfe0ff] backdrop-blur-xl">
               <span className="h-2 w-2 rounded-full bg-[#4ea3ff]" />
               About T-Home
             </div>
 
-            <h1 className="mt-6 text-4xl font-bold leading-tight md:text-6xl">
-              Empowering Your <span className="text-[#66abff]">Financial Future</span>
+            <h1 className="mt-6 text-[42px] leading-[1.15] font-bold md:text-6xl">
+              Empowering Your <span className="text-[#2d8bff]">Financial Future</span>
             </h1>
 
             <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-[#d7def3] md:text-lg">
@@ -39,7 +39,7 @@ const About = () => {
               business growth, and compliance services feel straightforward instead of overwhelming.
             </p>
 
-            <div className="mx-auto mt-10 grid max-w-4xl gap-4 sm:grid-cols-3">
+            <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-3">
               {[
                 { value: "2025", label: "Founded" },
                 { value: "5k+", label: "Happy Clients" },
@@ -57,23 +57,23 @@ const About = () => {
           </motion.div>
         </section>
 
-        <section className="relative w-full py-[100px]">
+        <section className="relative w-full pt-1 pb-20">
           <div className="mx-auto max-w-7xl px-6 md:px-12">
             <div className="mx-auto max-w-4xl text-center">
               <h2 className="text-3xl font-semibold text-white md:text-4xl">A Journey of Trust and Innovation</h2>
-              <p className="mx-auto mt-4 max-w-3xl text-[15px] leading-7 text-[#d7def3]">
+              <p className="mx-auto mt-3 max-w-3xl text-[15px] leading-7 text-[#d7def3]">
                 Founded in 2025, T-Home bridges complex financial systems and everyday goals with a platform designed
                 to be transparent, intelligent, and easy to use.
               </p>
             </div>
 
-            <div className="mt-12 grid gap-6 md:grid-cols-2">
+            <div className="mt-8 grid gap-6 md:grid-cols-2">
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7 }}
                 viewport={{ once: true }}
-                className="rounded-[20px] border border-[#c9dcff]/18 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md"
+                className="rounded-[20px] border border-[#c9dcff]/18 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md"
               >
                 <h3 className="text-2xl font-semibold text-white">What We Build</h3>
                 <p className="mt-4 text-[15px] leading-7 text-[#e3eeff]/88">
@@ -87,7 +87,7 @@ const About = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7 }}
                 viewport={{ once: true }}
-                className="rounded-[20px] border border-[#c9dcff]/18 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md"
+                className="rounded-[20px] border border-[#c9dcff]/18 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md"
               >
                 <h3 className="text-2xl font-semibold text-white">How We Work</h3>
                 <p className="mt-4 text-[15px] leading-7 text-[#e3eeff]/88">
@@ -99,14 +99,14 @@ const About = () => {
           </div>
         </section>
 
-        <section className="relative w-full py-[100px]">
+        <section className="relative w-full pt-1 pb-20">
           <div className="mx-auto max-w-7xl px-6 text-center md:px-12">
             <h2 className="text-3xl font-semibold text-white md:text-4xl">Our Core Principles</h2>
             <p className="mx-auto mt-3 max-w-2xl text-[#d7def3]">
               The driving force behind everything we do at T-Home.
             </p>
 
-            <div className="mt-12 grid gap-6 md:grid-cols-2">
+            <div className="mt-8 grid gap-6 md:grid-cols-2">
               <motion.div className="rounded-[18px] border border-[#d6e6ff]/18 bg-[linear-gradient(180deg,rgba(44,66,132,0.74)_0%,rgba(25,42,102,0.68)_100%)] p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_14px_38px_rgba(0,0,0,0.34)] backdrop-blur-md">
                 <h3 className="mb-3 flex items-center justify-center gap-2 text-xl font-semibold text-white">
                   <Flag className="h-5 w-5 text-[#66abff]" />
@@ -131,14 +131,14 @@ const About = () => {
           </div>
         </section>
 
-        <section className="relative w-full py-[100px]">
+        <section className="relative w-full pt-1 pb-20">
           <div className="mx-auto max-w-7xl px-6 text-center md:px-12">
             <h2 className="text-3xl font-semibold text-white md:text-4xl">Leadership</h2>
             <p className="mx-auto mt-3 max-w-2xl text-[#d7def3]">
               The people shaping the platform and guiding the product direction.
             </p>
 
-            <div className="mt-12 grid gap-6 md:grid-cols-2">
+            <div className="mt-8 grid gap-6 md:grid-cols-2">
               {[
                 {
                   initials: "RR",
@@ -155,29 +155,29 @@ const About = () => {
               ].map((leader) => (
                 <motion.div
                   key={leader.name}
-                  className="rounded-[20px] border border-[#c9dcff]/18 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md"
+                  className="rounded-[20px] border border-[#c9dcff]/18 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md"
                   whileHover={{ y: -4 }}
                 >
                   <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-[#89b6ff]/30 bg-[linear-gradient(180deg,rgba(58,108,197,0.46)_0%,rgba(36,73,148,0.4)_100%)] text-2xl font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.24)]">
                     {leader.initials}
                   </div>
-                  <h3 className="mt-5 text-xl font-semibold text-white">{leader.name}</h3>
+                  <h3 className="mt-3 text-xl font-semibold text-white">{leader.name}</h3>
                   <p className="mt-2 text-sm text-[#9fb8e8]">{leader.role}</p>
-                  <p className="mt-4 text-[15px] leading-7 text-[#d7def3]">{leader.text}</p>
+                  <p className="mt-2 text-[15px] leading-7 text-[#d7def3]">{leader.text}</p>
                 </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="relative w-full py-[100px] text-center">
+        <section className="relative w-full pt-1 pb-20 text-center">
           <div className="mx-auto max-w-7xl px-6 md:px-12">
             <h2 className="text-3xl font-semibold text-white md:text-4xl">Why Choose T-Home</h2>
             <p className="mx-auto mt-3 max-w-2xl text-[#d7def3]">
               Everything you need in one place.
             </p>
 
-            <div className="mt-12 grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
+            <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-6">
               {[
                 { value: "5k+", label: "Loans Approved" },
                 { value: "95%", label: "Approval Rate" },
