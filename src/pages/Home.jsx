@@ -182,16 +182,16 @@ function Home() {
           />
         </div>
 
-        <img
+          <img
   src="/home/telangana map.png"
   alt="map"
-  className="absolute left-1/2 top-[28%] z-10 hidden w-[430px] -translate-x-1/2 opacity-90 brightness-135 saturate-180 contrast-110 mix-blend-screen md:block md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
+  className="absolute left-1/2 top-[28%] z-10 hidden w-[430px] -translate-x-1/2 opacity-65 brightness-95 saturate-105 contrast-100 md:block md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
   style={{
     filter: `
-      drop-shadow(0 0 4px rgba(120,200,255,1))
-      drop-shadow(0 0 12px rgba(63, 129, 190, 0.95))
-      drop-shadow(0 0 24px rgba(27, 47, 75, 0.75))
-      drop-shadow(0 0 42px rgba(70, 99, 161, 0.45))
+      drop-shadow(0 0 2px rgba(120, 201, 255, 0.87))
+      drop-shadow(0 0 6px rgba(124, 189, 250, 0.88))
+      drop-shadow(0 0 12px rgba(60,140,255,0.22))
+      drop-shadow(0 0 22px rgba(45,110,255,0.12))
     `,
   }}
 />
@@ -206,9 +206,9 @@ function Home() {
             </span>
           </div>
 
-          <h1 className="text-5xl leading-tight font-semibold text-white mb-2 drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] sm:text-5xl md:text-[3.2rem]" style={{fontFamily: "'Outfit', sans-serif"}}>
+          <h1 className="text-4xl leading-tight font-semibold text-white mb-2 drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] sm:text-5xl md:text-[3.2rem]" style={{fontFamily: "'Outfit', sans-serif"}}>
             Get Your Home Loan{' '}
-            <span className="whitespace-nowrap bg-gradient-to-b from-[#e4f0ff] via-[#9ac6ff] to-[#66abff] bg-clip-text text-transparent">
+            <span className="sm:whitespace-nowrap bg-gradient-to-b from-[#e4f0ff] via-[#9ac6ff] to-[#66abff] bg-clip-text text-transparent">
               Approved Faster
             </span>
           </h1>
@@ -229,20 +229,20 @@ function Home() {
             Low interest rates, quick approvals, and zero hidden charges. Apply online in just 5 minutes.
           </p>
 
-          <div className="mt-4 flex items-center justify-center gap-6">
-            <button
-             onClick={() => navigate("/home-loans")}
-             className="rounded-full bg-gradient-to-r from-[#3e8fee] to-[#5aa5ff] px-10 py-3 text-base font-semibold text-[#08162f] shadow-[0_12px_34px_rgba(46,113,218,0.45)] transition duration-300 hover:scale-[1.01] hover:shadow-[0_14px_44px_rgba(55,128,232,0.55)] text-white"
-            >
-              Apply Now
-            </button>
-            <button
-              onClick={() => navigate("/emi-calculator")}
-              className="rounded-full border border-white/50 bg-[rgba(6,12,34,0.25)] px-10 py-3 text-base font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md transition hover:bg-[rgba(12,20,50,0.6)]"
-            >
-              Calculate EMI
-            </button>
-          </div>
+          <div className="mt-4 flex items-center justify-center gap-3 sm:gap-6">
+  <button
+    onClick={() => navigate("/home-loans")}
+    className="whitespace-nowrap rounded-full bg-gradient-to-r from-[#3e8fee] to-[#5aa5ff] px-5 py-2.5 text-sm sm:px-10 sm:py-3 sm:text-base font-semibold text-[#08162f] shadow-[0_12px_34px_rgba(46,113,218,0.45)] transition duration-300 hover:scale-[1.01] hover:shadow-[0_14px_44px_rgba(55,128,232,0.55)] text-white"
+  >
+    Apply Now
+  </button>
+  <button
+    onClick={() => navigate("/emi-calculator")}
+    className="whitespace-nowrap rounded-full border border-white/50 bg-[rgba(6,12,34,0.25)] px-5 py-2.5 text-sm sm:px-10 sm:py-3 sm:text-base font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md transition hover:bg-[rgba(12,20,50,0.6)]"
+  >
+    Calculate EMI
+  </button>
+</div>
 
           <div className="relative mx-auto mt-8 flex h-[270px] w-full max-w-[330px] items-center justify-center md:hidden">
             <div className="absolute bottom-0 flex h-[268px] w-[268px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
@@ -261,12 +261,12 @@ function Home() {
         </div>
 
         {/* GLASS RINGS (desktop only) */}
-        <div className="pointer-events-none absolute inset-0 z-0 hidden items-end justify-center md:flex">
+        <div className="pointer-events-none absolute inset-0 hidden items-end justify-center md:flex">
           <div className="absolute bottom-[-300px] h-[760px] w-[760px] rounded-full bg-[radial-gradient(circle,rgba(50,105,220,0.5)_0%,rgba(32,77,181,0.42)_44%,rgba(15,49,132,0.3)_70%,rgba(8,28,84,0.18)_88%,rgba(6,18,52,0)_100%)] animate-pulseSlow md:bottom-[-180px] md:h-[760px] md:w-[760px]" />
           <div className="absolute bottom-[-250px] h-[620px] w-[620px] rounded-full bg-[radial-gradient(circle,rgba(52,110,216,0.48)_0%,rgba(28,79,184,0.44)_44%,rgba(13,53,154,0.36)_72%,rgba(7,27,87,0.24)_90%,rgba(6,18,46,0)_100%)] animate-pulseSlow delay-150 md:bottom-[-140px] md:h-[620px] md:w-[620px]" />
           <div className="absolute bottom-[-190px] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle,rgba(84,143,232,0.32)_0%,rgba(56,113,210,0.3)_26%,rgba(33,89,188,0.3)_56%,rgba(16,58,162,0.25)_78%,rgba(7,21,62,0)_100%)] backdrop-blur-[1.5px] animate-pulseSlow delay-300 md:bottom-[-100px] md:h-[500px] md:w-[500px]" />
 
-          <div className="absolute bottom-[-20px] md:bottom-[-20px] flex h-[200px] w-[200px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
+          <div className="absolute bottom-[-20px] md:bottom-[-20px] z-20 flex h-[200px] w-[200px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
             <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border border-white/55 bg-[linear-gradient(160deg,rgba(255,255,255,0.46)_0%,rgba(220,236,255,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-xl">
               <img
                 src={circleItems[currentIndex].img}
