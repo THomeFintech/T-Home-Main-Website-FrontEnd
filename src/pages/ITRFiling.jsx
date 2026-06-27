@@ -91,21 +91,29 @@ export default function ITRFiling() {
 
       <div className="max-w-7xl mx-auto px-6 py-10"><EligibilityCriteria /></div>
 
-      <div className="max-w-3xl mx-auto px-6 py-10">
-        <h1 className="text-center text-3xl font-bold mb-10 text-white">Frequently Asked Questions</h1>
-        <div className="space-y-3">
-          {[
-            { q: "Who should file an income tax return?", a: "Individuals earning taxable income must file returns within the deadline. Businesses and freelancers may also have mandatory filing requirements." },
-            { q: "What documents are required for ITR filing?", a: "PAN card, Aadhaar, bank statements, and Form 16 are commonly needed. Additional documents depend on income sources and deductions claimed." },
-            { q: "What happens if I file ITR after the due date?", a: "Late filing may result in penalties and delayed refund processing. Certain losses and deductions may also become unavailable." },
-          ].map((faq, i) => (
-            <details key={i} className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]">
-              <summary className="cursor-pointer text-sm">{faq.q}</summary>
-              <p className="text-gray-200 text-xs mt-2 leading-relaxed whitespace-pre-line">{faq.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
+       {/* FAQ */}
+<div className="max-w-3xl mx-auto px-6 py-10">
+  <h1 className="text-center text-3xl font-bold mb-10 text-white">
+    Frequently Asked Questions
+  </h1>
+
+  <FaqAccordion
+    items={[
+      {
+        q: "Who should file an income tax return?",
+        a: "Individuals earning taxable income must file returns within the deadline. Businesses and freelancers may also have mandatory filing requirements.",
+      },
+      {
+        q: "What documents are required for ITR filing?",
+        a: "PAN card, Aadhaar, bank statements, and Form 16 are commonly needed. Additional documents depend on income sources and deductions claimed.",
+      },
+      {
+        q: "What happens if I file ITR after the due date?",
+        a: "Late filing may result in penalties and delayed refund processing. Certain losses and deductions may also become unavailable.",
+      },
+    ]}
+  />
+</div>
 
       <div className="max-w-5xl mx-auto px-6 pb-12">
         <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-7 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
