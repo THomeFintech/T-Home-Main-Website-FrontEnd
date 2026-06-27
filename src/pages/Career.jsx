@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   Briefcase,
   CalendarClock,
@@ -189,50 +190,93 @@ export default function CareerSection() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_45%,transparent_76%)]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[1200px] px-6 pb-14 pt-24">
-        <section className="text-center">
-          <h1 className="text-[44px] font-bold leading-tight sm:text-[52px]">
+      <div className="relative z-10 mx-auto max-w-[1200px] px-6 pb-14">
+        <section className="relative flex min-h-[60svh] items-center justify-center overflow-hidden px-6 pt-[180px] pb-20 text-center md:pt-[130px] md:pb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="relative z-10 mx-auto max-w-4xl"
+          >
+          <div className="mx-auto mt-14 md:mt-0 inline-flex items-center gap-2 rounded-full border border-[#89b6ff]/35 bg-white/5 px-4 py-2 text-[12px] font-medium tracking-wide text-[#cfe0ff] backdrop-blur-xl">
+            <span className="h-2 w-2 rounded-full bg-[#4ea3ff]" />
+            About T-Home
+          </div>
+
+          <h1 className="mt-6 text-[40px] leading-[1.15] font-bold sm:text-[52px] md:text-[60px]">
             Build the <span className="text-[#2d8bff]">Future of Finance</span> with Us
           </h1>
-          <p className="mx-auto mt-2.5 max-w-[780px] text-[15px] text-[#d7def3]">
+          <p className="mx-auto mt-5 max-w-[780px] text-[15px] text-[#d7def3]">
             Join a fast-growing team that&apos;s redefining financial services with innovation, trust, and bleeding-edge technology.
           </p>
 <button
   onClick={scrollToOpenRoles}
-  className="mt-5 rounded-full bg-[#2f73ff] px-6 py-2.5 text-[13px] font-semibold transition hover:bg-[#2b69eb]"
+  className="mt-8 rounded-full bg-[#2f73ff] px-6 py-2.5 text-[13px] font-semibold transition hover:bg-[#2b69eb]"
 >
   Explore Open Roles
 </button>
+          </motion.div>
         </section>
 
-        <section className="mt-12">
-          <h2 className="text-center text-[40px] font-semibold">Our Culture</h2>
-          <p className="mt-2 text-center text-[14px] text-[#d7def3]">
-            We believe great products are built by empowered people.
-          </p>
+         <section className="mt-4">
+
+  <motion.div
+    initial={{ opacity: 0, y: 24 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.7 }}
+    viewport={{ once: true }}
+  >
+    <h2 className="text-center text-[40px] font-semibold">
+      Our Culture
+    </h2>
+
+    <p className="mt-2 text-center text-[14px] text-[#d7def3]">
+      We believe great products are built by empowered people.
+    </p>
+  </motion.div>
 
           <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {cultureCards.map((card) => {
               const Icon = card.icon;
               return (
-                <article
-                  key={card.title}
-                  className="min-h-[162px] rounded-[10px] border border-white/10 bg-white/[0.04] px-5 py-5 backdrop-blur-[12px] shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
-                >
+                <motion.article
+  key={card.title}
+  initial={{ opacity: 0, y: 25 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{
+    duration: 0.5,
+    delay: 0.1,
+  }}
+  viewport={{ once: true }}
+  whileHover={{
+    y: -6,
+    transition: { duration: 0.2 },
+  }}
+  className="min-h-[162px] rounded-[10px] border border-white/10 bg-white/[0.04] px-5 py-5 backdrop-blur-[12px] shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
+>
                   <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-[7px] border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#76a9ff]">
                     <Icon size={15} />
                   </div>
                   <h3 className="text-[17px] font-semibold leading-tight">{card.title}</h3>
                   <p className="mt-2 text-[12px] leading-[1.45] text-[#c8d5ef]">{card.description}</p>
-                </article>
+                </motion.article>
               );
             })}
           </div>
         </section>
 
-        <section ref={openRolesRef} className="mt-12 text-center">
-          <h2 className="text-[40px] font-semibold">Open Positions</h2>
+         <section ref={openRolesRef} className="mt-12 text-center">
 
+  <motion.div
+    initial={{ opacity: 0, y: 24 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.7 }}
+    viewport={{ once: true }}
+  >
+    <h2 className="text-[40px] font-semibold">
+      Open Positions
+    </h2>
+   
           <div className="mt-3 flex flex-wrap justify-center gap-2">
             {categories.map((category) => (
               <button
@@ -248,16 +292,26 @@ export default function CareerSection() {
                 {category}
               </button>
             ))}
-          </div>
+            </div>
+          </motion.div>
 
           <div className="mx-auto mt-6 max-w-[760px] space-y-2.5 text-left">
             {filteredJobs.map((job) => (
-              <article
-                key={job.title}
+            
+                <motion.article
+  key={job.title}
+  initial={{ opacity: 0, y: 25 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+  viewport={{ once: true }}
+  whileHover={{
+    y: -4,
+    transition: { duration: 0.2 },
+  }}
                 className="flex flex-col justify-between gap-2 rounded-[10px] border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur-[12px] shadow-[0_4px_30px_rgba(0,0,0,0.3)] md:flex-row md:items-center"
               >
                 <div>
-                  <h3 className="text-[15px] font-semibold leading-tight">{job.title}</h3>
+                  <h3 className="text-[16px] font-semibold leading-tight">{job.title}</h3>
                   <p className="text-xs uppercase tracking-wide text-[#e2e8f7] mt-1">{job.category}</p>
                   <p className="mt-1 text-[11px] leading-[1.45] text-[#d0dbf4]">{job.description}</p>
                   <div className="flex flex-wrap gap-2 mt-2 text-xs">
@@ -276,7 +330,7 @@ export default function CareerSection() {
                 >
                   Apply
                 </button>
-              </article>
+              </motion.article>
             ))}
           </div>
         </section>
@@ -291,8 +345,16 @@ export default function CareerSection() {
             {joinBenefits.map((benefit) => {
               const Icon = benefit.icon;
               return (
-                <article
-                  key={benefit.title}
+                 <motion.article
+  key={benefit.title}
+  initial={{ opacity: 0, y: 25 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+  viewport={{ once: true }}
+  whileHover={{
+    y: -4,
+    transition: { duration: 0.2 },
+  }}
                   className="rounded-[12px] border border-white/10 bg-white/[0.04] px-5 py-6 text-center backdrop-blur-[12px] shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
                 >
                   <div className="mx-auto mb-4 inline-flex h-9 w-9 items-center justify-center rounded-[8px] border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#76a9ff]">
@@ -300,20 +362,33 @@ export default function CareerSection() {
                   </div>
                   <h3 className="text-[22px] font-semibold">{benefit.title}</h3>
                   <p className="mt-2 text-[13px] leading-[1.5] text-[#c8d5ef]">{benefit.description}</p>
-                </article>
+                </motion.article>
               );
             })}
           </div>
         </section>
+ <section className="mt-12 text-center">
 
-<section className="mt-12 text-center">
-          <span className="inline-flex rounded-full border  bg-[#1f4fa3]/80 border-[#4f84ff]/35 bg-[#2459c8]/18 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#7badff]">
-            Employee Testimonials
-          </span>
-          <h2 className="mt-3 text-[46px] font-semibold">Real Experiences. Real Growth.</h2>
-          <p className="mt-2 text-[14px] text-[#d7def3]">
-            Our employees share how their careers have evolved and how they&apos;ve found purpose here.
-          </p>
+  <motion.div
+    initial={{ opacity: 0, y: 24 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.7 }}
+    viewport={{ once: true }}
+  >
+
+    <span className="inline-flex rounded-full border bg-[#1f4fa3]/80 border-[#4f84ff]/35 bg-[#2459c8]/18 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#7badff]">
+      Employee Testimonials
+    </span>
+
+    <h2 className="mt-3 text-[46px] font-semibold">
+      Real Experiences. Real Growth.
+    </h2>
+
+    <p className="mt-2 text-[14px] text-[#d7def3]">
+      Our employees share how their careers have evolved and how they've found purpose here.
+    </p>
+
+  </motion.div>
 
           <div className="relative mx-auto mt-14 hidden max-w-7xl items-center justify-center md:flex">
             <button
@@ -334,8 +409,15 @@ export default function CareerSection() {
                  {testimonialTrack.map((t, i) => {
                    const isCenter = i % testimonials.length === (testimonialStart + 1) % testimonials.length;
                    return (
-                    <article
+                     <motion.article
   key={`${i}-${t.name}`}
+  initial={{ opacity: 0, y: 30 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{
+    duration: 0.6,
+    delay: 0.1,
+  }}
+  viewport={{ once: true }}
   className={`flex h-[360px] flex-col justify-between rounded-[16px] border px-6 py-7 text-center backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_34px_rgba(0,0,0,0.3)] transition-transform duration-700 ease-in-out ${
     isCenter
       ? "border-[#7ea7ff]/70 bg-[linear-gradient(180deg,rgba(58,95,218,0.96)_0%,rgba(39,68,184,0.96)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_18px_40px_rgba(8,20,60,0.42)]"
@@ -372,7 +454,7 @@ export default function CareerSection() {
       <p className="text-[13px] text-[#b8c9eb]">{t.role}</p>
     </div>
   </div>
-</article>
+</motion.article>
                    );
                  })}
                </div>
@@ -386,25 +468,41 @@ export default function CareerSection() {
             </button>
           </div>
 
-          <div className="mx-auto mt-10 w-full max-w-[360px] md:hidden">
-            <div className="rounded-[16px] border border-[#d6e6ff]/62 bg-[linear-gradient(180deg,rgba(44,66,132,0.74)_0%,rgba(25,42,102,0.68)_100%)] p-7 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_14px_38px_rgba(0,0,0,0.34)] backdrop-blur-md">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#1b336f] text-[28px] font-semibold leading-none text-[#4f7fd7]">
-                <span className="block -translate-y-px leading-none">"</span>
-              </div>
-              <p className="mx-auto mt-6 max-w-[320px] text-[15px] leading-7 text-[#e3eeff]/90">
-                {testimonials[testimonialStart].text}
-              </p>
-              <img
-                src={testimonials[testimonialStart].image}
-                alt={testimonials[testimonialStart].name}
-                className="mx-auto mt-4 h-16 w-16 rounded-full border border-white/30 object-cover"
-              />
-              <h3 className="mt-4 text-lg font-semibold text-white">{testimonials[testimonialStart].name}</h3>
-              <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-[#4e95ff]">
-                {testimonials[testimonialStart].role}
-              </p>
-            </div>
-          </div>
+           <div className="mx-auto mt-10 w-full max-w-[360px] md:hidden">
+
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6 }}
+    viewport={{ once: true }}
+    className="rounded-[16px] border border-[#d6e6ff]/62 bg-[linear-gradient(180deg,rgba(44,66,132,0.74)_0%,rgba(25,42,102,0.68)_100%)] p-7 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_14px_38px_rgba(0,0,0,0.34)] backdrop-blur-md"
+  >
+
+    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#1b336f] text-[28px] font-semibold leading-none text-[#4f7fd7]">
+      <span className="block -translate-y-px leading-none">"</span>
+    </div>
+
+    <p className="mx-auto mt-6 max-w-[320px] text-[15px] leading-7 text-[#e3eeff]/90">
+      {testimonials[testimonialStart].text}
+    </p>
+
+    <img
+      src={testimonials[testimonialStart].image}
+      alt={testimonials[testimonialStart].name}
+      className="mx-auto mt-4 h-16 w-16 rounded-full border border-white/30 object-cover"
+    />
+
+    <h3 className="mt-4 text-lg font-semibold text-white">
+      {testimonials[testimonialStart].name}
+    </h3>
+
+    <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-[#4e95ff]">
+      {testimonials[testimonialStart].role}
+    </p>
+
+  </motion.div>
+
+</div>
         </section>
 
         <section className="mx-auto mt-10 max-w-[760px] rounded-[14px] border border-white/10 bg-white/[0.04] px-6 py-9 text-center backdrop-blur-[12px] shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
@@ -423,4 +521,3 @@ export default function CareerSection() {
     </div>
   );
 }
-
