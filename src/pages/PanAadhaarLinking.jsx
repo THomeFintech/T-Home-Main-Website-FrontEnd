@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import panAadhaarLinkImg from "../assets/PAN & Aadhaar Linking.png";
-
+import FaqAccordion from "../components/FaqAccordion";
 export default function PanAadhaarLinking() {
   const navigate = useNavigate();
   return (
@@ -155,37 +155,29 @@ export default function PanAadhaarLinking() {
         <EligibilityCriteria />
       </div>
 
-      {/* FAQ */}
-      <div className="max-w-3xl mx-auto px-6 py-10">
-        <h2 className="text-center text-lg font-semibold mb-6">
-          Frequently Asked Questions
-        </h2>
+       {/* FAQ */}
+<div className="max-w-3xl mx-auto px-6 py-10">
+  <h2 className="text-center text-lg font-semibold mb-6">
+    Frequently Asked Questions
+  </h2>
 
-        <div className="space-y-3">
-          {[
-            {
-              q: "Why should PAN be linked with Aadhaar?",
-              a: "Linking helps maintain valid tax records and identity verification compliance.Unlinked PAN cards may face restrictions in certain services.",
-            },
-            {
-              q: "Is there a deadline for PAN-Aadhaar linking?",
-              a: "Government authorities periodically announce official linking deadlines.Late linking may attract penalties or service interruptions.",
-            },
-            {
-              q: "Can linking be completed online?",
-              a: "The process is available through official government online portals.Basic identity details must match correctly in both records.",
-            },
-          ].map((faq, i) => (
-            <details
-              key={i}
-              className="rounded-xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl p-4 shadow-[0_10px_28px_rgba(5,16,38,0.25)]"
-            >
-              <summary className="cursor-pointer text-sm">{faq.q}</summary>
-              <p className="text-gray-200 text-xs mt-2 leading-relaxed whitespace-pre-line">{faq.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
+  <FaqAccordion
+    items={[
+      {
+        q: "Why should PAN be linked with Aadhaar?",
+        a: "Linking helps maintain valid tax records and identity verification compliance. Unlinked PAN cards may face restrictions in certain services.",
+      },
+      {
+        q: "Is there a deadline for PAN-Aadhaar linking?",
+        a: "Government authorities periodically announce official linking deadlines. Late linking may attract penalties or service interruptions.",
+      },
+      {
+        q: "Can linking be completed online?",
+        a: "The process is available through official government online portals. Basic identity details must match correctly in both records.",
+      },
+    ]}
+  />
+</div>
 
       {/* CTA */}
       <div className="max-w-5xl mx-auto px-6 pb-12">
