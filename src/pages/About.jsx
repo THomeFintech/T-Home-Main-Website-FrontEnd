@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Flag, Eye } from "lucide-react";
+import { Flag, Eye, Linkedin } from "lucide-react";
 
 const About = () => {
   return (
@@ -139,28 +139,77 @@ const About = () => {
             </p>
 
             <div className="mt-8 grid gap-6 md:grid-cols-2">
-              {[
-                {
-                  initials: "RR",
-                  name: "Ravinder Reddy Attapuram",
-                  role: "Founder & CEO",
-                  text: "Entrepreneur, strategist, and changemaker leading T-Home toward a future where finance is transparent, easy, and empowering.",
-                },
-                {
-                  initials: "KP",
-                  name: "K C Pratheek Reddy",
-                  role: "Co-Founder & CTO",
-                  text: "The tech visionary behind T-Home’s digital transformation, focused on scalable, intelligent, and reliable product experiences.",
-                },
-              ].map((leader) => (
-                <motion.div
-                  key={leader.name}
-                  className="rounded-[20px] border border-[#c9dcff]/18 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md"
+              { [
+  {
+    image: "/ceo.png",
+    name: "Ravinder Reddy Attapuram",
+    role: "Founder & CEO",
+    linkedin: "https://www.linkedin.com/in/ravinder-reddy-attapuram-a2676491/",
+    text:
+      "Entrepreneur, strategist, and changemaker leading T-Home toward a future where finance is transparent, easy, and empowering.",
+  },
+  {
+    image: "/cto.png",
+    name: "K C Pratheek Reddy",
+    role: "Co-Founder & CTO",
+    linkedin: "https://www.linkedin.com/in/kesara-chenna-pratheek-reddy",
+    text:
+      "The tech visionary behind T-Home’s digital transformation, focused on scalable, intelligent, and reliable product experiences.",
+  },
+].map((leader) => (
+                 <motion.div
+  key={leader.name}
+  className="group rounded-[20px] border border-[#c9dcff]/18 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md"
+        
                   whileHover={{ y: -4 }}
                 >
-                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-[#89b6ff]/30 bg-[linear-gradient(180deg,rgba(58,108,197,0.46)_0%,rgba(36,73,148,0.4)_100%)] text-2xl font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.24)]">
-                    {leader.initials}
-                  </div>
+                   <div className="relative mx-auto w-fit">
+
+  {/* LinkedIn Button */}
+  <a
+    href={leader.linkedin}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="
+      absolute
+      -top-4
+      right-0
+      h-10
+      w-10
+      rounded-full
+      bg-[#0A66C2]
+      flex
+      items-center
+      justify-center
+      text-white
+      shadow-lg
+      opacity-0
+      scale-75
+      transition-all
+      duration-300
+      group-hover:opacity-100
+      group-hover:scale-100
+    "
+  >
+    <Linkedin size={18} />
+  </a>
+
+  {/* Profile Image */}
+  <img
+    src={leader.image}
+    alt={leader.name}
+    className="
+      h-20
+      w-20
+      rounded-full
+      object-cover
+      border
+      border-[#89b6ff]/30
+      shadow-[0_0_20px_rgba(70,140,255,.35)]
+    "
+  />
+
+</div>
                   <h3 className="mt-3 text-xl font-semibold text-white">{leader.name}</h3>
                   <p className="mt-2 text-sm text-[#9fb8e8]">{leader.role}</p>
                   <p className="mt-2 text-[15px] leading-7 text-[#d7def3]">{leader.text}</p>
