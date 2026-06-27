@@ -17,13 +17,23 @@ function DashboardLayout() {
   const activePage = pageMap[location.pathname] ?? "dashboard";
 
   // ✅ FIXED: was using sessionStorage — Navbar reads localStorage, so logout wasn't working
+  // const handleLogout = () => {
+  //   localStorage.removeItem("isLoggedIn");
+  //   localStorage.removeItem("access_token");
+  //   localStorage.removeItem("user");
+  //   window.dispatchEvent(new Event("authChange")); // tells Navbar to switch back to Login + Get Started
+  //   navigate("/get-started");
+  // };
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.dispatchEvent(new Event("authChange")); // tells Navbar to switch back to Login + Get Started
-    navigate("/get-started");
-  };
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("isLoggedIn");
+
+  window.dispatchEvent(new Event("authChange"));
+
+  navigate("/get-started");
+};
 
   return (
     <div className="flex min-h-screen bg-[radial-gradient(1200px_680px_at_20%_-10%,rgba(90,140,255,0.18),transparent_62%),radial-gradient(980px_580px_at_100%_0%,rgba(36,107,198,0.14),transparent_60%),linear-gradient(180deg,#071327_0%,#08162b_100%)] text-slate-100">

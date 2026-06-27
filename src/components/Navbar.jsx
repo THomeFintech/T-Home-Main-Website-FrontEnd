@@ -118,7 +118,7 @@ const orderedMobileServices = mobileServiceOrder.map((label) =>
 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
     localStorage.removeItem("user");
 
     setIsLoggedIn(false);

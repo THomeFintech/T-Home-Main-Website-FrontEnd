@@ -23,7 +23,7 @@ import DashboardLayout from "./layout/DashboardLayout";
 // Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import ChatbotWidget from "./components/ChatbotWidget";
+// import ChatbotWidget from "./components/ChatbotWidget";
 
 // Pages
 import Home from "./pages/Home";
@@ -96,7 +96,7 @@ function Layout() {
         <Outlet />
       </main>
       <Footer />
-      <ChatbotWidget />
+      {/* <ChatbotWidget /> */}
     </div>
   );
 }
@@ -130,7 +130,9 @@ function App() {
             <Route path="/profile" element={<Profilepage />} />
             <Route path="/support" element={<Support />} />
           </Route>
-
+           {/* AUTH ROUTES (No Navbar/Footer) */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           {/* MAIN LAYOUT ROUTES */}
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
@@ -216,9 +218,7 @@ function App() {
             <Route path="terms-and-conditions" element={<TermsAndConditions />} />
             <Route path="get-started" element={<GetStarted />} />
             <Route path="apply" element={<EmployeeForm />} />
-            {/* AUTH ROUTES */}
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+            
 
             {/* SERVICE ROUTES */}
             <Route path="home-loans" element={<HomeLoan />} />
