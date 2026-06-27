@@ -9,19 +9,25 @@ const authApi = {
   login: async (payload) => {
     const response = await apiClient.post("/auth/login", payload);
 
-    if (response.data?.access_token) {
-      localStorage.setItem("access_token", response.data.access_token);
-    }
+   if (response.data?.access_token) {
+  localStorage.setItem("token", response.data.access_token);
+  localStorage.setItem("isLoggedIn", "true");
+}
 
     return response.data;
   },
 
   logout: () => {
-    localStorage.removeItem("access_token");
+    localStorage.removeItem("token");
+      localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("isLoggedIn");
+
+  window.dispatchEvent(new Event("authChange"));
   },
 
   getToken: () => {
-    return localStorage.getItem("access_token");
+    return localStorage.getItem("token");
   },
 };
 
