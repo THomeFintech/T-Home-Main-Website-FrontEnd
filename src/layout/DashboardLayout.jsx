@@ -16,12 +16,14 @@ function DashboardLayout() {
   };
   const activePage = pageMap[location.pathname] ?? "dashboard";
 
-  // ✅ FIXED: was using sessionStorage — Navbar reads localStorage, so logout wasn't working
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
-    window.dispatchEvent(new Event("authChange")); // tells Navbar to switch back to Login + Get Started
+    localStorage.removeItem("isLoggedIn");
+
+    window.dispatchEvent(new Event("authChange"));
+
     navigate("/get-started");
   };
 
