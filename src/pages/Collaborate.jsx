@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-
+import { motion } from "framer-motion";
 // Icons using SVG inline
 const BuildingIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -99,13 +99,24 @@ const CollaboratePage = () => {
 
         {/* ─── HERO SECTION ─── */}
         <section
-          className="relative flex flex-col items-center justify-center px-6 py-28 text-center"
+  className="relative flex min-h-[56svh] items-center justify-center overflow-hidden px-6 pt-[180px] pb-20 text-center md:pt-[130px] md:pb-24"
+
           style={{ background: "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)" }}
         >
-          <h1 className="relative mb-4 text-4xl font-bold leading-tight md:text-5xl">
+          <motion.div
+  initial={{ opacity: 0, y: 24 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8 }}
+  className="relative z-10 mx-auto max-w-4xl"
+> 
+        <div className="mx-auto mt-16 md:mt-0 inline-flex items-center gap-2 rounded-full border border-[#89b6ff]/35 bg-white/5 px-4 py-2 text-[12px] font-medium tracking-wide text-[#cfe0ff] backdrop-blur-xl">
+          <span className="h-2 w-2 rounded-full bg-[#4ea3ff]" />
+            About T-Home
+       </div>
+          <h1 className="relative mt-6 mb-4 text-[40px] leading-[1.15] font-bold sm:text-[52px] md:text-6xl">
             Partner with <span className="text-blue-400">T-Home</span> to Grow Together
           </h1>
-          <p className="relative mb-8 max-w-xl text-base text-gray-300">
+          <p className="mx-auto mt-5 mb-8 max-w-3xl text-base leading-8 text-[#d7def3] md:text-lg">
             Join our network of financial experts, institutions, and partners to deliver smarter, faster, and more accessible financial solutions.
           </p>
           <div className="relative flex flex-wrap justify-center gap-4">
@@ -122,14 +133,22 @@ const CollaboratePage = () => {
               Talk to Us
             </button>
           </div>
+          </motion.div>
         </section>
 
         {/* ─── WHO CAN COLLABORATE ─── */}
-        <section className="px-6 py-20 text-center">
+        <section className="px-6 pt-1 py-20 text-center">
+          <motion.div
+    initial={{ opacity: 0, y: 24 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.7 }}
+    viewport={{ once: true }}
+> 
           <h2 className="mb-2 text-3xl font-bold md:text-4xl">Who Can Collaborate</h2>
           <p className="mb-12 text-sm text-blue-400">
             Our platform is designed for a diverse ecosystem of financial professionals.
           </p>
+          </motion.div>
           <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
@@ -153,8 +172,19 @@ const CollaboratePage = () => {
                 desc: "Fintech innovators looking to integrate our embedded finance API solutions.",
               },
             ].map((card, i) => (
-              <div
-                key={i}
+               <motion.div
+    key={i}
+    initial={{ opacity: 0, y: 25 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{
+        duration: 0.5,
+        delay: i * 0.1,
+    }}
+    viewport={{ once: true }}
+    whileHover={{
+        y: -6,
+        transition: { duration: 0.2 },
+    }}
                 className="rounded-2xl p-6 text-left"
                 style={{
                   background: "rgba(255,255,255,0.04)",
@@ -174,17 +204,28 @@ const CollaboratePage = () => {
                 </div>
                 <h3 className="mb-2 text-base font-semibold">{card.title}</h3>
                 <p className="text-sm leading-relaxed text-gray-400">{card.desc}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>
 
         {/* ─── WHY PARTNER WITH US ─── */}
         <section className="px-6 py-20 text-center" style={{ background: "rgba(255,255,255,0.02)" }}>
+          <motion.div
+    initial={{ opacity: 0, y: 25 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{
+        duration: 0.5,
+         
+    }}
+    viewport={{ once: true }}
+   
+> 
           <h2 className="mb-2 text-3xl font-bold md:text-4xl">Why Partner With Us</h2>
           <p className="mb-14 text-sm text-gray-400">
             We provide the tools, support, and financial incentives to help you succeed.
           </p>
+          </motion.div>
           <div className="mx-auto grid max-w-5xl grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
@@ -208,7 +249,19 @@ const CollaboratePage = () => {
                 desc: "Your own account manager to ensure smooth operations and fast payouts.",
               },
             ].map((item, i) => (
-              <div key={i} className="flex flex-col items-center gap-3">
+              <motion.div
+    key={i}
+    initial={{ opacity: 0, y: 25 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{
+        duration: 0.5,
+        
+    }}
+    viewport={{ once: true }}
+    whileHover={{ y: -6 }}
+    className="flex flex-col items-center gap-3"
+> 
+ 
                 <div
                   className="flex h-14 w-14 items-center justify-center rounded-full text-blue-400"
                   style={{
@@ -220,7 +273,7 @@ const CollaboratePage = () => {
                 </div>
                 <h3 className="text-sm font-semibold">{item.title}</h3>
                 <p className="text-xs leading-relaxed text-gray-400">{item.desc}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>
@@ -244,7 +297,17 @@ const CollaboratePage = () => {
               { num: 2, title: "Get Verified", desc: "Our team reviews and approves your profile." },
               { num: 3, title: "Start Collaborating", desc: "Access the portal and begin earning." },
             ].map((step, i) => (
-              <div key={i} className="relative z-10 flex flex-1 flex-col items-center px-4 text-center sm:px-6">
+              <motion.div
+    key={i}
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{
+        duration: 0.5,
+    }}
+    viewport={{ once: true }}
+    className="relative z-10 flex flex-1 flex-col items-center px-4 text-center sm:px-6"
+>
+    
                 <div
                   className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-[#5e8fe0]/55 bg-[linear-gradient(180deg,rgba(33,46,97,0.42)_0%,rgba(20,30,74,0.36)_100%)] text-lg font-bold text-[#9cc6ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-md transition-all duration-300 md:h-16 md:w-16 md:text-xl"
                 >
@@ -252,7 +315,7 @@ const CollaboratePage = () => {
                 </div>
                 <h3 className="mb-1 text-sm font-semibold text-white md:text-base">{step.title}</h3>
                 <p className="max-w-[220px] text-xs leading-6 text-[#d7def3] md:text-sm">{step.desc}</p>
-              </div>
+              </motion.div> 
             ))}
           </div>
         </section>
