@@ -17,15 +17,27 @@ const authApi = {
     return response.data;
   },
 
-  logout: () => {
-    localStorage.removeItem("token");
-      localStorage.removeItem("refresh_token");
+ logout: () => {
+  // Authentication
+  localStorage.removeItem("token");
+  localStorage.removeItem("refresh_token");
   localStorage.removeItem("user");
   localStorage.removeItem("isLoggedIn");
 
-  window.dispatchEvent(new Event("authChange"));
-  },
+  // Loan & Balance Transfer
+  localStorage.removeItem("loanReference");
+  localStorage.removeItem("applicationReference");
+  localStorage.removeItem("loanData");
+  localStorage.removeItem("report");
+  localStorage.removeItem("recommendations");
+  localStorage.removeItem("selectedJob");
 
+  // Notify app
+  window.dispatchEvent(new Event("authChange"));
+
+  // Optional: Redirect to login
+  window.location.replace("/login");
+},
   getToken: () => {
     return localStorage.getItem("token");
   },
