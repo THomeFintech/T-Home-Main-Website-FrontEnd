@@ -43,18 +43,12 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
         localStorage.setItem("isLoggedIn", "true");
 
         // 4️⃣ Fetch user profile
-  const profileRes = await fetch(`${API_URL}/auth/me`, {
-  headers: {
-    Authorization: `Bearer ${data.access_token}`,
-  },
-});
+        const profileRes = await fetch(`${API_URL}/auth/me`, {
+          headers: { Authorization: `Bearer ${data.access_token}` },
+        });
+        const userData = await profileRes.json();
+        localStorage.setItem("user", JSON.stringify(userData));
 
-if (!profileRes.ok) {
-  throw new Error("Failed to fetch user profile");
-}
-
-const userData = await profileRes.json();
-localStorage.setItem("user", JSON.stringify(userData));
         // 5️⃣ Notify & redirect
         window.dispatchEvent(new Event("authChange"));
         navigate("/");
