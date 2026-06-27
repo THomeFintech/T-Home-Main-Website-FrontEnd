@@ -41,28 +41,28 @@ function Navbar() {
     { label: "UDYAM/MSME Registration", to: "/udyam-msme-registration", icon: BadgePercent },
     { label: "Personal Loan", to: "/personal-loans", icon: Briefcase },
     { label: "ITR Tax Filing", to: "/itr-filing", icon: FileText },
-  { label: "Balance Transfer", to: "/balance-transfer", icon: Repeat },
+    { label: "Balance Transfer", to: "/balance-transfer", icon: Repeat },
     { label: "Food License", to: "/food-license", icon: Utensils },
     { label: "PAN & Aadhaar Linking", to: "/pan-aadhaar-linking", icon: LucideLink },
   ];
 
   const mobileServiceOrder = [
-  "Home Loan",
-  "Mortgage Loan",
-  "Loan Against Property",
-  "Personal Loan",
-  "Balance Transfer",
-  "Company Registration",
-  "PAN & Aadhaar Linking",
-  "GST Registration",
-  "UDYAM/MSME Registration",
-  "ITR Tax Filing",
-  "Food License",
-];
+    "Home Loan",
+    "Mortgage Loan",
+    "Loan Against Property",
+    "Personal Loan",
+    "Balance Transfer",
+    "Company Registration",
+    "PAN & Aadhaar Linking",
+    "GST Registration",
+    "UDYAM/MSME Registration",
+    "ITR Tax Filing",
+    "Food License",
+  ];
 
-const orderedMobileServices = mobileServiceOrder.map((label) =>
-  serviceLinks.find((item) => item.label === label)
-);
+  const orderedMobileServices = mobileServiceOrder.map((label) =>
+    serviceLinks.find((item) => item.label === label)
+  );
 
   useEffect(() => {
     setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
@@ -117,9 +117,10 @@ const orderedMobileServices = mobileServiceOrder.map((label) =>
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
+    localStorage.removeItem("isLoggedIn");
 
     setIsLoggedIn(false);
     setUser({});
@@ -128,6 +129,7 @@ const orderedMobileServices = mobileServiceOrder.map((label) =>
     setMenuOpen(false);
 
     window.dispatchEvent(new Event("authChange"));
+
     navigate("/get-started");
   };
 
@@ -224,7 +226,7 @@ const orderedMobileServices = mobileServiceOrder.map((label) =>
       }`}
     >
       <div className="w-full max-w-[95%] sm:max-w-[92%]">
-<nav
+        <nav
           className="
             rounded-2xl border border-[#d8ecff]/44
             bg-[linear-gradient(120deg,rgba(20,35,75,0.85)_0%,rgba(12,22,55,0.92)_42%,rgba(8,16,40,0.95)_100%)]
@@ -303,16 +305,16 @@ const orderedMobileServices = mobileServiceOrder.map((label) =>
               </div>
 
               <button
-  onClick={() => {
-    handleNavLink();
-    navigate("/tools", {
-      state: { resetTools: true },
-    });
-  }}
-  className="text-white/80 hover:text-[#4f72e0] transition"
->
-  Financial Tools
-</button>
+                onClick={() => {
+                  handleNavLink();
+                  navigate("/tools", {
+                    state: { resetTools: true },
+                  });
+                }}
+                className="text-white/80 hover:text-[#4f72e0] transition"
+              >
+                Financial Tools
+              </button>
               <NavLink to="/about" className={navLinkClass} onClick={handleNavLink}>
                 About
               </NavLink>
@@ -440,7 +442,7 @@ const orderedMobileServices = mobileServiceOrder.map((label) =>
                     </button>
                   </div>
 
-{mobileServicesOpen && (
+                  {mobileServicesOpen && (
                     <div className="ml-3 mt-2 flex flex-col gap-1 rounded-lg border border-white/10 bg-white/5 p-2">
                       {orderedMobileServices.filter(Boolean).map((item) => {
                         const Icon = item.icon;
