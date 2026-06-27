@@ -182,16 +182,16 @@ function Home() {
           />
         </div>
 
-         <img
+        <img
   src="/home/telangana map.png"
   alt="map"
   className="absolute left-1/2 top-[28%] z-10 hidden w-[430px] -translate-x-1/2 opacity-90 brightness-135 saturate-180 contrast-110 mix-blend-screen md:block md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
   style={{
     filter: `
       drop-shadow(0 0 4px rgba(120,200,255,1))
-      drop-shadow(0 0 12px rgba(80,170,255,0.95))
-      drop-shadow(0 0 24px rgba(60,140,255,0.75))
-      drop-shadow(0 0 42px rgba(45,110,255,0.45))
+      drop-shadow(0 0 12px rgba(63, 129, 190, 0.95))
+      drop-shadow(0 0 24px rgba(27, 47, 75, 0.75))
+      drop-shadow(0 0 42px rgba(70, 99, 161, 0.45))
     `,
   }}
 />
