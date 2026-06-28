@@ -237,13 +237,13 @@ console.log("Access Token:", data.access_token);
               <span className="login-divider-line"></span>
             </div>
             <div className="login-social">
-              <button type="button" className="login-social-btn" title="Login with Facebook">
+              {/* <button type="button" className="login-social-btn" title="Login with Facebook">
                 <IconFacebook />
-              </button>
+              </button> */}
               <GoogleAuthButton className="login-social-btn" iconOnly={true} />
-              <button type="button" className="login-social-btn" title="Login with Apple">
+              {/* <button type="button" className="login-social-btn" title="Login with Apple">
                 <IconApple />
-              </button>
+              </button> */}
             </div>
             <p className="login-signup-text">
               Don&apos;t have an account? <Link to="/get-started" className="login-signup-link">Register</Link>
