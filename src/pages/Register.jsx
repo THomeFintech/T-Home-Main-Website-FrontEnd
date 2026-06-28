@@ -223,12 +223,12 @@ export default function Register() {
   className="rounded-full bg-white/10 p-3 hover:bg-white/20 transition"
   iconOnly={true}
 />
-            <button className="rounded-full bg-white/10 p-3 hover:bg-white/20 transition">
+            {/* <button className="rounded-full bg-white/10 p-3 hover:bg-white/20 transition">
               <img src="/assets/home/facebook.svg" alt="Facebook" className="h-6 w-6" />
             </button>
             <button className="rounded-full bg-white/10 p-3 hover:bg-white/20 transition">
               <img src="/assets/home/apple.svg" alt="Apple" className="h-6 w-6" />
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
