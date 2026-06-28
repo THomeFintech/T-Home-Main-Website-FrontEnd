@@ -49,6 +49,8 @@ export default function LoanForm({
   };
 
   const passedLoanType = mapServiceToLoanType(service);
+ console.log("Raw service:", JSON.stringify(service));
+console.log("passedLoanType =", passedLoanType);
   const formData = loanData || {};
 
   const [activeLoanDetails, setActiveLoanDetails] = useState([]);
@@ -63,6 +65,19 @@ export default function LoanForm({
       }));
     }
   }, [passedLoanType, setLoanData]);
+  useEffect(() => {
+  const count = Number(formData.activeLoans) || 0;
+
+  setActiveLoanDetails(
+    Array.from({ length: count }, () => ({
+      emi: "",
+      outstandingAmount: "",
+      tenureLeft: "",
+    }))
+  );
+
+  setCurrentLoanIndex(0);
+}, [formData.activeLoans]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -370,7 +385,7 @@ export default function LoanForm({
               <select
                 id="loanType"
                 name="loanType"
-                value={formData.loanType}
+                value={passedLoanType || formData.loanType}
                 onChange={handleChange}
                 required
                 disabled={!!passedLoanType}
@@ -381,6 +396,7 @@ export default function LoanForm({
                 <option value="">Select</option>
                 <option value="Personal">Personal Loan</option>
                 <option value="Home">Home Loan</option>
+                <option value="Business">Business Loan</option>
                 <option value="LAP">Loan Against Property</option>
                 <option value="Mortgage">Mortgage Loan</option>
               </select>
