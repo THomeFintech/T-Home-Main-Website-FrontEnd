@@ -137,9 +137,9 @@ function LoginPage({ onBack, onLogin }) {
         </div>
 
         <div className="social-row">
-          <button className="soc-btn"><IconFacebook /></button>
+          {/* <button className="soc-btn"><IconFacebook /></button> */}
           <GoogleAuthButton className="soc-btn" iconOnly={true} />
-          <button className="soc-btn"><IconApple /></button>
+          {/* <button className="soc-btn"><IconApple /></button> */}
         </div>
 
         <p className="already-row">
@@ -348,9 +348,9 @@ function SignupPage({ onLogin, onContinue }) {
         </div>
 
         <div className="social-row">
-          <button className="soc-btn"><IconFacebook /></button>         
+          {/* <button className="soc-btn"><IconFacebook /></button>          */}
           <GoogleAuthButton className="soc-btn" iconOnly={true} />
-          <button className="soc-btn"><IconApple /></button>
+          {/* <button className="soc-btn"><IconApple /></button> */}
         </div>
 
         <p className="already-row">
