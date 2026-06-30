@@ -111,7 +111,7 @@ const CollaboratePage = () => {
 > 
         <div className="mx-auto mt-16 md:mt-0 inline-flex items-center gap-2 rounded-full border border-[#89b6ff]/35 bg-white/5 px-4 py-2 text-[12px] font-medium tracking-wide text-[#cfe0ff] backdrop-blur-xl">
           <span className="h-2 w-2 rounded-full bg-[#4ea3ff]" />
-            About T-Home
+            Grow Together
        </div>
           <h1 className="relative mt-6 mb-4 text-[40px] leading-[1.15] font-bold sm:text-[52px] md:text-6xl">
             Partner with <span className="text-blue-400">T-Home</span> to Grow Together
