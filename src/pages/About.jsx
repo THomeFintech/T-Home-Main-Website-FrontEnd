@@ -151,7 +151,7 @@ const About = () => {
       "Entrepreneur, strategist, and changemaker leading T-Home toward a future where finance is transparent, easy, and empowering.",
   },
   {
-    image: "/cto.png",
+    image: "/cto.jpeg",
     name: "K C Pratheek Reddy",
     role: "Co-Founder & CTO",
     linkedin: "https://www.linkedin.com/in/kesara-chenna-pratheek-reddy",
