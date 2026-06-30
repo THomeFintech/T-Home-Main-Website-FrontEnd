@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Flag, Eye } from "lucide-react";
+import { Flag, Eye, Linkedin } from "lucide-react";
 
 const About = () => {
   return (
@@ -67,7 +67,7 @@ const About = () => {
               </p>
             </div>
 
-            <div className="mt-8 grid gap-6 md:grid-cols-2">
+            <div className="mx-auto mt-10 grid max-w-5xl gap-8 md:grid-cols-2">
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -139,37 +139,215 @@ const About = () => {
             </p>
 
             <div className="mt-8 grid gap-6 md:grid-cols-2">
-              {[
-                {
-                  initials: "RR",
-                  name: "Ravinder Reddy Attapuram",
-                  role: "Founder & CEO",
-                  text: "Entrepreneur, strategist, and changemaker leading T-Home toward a future where finance is transparent, easy, and empowering.",
-                },
-                {
-                  initials: "KP",
-                  name: "K C Pratheek Reddy",
-                  role: "Co-Founder & CTO",
-                  text: "The tech visionary behind T-Home’s digital transformation, focused on scalable, intelligent, and reliable product experiences.",
-                },
-              ].map((leader) => (
-                <motion.div
-                  key={leader.name}
-                  className="rounded-[20px] border border-[#c9dcff]/18 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md"
-                  whileHover={{ y: -4 }}
-                >
-                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-[#89b6ff]/30 bg-[linear-gradient(180deg,rgba(58,108,197,0.46)_0%,rgba(36,73,148,0.4)_100%)] text-2xl font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.24)]">
-                    {leader.initials}
-                  </div>
-                  <h3 className="mt-3 text-xl font-semibold text-white">{leader.name}</h3>
-                  <p className="mt-2 text-sm text-[#9fb8e8]">{leader.role}</p>
-                  <p className="mt-2 text-[15px] leading-7 text-[#d7def3]">{leader.text}</p>
-                </motion.div>
+              { [
+  {
+    image: "/ceo.png",
+    name: "Ravinder Reddy Attapuram",
+    role: "Founder & CEO",
+    linkedin: "https://www.linkedin.com/in/ravinder-reddy-attapuram-a2676491/",
+    text:
+      "Entrepreneur, strategist, and changemaker leading T-Home toward a future where finance is transparent, easy, and empowering.",
+  },
+  {
+    image: "/cto.png",
+    name: "K C Pratheek Reddy",
+    role: "Co-Founder & CTO",
+    linkedin: "https://www.linkedin.com/in/kesara-chenna-pratheek-reddy",
+    text:
+      "The tech visionary behind T-Home’s digital transformation, focused on scalable, intelligent, and reliable product experiences.",
+  },
+].map((leader) => (
+                  <motion.div
+  key={leader.name}
+  whileHover={{ y: -6 }}
+  transition={{ duration: 0.35 }}
+  className="rounded-[18px]
+  border border-[#274786]
+  bg-[linear-gradient(180deg,#162347_0%,#101c39_100%)]
+  px-8
+  py-8
+  text-center
+  shadow-[0_20px_60px_rgba(0,0,0,.35)]
+"
+>
+
+  {/* IMAGE */}
+
+  <div className="relative mx-auto w-fit">
+
+    <div
+      className="
+      h-40
+      w-40
+      rounded-full
+      border-[4px]
+      border-[#25b9ff]
+      bg-white
+      p-1
+      shadow-[0_0_35px_rgba(37,185,255,.6)]
+      "
+    >
+      <img
+        src={leader.image}
+        alt={leader.name}
+        className="h-full w-full rounded-full object-cover"
+      />
+    </div>
+
+  </div>
+
+  {/* ICONS */}
+
+  <div className="mt-4 flex justify-center gap-3">
+
+    <a
+      href={leader.linkedin}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="
+      flex
+      h-9
+      w-9
+      items-center
+      justify-center
+      rounded-full
+      bg-[#0A66C2]
+      text-white
+      transition
+      hover:scale-110
+      "
+    >
+      <Linkedin size={16}/>
+    </a>
+
+    <button
+      className="
+      flex
+      h-9
+      w-9
+      items-center
+      justify-center
+      rounded-full
+      border
+      border-white/20
+      text-white
+      "
+    >
+      ✉
+    </button>
+
+  </div>
+
+  {/* ROLE */}
+
+  <div
+    className="
+    mx-auto
+    mt-4
+    inline-flex
+    rounded-full
+    bg-[#20356f]
+    px-4
+    py-1
+    text-[11px]
+    font-medium
+    uppercase
+    tracking-wide
+    text-[#b7d5ff]
+    "
+  >
+    {leader.role}
+  </div>
+
+  {/* NAME */}
+
+  <h3 className="mt-5 text-[28px] font-semibold text-white">
+
+    {leader.name}
+
+  </h3>
+
+  {/* SUBTITLE */}
+
+  <p className="mt-2 text-sm text-[#bdd1f7]">
+
+    {leader.role.includes("CEO")
+      ? "Entrepreneur • Strategist • Changemaker"
+      : "Tech Visionary • Innovator • Problem Solver"}
+
+  </p>
+
+  {/* DESCRIPTION */}
+
+  <p className="mx-auto mt-4 max-w-sm text-[14px] leading-7 text-[#d2def9]">
+
+    {leader.text}
+
+  </p>
+
+  {/* FEATURE BOXES */}
+
+  <div className="mt-7 grid grid-cols-3 gap-3">
+
+    {leader.role.includes("CEO")
+      ? (
+        <>
+          <div className="rounded-xl border border-[#2e4d86] bg-[#14254a] p-3">
+            <p className="text-lg font-bold text-white">10+</p>
+            <p className="text-[11px] text-[#9bb8ea]">Years Experience</p>
+          </div>
+
+          <div className="rounded-xl border border-[#2e4d86] bg-[#14254a] p-3">
+            <p className="text-lg">🚀</p>
+            <p className="text-[11px] text-[#9bb8ea]">Visionary Leadership</p>
+          </div>
+
+          <div className="rounded-xl border border-[#2e4d86] bg-[#14254a] p-3">
+            <p className="text-lg">❤</p>
+            <p className="text-[11px] text-[#9bb8ea]">Customer First</p>
+          </div>
+        </>
+      )
+      : (
+        <>
+          <div className="rounded-xl border border-[#2e4d86] bg-[#14254a] p-3">
+            <p className="text-lg">&lt;/&gt;</p>
+            <p className="text-[11px] text-[#9bb8ea]">Tech Expert</p>
+          </div>
+
+          <div className="rounded-xl border border-[#2e4d86] bg-[#14254a] p-3">
+            <p className="text-lg">🗄</p>
+            <p className="text-[11px] text-[#9bb8ea]">Scalable Solutions</p>
+          </div>
+
+          <div className="rounded-xl border border-[#2e4d86] bg-[#14254a] p-3">
+            <p className="text-lg">✔</p>
+            <p className="text-[11px] text-[#9bb8ea]">Reliable Products</p>
+          </div>
+        </>
+      )}
+
+  </div>
+
+</motion.div>
               ))}
             </div>
           </div>
-        </section>
+           <div className="mt-10 flex items-center justify-center gap-2 text-sm text-[#9fb8e8]">
 
+    <span>◎</span>
+
+    <span>
+      United by a shared vision to
+      <span className="text-[#36a8ff]"> simplify finance </span>
+      and
+      <span className="text-[#36a8ff]"> empower lives.</span>
+    </span>
+
+  </div>
+
+        </section>
+       
         <section className="relative w-full pt-1 pb-20 text-center">
           <div className="mx-auto max-w-7xl px-6 md:px-12">
             <h2 className="text-3xl font-semibold text-white md:text-4xl">Why Choose T-Home</h2>
