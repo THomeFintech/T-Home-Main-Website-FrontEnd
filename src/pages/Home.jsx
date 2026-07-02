@@ -55,19 +55,19 @@ function Home() {
   const testimonials = [
     {
       text: `"Dear Mr. Ravinder, Your assistance in applying for, processing, and disbursing my SVC Indraprastha Apartments housing loan is amazing. You gave the list at once to prevent document submission disturbances."`,
-      img: "/home/Srinivasa Acharya.png",
+      img: "/home/customer-1.png",
       name: "Srinivasa Acharya",
       location: "Hyderabad",
     },
     {
       text: `"Dear Mr. Ravinder, This is regarding my home loan for the flat purchased at svc indraprastha. The process of the house loan, ... you had done an outstanding performance to get the job done. Keep up the good work. Thank you."`,
-      img: "/home/Murugan R.png",
+      img: "/home/customer-3.png",
       name: "Murgan R",
       location: "Hyderabad",
     },
     {
       text: `"I had a wonderful and seamless experience with Ravinder. They have managed the entire documentation and Coordination with Bank without any hassle of multiple visit to the bank for home loan."`,
-      img: "/home/Pankaj Agarwal.png",
+      img: "/home/customer-2.png",
       name: "Pankaj Agarwal",
       location: "Hyderabad",
     },
