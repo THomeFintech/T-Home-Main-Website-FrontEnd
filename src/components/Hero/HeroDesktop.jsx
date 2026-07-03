@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import {
   ShieldCheck,
   Zap,
@@ -10,9 +11,63 @@ import {
 } from "lucide-react";
 import "./HeroDesktop.css";
 
+const circleItems = [
+  {
+    img: "/home/scrolling icons/personal loan.png",
+    text: "Personal Loans",
+  },
+  {
+    img: "/home/scrolling icons/home loan.png",
+    text: "Home Loans",
+  },
+  {
+    img: "/home/scrolling icons/mortgage loans.png",
+    text: "Mortgage Loans",
+  },
+  {
+    img: "/home/scrolling icons/balance transfer.png",
+    text: "Balance Transfer",
+  },
+  {
+    img: "/home/scrolling icons/company registration.png",
+    text: "Company Registration",
+  },
+  {
+    img: "/home/scrolling icons/Food License.png",
+    text: "Food License",
+  },
+  {
+    img: "/home/scrolling icons/gst services.png",
+    text: "GST Services",
+  },
+  {
+    img: "/home/scrolling icons/itr tax filing.png",
+    text: "ITR Tax Filing",
+  },
+  {
+    img: "/home/scrolling icons/loan against property.png",
+    text: "Loan Against Property",
+  },
+  {
+    img: "/home/scrolling icons/MSME.png",
+    text: "MSME",
+  },
+  {
+    img: "/home/scrolling icons/pan adhaar linking.png",
+    text: "PAN Aadhaar Linking",
+  },
+];
+
 export default function HeroDesktop() {
   const navigate = useNavigate();
-
+  const [currentIndex, setCurrentIndex] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % circleItems.length);
+    }, 2500);
+  
+    return () => clearInterval(interval);
+  }, []);
   return (
     <section className="hero-desktop">
 
@@ -32,8 +87,8 @@ export default function HeroDesktop() {
         </h1>
 
         <p className="hero-subtitle">
-          Loans, Tax Solutions, Business Registration,
-          Insurance and many more services from one trusted platform.
+          Loans, Tax Solutions, Business Registration
+          and many more services from one trusted platform.
         </p>
 
         {/* Offer */}
@@ -138,30 +193,33 @@ export default function HeroDesktop() {
 
       <div className="hero-right">
 
-        <div className="map-glow"/>
+  <div className="map-glow" />
 
-        <img
-          src="/home/telangana map.png"
-          alt=""
-          className="hero-map"
-        />
+  <div className="map-section">
 
-        <div className="floating-service">
+    <img
+      src="/home/telangana map.png"
+      alt="Telangana"
+      className="hero-map"
+    />
 
-          <img
-            src="/home/scrolling icons/mortgage loans.png"
-            alt=""
-          />
+    <div className="rotating-circle">
 
-          <p>
-            Mortgage
-            <br/>
-            Loans
-          </p>
+      <img
+        src={circleItems[currentIndex].img}
+        alt={circleItems[currentIndex].text}
+        className="circle-icon"
+      />
 
-        </div>
+      <p className="circle-text">
+        {circleItems[currentIndex].text}
+      </p>
 
-      </div>
+    </div>
+
+  </div>
+
+</div>
 
     </section>
   );
