@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import Hero from "../components/Hero/Hero";
 
 // Safe navigate helper — works with ANY router version or no router at all
 
@@ -148,139 +149,8 @@ function Home() {
 
   return (
     <div style={{ fontFamily: "'Outfit', sans-serif" }}>
-      {/* ── HERO SECTION ── */}
-      <section className="relative flex min-h-[100svh] w-full items-start justify-center overflow-hidden pt-[192px] pb-[120px] text-center md:min-h-[100svh] md:pt-[128px] md:pb-[120px] bg-[#081a49]">
-        <img
-          src="/home/bg image.png"
-          alt="background"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_37%,#2a55c4_0%,#16367f_40%,#081a49_68%,#050d2a_100%)]"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,12,38,0.78)_0%,rgba(4,18,58,0.88)_46%,rgba(2,8,28,0.94)_100%)] md:hidden"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(163,205,255,0.22)_0%,rgba(123,181,255,0.12)_38%,rgba(123,181,255,0)_72%)]"></div>
-        <div className="absolute inset-0 bg-[#020b24]/35 md:hidden"></div>
-        <div
-          className="absolute inset-0 opacity-34"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 12% 22%, rgba(186,220,255,0.5) 0 2px, transparent 3px), radial-gradient(circle at 26% 36%, rgba(149,196,255,0.38) 0 1.6px, transparent 2.8px), radial-gradient(circle at 67% 18%, rgba(186,220,255,0.45) 0 1.8px, transparent 3px), radial-gradient(circle at 84% 30%, rgba(149,196,255,0.34) 0 1.6px, transparent 2.8px), radial-gradient(circle at 76% 72%, rgba(186,220,255,0.4) 0 2px, transparent 3.2px), radial-gradient(circle at 18% 76%, rgba(149,196,255,0.34) 0 1.8px, transparent 3px)",
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.05] mix-blend-screen"
-          style={{
-            backgroundImage:
-              "repeating-radial-gradient(circle at center, rgba(255,255,255,0.45) 0 0.6px, transparent 0.6px 2px)",
-          }}
-        />
-
-        <div className="absolute left-8 top-1/2 z-20 hidden -translate-y-1/2 md:block">
-          <img
-            src="/home/logo.png"
-            alt="T-Home logo"
-            className="h-32 w-32 object-contain drop-shadow-[0_10px_36px_rgba(0,0,0,0.38)]"
-          />
-        </div>
-
-          <img
-  src="/home/telangana map.png"
-  alt="map"
-  className="absolute left-1/2 top-[28%] z-10 hidden w-[430px] -translate-x-1/2 opacity-65 brightness-95 saturate-105 contrast-100 md:block md:top-[8%] md:left-[30%] md:w-[610px] md:translate-x-0"
-  style={{
-    filter: `
-      drop-shadow(0 0 2px rgba(120, 201, 255, 0.87))
-      drop-shadow(0 0 6px rgba(124, 189, 250, 0.88))
-      drop-shadow(0 0 12px rgba(60,140,255,0.22))
-      drop-shadow(0 0 22px rgba(45,110,255,0.12))
-    `,
-  }}
-/>
-
-        <div className="relative z-10 max-w-4xl px-6 -mt-8">
-          <div className="mx-auto mt-24 md:mt-[10px] mb-2 inline-flex items-center gap-3 rounded-full border border-[#4b9dff]/30 bg-black/65 px-4 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-            <span className="rounded-full bg-[#4ea3ff] px-2 py-[3px] text-[10px] font-bold uppercase tracking-wide text-black">
-              NEW
-            </span>
-            <span className="text-sm font-medium text-[#6fb7ff]">
-              Latest integration just arrived
-            </span>
-          </div>
-
-          <h1 className="text-4xl leading-tight font-semibold text-white mb-2 drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] sm:text-5xl md:text-[3.2rem]" style={{fontFamily: "'Outfit', sans-serif"}}>
-            Get Your Home Loan{' '}
-            <span className="sm:whitespace-nowrap bg-gradient-to-b from-[#e4f0ff] via-[#9ac6ff] to-[#66abff] bg-clip-text text-transparent">
-              Approved Faster
-            </span>
-          </h1>
-
-          <div className="relative z-40 mb-2 flex justify-center md:hidden">
-            <img
-              src="/home/telangana map.png"
-              alt="map"
-              className="w-[255px] max-w-[78vw] object-contain opacity-95"
-              style={{
-                filter:
-                  "drop-shadow(0 0 3px rgba(123, 198, 255, 0.95)) drop-shadow(0 0 8px rgba(84, 172, 255, 0.86)) drop-shadow(0 0 16px rgba(56, 146, 255, 0.56))",
-              }}
-            />
-          </div>
-
-          <p className="mx-auto mt-5 max-w-[640px] leading-8 text-[#dfeeff] drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]">
-            Low interest rates, quick approvals, and zero hidden charges. Apply online in just 5 minutes.
-          </p>
-
-          <div className="mt-4 flex items-center justify-center gap-3 sm:gap-6">
-  <button
-    onClick={() => navigate("/home-loans")}
-    className="whitespace-nowrap rounded-full bg-gradient-to-r from-[#3e8fee] to-[#5aa5ff] px-5 py-2.5 text-sm sm:px-10 sm:py-3 sm:text-base font-semibold text-[#08162f] shadow-[0_12px_34px_rgba(46,113,218,0.45)] transition duration-300 hover:scale-[1.01] hover:shadow-[0_14px_44px_rgba(55,128,232,0.55)] text-white"
-  >
-    Apply Now
-  </button>
-  <button
-    onClick={() => navigate("/emi-calculator")}
-    className="whitespace-nowrap rounded-full border border-white/50 bg-[rgba(6,12,34,0.25)] px-5 py-2.5 text-sm sm:px-10 sm:py-3 sm:text-base font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md transition hover:bg-[rgba(12,20,50,0.6)]"
-  >
-    Calculate EMI
-  </button>
-</div>
-
-          <div className="relative mx-auto mt-8 flex h-[270px] w-full max-w-[330px] items-center justify-center md:hidden">
-            <div className="absolute bottom-0 flex h-[268px] w-[268px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
-              <div className="flex h-[66px] w-[66px] items-center justify-center overflow-hidden rounded-full border border-white/55 bg-[linear-gradient(160deg,rgba(255,255,255,0.46)_0%,rgba(220,236,255,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-xl">
-                <img
-                  src={circleItems[currentIndex].img}
-                  alt="loan"
-                  className="h-[48px] w-[48px] object-contain brightness-125 contrast-125 drop-shadow-[0_4px_14px_rgba(170,215,255,0.4)] transition-all duration-700 ease-in-out"
-                />
-              </div>
-              <p className="mt-4 max-w-[220px] px-4 text-center text-[19px] font-semibold leading-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
-                {circleItems[currentIndex].text}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* GLASS RINGS (desktop only) */}
-        <div className="pointer-events-none absolute inset-0 hidden items-end justify-center md:flex">
-          <div className="absolute bottom-[-300px] h-[760px] w-[760px] rounded-full bg-[radial-gradient(circle,rgba(50,105,220,0.5)_0%,rgba(32,77,181,0.42)_44%,rgba(15,49,132,0.3)_70%,rgba(8,28,84,0.18)_88%,rgba(6,18,52,0)_100%)] animate-pulseSlow md:bottom-[-180px] md:h-[760px] md:w-[760px]" />
-          <div className="absolute bottom-[-250px] h-[620px] w-[620px] rounded-full bg-[radial-gradient(circle,rgba(52,110,216,0.48)_0%,rgba(28,79,184,0.44)_44%,rgba(13,53,154,0.36)_72%,rgba(7,27,87,0.24)_90%,rgba(6,18,46,0)_100%)] animate-pulseSlow delay-150 md:bottom-[-140px] md:h-[620px] md:w-[620px]" />
-          <div className="absolute bottom-[-190px] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle,rgba(84,143,232,0.32)_0%,rgba(56,113,210,0.3)_26%,rgba(33,89,188,0.3)_56%,rgba(16,58,162,0.25)_78%,rgba(7,21,62,0)_100%)] backdrop-blur-[1.5px] animate-pulseSlow delay-300 md:bottom-[-100px] md:h-[500px] md:w-[500px]" />
-
-          <div className="absolute bottom-[-20px] md:bottom-[-20px] z-20 flex h-[200px] w-[200px] animate-mainFloat flex-col items-center justify-center rounded-full bg-[linear-gradient(160deg,rgba(255,255,255,0.4)_0%,rgba(224,238,255,0.24)_44%,rgba(186,214,255,0.18)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_0_46px_rgba(169,208,255,0.34),0_18px_42px_rgba(7,20,58,0.32)] backdrop-blur-2xl">
-            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border border-white/55 bg-[linear-gradient(160deg,rgba(255,255,255,0.46)_0%,rgba(220,236,255,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-xl">
-              <img
-                src={circleItems[currentIndex].img}
-                alt="loan"
-                className="h-10 w-10 object-contain brightness-125 contrast-125 drop-shadow-[0_4px_14px_rgba(170,215,255,0.4)] transition-all duration-700 ease-in-out"
-              />
-            </div>
-            <p className="mt-3 text-lg font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
-              {circleItems[currentIndex].text}
-            </p>
-          </div>
-        </div>
-      </section>
-
+      {/* here i have deleted */}
+      <Hero />
       {/* ── RECOGNITION SECTION ── */}
       <section
         className="relative w-full overflow-hidden py-[100px]"
