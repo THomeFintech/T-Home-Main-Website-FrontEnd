@@ -39,7 +39,9 @@ export default function HeroMobile() {
 
       <p className="mobile-subtitle">
 
-        Loans, Tax Solutions, Business Registration and many more services from one trusted platform.
+        Loans, Tax Solutions, Business Registration,
+
+        Insurance and many more services from one trusted platform.
 
       </p>
 
