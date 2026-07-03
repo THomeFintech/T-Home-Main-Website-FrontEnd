@@ -58,6 +58,7 @@ import BalanceTransferContact from "./pages/BalanceTransferContact";
 import Emi from "./pages/Emi";
 import ContactForm from "./components/ContactForm";
 import ComingSoon from "./pages/ComingSoon";
+import NotFound from "./pages/NotFound";
 
 import ITRFiling from "./pages/ITRFiling";
 import CompanyRegistration from "./pages/CompanyRegistration";
@@ -237,15 +238,7 @@ function App() {
             <Route path="balance-transfer" element={<BalanceTransfer />} />
                        <Route path="balance-transfer-contact" element={<BalanceTransferContact />} />
             
-            {/* 404 */}
-            <Route
-              path="*"
-              element={
-                <h1 className="p-10 text-center text-2xl">
-                  404 - Page Not Found
-                </h1>
-              }
-            />
+            <Route path="*" element={<NotFound />} />
           </Route>
 
            {/* AUTH ROUTES */}
