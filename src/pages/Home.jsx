@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Hero from "../components/Hero/Hero";
-
+import SEO from "../components/SEO";
 // Safe navigate helper — works with ANY router version or no router at all
 
 import { useNavigate } from "react-router-dom";
@@ -149,6 +149,11 @@ function Home() {
 
   return (
     <div style={{ fontFamily: "'Outfit', sans-serif" }}>
+      <SEO
+        title="T-Home Fintech | Loans, Financial Services & Business Registration"
+        description="T-Home Fintech provides home loans, personal loans, business loans, MSME financing, and business registration services with fast approvals and expert guidance."
+        path="/"
+    />
       {/* here i have deleted */}
       <Hero />
       {/* ── RECOGNITION SECTION ── */}
