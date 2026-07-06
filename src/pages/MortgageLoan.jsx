@@ -7,6 +7,7 @@ import FaqAccordion from "../components/FaqAccordion";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
 import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
 
 export default function MortgageLoan() {
   const navigate = useNavigate();  
@@ -265,7 +266,28 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
           </div>
         </div>
       </div>
-
+      <RelatedServices
+  services={[
+    {
+      title: "Home Loan",
+      path: "/home-loan",
+      description:
+        "Find affordable home loan options with competitive interest rates.",
+    },
+    {
+      title: "Loan Against Property",
+      path: "/loan-against-property",
+      description:
+        "Leverage your property's value to meet financial needs.",
+    },
+    {
+      title: "Personal Loan",
+      path: "/personal-loan",
+      description:
+        "Get quick personal loans with flexible repayment options.",
+    },
+  ]}
+/>
     </div>
   );
 }

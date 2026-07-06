@@ -7,6 +7,7 @@ import FaqAccordion from "../components/FaqAccordion";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
 import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
 
 export default function LoanAgainstProperty() {
    const navigate = useNavigate(); // ✅ CORRECT PLACE
@@ -244,7 +245,28 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
           </div>
         </div>
       </div>
-
+      <RelatedServices
+  services={[
+    {
+      title: "Mortgage Loan",
+      path: "/mortgage-loan",
+      description:
+        "Explore mortgage loan solutions tailored to your requirements.",
+    },
+    {
+      title: "Home Loan",
+      path: "/home-loan",
+      description:
+        "Purchase your dream home with affordable financing options.",
+    },
+    {
+      title: "Balance Transfer",
+      path: "/balance-transfer",
+      description:
+        "Transfer your existing loan to enjoy lower interest rates.",
+    },
+  ]}
+/>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import BalanceTransferImg from "../assets/Balance transfer.png";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
 import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
 
 export default function BalanceTransfer() {
   const navigate = useNavigate();
@@ -250,6 +251,28 @@ export default function BalanceTransfer() {
           </div>
         </div>
       </div>
+      <RelatedServices
+  services={[
+    {
+      title: "Home Loan",
+      path: "/home-loan",
+      description:
+        "Compare home loan options with attractive interest rates.",
+    },
+    {
+      title: "Mortgage Loan",
+      path: "/mortgage-loan",
+      description:
+        "Secure financing using residential or commercial property.",
+    },
+    {
+      title: "Personal Loan",
+      path: "/personal-loan",
+      description:
+        "Meet your financial goals with hassle-free personal loans.",
+    },
+  ]}
+/>
     </div>
   );
 }

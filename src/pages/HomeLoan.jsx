@@ -7,6 +7,7 @@ import homeLoanImg from "../assets/HomeLoan.png";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
 import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
 
 export default function HomeLoan() {
   const navigate = useNavigate();
@@ -283,6 +284,28 @@ export default function HomeLoan() {
           </div>
         </div>
       </div>
+  <RelatedServices
+  services={[
+    {
+      title: "Mortgage Loan",
+      path: "/mortgage-loan",
+      description:
+        "Explore mortgage financing solutions."
+    },
+    {
+      title: "Loan Against Property",
+      path: "/loan-against-property",
+      description:
+        "Unlock the value of your property."
+    },
+    {
+      title: "Balance Transfer",
+      path: "/balance-transfer",
+      description:
+        "Transfer your existing loan for better rates."
+    }
+  ]}
+/>
     </div>
   );
 }
