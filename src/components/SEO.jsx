@@ -7,10 +7,11 @@ export default function SEO({
   title,
   description,
   path = "",
-  image = "/logo.png",
+  image = "/home/logo.png",
   robots = "index, follow",
   keywords = "",
   type = "website",
+  structuredData = [],
 }) {
   const canonicalUrl = `${BASE_URL}${path}`;
 
@@ -30,7 +31,9 @@ export default function SEO({
 
       <meta name="description" content={description} />
 
-      {keywords && <meta name="keywords" content={keywords} />}
+      {keywords && (
+        <meta name="keywords" content={keywords} />
+      )}
 
       <meta name="robots" content={robots} />
 
@@ -49,6 +52,16 @@ export default function SEO({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={imageUrl} />
+
+      {/* Structured Data */}
+      {structuredData.map((schema, index) => (
+        <script
+            key={index}
+            type="application/ld+json"
+        >
+            {JSON.stringify(schema)}
+        </script>
+        ))}
     </Helmet>
   );
 }
