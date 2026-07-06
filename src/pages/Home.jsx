@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Hero from "../components/Hero/Hero";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
+import createBreadcrumbSchema from "../schema/breadcrumbSchema";
 // Safe navigate helper — works with ANY router version or no router at all
 
 import { useNavigate } from "react-router-dom";
@@ -147,6 +148,7 @@ function Home() {
 
     return () => clearInterval(interval);
   }, [testimonials.length]);
+
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -163,6 +165,14 @@ function Home() {
       "https://www.linkedin.com/company/thomefintech",
     ],
   };
+  const breadcrumbSchema = createBreadcrumbSchema([
+    {
+      name: "Home",
+      url: "https://thomefintech.com/",
+    },
+  ]);
+
+
   return (
     <div style={{ fontFamily: "'Outfit', sans-serif" }}>
       <SEO
@@ -173,6 +183,7 @@ function Home() {
   structuredData={[
     organizationSchema,
     financialServiceSchema,
+    breadcrumbSchema
   ]}
 />
       {/* here i have deleted */}
