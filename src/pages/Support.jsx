@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import SEO from "../components/SEO";
 
 // ── FAQ Item ──
 function FAQItem({ question }) {
@@ -16,6 +17,12 @@ function FAQItem({ question }) {
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between px-5 py-4 text-sm text-white/80 hover:text-white hover:bg-white/[0.08] transition text-left"
       >
+        <SEO
+  title="Support"
+  description="Need help? Contact the T-Home Fintech support team for assistance with loans, registrations, account queries, and application tracking."
+  path="/support"
+  keywords="support, customer service, help center, loan support"
+/>
         <span>{question}</span>
         <svg
           width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
