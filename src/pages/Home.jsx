@@ -150,10 +150,11 @@ function Home() {
   return (
     <div style={{ fontFamily: "'Outfit', sans-serif" }}>
       <SEO
-        title="T-Home Fintech | Loans, Financial Services & Business Registration"
-        description="T-Home Fintech provides home loans, personal loans, business loans, MSME financing, and business registration services with fast approvals and expert guidance."
-        path="/"
-    />
+  title="Home"
+  description="T-Home Fintech provides Home Loans, Personal Loans, Mortgage Loans, Loan Against Property, Business Loans, MSME Registration, GST Registration, Food License, ITR Filing and financial consulting services across India."
+  path="/"
+  keywords="home loans, personal loans, mortgage loans, loan against property, business loans, MSME registration, GST registration, food license, ITR filing, T-Home Fintech"
+/>
       {/* here i have deleted */}
       <Hero />
       {/* ── RECOGNITION SECTION ── */}
