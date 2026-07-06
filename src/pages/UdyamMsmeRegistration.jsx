@@ -7,6 +7,7 @@ import FaqAccordion from "../components/FaqAccordion";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
 import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
 
 
 export default function UdyamMSMERegistration() {
@@ -225,7 +226,28 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
           </div>
         </div>
       </div>
-
+      <RelatedServices
+  services={[
+    {
+      title: "Company Registration",
+      path: "/company-registration",
+      description:
+        "Complete your business registration before applying for MSME benefits.",
+    },
+    {
+      title: "GST Registration",
+      path: "/gst-registration",
+      description:
+        "Fulfill GST requirements for your registered business.",
+    },
+    {
+      title: "Food License",
+      path: "/food-license",
+      description:
+        "Apply for an FSSAI license if your business operates in the food sector.",
+    },
+  ]}
+/>
     </div>
   );
 }

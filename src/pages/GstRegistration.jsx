@@ -7,6 +7,7 @@ import gstRegistrationImg from "../assets/GST Services.png";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
 import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
 
 
 export default function GSTRegistration() {
@@ -128,6 +129,28 @@ export default function GSTRegistration() {
           </div>
         </div>
       </div>
+      <RelatedServices
+  services={[
+    {
+      title: "Company Registration",
+      path: "/company-registration",
+      description:
+        "Start your business with the right legal entity registration.",
+    },
+    {
+      title: "ITR Filing",
+      path: "/itr-filing",
+      description:
+        "Stay compliant by filing your income tax returns accurately.",
+    },
+    {
+      title: "Udyam Registration",
+      path: "/udyam-registration",
+      description:
+        "Register your MSME to access government incentives.",
+    },
+  ]}
+/>
     </div>
   );
 }

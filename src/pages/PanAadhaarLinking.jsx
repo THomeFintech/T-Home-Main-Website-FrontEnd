@@ -7,6 +7,7 @@ import FaqAccordion from "../components/FaqAccordion";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
 import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
 
 export default function PanAadhaarLinking() {
   const navigate = useNavigate();
@@ -227,7 +228,28 @@ export default function PanAadhaarLinking() {
           </div>
         </div>
       </div>
-
+      <RelatedServices
+  services={[
+    {
+      title: "ITR Filing",
+      path: "/itr-filing",
+      description:
+        "Ensure smooth tax filing by keeping your PAN and Aadhaar linked.",
+    },
+    {
+      title: "GST Registration",
+      path: "/gst-registration",
+      description:
+        "Stay compliant with GST regulations for your business.",
+    },
+    {
+      title: "Company Registration",
+      path: "/company-registration",
+      description:
+        "Begin your entrepreneurial journey with a legally registered business.",
+    },
+  ]}
+/>
     </div>
   );
 }

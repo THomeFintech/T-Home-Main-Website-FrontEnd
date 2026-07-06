@@ -7,6 +7,7 @@ import itrFilingImg from "../assets/ITR Filing.png";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
 import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
 
 
 export default function ITRFiling() {
@@ -146,6 +147,28 @@ export default function ITRFiling() {
           </div>
         </div>
       </div>
+      <RelatedServices
+  services={[
+    {
+      title: "GST Registration",
+      path: "/gst-registration",
+      description:
+        "Manage GST compliance alongside your income tax obligations.",
+    },
+    {
+      title: "PAN Aadhaar Linking",
+      path: "/pan-aadhaar-linking",
+      description:
+        "Link your PAN and Aadhaar to avoid tax-related issues.",
+    },
+    {
+      title: "Company Registration",
+      path: "/company-registration",
+      description:
+        "Set up your business with a legally registered entity.",
+    },
+  ]}
+/>
     </div>
   );
 }

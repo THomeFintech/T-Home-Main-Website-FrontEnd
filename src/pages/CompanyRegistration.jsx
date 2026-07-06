@@ -7,6 +7,7 @@ import companyRegImg from "../assets/Company Registration.png";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
 import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
 
 export default function CompanyRegistration() {
   const navigate = useNavigate();
@@ -231,7 +232,28 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
           </div>
         </div>
       </div>
-
+      <RelatedServices
+  services={[
+    {
+      title: "GST Registration",
+      path: "/gst-registration",
+      description:
+        "Register for GST to ensure legal tax compliance for your business.",
+    },
+    {
+      title: "Udyam Registration",
+      path: "/udyam-registration",
+      description:
+        "Get MSME recognition and unlock government benefits.",
+    },
+    {
+      title: "Food License",
+      path: "/food-license",
+      description:
+        "Obtain an FSSAI license to legally operate your food business.",
+    },
+  ]}
+/>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import foodLicenseImg from "../assets/Food License.png";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
 import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
 
 
 export default function FoodLicense() {
@@ -232,7 +233,28 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
           </div>
         </div>
       </div>
-
+      <RelatedServices
+  services={[
+    {
+      title: "Company Registration",
+      path: "/company-registration",
+      description:
+        "Register your business before applying for operational licenses.",
+    },
+    {
+      title: "GST Registration",
+      path: "/gst-registration",
+      description:
+        "Complete your GST registration for tax compliance.",
+    },
+    {
+      title: "ITR Filing",
+      path: "/itr-filing",
+      description:
+        "Maintain tax compliance with timely income tax filing.",
+    },
+  ]}
+/>
     </div>
   );
 }
