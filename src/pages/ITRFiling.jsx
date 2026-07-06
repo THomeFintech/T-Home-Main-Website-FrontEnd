@@ -4,8 +4,19 @@ import EligibilityCriteria from "../components/EligibilityCriteria";
 import FaqAccordion from "../components/FaqAccordion";
 import itrFilingImg from "../assets/ITR Filing.png";
 
+import SEO from "../components/SEO";
+import financialServiceSchema from "../schema/financialServiceSchema";
+import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+
+
 export default function ITRFiling() {
   const navigate = useNavigate();
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    { name: "Home", url: "https://thomefintech.com/" },
+    { name: "Income Tax Return Filing", url: "https://thomefintech.com/itr-filing" },
+  ]);
+
   const [isDesktop, setIsDesktop] = React.useState(false);
 
   React.useEffect(() => {
@@ -25,6 +36,16 @@ export default function ITRFiling() {
 
   return (
     <div className="min-h-screen pt-24 text-slate-100 font-sans" style={{ background: "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)" }}>
+      <SEO
+  title="Income Tax Return Filing"
+  description="File your Income Tax Return online with T-Home Fintech. Accurate tax filing, expert guidance, and timely submission for individuals and businesses."
+  path="/itr-filing"
+  keywords="ITR filing, income tax return, online tax filing, tax consultant, income tax"
+  structuredData={[
+    financialServiceSchema,
+    breadcrumbSchema,
+  ]}
+/>
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
         <div>
           <p className="text-blue-400 text-xs mb-3 tracking-wide">TAX SERVICES</p>

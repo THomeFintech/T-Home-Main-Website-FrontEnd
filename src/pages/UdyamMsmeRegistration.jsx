@@ -3,13 +3,35 @@ import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import UdyamImage from "../assets/UDYAM.png";
 import FaqAccordion from "../components/FaqAccordion";
+
+import SEO from "../components/SEO";
+import financialServiceSchema from "../schema/financialServiceSchema";
+import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+
+
 export default function UdyamMSMERegistration() {
   const navigate = useNavigate();
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    { name: "Home", url: "https://thomefintech.com/" },
+    { name: "Udyam MSME Registration", url: "https://thomefintech.com/udyam-msme-registration" },
+  ]);
+
   return (
     <div
       className="min-h-screen pt-24 text-slate-100 font-sans"
       style={{ background: "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)" }}
     >
+      <SEO
+  title="Udyam MSME Registration"
+  description="Register your business under Udyam MSME with T-Home Fintech. Unlock government benefits, subsidies, and business growth opportunities."
+  path="/udyam-msme-registration"
+  keywords="Udyam registration, MSME registration, MSME certificate, small business registration"
+  structuredData={[
+    financialServiceSchema,
+    breadcrumbSchema,
+  ]}
+/>
 
       {/* HERO */}
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">

@@ -3,13 +3,34 @@ import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import panAadhaarLinkImg from "../assets/PAN & Aadhaar Linking.png";
 import FaqAccordion from "../components/FaqAccordion";
+
+import SEO from "../components/SEO";
+import financialServiceSchema from "../schema/financialServiceSchema";
+import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+
 export default function PanAadhaarLinking() {
   const navigate = useNavigate();
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    { name: "Home", url: "https://thomefintech.com/" },
+    { name: "PAN Aadhaar Linking", url: "https://thomefintech.com/pan-aadhaar-linking" },
+  ]);
+
   return (
     <div
       className="min-h-screen pt-24 text-slate-100 font-sans"
       style={{ background: "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)" }}
     >
+      <SEO
+  title="PAN Aadhaar Linking"
+  description="Link your PAN with Aadhaar quickly and securely with expert assistance from T-Home Fintech to stay compliant with government regulations."
+  path="/pan-aadhaar-linking"
+  keywords="PAN Aadhaar linking, link PAN to Aadhaar, Aadhaar PAN update"
+  structuredData={[
+    financialServiceSchema,
+    breadcrumbSchema,
+  ]}
+/>
 
       {/* HERO */}
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
