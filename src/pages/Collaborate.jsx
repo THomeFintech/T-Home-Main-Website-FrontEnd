@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
+import SEO from "../components/SEO";
 // Icons using SVG inline
 const BuildingIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -88,6 +89,12 @@ const CollaboratePage = () => {
         background: "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
+      <SEO
+  title="Collaborate With Us"
+  description="Partner with T-Home Fintech to expand your business through financial services, lending solutions, and strategic collaborations."
+  path="/collaborate"
+  keywords="partnership, collaborate, business partnership, fintech collaboration"
+/>
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-[440px] w-[980px] -translate-x-1/2 rounded-full bg-[#2f73ff]/20 blur-[140px]" />
         <div className="absolute bottom-[18%] left-[8%] h-[300px] w-[300px] rounded-full bg-[#4f84ff]/14 blur-[120px]" />

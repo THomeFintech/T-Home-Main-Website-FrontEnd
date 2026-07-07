@@ -4,8 +4,24 @@ import EligibilityCriteria from "../components/EligibilityCriteria";
 import FaqAccordion from "../components/FaqAccordion";
 import homeLoanImg from "../assets/HomeLoan.png";
 
+import SEO from "../components/SEO";
+import financialServiceSchema from "../schema/financialServiceSchema";
+import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
+
 export default function HomeLoan() {
   const navigate = useNavigate();
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    {
+      name: "Home",
+      url: "https://thomefintech.com/",
+    },
+    {
+      name: "Home Loans",
+      url: "https://thomefintech.com/home-loan",
+    },
+  ]);
 
   return (
     <div
@@ -15,6 +31,16 @@ export default function HomeLoan() {
           "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
+      <SEO
+  title="Home Loans"
+  description="Apply for affordable Home Loans with T-Home Fintech. Get competitive interest rates, quick approvals, flexible repayment options, and expert guidance throughout your home buying journey."
+  path="/home-loan"
+  keywords="home loan, housing loan, affordable home loan, mortgage, home finance, T-Home Fintech"
+  structuredData={[
+    financialServiceSchema,
+    breadcrumbSchema,
+  ]}
+/>
       {/* HERO */}
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
         <div>
@@ -258,6 +284,28 @@ export default function HomeLoan() {
           </div>
         </div>
       </div>
+  <RelatedServices
+  services={[
+    {
+      title: "Mortgage Loan",
+      path: "/mortgage-loan",
+      description:
+        "Explore mortgage financing solutions."
+    },
+    {
+      title: "Loan Against Property",
+      path: "/loan-against-property",
+      description:
+        "Unlock the value of your property."
+    },
+    {
+      title: "Balance Transfer",
+      path: "/balance-transfer",
+      description:
+        "Transfer your existing loan for better rates."
+    }
+  ]}
+/>
     </div>
   );
 }
