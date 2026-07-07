@@ -97,7 +97,7 @@ function Layout() {
         <Outlet />
       </main>
       <Footer />
-      <ChatbotWidget />
+      {/* <ChatbotWidget /> */}
     </div>
   );
 }
