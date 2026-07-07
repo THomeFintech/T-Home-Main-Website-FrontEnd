@@ -3,13 +3,42 @@ import React from "react";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import loanAgainstPropertyImg from "../assets/LoanAgainst.png";
 import FaqAccordion from "../components/FaqAccordion";
+
+import SEO from "../components/SEO";
+import financialServiceSchema from "../schema/financialServiceSchema";
+import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
+
 export default function LoanAgainstProperty() {
    const navigate = useNavigate(); // ✅ CORRECT PLACE
+
+   const breadcrumbSchema = createBreadcrumbSchema([
+    {
+      name: "Home",
+      url: "https://thomefintech.com/",
+    },
+    {
+      name: "Loan Against Property",
+      url: "https://thomefintech.com/loan-against-property",
+    },
+  ]);
+
   return (
     <div
       className="min-h-screen pt-24 text-slate-100 font-sans"
       style={{ background: "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)" }}
     >
+
+<SEO
+  title="Loan Against Property"
+  description="Unlock the value of your property with Loan Against Property services from T-Home Fintech. Enjoy attractive interest rates, higher loan amounts, and flexible repayment options."
+  path="/loan-against-property"
+  keywords="loan against property, LAP, property loan, secured loan, mortgage loan, T-Home Fintech"
+  structuredData={[
+    financialServiceSchema,
+    breadcrumbSchema,
+  ]}
+/>
 
       {/* HERO */}
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
@@ -216,7 +245,28 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
           </div>
         </div>
       </div>
-
+      <RelatedServices
+  services={[
+    {
+      title: "Mortgage Loan",
+      path: "/mortgage-loan",
+      description:
+        "Explore mortgage loan solutions tailored to your requirements.",
+    },
+    {
+      title: "Home Loan",
+      path: "/home-loan",
+      description:
+        "Purchase your dream home with affordable financing options.",
+    },
+    {
+      title: "Balance Transfer",
+      path: "/balance-transfer",
+      description:
+        "Transfer your existing loan to enjoy lower interest rates.",
+    },
+  ]}
+/>
     </div>
   );
 }

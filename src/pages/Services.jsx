@@ -4,6 +4,7 @@ import {
   Home, User, Building2, KeyRound, ArrowRightLeft,
   FileText, Briefcase, ShieldCheck, Search, ChevronRight, ChevronDown
 } from "lucide-react";
+import SEO from "../components/SEO";
 
 const data = [
   {
@@ -82,6 +83,12 @@ export default function Services() {
           "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
+      <SEO
+  title="Our Services"
+  description="Explore T-Home Fintech's complete range of services including Home Loans, Personal Loans, Mortgage Loans, Loan Against Property, GST Registration, MSME Registration, Food License, and ITR Filing."
+  path="/services"
+  keywords="financial services, home loans, personal loans, mortgage loans, GST registration, MSME registration, food license, ITR filing"
+/>
       
       {/* 1. HERO GLOW (Matched to ContactPage Hero) */}
       <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none" />

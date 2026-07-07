@@ -6,8 +6,24 @@ import FaqAccordion from "../components/FaqAccordion";
 import { ArrowRightLeft } from "lucide-react";
 import BalanceTransferImg from "../assets/Balance transfer.png";
 
+import SEO from "../components/SEO";
+import financialServiceSchema from "../schema/financialServiceSchema";
+import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
+
 export default function BalanceTransfer() {
   const navigate = useNavigate();
+  const breadcrumbSchema = createBreadcrumbSchema([
+    {
+      name: "Home",
+      url: "https://thomefintech.com/",
+    },
+    {
+      name: "Balance Transfer",
+      url: "https://thomefintech.com/balance-transfer",
+    },
+  ]);
+
   const [isDesktop, setIsDesktop] = React.useState(false);
 
   React.useEffect(() => {
@@ -28,6 +44,18 @@ export default function BalanceTransfer() {
           "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
+
+<SEO
+  title="Home Loan Balance Transfer"
+  description="Transfer your existing Home Loan to T-Home Fintech and benefit from lower interest rates, reduced EMIs, and better repayment flexibility."
+  path="/balance-transfer"
+  keywords="home loan balance transfer, refinance home loan, lower EMI, balance transfer loan"
+  structuredData={[
+    financialServiceSchema,
+    breadcrumbSchema,
+  ]}
+/>
+
       {/* HERO */}
       <div className="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-2 gap-8 items-center">
         <div>
@@ -223,6 +251,28 @@ export default function BalanceTransfer() {
           </div>
         </div>
       </div>
+      <RelatedServices
+  services={[
+    {
+      title: "Home Loan",
+      path: "/home-loan",
+      description:
+        "Compare home loan options with attractive interest rates.",
+    },
+    {
+      title: "Mortgage Loan",
+      path: "/mortgage-loan",
+      description:
+        "Secure financing using residential or commercial property.",
+    },
+    {
+      title: "Personal Loan",
+      path: "/personal-loan",
+      description:
+        "Meet your financial goals with hassle-free personal loans.",
+    },
+  ]}
+/>
     </div>
   );
 }

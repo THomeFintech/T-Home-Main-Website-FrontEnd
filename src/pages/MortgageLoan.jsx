@@ -3,13 +3,42 @@ import React from "react";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import mortgageLoanImg from "../assets/Mortgage Loans.png";
 import FaqAccordion from "../components/FaqAccordion";
+
+import SEO from "../components/SEO";
+import financialServiceSchema from "../schema/financialServiceSchema";
+import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
+
 export default function MortgageLoan() {
   const navigate = useNavigate();  
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    {
+      name: "Home",
+      url: "https://thomefintech.com/",
+    },
+    {
+      name: "Mortgage Loans",
+      url: "https://thomefintech.com/mortgage-loan",
+    },
+  ]);
+
   return (
     <div
       className="min-h-screen pt-24 text-slate-100 font-sans"
       style={{ background: "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)" }}
     >
+
+<SEO
+  title="Mortgage Loans"
+  description="Secure Mortgage Loans from T-Home Fintech with competitive interest rates, flexible repayment options, and fast approvals for your financial needs."
+  path="/mortgage-loan"
+  keywords="mortgage loan, property mortgage loan, loan against mortgage, mortgage finance, T-Home Fintech"
+  structuredData={[
+    financialServiceSchema,
+    breadcrumbSchema,
+  ]}
+/>
 
       {/* HERO */}
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
@@ -237,7 +266,28 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
           </div>
         </div>
       </div>
-
+      <RelatedServices
+  services={[
+    {
+      title: "Home Loan",
+      path: "/home-loan",
+      description:
+        "Find affordable home loan options with competitive interest rates.",
+    },
+    {
+      title: "Loan Against Property",
+      path: "/loan-against-property",
+      description:
+        "Leverage your property's value to meet financial needs.",
+    },
+    {
+      title: "Personal Loan",
+      path: "/personal-loan",
+      description:
+        "Get quick personal loans with flexible repayment options.",
+    },
+  ]}
+/>
     </div>
   );
 }

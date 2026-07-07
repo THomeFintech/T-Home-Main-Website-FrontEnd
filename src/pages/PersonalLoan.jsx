@@ -3,8 +3,25 @@ import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import personalLoanImg from "../assets/personal loan.png";
 import FaqAccordion from "../components/FaqAccordion";
+
+import SEO from "../components/SEO";
+import financialServiceSchema from "../schema/financialServiceSchema";
+import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
+
 export default function PersonalLoan() {
   const navigate = useNavigate();
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    {
+      name: "Home",
+      url: "https://thomefintech.com/",
+    },
+    {
+      name: "Personal Loans",
+      url: "https://thomefintech.com/personal-loan",
+    },
+  ]);
 
   return (
     <div
@@ -14,6 +31,18 @@ export default function PersonalLoan() {
           "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
+
+<SEO
+  title="Personal Loans"
+  description="Get instant Personal Loans with competitive interest rates, minimal documentation, quick approvals, and flexible repayment options from T-Home Fintech."
+  path="/personal-loan"
+  keywords="personal loan, instant personal loan, quick loan, unsecured loan, salary loan, T-Home Fintech"
+  structuredData={[
+    financialServiceSchema,
+    breadcrumbSchema,
+  ]}
+/>
+
       {/* HERO */}
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
         <div>
@@ -218,6 +247,28 @@ export default function PersonalLoan() {
           </div>
         </div>
       </div>
+      <RelatedServices
+  services={[
+    {
+      title: "Home Loan",
+      path: "/home-loan",
+      description:
+        "Own your dream home with customized home loan solutions.",
+    },
+    {
+      title: "Mortgage Loan",
+      path: "/mortgage-loan",
+      description:
+        "Access funds by mortgaging your residential or commercial property.",
+    },
+    {
+      title: "Contact Us",
+      path: "/contact",
+      description:
+        "Speak with our financial experts to choose the right loan.",
+    },
+  ]}
+/>
     </div>
   );
 }

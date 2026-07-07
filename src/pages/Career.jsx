@@ -17,6 +17,7 @@ import {
   BookOpen,
   Clock3,
 } from "lucide-react";
+import SEO from "../components/SEO";
 
 const cultureCards = [
   {
@@ -183,6 +184,12 @@ export default function CareerSection() {
           "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
+      <SEO
+  title="Careers"
+  description="Join the T-Home Fintech team. Explore career opportunities and become part of a growing fintech company focused on innovation and customer success."
+  path="/career"
+  keywords="careers, jobs, fintech jobs, work at T-Home Fintech"
+/>
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-[440px] w-[980px] -translate-x-1/2 rounded-full bg-[#2f73ff]/20 blur-[140px]" />
         <div className="absolute bottom-[18%] left-[8%] h-[300px] w-[300px] rounded-full bg-[#4f84ff]/14 blur-[120px]" />

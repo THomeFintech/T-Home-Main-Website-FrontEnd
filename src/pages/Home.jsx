@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Hero from "../components/Hero/Hero";
-
+import SEO from "../components/SEO";
+import financialServiceSchema from "../schema/financialServiceSchema";
+import createBreadcrumbSchema from "../schema/breadcrumbSchema";
 // Safe navigate helper — works with ANY router version or no router at all
 
 import { useNavigate } from "react-router-dom";
@@ -147,8 +149,43 @@ function Home() {
     return () => clearInterval(interval);
   }, [testimonials.length]);
 
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "T-Home Fintech",
+    url: "https://thomefintech.com",
+    logo: "https://thomefintech.com/home/logo.png",
+    description:
+      "T-Home Fintech provides home loans, personal loans, mortgage loans, business registration services and financial solutions across India.",
+    email: "info@thome.co.in",
+    telephone: "+91 70321 83836",
+    sameAs: [
+      "https://www.instagram.com/thomefintech/",
+      "https://www.facebook.com/people/T-Home/61571992704350/",
+      "https://www.linkedin.com/company/thomefintech",
+    ],
+  };
+  const breadcrumbSchema = createBreadcrumbSchema([
+    {
+      name: "Home",
+      url: "https://thomefintech.com/",
+    },
+  ]);
+
+
   return (
     <div style={{ fontFamily: "'Outfit', sans-serif" }}>
+      <SEO
+  title="Home"
+  description="T-Home Fintech provides Home Loans, Personal Loans, Mortgage Loans, Loan Against Property, Business Loans, MSME Registration, GST Registration, Food License, ITR Filing and financial consulting services across India."
+  path="/"
+  keywords="home loans, personal loans, mortgage loans, loan against property, business loans, MSME registration, GST registration, food license, ITR filing, T-Home Fintech"
+  structuredData={[
+    organizationSchema,
+    financialServiceSchema,
+    breadcrumbSchema
+  ]}
+/>
       {/* here i have deleted */}
       <Hero />
       {/* ── RECOGNITION SECTION ── */}

@@ -4,13 +4,35 @@ import EligibilityCriteria from "../components/EligibilityCriteria";
 import FaqAccordion from "../components/FaqAccordion";
 import foodLicenseImg from "../assets/Food License.png";
 
+import SEO from "../components/SEO";
+import financialServiceSchema from "../schema/financialServiceSchema";
+import createBreadcrumbSchema from "../schema/breadcrumbSchema";
+import RelatedServices from "../components/RelatedServices";
+
+
 export default function FoodLicense() {
   const navigate = useNavigate();
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    { name: "Home", url: "https://thomefintech.com/" },
+    { name: "FSSAI Food License", url: "https://thomefintech.com/food-license" },
+  ]);
+
   return (
     <div
       className="min-h-screen pt-24 text-slate-100 font-sans"
       style={{ background: "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)" }}
     >
+      <SEO
+  title="FSSAI Food License"
+  description="Apply for your FSSAI Food License online with T-Home Fintech. Fast processing, expert support, and complete compliance for food businesses."
+  path="/food-license"
+  keywords="FSSAI registration, food license, FSSAI license online, food business license"
+  structuredData={[
+    financialServiceSchema,
+    breadcrumbSchema,
+  ]}
+/>
 
       {/* HERO */}
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
@@ -211,7 +233,28 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
           </div>
         </div>
       </div>
-
+      <RelatedServices
+  services={[
+    {
+      title: "Company Registration",
+      path: "/company-registration",
+      description:
+        "Register your business before applying for operational licenses.",
+    },
+    {
+      title: "GST Registration",
+      path: "/gst-registration",
+      description:
+        "Complete your GST registration for tax compliance.",
+    },
+    {
+      title: "ITR Filing",
+      path: "/itr-filing",
+      description:
+        "Maintain tax compliance with timely income tax filing.",
+    },
+  ]}
+/>
     </div>
   );
 }
