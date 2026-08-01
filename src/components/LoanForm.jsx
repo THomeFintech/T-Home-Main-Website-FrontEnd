@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { FileText, ChevronDown, Zap } from "lucide-react";
 
 const API_BASE = import.meta.env.VITE_API_URL;
+const LPS_API_BASE = import.meta.env.VITE_LPS_API_URL;
 
 function numberToWords(num) {
   const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
@@ -34,19 +35,29 @@ export default function LoanForm({
   service,
 }) {
   const mapServiceToLoanType = (service) => {
-    if (!service) return "";
+  if (!service) return "";
 
-    const clean = service.trim().toLowerCase();
+  const clean = service.trim().toLowerCase();
 
-    const map = {
-      "home loan": "Home",
-      "personal loan": "Personal",
-      "business loan": "Business",
-      "loan against property": "LAP",
-    };
+  const map = {
+    "personal": "Personal",
+    "personal loan": "Personal",
 
-    return map[clean] || "";
+    "home": "Home",
+    "home loan": "Home",
+
+    "lap": "LAP",
+    "loan against property": "LAP",
+
+    "mortgage": "Mortgage",
+    "mortgage loan": "Mortgage",
+
+    "business": "Business",
+    "business loan": "Business",
   };
+
+  return map[clean] || "";
+};
 
   const passedLoanType = mapServiceToLoanType(service);
  console.log("Raw service:", JSON.stringify(service));
@@ -131,6 +142,7 @@ console.log("passedLoanType =", passedLoanType);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+     
 
     const processedData = {
       age: Number(formData.age) || 0,
@@ -154,7 +166,7 @@ console.log("passedLoanType =", passedLoanType);
 
     try {
       // 1) Predict eligibility
-      const predictRes = await fetch(`${API_BASE}/predict`, {
+      const predictRes = await fetch(`${LPS_API_BASE}/predict`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -199,7 +211,7 @@ console.log("passedLoanType =", passedLoanType);
         age: Number(formData.age) || 0,
         employment_type: formData.employmentType,
         income: Number(formData.annualIncome) || 0,
-        loan_type: formData.loanType.toLowerCase(),
+        loan_type: formData.loanType,
         loan_amount: Number(formData.loanAmount) || 0,
         tenure: Number(formData.tenure) || 1,
         cibil: Number(formData.cibilScore) || 300,
@@ -207,7 +219,7 @@ console.log("passedLoanType =", passedLoanType);
 
       console.log("Sending to /applications/loan/create:", loanCreatePayload);
 
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("access_token");
 
       if (!token) {
         alert("Please login first");

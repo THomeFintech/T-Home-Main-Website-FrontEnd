@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 
 function authHeaders() {
-  const token = localStorage.getItem("token");
-
+  const token = localStorage.getItem("access_token");
   if (!token) {
     return null;
   }
@@ -24,7 +23,7 @@ async function apiFetch(url) {
 
   const r = await fetch(url, { headers });
   if (r.status === 401) {
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
     localStorage.removeItem("isLoggedIn");
@@ -189,24 +188,30 @@ export default function Dashboard() {
       .finally(() => setLoadingLoans(false));
 
     // documents
-    apiFetch(`${API}/dashboard/documents`)
-      .then(d => setDocuments(d ?? []))
-      .finally(() => setLoadingDocs(false));
+     // documents
+apiFetch(`${API}/dashboard/documents`)
+  .then(d => setDocuments(d.documents ?? []))
+  .finally(() => setLoadingDocs(false));
 
     // progress
-    apiFetch(`${API}/dashboard/progress`)
-      .then(d => setProgress(d))
-      .finally(() => setLoadingProgress(false));
+    // progress
+apiFetch(`${API}/dashboard/progress`)
+  .then(d => {
+    const latest = d?.data?.[0] ?? null;
+    setProgress(latest);
+  })
+  .finally(() => setLoadingProgress(false));
 
     // notifications
     apiFetch(`${API}/dashboard/notifications`)
-      .then(d => setNotifications(d ?? []))
+      .then(d => setNotifications(d.notifications ?? []))
       .finally(() => setLoadingNotifs(false));
 
     // advisor — 404 returns null from apiFetch
-    apiFetch(`${API}/dashboard/advisor`)
-      .then(d => setAdvisor(d))
-      .finally(() => setLoadingAdvisor(false));
+     apiFetch(`${API}/dashboard/advisor`)
+  .then(d => setAdvisor(d?.advisor ?? null))
+  .catch(() => setAdvisor(null))
+  .finally(() => setLoadingAdvisor(false));
   }, []);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
@@ -401,10 +406,21 @@ export default function Dashboard() {
 
                     <div className="grid grid-cols-3 gap-4 mb-4">
                       {[
-                        { label: "Loan Amount",      value: fmtINR(loan.loan_amount)       },
-                        { label: "EMI Amount",        value: fmtINR(loan.monthly_emi)       },
-                        { label: "Remaining Balance", value: fmtINR(loan.remaining_balance) },
-                      ].map(item => (
+  {
+    label: "Loan Amount",
+    value: fmtINR(loan.loan_amount),
+  },
+  {
+    label: "EMI Amount",
+    value: fmtINR(loan.monthly_emi),
+  },
+  {
+    label: "Remaining Balance",
+    value: fmtINR(
+      loan.repayment?.remaining_balance ?? 0
+    ),
+  },
+].map(item => (
                         <div key={item.label}>
                           <p className="text-[11px] text-white/30 mb-1">{item.label}</p>
                           <p className="text-sm font-medium text-white">{item.value}</p>
@@ -507,21 +523,31 @@ export default function Dashboard() {
             ) : notifications.length === 0 ? (
               <p className="text-sm text-white/40 text-center py-4">No updates yet</p>
             ) : (
-              <div className="flex flex-col gap-4">
-                {notifications.map((n) => (
-                  <div
-                    key={n.id}
-                    className={`flex items-start gap-3 cursor-pointer ${!n.is_read ? "opacity-100" : "opacity-60"}`}
-                    onClick={() => !n.is_read && markRead(n.id)}
-                  >
-                    <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${NOTIF_DOT[n.color] ?? "bg-blue-500"}`} />
-                    <div>
-                      <p className="text-sm text-white/70">{n.message}</p>
-                      <p className="text-xs text-white/30 mt-0.5">{fmtDate(n.created_at)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+               <div className="flex flex-col gap-4">
+  {(Array.isArray(notifications) ? notifications : []).map((item) => (
+    <div
+      key={item.id}
+      className={`flex items-start gap-3 cursor-pointer ${
+        !item.is_read ? "opacity-100" : "opacity-60"
+      }`}
+      onClick={() => !item.is_read && markRead(item.id)}
+    >
+      <div
+        className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
+          NOTIF_DOT[item.color] ?? "bg-blue-500"
+        }`}
+      />
+
+      <div>
+        <p className="text-sm text-white/70">{item.message}</p>
+
+        <p className="text-xs text-white/30 mt-0.5">
+          {fmtDate(item.created_at)}
+        </p>
+      </div>
+    </div>
+  ))}
+</div>
             )}
           </div>
 

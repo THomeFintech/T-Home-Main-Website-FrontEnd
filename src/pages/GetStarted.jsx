@@ -83,7 +83,7 @@ function LandingPage({ onGetStarted, onSignIn }) {
 /* ══════════════════════════════════════
    LOGIN PAGE
 ══════════════════════════════════════ */
-function LoginPage({ onBack, onLogin }) {
+function LoginPage({ onBack, onLogin, onForgotPassword }) {
   const [showPw, setShowPw] = useState(false);
   const [email, setEmail] = useState("");
 
@@ -123,8 +123,15 @@ function LoginPage({ onBack, onLogin }) {
         </div>
 
         <div style={{ width: "100%", textAlign: "right", marginBottom: "1rem" }}>
-          <button className="txt-link" style={{ fontSize: "0.84rem" }}>Forgot password?</button>
-        </div>
+  <button
+    className="txt-link"
+    style={{ fontSize: "0.84rem" }}
+    onClick={onForgotPassword}
+    type="button"
+  >
+    Forgot Password?
+  </button>
+</div>
 
         <button className="btn-continue" onClick={() => onLogin(email || "user@gmail.com")}>
           Login
@@ -137,9 +144,13 @@ function LoginPage({ onBack, onLogin }) {
         </div>
 
         <div className="social-row">
-          {/* <button className="soc-btn"><IconFacebook /></button> */}
-          <GoogleAuthButton className="soc-btn" iconOnly={true} />
-          {/* <button className="soc-btn"><IconApple /></button> */}
+          
+            <GoogleAuthButton
+    className="soc-btn"
+    iconOnly={true}
+  />
+
+          
         </div>
 
         <p className="already-row">
@@ -222,7 +233,7 @@ function SignupPage({ onLogin, onContinue }) {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.detail || "Registration failed");
+        alert(data.message || "Registration failed");
         return;
       }
 
@@ -348,10 +359,11 @@ function SignupPage({ onLogin, onContinue }) {
         </div>
 
         <div className="social-row">
-          {/* <button className="soc-btn"><IconFacebook /></button>          */}
-          <GoogleAuthButton className="soc-btn" iconOnly={true} />
-          {/* <button className="soc-btn"><IconApple /></button> */}
-        </div>
+  <GoogleAuthButton
+    className="soc-btn"
+    iconOnly={true}
+  />
+</div>
 
         <p className="already-row">
           Already have an account?{" "}
@@ -421,10 +433,12 @@ function OtpPage({ email, onVerify, onBack }) {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.detail || "OTP verification failed");
+        alert(data.message || "OTP verification failed");
         return;
       }
-
+      if (data.token) {
+  localStorage.setItem("access_token", data.token);
+}
       onVerify(); // navigate to home / dashboard
     } catch (error) {
       console.error("OTP verify error:", error);
@@ -508,25 +522,27 @@ export default function GetStarted({ initialPage = "landing" }) {
     if (initialPage === "login") {
       return (
         <LoginPage
-          onBack={() => setPage("landing")}
-          onLogin={() => {
-            localStorage.setItem("isLoggedIn", "true");
-            window.dispatchEvent(new Event("authChange"));
-            navigate("/");
-          }}
-        />
+  onBack={() => setPage("landing")}
+  onForgotPassword={() => navigate("/forgot-password")}
+  onLogin={() => {
+    localStorage.setItem("isLoggedIn", "true");
+    window.dispatchEvent(new Event("authChange"));
+    navigate("/");
+  }}
+/>
       );
     }
-    return (
-      <LoginPage
-        onBack={() => setPage("landing")}
-        onLogin={() => {
-          sessionStorage.setItem("isLoggedIn", "true");
-          window.dispatchEvent(new Event("authChange"));
-          navigate("/");
-        }}
-      />
-    );
+     return (
+  <LoginPage
+    onBack={() => setPage("landing")}
+    onForgotPassword={() => navigate("/forgot-password")}
+    onLogin={() => {
+      sessionStorage.setItem("isLoggedIn", "true");
+      window.dispatchEvent(new Event("authChange"));
+      navigate("/");
+    }}
+  />
+);
   }
 
   if (page === "signup") {

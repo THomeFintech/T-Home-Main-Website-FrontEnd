@@ -20,11 +20,11 @@ const IconLockDark = () => (
   </svg>
 );
 
-const IconPhoneDark = () => (
+/*const IconPhoneDark = () => (
   <svg className="login-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.42 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 5.5 5.5l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z" />
   </svg>
-);
+);*/
 
 const IconEyeDark = () => (
   <svg className="login-icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -64,10 +64,10 @@ const IconApple = () => (
 
 export default function Login() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState("email");
+ // const [mode, setMode] = useState("email");
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
+  //const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -82,7 +82,7 @@ export default function Login() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(
+    /*  body: JSON.stringify(
   mode === "email"
     ? {
         email: email,
@@ -92,41 +92,28 @@ export default function Login() {
         phone: mobile,
         password: password
       }
-      )
+      )*/
+      body: JSON.stringify({
+  email,
+  password,
+})
     });
+     
 
     const data = await response.json();
 
-console.log("Login API Response:", data);
-console.log("Access Token:", data.access_token);
-
     if (!response.ok) {
-      alert(data.detail || "Login failed");
-      setLoading(false);
-      return;
-    }
+  alert(data.message || "Login failed");
+  setLoading(false);
+  return;
+}
 
     // Save token
-    localStorage.setItem("token", data.access_token);
-    console.log(
-  "Stored Token:",
-  localStorage.getItem("token")
-);
-
-    localStorage.setItem("isLoggedIn", "true");
-    window.dispatchEvent(new Event("authChange"));
+    localStorage.setItem("access_token", data.token);
 
     // Fetch correct user
-    const profileResponse = await fetch(`${BASE_URL}/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${data.access_token}`
-      }
-    });
-
-    const userData = await profileResponse.json();
-
-    // Save correct user
-    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("isLoggedIn", "true");
 
     // Notify app
     window.dispatchEvent(new Event("authChange"));
@@ -160,7 +147,7 @@ console.log("Access Token:", data.access_token);
               <h1 className="login-brand">T-HOME</h1>
             </div>
             <h2 className="login-title">Welcome Back!</h2>
-            <div className="login-mode-switch" role="tablist" aria-label="Login mode">
+           {/* <div className="login-mode-switch" role="tablist" aria-label="Login mode">
               <button
                 type="button"
                 className={`login-mode-btn ${mode === "email" ? "login-mode-btn-active" : ""}`}
@@ -177,10 +164,10 @@ console.log("Access Token:", data.access_token);
               >
                 Mobile Number
               </button>
-            </div>
+            </div>*/}
             <form onSubmit={handleLogin} className="login-form">
               <div className="login-field">
-                <label className="login-label">{mode === "email" ? "Email" : "Mobile Number"}</label>
+               {/*} <label className="login-label">{mode === "email" ? "Email" : "Mobile Number"}</label>
                 <div className="login-input-wrapper">
                   {mode === "email" ? <IconMailDark /> : <IconPhoneDark />}
                   <input
@@ -200,13 +187,32 @@ console.log("Access Token:", data.access_token);
                     pattern={mode === "email" ? undefined : "[0-9]{10}"}
                     required
                   />
-                </div>
+                </div>*/}
+                <label className="login-label">Email</label>
+
+<div className="login-input-wrapper">
+  <IconMailDark />
+  <input
+    type="email"
+    className="login-input"
+    placeholder="hello@example.com"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    required
+  />
+</div>
               </div>
               <div className="login-field">
-                <div className="login-field-top">
-                  <label className="login-label">Password</label>
-                  <button type="button" className="login-forgot-link">Forgot Password?</button>
-                </div>
+                 <div className="login-field-top">
+  <label className="login-label">Password</label>
+  <button
+    type="button"
+    className="login-forgot-link"
+    onClick={() => navigate("/forgot-password")}
+  >
+    Forgot Password?
+  </button>
+</div>
                 <div className="login-input-wrapper">
                   <IconLockDark />
                   <input
@@ -236,15 +242,12 @@ console.log("Access Token:", data.access_token);
               <span className="login-divider-text">OR SIGNING WITH</span>
               <span className="login-divider-line"></span>
             </div>
-            <div className="login-social">
-              {/* <button type="button" className="login-social-btn" title="Login with Facebook">
-                <IconFacebook />
-              </button> */}
-              <GoogleAuthButton className="login-social-btn" iconOnly={true} />
-              {/* <button type="button" className="login-social-btn" title="Login with Apple">
-                <IconApple />
-              </button> */}
-            </div>
+            <div className="social-row">
+  <GoogleAuthButton
+    className="soc-btn"
+    iconOnly={true}
+  />
+</div>
             <p className="login-signup-text">
               Don&apos;t have an account? <Link to="/get-started" className="login-signup-link">Register</Link>
             </p>

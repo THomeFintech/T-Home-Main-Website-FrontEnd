@@ -114,61 +114,32 @@ export default function BalanceTransferCoApplicantDetails() {
       setLoading(true);
       setError("");
 
-      const applicationReference = localStorage.getItem("btApplicationReference");
-
-      if (!applicationReference) {
-        setError("Application reference missing. Please go back.");
-        return;
-      }
-
       if (!validateCoApplicant()) return;
 
-      const coApplicantDetails = addCoApplicant
-        ? {
-            ...formData,
-            pan_number: formData.pan_number.toUpperCase(),
-            monthly_income: Number(formData.monthly_income),
-          }
-        : null;
-
-      const payload = {
-        current_step: 4,
-        has_co_applicant: addCoApplicant,
-        co_applicant_details: coApplicantDetails,
-      };
-
-      const response = await fetch(
-  `${BT_API_BASE}/application/${applicationReference}`,
-  {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  }
+const existingDraft = JSON.parse(
+  localStorage.getItem("btApplicationDraft") || "{}"
 );
 
-if (!response.ok) {
-  const errorData = await response.json();
-  throw new Error(
-    errorData?.detail || "Failed to save co-applicant details"
-  );
-}
+localStorage.setItem(
+  "btApplicationDraft",
+  JSON.stringify({
+    ...existingDraft,
 
-const data = await response.json();
-      const existingDraft = JSON.parse(localStorage.getItem("btApplicationDraft") || "{}");
+    current_step: 4,
 
-      localStorage.setItem(
-        "btApplicationDraft",
-        JSON.stringify({
-          ...existingDraft,
-          ...payload,
-          application_reference:
-  data?.application_reference || applicationReference,
-        })
-      );
+    has_co_applicant: addCoApplicant,
 
-      navigate("/balance-transfer/application-portal/review-submit");
+    co_applicant_details: addCoApplicant
+      ? {
+          ...formData,
+          pan_number: formData.pan_number.toUpperCase(),
+          monthly_income: Number(formData.monthly_income),
+        }
+      : null,
+  })
+);
+
+navigate("/balance-transfer/application-portal/review-submit");
     } catch (err) {
       const detail = err?.response?.data?.detail;
 
