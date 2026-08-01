@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useState } from "react";
 const comparisons = [
   { bank: "HDFC BANK", bankColor: "bg-[#0f5fbf]" },
   { bank: "AXIS BANK", bankColor: "bg-[#8d1f50]", suggested: true },
@@ -9,7 +9,58 @@ const comparisons = [
 
 export default function BalanceTransferComparison() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
+const handleSelectBank = async (bank) => {
+  try {
+    setLoading(true);
+
+    const loanId = localStorage.getItem("loan_id");
+
+    const report = JSON.parse(
+      localStorage.getItem("btFinalReport") || "{}"
+    );
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/applications/select-bank`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          loan_id: loanId,
+          bank_name: bank.bank,
+          interest_rate:
+            report.interest_rate ||
+            report.recommended_interest_rate ||
+            8.5,
+          monthly_emi:
+            report.monthly_emi ||
+            report.recommended_monthly_emi ||
+            30000,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.detail || "Failed to select bank");
+    }
+
+    localStorage.setItem(
+      "bank_selection_id",
+      data.bank_selection_id
+    );
+
+    navigate("/balance-transfer/application-portal");
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <section className="relative min-h-screen overflow-hidden px-4 pb-10 pt-24 sm:px-6 md:pt-28 lg:px-8 lg:pt-32">
       <div className="pointer-events-none absolute inset-0 bg-[#020918]" />
@@ -88,10 +139,10 @@ export default function BalanceTransferComparison() {
           </button>
           <button
             type="button"
-            onClick={() => navigate("/balance-transfer/detailed-table")}
+            onClick={() => handleSelectBank(item)}
             className="rounded-[8px] bg-[#1f6bff] px-7 py-2.5 text-[18px] font-medium text-white transition hover:bg-[#1c5ee0]"
           >
-            View Detailed Table
+            {loading ? "Selecting..." : "Choose Bank"}
           </button>
         </div>
       </div>

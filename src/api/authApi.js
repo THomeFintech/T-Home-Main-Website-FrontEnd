@@ -9,37 +9,39 @@ const authApi = {
   login: async (payload) => {
     const response = await apiClient.post("/auth/login", payload);
 
-   if (response.data?.access_token) {
-  localStorage.setItem("token", response.data.access_token);
-  localStorage.setItem("isLoggedIn", "true");
-}
+    if (response.data?.token) {
+      localStorage.setItem("access_token", response.data.token);
+    }
 
     return response.data;
   },
 
- logout: () => {
-  // Authentication
-  localStorage.removeItem("token");
-  localStorage.removeItem("refresh_token");
-  localStorage.removeItem("user");
-  localStorage.removeItem("isLoggedIn");
+  verifyOtp: async (payload) => {
+    const response = await apiClient.post("/auth/verify-otp", payload);
 
-  // Loan & Balance Transfer
-  localStorage.removeItem("loanReference");
-  localStorage.removeItem("applicationReference");
-  localStorage.removeItem("loanData");
-  localStorage.removeItem("report");
-  localStorage.removeItem("recommendations");
-  localStorage.removeItem("selectedJob");
+    if (response.data?.token) {
+      localStorage.setItem("access_token", response.data.token);
+    }
 
-  // Notify app
-  window.dispatchEvent(new Event("authChange"));
+    return response.data;
+  },
 
-  // Optional: Redirect to login
-  window.location.replace("/login");
-},
+  resendOtp: async (payload) => {
+    const response = await apiClient.post("/auth/resend-otp", payload);
+    return response.data;
+  },
+
+  getMe: async () => {
+    const response = await apiClient.get("/auth/me");
+    return response.data;
+  },
+
+  logout: () => {
+    localStorage.removeItem("access_token");
+  },
+
   getToken: () => {
-    return localStorage.getItem("token");
+    return localStorage.getItem("access_token");
   },
 };
 

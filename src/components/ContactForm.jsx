@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { ShieldCheck, ChevronDown } from "lucide-react";
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 export default function ContactForm({
   contactData = {},
   setContactData = () => {},
@@ -117,14 +119,58 @@ export default function ContactForm({
     return !Object.values(newErrors).some((error) => error);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
-    setContactData(formData);
-localStorage.setItem("contact_data", JSON.stringify(formData));
-onNext(formData.service);
+    try {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/applications/contact/create`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        service_type: formData.service,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to create contact");
+  }
+
+  const data = await response.json();
+
+  console.log("Contact API Response:", data);
+
+  localStorage.setItem("contact_data", JSON.stringify(formData));
+
+  if (data.contact_group_id) {
+    localStorage.setItem("contact_group_id", data.contact_group_id);
+  }
+
+  if (data.contact_id) {
+    localStorage.setItem("contact_id", data.contact_id);
+  }
+
+  if (data.loan_id) {
+    localStorage.setItem("loan_id", data.loan_id);
+  }
+
+  setContactData(formData);
+
+  onNext(formData.service);
+
+} catch (err) {
+  console.error(err);
+  alert(err.message);
+}
   };
 
   return (

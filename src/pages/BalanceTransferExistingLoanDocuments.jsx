@@ -40,56 +40,33 @@ export default function BalanceTransferExistingLoanDocuments() {
       setLoading(true);
       setError("");
 
-      const applicationRef = localStorage.getItem("btApplicationReference");
+       const requiredKeys = requiredDocs.map((doc) => doc.key);
+const missingKeys = requiredKeys.filter((key) => !filesMap[key]);
 
-      if (!applicationRef) {
-        setError("Application reference missing. Go back.");
-        return;
-      }
+if (missingKeys.length > 0) {
+  setError("Please upload all required documents");
+  return;
+}
 
-      const requiredKeys = requiredDocs.map((doc) => doc.key);
-      const missingKeys = requiredKeys.filter((key) => !filesMap[key]);
+// Save filenames
+const uploadedMap = {};
+requiredKeys.forEach((key) => {
+  uploadedMap[key] = filesMap[key].name;
+});
 
-      if (missingKeys.length > 0) {
-        setError("Please upload all required documents");
-        return;
-      }
+localStorage.setItem(
+  "btExistingLoanDocumentsDraft",
+  JSON.stringify({
+    uploaded: uploadedMap,
+  })
+);
 
-      const files = requiredKeys.map((key) => filesMap[key]);
+// Save File objects for final submission
+window.btExistingLoanFiles = filesMap;
 
-      const formData = new FormData();
+navigate("/balance-transfer/application-portal/co-applicant-details");
 
-      formData.append("document_group", "existingLoanDocuments");
-
-      for (let i = 0; i < requiredKeys.length; i++) {
-        formData.append("document_keys", requiredKeys[i]);
-        formData.append("files", files[i]);
-      }
-
-      const response = await fetch(
-        `${BT_API_BASE}/application/${applicationRef}/documents`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData?.detail || "Failed to upload existing loan documents"
-        );
-      }
-
-      const data = await response.json();
-      console.log("Existing Loan Documents Uploaded:", data);
-
-      // Save uploaded doc names to localStorage so Review page shows correct file count
-      const uploadedMap = {};
-      requiredKeys.forEach((key) => { uploadedMap[key] = filesMap[key].name; });
-      localStorage.setItem("btExistingLoanDocumentsDraft", JSON.stringify({ uploaded: uploadedMap }));
-
-      navigate("/balance-transfer/application-portal/co-applicant-details");
+      
     } catch (err) {
       const detail = err?.response?.data?.detail;
 

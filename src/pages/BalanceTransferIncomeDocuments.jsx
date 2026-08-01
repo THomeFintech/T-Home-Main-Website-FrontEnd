@@ -50,53 +50,29 @@ export default function BalanceTransferIncomeDocuments() {
       setLoading(true);
       setError("");
 
-      const applicationReference = localStorage.getItem("btApplicationReference");
+       // Make sure all required documents are selected
+const requiredKeys = requiredDocs.map((doc) => doc.key);
+const missingKeys = requiredKeys.filter((key) => !filesMap[key]);
 
-      if (!applicationReference) {
-        setError("Application reference not found. Please go back and try again.");
-        return;
-      }
-
-      const requiredKeys = requiredDocs.map((doc) => doc.key);
-      const missingKeys = requiredKeys.filter((key) => !filesMap[key]);
-
-      if (missingKeys.length > 0) {
-        setError("Please upload all required documents.");
-        return;
-      }
-
-      const files = requiredKeys.map((key) => filesMap[key]);
-
-     const uploadForm = new FormData();
-
-uploadForm.append("document_group", "incomeDocuments");
-
-for (let i = 0; i < requiredKeys.length; i++) {
-  uploadForm.append("document_keys", requiredKeys[i]);
-  uploadForm.append("files", files[i]);
+if (missingKeys.length > 0) {
+  setError("Please upload all required documents.");
+  return;
 }
 
-const response = await fetch(
-  `${BT_API_BASE}/application/${applicationReference}/documents`,
-  {
-    method: "POST",
-    body: uploadForm,
-  }
+// Store files locally for final submission
+localStorage.setItem(
+  "btIncomeDocumentsDraft",
+  JSON.stringify({
+    employmentType,
+    uploaded: requiredKeys.reduce((acc, key) => {
+      acc[key] = filesMap[key]?.name || "";
+      return acc;
+    }, {}),
+  })
 );
 
-
-if (!response.ok) {
-  const errorData = await response.json();
-  console.log("Upload Error:", errorData);
-  throw new Error("Failed to upload documents");
-}
-
-const data = await response.json();
-console.log("Upload Success:", data);
-
-const uploadedMap = {};
-requiredKeys.forEach((key) => { uploadedMap[key] = filesMap[key].name; });
-localStorage.setItem("btIncomeDocumentsDraft", JSON.stringify({ uploaded: uploadedMap }));
+// Store actual File objects in memory-friendly way for this session
+window.btIncomeFiles = filesMap;
 
 navigate("/balance-transfer/application-portal/existing-loan-documents");
     } catch (err) {

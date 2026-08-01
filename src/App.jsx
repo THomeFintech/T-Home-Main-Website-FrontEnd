@@ -14,6 +14,9 @@ import BalanceTransferExistingLoanDocuments from "./pages/BalanceTransferExistin
 import BalanceTransferCoApplicantDetails from "./pages/BalanceTransferCoApplicantDetails";
 import BalanceTransferReviewSubmit from "./pages/BalanceTransferReviewSubmit";
 import BalanceTransferSubmitted from "./pages/BalanceTransferSubmitted";
+import ForgotPassword from "./pages/ForgotPassword";
+import VerifyResetOtp from "./pages/VerifyResetOtp";
+import ResetPassword from "./pages/ResetPassword";
 import { BrowserRouter, Routes, Route, Outlet, useParams, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -244,7 +247,10 @@ function App() {
            {/* AUTH ROUTES */}
           <Route path="get-started" element={<GetStarted />} />
           <Route path="/login" element={<Login />} />
-
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+           
+<Route path="/verify-reset-otp" element={<VerifyResetOtp />} />
+<Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>

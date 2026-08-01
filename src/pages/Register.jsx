@@ -42,11 +42,11 @@ export default function Register() {
     }
 
     const payload = {
-      name: form.fullName,
-      email: form.email,
-      phone: form.phone,
-      password: form.password,
-    };
+  name: form.fullName.trim(),
+  email: form.email.trim().toLowerCase(),
+  phone: form.phone.trim(),
+  password: form.password,
+};
 
     setLoading(true);
     try {
@@ -61,12 +61,19 @@ export default function Register() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.detail || "Registration failed");
+        alert(
+  data.message ||
+  data.detail ||
+  "Registration failed"
+);
         return;
       }
 
       // Save email for OTP page
-      localStorage.setItem("user_email", form.email);
+      localStorage.setItem(
+  "user_email",
+  form.email.trim().toLowerCase()
+);
       navigate("/verify-otp");
 
     } catch (error) {
@@ -129,9 +136,19 @@ export default function Register() {
               <label className="block text-white/80 mb-1">Phone Number</label>
               <input
                 type="tel"
+                maxLength={10}
+pattern="[0-9]{10}"
+inputMode="numeric"
                 name="phone"
                 value={form.phone}
-                onChange={handleChange}
+                onChange={(e) =>
+  setForm((prev) => ({
+    ...prev,
+    phone: e.target.value
+      .replace(/\D/g, "")
+      .slice(0, 10),
+  }))
+}
                 placeholder="Enter your mobile number"
                 className="w-full rounded-lg px-4 py-2 bg-[#162a4d] text-white border border-[#2a3d6a] focus:outline-none focus:ring-2 focus:ring-[#1f4de2]"
                 required

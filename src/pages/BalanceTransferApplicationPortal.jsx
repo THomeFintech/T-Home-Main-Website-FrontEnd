@@ -188,16 +188,7 @@ export default function BalanceTransferApplicationPortal() {
         current_step: activeStep,
       };
 
-      const response = await fetch(
-  `${BT_API_BASE}/application/draft`,
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  }
-);
+       
 
 const data = await response.json();
      const applicationReference =
@@ -238,13 +229,7 @@ const data = await response.json();
     uploadForm.append("files", file);
   });
 
-  const uploadResponse = await fetch(
-    `${BT_API_BASE}/application/${applicationReference}/documents`,
-    {
-      method: "POST",
-      body: uploadForm,
-    }
-  );
+   
   console.log("Upload status:", uploadResponse.status);
 
 const responseData = await uploadResponse.json();
