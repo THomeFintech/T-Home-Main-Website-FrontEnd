@@ -85,8 +85,47 @@ function LandingPage({ onGetStarted, onSignIn }) {
 ══════════════════════════════════════ */
 function LoginPage({ onBack, onLogin, onForgotPassword }) {
   const [showPw, setShowPw] = useState(false);
-  const [email, setEmail] = useState("");
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [loading, setLoading] = useState(false);
 
+const handleLogin = async () => {
+  setLoading(true);
+
+  try {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message || "Login failed");
+      setLoading(false);
+      return;
+    }
+
+    localStorage.setItem("access_token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("isLoggedIn", "true");
+
+    window.dispatchEvent(new Event("authChange"));
+
+    onLogin();
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
+
+  setLoading(false);
+};
   return (
     <CardShell compactLogo>
       <div className="signup-wrap">
@@ -111,11 +150,13 @@ function LoginPage({ onBack, onLogin, onForgotPassword }) {
           <label className="field-lbl">Password</label>
           <div className="input-box input-glass">
             <IconLock />
-            <input
-              className="inp inp-glass"
-              type={showPw ? "text" : "password"}
-              placeholder="Enter your password"
-            />
+             <input
+  className="inp inp-glass"
+  type={showPw ? "text" : "password"}
+  placeholder="Enter your password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+/>
             <button className="eye-btn" onClick={() => setShowPw(!showPw)} type="button">
               {showPw ? <IconEyeOff /> : <IconEye />}
             </button>
@@ -133,9 +174,13 @@ function LoginPage({ onBack, onLogin, onForgotPassword }) {
   </button>
 </div>
 
-        <button className="btn-continue" onClick={() => onLogin(email || "user@gmail.com")}>
-          Login
-        </button>
+        <button
+  className="btn-continue"
+  onClick={handleLogin}
+  disabled={loading}
+>
+  {loading ? "Logging in..." : "Login"}
+</button>
 
         <div className="divider">
           <span className="div-line" />
@@ -525,9 +570,8 @@ export default function GetStarted({ initialPage = "landing" }) {
   onBack={() => setPage("landing")}
   onForgotPassword={() => navigate("/forgot-password")}
   onLogin={() => {
-    localStorage.setItem("isLoggedIn", "true");
-    window.dispatchEvent(new Event("authChange"));
-    navigate("/");
+  navigate("/");
+
   }}
 />
       );
@@ -536,11 +580,9 @@ export default function GetStarted({ initialPage = "landing" }) {
   <LoginPage
     onBack={() => setPage("landing")}
     onForgotPassword={() => navigate("/forgot-password")}
-    onLogin={() => {
-      sessionStorage.setItem("isLoggedIn", "true");
-      window.dispatchEvent(new Event("authChange"));
-      navigate("/");
-    }}
+     onLogin={() => {
+  navigate("/");
+}}
   />
 );
   }
