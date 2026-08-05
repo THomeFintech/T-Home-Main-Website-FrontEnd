@@ -421,7 +421,7 @@ export default function Profilepage() {
   phone: ""
 });
 useEffect(() => {
-  const token = localStorage.getItem("access_token");
+  const token = localStorage.getItem("token");
 
   if (!token) return;
 
@@ -474,7 +474,7 @@ setContact({
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       },
       body: JSON.stringify({
         first_name: form.firstName,
@@ -526,7 +526,7 @@ async function handleContactSave() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       },
       body: JSON.stringify({
         email: contactDraft.email,
@@ -570,7 +570,7 @@ async function handleContactSave() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       },
       body: JSON.stringify({
         old_password: pw.current,
