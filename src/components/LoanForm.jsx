@@ -243,6 +243,7 @@ console.log("passedLoanType =", passedLoanType);
 
       const loanCreateData = await loanCreateRes.json();
       console.log("Loan Create Response:", loanCreateData);
+      console.log("Application ID:", loanCreateData.application_id);
 
       if (loanCreateData.loan_id) {
         localStorage.setItem("loan_id", loanCreateData.loan_id);

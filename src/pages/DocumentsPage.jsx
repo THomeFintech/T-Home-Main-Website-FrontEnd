@@ -161,6 +161,7 @@ function UploadModal({ doc, applicationId, onClose, onUploaded }) {
   function handleDrop(e) { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }
 
   async function handleSubmit() {
+    console.log("Upload button clicked");
     if (!file || !applicationId) return;
     setUploading(true);
     setError("");
@@ -172,10 +173,17 @@ function UploadModal({ doc, applicationId, onClose, onUploaded }) {
       fd.append("category",      doc.category);
       // Pass document_id to replace existing doc, or omit to create new
       if (doc.id) fd.append("document_id", doc.id);
-
-      const res = await fetch(`${API}/documents/${applicationId}/upload`, {
+      console.log("Sending request...");
+      console.log("Application ID:", applicationId);
+      console.log("Document Name:", doc.document_name);
+      console.log("File:", file);
+      const token = localStorage.getItem("access_token");
+      const res = await fetch(`${API}/document/${applicationId}/upload`, {
         method: "POST",
-        body:   fd,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: fd,
       });
 
       if (!res.ok) {
@@ -323,13 +331,28 @@ function QuickUploadModal({ applicationId, onClose, onUploaded }) {
   function handleDrop(e) { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }
 
   async function handleSubmit() {
-    if (!file || !docName.trim() || !applicationId) return;
+    console.log("Quick Upload clicked");
+    console.log("applicationId =", applicationId);
+    console.log("docName =", docName);
+    console.log("file =", file);
+
+    if (!file || !docName.trim() || !applicationId) {
+        console.log("Returned because something is missing");
+        return;
+    }
     setUploading(true); setError("");
     try {
       const fd = new FormData();
       fd.append("file",          file);
       fd.append("document_name", docName.trim());
-      const res = await fetch(`${API}/documents/${applicationId}/upload`, { method: "POST", body: fd });
+      const token = localStorage.getItem("access_token");
+      const res = await fetch(`${API}/document/${applicationId}/upload`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: fd,
+      });
       if (!res.ok) { const b = await res.json().catch(() => ({})); throw new Error(b.detail ?? "Upload failed"); }
       const uploaded = await res.json();
       setDone(true);
@@ -439,7 +462,7 @@ function DocRow({ doc, applicationId, onUploadClick, onRefresh }) {
     setMenuOpen(false);
     if (!doc.id || !applicationId) return;
     try {
-      const res = await fetch(`${API}/documents/${applicationId}/${doc.id}/download`);
+      const res = await fetch(`${API}/document/${applicationId}/${doc.id}/download`);
       if (!res.ok) throw new Error("Download failed");
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
@@ -568,7 +591,13 @@ export default function DocumentsPage() {
     if (!applicationId) { setLoading(false); return; }
     setLoading(true); setFetchError(null);
     try {
-      const res = await fetch(`${API}/documents/${applicationId}`);
+      const token = localStorage.getItem("access_token");
+
+      const res = await fetch(`${API}/document/${applicationId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       setGroups(data.groups ?? []);
@@ -584,7 +613,7 @@ export default function DocumentsPage() {
     if (!applicationId) { setVerLoading(false); return; }
     setVerLoading(true);
     try {
-      const res = await fetch(`${API}/documents/${applicationId}/verification-status`);
+      const res = await fetch(`${API}/document/${applicationId}/verification-status`);
       if (!res.ok) throw new Error();
       setVerStatus(await res.json());
     } catch {
