@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-
+import { useNavigate } from "react-router-dom";
 // ── CONFIG ────────────────────────────────────────────────────────────────────
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -470,6 +470,7 @@ function ErrorBanner({ message, onRetry }) {
 
 // ── MAIN PAGE ─────────────────────────────────────────────────────────────────
 export default function TrackApplication({ applicationId: propId }) {
+  const navigate = useNavigate();
   const [applicationId, setApplicationId] = useState(propId || null);
   const [findingApplication, setFindingApplication] = useState(!propId);
   const [findError, setFindError] = useState(null);
@@ -844,13 +845,19 @@ export default function TrackApplication({ applicationId: propId }) {
                 </div>
               </div>
               <div className="flex gap-3">
-                <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-slate-600 text-slate-300 text-xs font-semibold hover:bg-slate-700 transition-colors">
+                  <button
+  onClick={() => navigate("/contact")}
+  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-slate-600 text-slate-300 text-xs font-semibold hover:bg-slate-700 transition-colors"
+>
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                   Chat Now
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors">
+                  <button
+  onClick={() => navigate("/contact")}
+  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
+>
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.948V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
