@@ -72,7 +72,7 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
     // normal OAuth flow — the user only ever sees our custom icon, so the
     // visual is no longer dependent on Google's icon-button rendering.
     return (
-      <div className={className} style={{ position: "relative", width: 44, height: 44 }}>
+      <div className={className} style={{ position: "relative", width: 48, height: 48, overflow: "visible"}}>
         <div
           style={{
             position: "absolute",
