@@ -5,7 +5,7 @@ import "../App.css";
 
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-
+console.log("BASE_URL:", BASE_URL);
 /* ══════════════════════════════════════
    SHARED CARD SHELL
 ══════════════════════════════════════ */
@@ -567,24 +567,25 @@ export default function GetStarted({ initialPage = "landing" }) {
     if (initialPage === "login") {
       return (
         <LoginPage
-  onBack={() => setPage("landing")}
-  onForgotPassword={() => navigate("/forgot-password")}
-  onLogin={() => {
-  navigate("/");
-
-  }}
-/>
+          onBack={() => setPage("landing")}
+          onLogin={() => {
+            localStorage.setItem("isLoggedIn", "true");
+            window.dispatchEvent(new Event("authChange"));
+            navigate("/");
+          }}
+        />
       );
     }
-     return (
-  <LoginPage
-    onBack={() => setPage("landing")}
-    onForgotPassword={() => navigate("/forgot-password")}
-     onLogin={() => {
-  navigate("/");
-}}
-  />
-);
+    return (
+      <LoginPage
+        onBack={() => setPage("landing")}
+        onLogin={() => {
+          sessionStorage.setItem("isLoggedIn", "true");
+          window.dispatchEvent(new Event("authChange"));
+          navigate("/");
+        }}
+      />
+    );
   }
 
   if (page === "signup") {

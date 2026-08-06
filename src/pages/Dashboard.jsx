@@ -183,9 +183,21 @@ export default function Dashboard() {
       .finally(() => setLoadingSummary(false));
 
     // loans
+    // loans
     apiFetch(`${API}/dashboard/loans`)
-      .then(d => setLoans(d ?? []))
-      .finally(() => setLoadingLoans(false));
+    .then(d => {
+    const loans = d ?? [];
+
+    setLoans(loans);
+
+    if (loans.length > 0 && loans[0].application_id) {
+      localStorage.setItem(
+        "application_id",
+        String(loans[0].application_id)
+      );
+    }
+    })
+.finally(() => setLoadingLoans(false));
 
     // documents
      // documents
