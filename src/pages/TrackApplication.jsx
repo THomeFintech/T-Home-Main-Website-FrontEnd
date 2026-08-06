@@ -470,22 +470,83 @@ function ErrorBanner({ message, onRetry }) {
 
 // ── MAIN PAGE ─────────────────────────────────────────────────────────────────
 export default function TrackApplication({ applicationId: propId }) {
-  // ✅ fallback to localStorage if no prop passed
-  const applicationId = propId || Number(localStorage.getItem("application_id"));
-  const { data, loading, error } = useApplicationData(applicationId);
+  const [applicationId, setApplicationId] = useState(propId || null);
+  const [findingApplication, setFindingApplication] = useState(!propId);
+  const [findError, setFindError] = useState(null);
 
-  const details   = data?.details   ?? null;
-  const status    = data?.status    ?? null;
-  const progress  = data?.progress  ?? [];
+  useEffect(() => {
+    if (propId) {
+      setApplicationId(propId);
+      setFindingApplication(false);
+      return;
+    }
+
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      setFindError("Please login to view your applications.");
+      setFindingApplication(false);
+      return;
+    }
+
+    fetch(`${BASE_URL}/applications/my-applications`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(async (res) => {
+        const json = await res.json();
+
+        if (!res.ok) {
+          throw new Error(
+            json.detail ||
+            json.message ||
+            `HTTP ${res.status}`
+          );
+        }
+
+        return json;
+      })
+      .then((json) => {
+        const applications = json.applications || [];
+
+        if (applications.length === 0) {
+          setFindError("No applications found.");
+          return;
+        }
+
+        // Latest application
+        setApplicationId(applications[0].id);
+      })
+      .catch((err) => {
+        console.error("Application lookup error:", err);
+        setFindError(err.message);
+      })
+      .finally(() => {
+        setFindingApplication(false);
+      });
+  }, [propId]);
+
+  const {
+    data,
+    loading,
+    error
+  } = useApplicationData(applicationId);
+
+  const details = data?.details ?? null;
+  const status = data?.status ?? null;
+  const progress = data?.progress ?? [];
   const documents = data?.documents ?? [];
-  const updates   = data?.updates   ?? [];
-  const advisor   = data?.advisor   ?? null;
+  const updates = data?.updates ?? [];
+  const advisor = data?.advisor ?? null;
 
   const progressStep = stepIndex(progress);
 
   const isSmooth = status?.status
     ? !["Rejected", "Approved", "Disbursed"].includes(status.status)
     : false;
+
+  // Keep your existing JSX below
 
   return (
     <div

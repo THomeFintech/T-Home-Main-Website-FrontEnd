@@ -610,18 +610,40 @@ apiFetch(`${API}/dashboard/progress`)
             )}
 
             <div className="flex gap-2">
-              <button className="flex-1 flex items-center justify-center gap-1.5 rounded-lg border border-white/20 bg-white/[0.08] backdrop-blur-xl py-2 text-xs text-white/80 hover:bg-white/[0.14] transition">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                Chat Now
-              </button>
-              <button
-                className="flex-1 flex items-center justify-center gap-1.5 rounded-lg border border-[#9cc9ff]/45 bg-gradient-to-r from-[#5e86f3]/85 to-[#7fa7ff]/80 py-2 text-xs text-white hover:brightness-110 transition shadow-[0_8px_20px_rgba(33,84,180,0.3)]"
-                onClick={() => advisor?.phone && window.open(`tel:${advisor.phone}`)}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>
-                Call Support
-              </button>
-            </div>
+  <button
+    onClick={() => navigate("/contact")}
+    className="flex-1 flex items-center justify-center gap-1.5 rounded-lg border border-white/20 bg-white/[0.08] backdrop-blur-xl py-2 text-xs text-white/80 hover:bg-white/[0.14] transition"
+  >
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+    Chat Now
+  </button>
+
+  <button
+    onClick={() => navigate("/contact")}
+    className="flex-1 flex items-center justify-center gap-1.5 rounded-lg border border-[#9cc9ff]/45 bg-gradient-to-r from-[#5e86f3]/85 to-[#7fa7ff]/80 py-2 text-xs text-white hover:brightness-110 transition shadow-[0_8px_20px_rgba(33,84,180,0.3)]"
+  >
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z" />
+    </svg>
+    Need Help
+  </button>
+</div>
           </div>
 
         </div>

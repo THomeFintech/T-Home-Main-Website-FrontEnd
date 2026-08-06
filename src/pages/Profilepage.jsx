@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 
@@ -404,6 +404,7 @@ function DOBPicker({ value, onChange }) {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function Profilepage() {
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
   const [avatar, setAvatar] = useState(null);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -431,20 +432,22 @@ useEffect(() => {
     }
   })
     .then(res => res.json())
-    .then(data => {
-      setForm({
-  firstName: data.name?.split(" ")[0] || "",
-  lastName: data.name?.split(" ")[1] || "",
-  dob: data.dob || "",
-  pan: data.pan || "",
-  address: data.address || ""
-});
+     .then(data => {
+    const user = data.user;
 
-setContact({
-  email: data.email,
-  phone: data.phone || ""
-});
-    })
+    setForm({
+        firstName: user?.name?.split(" ")[0] || "",
+        lastName: user?.name?.split(" ").slice(1).join(" ") || "",
+        dob: user?.dob || "",
+        pan: user?.pan || "",
+        address: user?.address || "",
+    });
+
+    setContact({
+        email: user?.email || "",
+        phone: user?.phone || "",
+    });
+})
     .catch(err => console.log(err));
 }, []);
   const [editContact, setEditContact]   = useState(false);
@@ -755,11 +758,24 @@ async function handleContactSave() {
                 {
                   icon: "key", iconBg: "rgba(59,130,246,0.12)", iconBorder: "rgba(80,130,220,0.20)", iconColor: "text-blue-400",
                   label: "Password", sub: "Last updated 3 months ago",
-                  right: <button onClick={() => setShowPwModal(true)}
-                    className="text-xs font-semibold text-blue-400 hover:text-blue-300 px-3 py-1.5 rounded-lg transition-colors"
-                    style={{ background: "rgba(59,130,246,0.10)", border: "1px solid rgba(80,130,220,0.20)" }}>
-                    Update Password
-                  </button>
+                   right: (
+  <button
+    onClick={() =>
+      navigate("/forgot-password", {
+        state: {
+          email: contact.email,
+        },
+      })
+    }
+    className="text-xs font-semibold text-blue-400 hover:text-blue-300 px-3 py-1.5 rounded-lg transition-colors"
+    style={{
+      background: "rgba(59,130,246,0.10)",
+      border: "1px solid rgba(80,130,220,0.20)",
+    }}
+  >
+    Reset Password
+  </button>
+)
                 },
                 {
                   icon: "shield", iconBg: "rgba(99,102,241,0.12)", iconBorder: "rgba(99,102,241,0.25)", iconColor: "text-indigo-400",
@@ -821,7 +837,7 @@ async function handleContactSave() {
         </div>
       </div>
 
-      {/* ── Update Password Modal ── */}
+      {/* ── Update Password Modal ──  
       {showPwModal && (
         <Modal title="Update Password" onClose={() => { setShowPwModal(false); setPw({ current: "", newPw: "", confirm: "" }); setPwSaved(false); }}>
           <div className="space-y-4">
@@ -863,7 +879,7 @@ async function handleContactSave() {
             </button>
           </div>
         </Modal>
-      )}
+      )}*/}
 
       {/* ── View Devices Modal ── */}
       {showDevices && (
