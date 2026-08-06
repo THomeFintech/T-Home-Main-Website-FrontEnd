@@ -87,10 +87,11 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
         </div>
         <div
           style={{
-            position: "absolute",
-            inset: 0,
-            opacity: 0,
-            overflow: "hidden",
+              position: "absolute",
+    inset: 0,
+    opacity: 0.01,   
+    overflow: "visible",
+    zIndex: 10,
           }}
         >
           <GoogleLogin
