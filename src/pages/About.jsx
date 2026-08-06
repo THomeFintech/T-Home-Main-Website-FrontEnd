@@ -51,7 +51,7 @@ const About = () => {
               {[
                 { value: "2025", label: "Founded" },
                 { value: "5k+", label: "Happy Clients" },
-                { value: "24h", label: "Fast Support" },
+                { value: "24/7", label: "Fast Support" },
               ].map((item) => (
                 <div
                   key={item.label}
