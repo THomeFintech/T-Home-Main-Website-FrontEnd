@@ -8,7 +8,9 @@ const initialState = {
   originalPrincipal: "",
   amountPaid: "",
   remainingTenure: "",
+  newLoanTenure: "",
   currentInterestRate: "",
+  proposedInterestRate: "",
   monthlyIncome: "",
   foreclosureFee: "",
   cibilScore: "",
@@ -163,6 +165,20 @@ const selectedService = location.state?.service || "";
     try {
       setLoading(true);
       setError("");
+      const tenure = Number(formData.remainingTenure);
+      if (tenure < 1 || tenure > 360) {
+        setError("Remaining tenure must be between 1 and 360 months.");
+        setLoading(false);
+        return;
+      }
+      const originalPrincipal = Number(formData.originalPrincipal);
+      const amountPaid = Number(formData.amountPaid);
+
+      if (amountPaid > originalPrincipal) {
+        setError("Amount Paid cannot be greater than Original Principal.");
+        setLoading(false);
+        return;
+      }
       
       const payload = {
         loan_type: formData.loanType,
@@ -170,7 +186,9 @@ const selectedService = location.state?.service || "";
         original_principal: Number(formData.originalPrincipal),
         amount_paid: Number(formData.amountPaid),
         remaining_tenure_months: Number(formData.remainingTenure),
+        new_tenure_months: Number(formData.newLoanTenure || 0),
         current_interest_rate: Number(formData.currentInterestRate),
+        proposed_interest_rate: Number(formData.proposedInterestRate || 0),
         net_monthly_income: Number(formData.monthlyIncome),
         foreclosure_fee: Number(formData.foreclosureFee || 0),
         cibil_score: Number(formData.cibilScore),
@@ -333,7 +351,22 @@ navigate("/balance-transfer/offers");    }
                   value={formData.remainingTenure}
                   onChange={handleChange}
                   placeholder="Enter remaining tenure"
+                  min="1"
+                  max="360"
                   className={inputClass}
+                />
+                <p className="mt-1 text-[11px] text-white/60">
+    Enter the number of months remaining to fully repay your current loan.
+  </p>
+              </Field>
+              <Field label="New Loan Tenure (Months) *">
+                <input
+                 type="number"
+                 name="newLoanTenure"
+                 value={formData.newLoanTenure}
+                 onChange={handleChange}
+                 placeholder="Enter new loan tenure"
+                 className={inputClass}
                 />
               </Field>
 
@@ -347,6 +380,17 @@ navigate("/balance-transfer/offers");    }
                   placeholder="Enter current interest rate"
                   className={inputClass}
                 />
+              </Field>
+              <Field label="Proposed Interest Rate (%) *">
+               <input
+                  type="number"
+                  step="0.01"
+                  name="proposedInterestRate"
+                  value={formData.proposedInterestRate}
+                  onChange={handleChange}
+                  placeholder="Enter proposed interest rate"
+                  className={inputClass}
+                 />
               </Field>
 
               <Field label="Net Monthly Income (₹) *">

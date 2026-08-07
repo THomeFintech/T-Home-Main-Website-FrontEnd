@@ -15,7 +15,7 @@ import { BT_API_BASE } from "../config";
 import { getBankLogo } from "../utils/Banklogos";
 
 function formatINR(value) {
-  return `Rs${Number(value || 0).toLocaleString("en-IN", {
+  return `₹${Number(value || 0).toLocaleString("en-IN", {
     maximumFractionDigits: 2,
   })}`;
 }
@@ -350,7 +350,7 @@ localStorage.setItem("btFinalReport", JSON.stringify(result));
           </article>
         </div>
 
-        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-[12px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-[12px] text-white/85">
             <p className="inline-flex items-center gap-2 font-semibold">
               <Lock size={13} className="text-amber-400" /> Secure & Confidential
@@ -369,6 +369,42 @@ localStorage.setItem("btFinalReport", JSON.stringify(result));
             </p>
             <p className="mt-1 text-white/65">See every major number behind the recommendation before you proceed.</p>
           </div>
+          <div className="rounded-[12px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-[12px] text-white/85">
+           <p className="inline-flex items-center gap-2 font-semibold">
+             <FileBarChart2 size={13} className="text-cyan-400" />
+              Formula Breakdown
+           </p>
+           <p className="mt-2 text-white/65">
+              Understand how the key values are derived.
+            </p>
+            <div className="mt-3 space-y-2 text-[14px] text-white/70">
+             <div>
+               <span className="font-semibold text-white">
+                 Outstanding Loan
+              </span>
+               <p>Original Principal − Amount Paid.</p>
+              </div>
+              <div>
+               <span className="font-semibold text-white">
+                 Current EMI
+                </span>
+                <p>Uses Current Interest Rate and Remaining Tenure.</p>
+              </div>
+              <div>
+               <span className="font-semibold text-white">
+                 New EMI
+                </span>
+               <p>Uses Proposed Interest Rate and New Loan Tenure.</p>
+              </div>
+              <div>
+               <span className="font-semibold text-white">
+                 Net Savings
+               </span>
+               <p>Current Outflow − Recommended Outflow.</p>
+              </div>
+            </div>
+          </div>
+          
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
