@@ -1,7 +1,8 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Flag, Eye, Linkedin } from "lucide-react";
+import { Flag, Eye } from "lucide-react";
+import { FaLinkedin, FaEnvelope } from "react-icons/fa";
 import SEO from "../components/SEO";
 
 const About = () => {
@@ -201,46 +202,25 @@ const About = () => {
 
           {/* ICONS */}
 
-          <div className="mt-4 flex justify-center gap-3">
-            <a
-              href={leader.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-                rounded-full
-                bg-[#0A66C2]
-                text-white
-                transition
-                hover:scale-110
-              "
-            >
-              <Linkedin size={16} />
-            </a>
+{/* ICONS */}
 
-            <a
-              href={`mailto:${leader.email}`}
-              className="
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-white/20
-                text-white
-                transition
-                hover:scale-110
-              "
-            >
-              ✉
-            </a>
-          </div>
+<div className="mt-4 flex justify-center gap-4">
+  <a
+    href={leader.linkedin}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex h-14 w-14 items-center justify-center rounded-full bg-[#0A66C2] text-white transition hover:scale-110"
+  >
+    <FaLinkedin size={30} />
+  </a>
+
+  <a
+    href={`mailto:${leader.email}`}
+    className="flex h-14 w-14 items-center justify-center rounded-full border border-white/30 text-white transition hover:scale-110"
+  >
+    <FaEnvelope size={27} />
+  </a>
+</div>
 
           {/* ROLE */}
 
