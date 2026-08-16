@@ -475,14 +475,20 @@ function DocRow({ doc, applicationId, onUploadClick, onRefresh }) {
   }
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all group relative"
-      style={isActionRequired ? GLASS.rowRed : GLASS.row}>
+     <div
+  className={`flex items-start gap-3 px-3 sm:px-4 py-3.5 rounded-xl transition-all group relative ${
+    menuOpen ? "z-50" : "z-0"
+  }`}
+  style={isActionRequired ? GLASS.rowRed : GLASS.row}
+>
       <DocIconBox type={iconForCategory(doc.category)} status={status} />
 
-      <div className="flex-1 min-w-0">
-        <p className={`text-sm font-semibold truncate ${isActionRequired ? "text-red-300" : "text-white"}`}>
-          {doc.document_name}
-        </p>
+      <div className="flex-1 min-w-0 pt-0.5">
+        <p
+  className={`text-sm font-semibold leading-tight break-words ${
+    isActionRequired ? "text-red-300" : "text-white"
+  }`}
+></p>
         {doc.uploaded_at
           ? <p className="text-xs text-slate-500 mt-0.5">
               Uploaded {fmtDate(doc.uploaded_at)}
@@ -492,7 +498,7 @@ function DocRow({ doc, applicationId, onUploadClick, onRefresh }) {
         }
       </div>
 
-      <div className="flex items-center gap-2 flex-shrink-0">
+      <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 flex-shrink-0">
         {isActionRequired ? (
           <button onClick={() => onUploadClick(doc)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors">
@@ -502,26 +508,43 @@ function DocRow({ doc, applicationId, onUploadClick, onRefresh }) {
           <StatusBadge status={status} />
         )}
 
-        <div className="relative">
+        <div className="relative z-50">
           <button onClick={() => setMenuOpen(v => !v)}
             className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-colors">
             <Icon type="dots" className="w-4 h-4" />
           </button>
-          {menuOpen && (
-            <>
-              <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-              <div className="absolute right-0 top-8 z-20 w-40 rounded-xl overflow-hidden text-xs" style={GLASS.modal}>
-                <button className="w-full text-left px-3 py-2.5 text-slate-300 hover:bg-white/5 transition-colors flex items-center gap-2"
-                  onClick={handleDownload}>
-                  <Icon type="download" className="w-3.5 h-3.5" />Download
-                </button>
-                <button className="w-full text-left px-3 py-2.5 text-slate-300 hover:bg-white/5 transition-colors flex items-center gap-2"
-                  onClick={() => { setMenuOpen(false); onUploadClick(doc); }}>
-                  <Icon type="upload" className="w-3.5 h-3.5" />Replace
-                </button>
-              </div>
-            </>
-          )}
+           {menuOpen && (
+  <>
+    <div
+      className="fixed inset-0 z-10"
+      onClick={() => setMenuOpen(false)}
+    />
+
+    <div
+      className="absolute right-0 bottom-8 z-[100] w-40 rounded-xl overflow-hidden text-xs"
+      style={GLASS.modal}
+    >
+      <button
+        className="w-full text-left px-3 py-2.5 text-slate-300 hover:bg-white/5 transition-colors flex items-center gap-2"
+        onClick={handleDownload}
+      >
+        <Icon type="download" className="w-3.5 h-3.5" />
+        Download
+      </button>
+
+      <button
+        className="w-full text-left px-3 py-2.5 text-slate-300 hover:bg-white/5 transition-colors flex items-center gap-2"
+        onClick={() => {
+          setMenuOpen(false);
+          onUploadClick(doc);
+        }}
+      >
+        <Icon type="upload" className="w-3.5 h-3.5" />
+        Replace
+      </button>
+    </div>
+  </>
+)}
         </div>
       </div>
     </div>
@@ -671,12 +694,12 @@ export default function DocumentsPage() {
         .progress-bar-fill { background: linear-gradient(90deg,#3b82f6,#6366f1); border-radius:999px; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
       `}</style>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-10">
 
         {/* ── Page Header ────────────────────────────────────────────────── */}
-        <div className="flex items-start justify-between mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-6 sm:mb-8 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Your Documents</h1>
+           <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Your Documents</h1>
             <p className="text-sm text-slate-400 mt-1">Securely upload and manage your financial documents</p>
           </div>
           <button
@@ -714,10 +737,13 @@ export default function DocumentsPage() {
 
           {/* ── LEFT: Document List ──────────────────────────────────── */}
           <div className="xl:col-span-2">
-            <div className="rounded-2xl overflow-hidden" style={GLASS.card}>
+            <div className="rounded-2xl overflow-visible" style={GLASS.card}>
 
               {/* Tabs */}
-              <div className="flex gap-2 p-4 flex-wrap" style={{ borderBottom: "1px solid rgba(80,130,220,0.15)" }}>
+              <div
+  className="flex gap-2 p-4 overflow-x-auto scrollbar-hide"
+  style={{ borderBottom: "1px solid rgba(80,130,220,0.15)" }}
+>
                 {TABS.map(tab => (
                   <button key={tab} onClick={() => setActiveTab(tab)}
                     className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition-all
@@ -741,7 +767,7 @@ export default function DocumentsPage() {
                   <p className="text-sm">No documents in this category</p>
                 </div>
               ) : (
-                <div className="p-4 space-y-5">
+                <div className="p-3 sm:p-4 space-y-4 sm:space-y-5">
                   {visibleGroups.map(({ category, documents }) => (
                     <div key={category}>
                       <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 px-1">
