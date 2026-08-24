@@ -1,74 +1,66 @@
-import Register from "./pages/Register";
-import BalanceTransfer from "./pages/BalanceTransfer";
-import BalanceTransferDetails from "./pages/BalanceTransferDetails";
-import BalanceTransferOffers from "./pages/BalanceTransferOffers";
-import BalanceTransferReview from "./pages/BalanceTransferReview";
-import BalanceTransferAnalysis from "./pages/BalanceTransferAnalysis";
-import BalanceTransferComparison from "./pages/BalanceTransferComparison";
-import BalanceTransferDetailedTable from "./pages/BalanceTransferDetailedTable";
-import BalanceTransferAmortization from "./pages/BalanceTransferAmortization";
-import BalanceTransferReady from "./pages/BalanceTransferReady";
-import BalanceTransferApplicationPortal from "./pages/BalanceTransferApplicationPortal";
-import BalanceTransferIncomeDocuments from "./pages/BalanceTransferIncomeDocuments";
-import BalanceTransferExistingLoanDocuments from "./pages/BalanceTransferExistingLoanDocuments";
-import BalanceTransferCoApplicantDetails from "./pages/BalanceTransferCoApplicantDetails";
-import BalanceTransferReviewSubmit from "./pages/BalanceTransferReviewSubmit";
-import BalanceTransferSubmitted from "./pages/BalanceTransferSubmitted";
-import ForgotPassword from "./pages/ForgotPassword";
-import VerifyResetOtp from "./pages/VerifyResetOtp";
-import ResetPassword from "./pages/ResetPassword";
 import { BrowserRouter, Routes, Route, Outlet, useParams, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 
-// Layouts
-import DashboardLayout from "./layout/DashboardLayout";
+const DashboardLayout = lazy(() => import("./layout/DashboardLayout"));
+const Navbar = lazy(() => import("./components/Navbar"));
+const Footer = lazy(() => import("./components/Footer"));
 
-// Components
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import ChatbotWidget from "./components/ChatbotWidget";
+const Register = lazy(() => import("./pages/Register"));
+const BalanceTransfer = lazy(() => import("./pages/BalanceTransfer"));
+const BalanceTransferDetails = lazy(() => import("./pages/BalanceTransferDetails"));
+const BalanceTransferOffers = lazy(() => import("./pages/BalanceTransferOffers"));
+const BalanceTransferReview = lazy(() => import("./pages/BalanceTransferReview"));
+const BalanceTransferAnalysis = lazy(() => import("./pages/BalanceTransferAnalysis"));
+const BalanceTransferComparison = lazy(() => import("./pages/BalanceTransferComparison"));
+const BalanceTransferDetailedTable = lazy(() => import("./pages/BalanceTransferDetailedTable"));
+const BalanceTransferAmortization = lazy(() => import("./pages/BalanceTransferAmortization"));
+const BalanceTransferReady = lazy(() => import("./pages/BalanceTransferReady"));
+const BalanceTransferApplicationPortal = lazy(() => import("./pages/BalanceTransferApplicationPortal"));
+const BalanceTransferIncomeDocuments = lazy(() => import("./pages/BalanceTransferIncomeDocuments"));
+const BalanceTransferExistingLoanDocuments = lazy(() => import("./pages/BalanceTransferExistingLoanDocuments"));
+const BalanceTransferCoApplicantDetails = lazy(() => import("./pages/BalanceTransferCoApplicantDetails"));
+const BalanceTransferReviewSubmit = lazy(() => import("./pages/BalanceTransferReviewSubmit"));
+const BalanceTransferSubmitted = lazy(() => import("./pages/BalanceTransferSubmitted"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const VerifyResetOtp = lazy(() => import("./pages/VerifyResetOtp"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
-// Pages
-import Home from "./pages/Home";
-import Services from "./pages/Services";
-import Tools from "./pages/Tools";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Career from "./pages/Career";
-import Collaborate from "./pages/Collaborate";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsAndConditions from "./pages/TermsAndConditions";
-import EmployeeForm from "./pages/employeeform";
-import GetStarted from "./pages/GetStarted";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import TrackApplication from "./pages/TrackApplication";
-import DocumentsPage from "./pages/DocumentsPage";
-import Profilepage from "./pages/Profilepage";
-import Support from "./pages/Support";
-import Proceed from "./components/Proceed";
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import LoanForm from "./components/LoanForm";
+const Home = lazy(() => import("./pages/Home"));
+const Services = lazy(() => import("./pages/Services"));
+const Tools = lazy(() => import("./pages/Tools"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Career = lazy(() => import("./pages/Career"));
+const Collaborate = lazy(() => import("./pages/Collaborate"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions"));
+const EmployeeForm = lazy(() => import("./pages/employeeform"));
+const GetStarted = lazy(() => import("./pages/GetStarted"));
+const Login = lazy(() => import("./pages/Login"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const TrackApplication = lazy(() => import("./pages/TrackApplication"));
+const DocumentsPage = lazy(() => import("./pages/DocumentsPage"));
+const Profilepage = lazy(() => import("./pages/Profilepage"));
+const Support = lazy(() => import("./pages/Support"));
+const Proceed = lazy(() => import("./components/Proceed"));
+const LoanForm = lazy(() => import("./components/LoanForm"));
 
-// Service Pages
-import HomeLoan from "./pages/HomeLoan";
-import PersonalLoan from "./pages/PersonalLoan";
-import LoanAgainstProperty from "./pages/LoanAgainstProperty";
-import MortgageLoan from "./pages/MortgageLoan";
+const HomeLoan = lazy(() => import("./pages/HomeLoan"));
+const PersonalLoan = lazy(() => import("./pages/PersonalLoan"));
+const LoanAgainstProperty = lazy(() => import("./pages/LoanAgainstProperty"));
+const MortgageLoan = lazy(() => import("./pages/MortgageLoan"));
+const BalanceTransferContact = lazy(() => import("./pages/BalanceTransferContact"));
+const Emi = lazy(() => import("./pages/Emi"));
+const ContactForm = lazy(() => import("./components/ContactForm"));
+const ComingSoon = lazy(() => import("./pages/ComingSoon"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
-import BalanceTransferContact from "./pages/BalanceTransferContact";
-
-import Emi from "./pages/Emi";
-import ContactForm from "./components/ContactForm";
-import ComingSoon from "./pages/ComingSoon";
-import NotFound from "./pages/NotFound";
-
-import ITRFiling from "./pages/ITRFiling";
-import CompanyRegistration from "./pages/CompanyRegistration";
-import GstRegistration from "./pages/GstRegistration";
-import UdyamMsmeRegistration from "./pages/UdyamMsmeRegistration";
-import FoodLicense from "./pages/FoodLicense";
-import PanAadhaarLinking from "./pages/PanAadhaarLinking";
+const ITRFiling = lazy(() => import("./pages/ITRFiling"));
+const CompanyRegistration = lazy(() => import("./pages/CompanyRegistration"));
+const GstRegistration = lazy(() => import("./pages/GstRegistration"));
+const UdyamMsmeRegistration = lazy(() => import("./pages/UdyamMsmeRegistration"));
+const FoodLicense = lazy(() => import("./pages/FoodLicense"));
+const PanAadhaarLinking = lazy(() => import("./pages/PanAadhaarLinking"));
 
 /* =========================
    ✅ SCROLL FIX (NEW)
@@ -105,6 +97,14 @@ function Layout() {
   );
 }
 
+function RouteFallback() {
+  return (
+    <div className="min-h-[40vh] flex items-center justify-center text-slate-300">
+      Loading...
+    </div>
+  );
+}
+
 /* =========================
    TRACK APPLICATION WRAPPER
 ========================= */
@@ -118,8 +118,8 @@ function TrackApplicationWithParam() {
 ========================= */
 function App() {
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <BrowserRouter>
+    <BrowserRouter>
+      <Suspense fallback={<RouteFallback />}>
 
         {/* ✅ ADD THIS LINE */}
         <ScrollToTop />
@@ -252,8 +252,8 @@ function App() {
 <Route path="/verify-reset-otp" element={<VerifyResetOtp />} />
 <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
+      </Suspense>
       </BrowserRouter>
-    </GoogleOAuthProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   User,
@@ -463,6 +463,24 @@ export default function Proceed({
     aadhaar: contactDataFinal?.aadhaar || contactDataFinal?.aadhaarNumber || "",
     pan: contactDataFinal?.pan || contactDataFinal?.panNumber || "",
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
+    fetch(`${API_BASE}/digilocker/identity`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((identity) => {
+        if (!identity) return;
+        setEditableContact((previous) => ({
+          ...previous,
+          aadhaar: previous.aadhaar || identity.aadhaar || "",
+          pan: previous.pan || identity.pan || "",
+        }));
+      })
+      .catch(() => {});
+  }, []);
 
   const [editableLoan, setEditableLoan] = useState({
     loanType: loanDataFinal?.loan_type || loanDataFinal?.loanType || "",

@@ -149,6 +149,7 @@ export default function Dashboard() {
   const [summary,       setSummary]       = useState(null);
   const [loans,         setLoans]         = useState([]);
   const [documents,     setDocuments]     = useState([]);
+  const [digilockerIdentity, setDigilockerIdentity] = useState(null);
   const [progress,      setProgress]      = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [advisor,       setAdvisor]       = useState(null);
@@ -202,7 +203,10 @@ export default function Dashboard() {
     // documents
      // documents
 apiFetch(`${API}/dashboard/documents`)
-  .then(d => setDocuments(d.documents ?? []))
+  .then(d => {
+    setDocuments(d.documents ?? []);
+    setDigilockerIdentity(d.digilocker_identity ?? null);
+  })
   .finally(() => setLoadingDocs(false));
 
     // progress
@@ -543,13 +547,21 @@ apiFetch(`${API}/dashboard/progress`)
               ) : (
                 documents.map((doc, i) => (
                   <div key={doc.id ?? i} className="flex items-center justify-between rounded-xl border border-white/20 bg-white/[0.06] backdrop-blur-xl px-4 py-3">
-                    <div className="flex items-center gap-2.5 text-white/50">
+                    <div className="flex min-w-0 items-center gap-2.5 text-white/50">
                       {DOC_ROW_ICON[doc.label] ?? DOC_ROW_ICON["Income Proof"]}
-                      <span className="text-sm text-white/70">{doc.label}</span>
+                      <div className="min-w-0">
+                        <span className="block truncate text-sm text-white/70">{doc.label}</span>
+                        {doc.category && <span className="block truncate text-[11px] text-white/40">{doc.category}</span>}
+                      </div>
                     </div>
-                    <span className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium ${DOC_COLOR[doc.color] ?? DOC_COLOR.orange}`}>
-                      {DOC_STATUS_ICON[doc.color]} {doc.status}
-                    </span>
+                    <div className="ml-3 flex flex-shrink-0 items-center gap-2">
+                      {doc.file_url && <a href={doc.file_url} target="_blank" rel="noreferrer" className="text-[11px] font-medium text-emerald-300 hover:text-emerald-200">View</a>}
+                      {doc.source !== "digilocker" && (
+                        <span className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium ${DOC_COLOR[doc.color] ?? DOC_COLOR.orange}`}>
+                          {DOC_STATUS_ICON[doc.color]} {doc.status}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ))
               )}
@@ -562,6 +574,17 @@ apiFetch(`${API}/dashboard/progress`)
               Upload Documents
             </button>
           </div>
+
+          {digilockerIdentity && (digilockerIdentity.pan || digilockerIdentity.aadhaar || digilockerIdentity.name) && (
+            <div className="rounded-2xl border border-white/20 bg-white/[0.07] p-4 backdrop-blur-2xl sm:p-6">
+              <h2 className="mb-4 font-medium text-white">DigiLocker Information</h2>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {digilockerIdentity.name && <div><p className="text-xs text-white/40">Name</p><p className="mt-1 text-sm text-white/80">{digilockerIdentity.name}</p></div>}
+                {digilockerIdentity.pan && <div><p className="text-xs text-white/40">PAN Number</p><p className="mt-1 text-sm text-white/80">{digilockerIdentity.pan}</p></div>}
+                {digilockerIdentity.aadhaar && <div><p className="text-xs text-white/40">Aadhaar Number</p><p className="mt-1 text-sm text-white/80">XXXX XXXX {digilockerIdentity.aadhaar.slice(-4)}</p></div>}
+              </div>
+            </div>
+          )}
 
           {/* Recent Updates */}
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-6">
