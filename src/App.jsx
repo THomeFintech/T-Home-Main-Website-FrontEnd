@@ -63,14 +63,22 @@ const FoodLicense = lazy(() => import("./pages/FoodLicense"));
 const PanAadhaarLinking = lazy(() => import("./pages/PanAadhaarLinking"));
 
 /* =========================
-   ✅ SCROLL FIX (NEW)
+   SCROLL FIX
 ========================= */
+
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant",
+    });
+
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname, search]);
 
   return null;
 }
@@ -78,6 +86,7 @@ function ScrollToTop() {
 /* =========================
    LAYOUT
 ========================= */
+
 function Layout() {
   return (
     <div
@@ -88,10 +97,13 @@ function Layout() {
       }}
     >
       <Navbar />
+
       <main className="flex-grow">
         <Outlet />
       </main>
+
       <Footer />
+
       {/* <ChatbotWidget /> */}
     </div>
   );
@@ -108,15 +120,47 @@ function RouteFallback() {
 /* =========================
    TRACK APPLICATION WRAPPER
 ========================= */
+
 function TrackApplicationWithParam() {
   const { applicationId } = useParams();
+
   return <TrackApplication applicationId={Number(applicationId)} />;
+}
+
+/* =========================
+   LOADING SCREEN
+========================= */
+
+function LazyLoadingScreen() {
+  return (
+    <div
+      className="min-h-screen flex items-center justify-center text-white"
+      style={{
+        background:
+          "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
+      }}
+    >
+      <div className="flex flex-col items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-blue-400" />
+
+        <p className="mt-3 text-sm text-white/60">Loading...</p>
+      </div>
+    </div>
+  );
 }
 
 /* =========================
    ROUTER
 ========================= */
+
 function App() {
+  useEffect(() => {
+    // Preload frequently used dashboard pages in the background
+    import("./pages/Dashboard");
+    import("./pages/TrackApplication");
+    import("./pages/DocumentsPage");
+  }, []);
+
   return (
     <BrowserRouter>
       <Suspense fallback={<RouteFallback />}>
@@ -124,20 +168,39 @@ function App() {
         {/* ✅ ADD THIS LINE */}
         <ScrollToTop />
 
-        <Routes>
-          {/* DASHBOARD ROUTES */}
-          <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/applications" element={<TrackApplication />} />
-            <Route path="/applications/:applicationId" element={<TrackApplicationWithParam />} />
-            <Route path="/documents" element={<DocumentsPage />} />
-            <Route path="/profile" element={<Profilepage />} />
-            <Route path="/support" element={<Support />} />
-          </Route>
+        {/* LAZY LOADING */}
+        <Suspense fallback={<LazyLoadingScreen />}>
+          <Routes>
+            {/* =========================
+                DASHBOARD ROUTES
+            ========================= */}
 
-          {/* MAIN LAYOUT ROUTES */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
+            <Route element={<DashboardLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+
+              <Route path="/applications" element={<TrackApplication />} />
+
+              <Route
+                path="/applications/:applicationId"
+                element={<TrackApplicationWithParam />}
+              />
+
+              <Route path="/documents" element={<DocumentsPage />} />
+
+              <Route path="/profile" element={<Profilepage />} />
+
+              <Route path="/support" element={<Support />} />
+            </Route>
+
+            {/* =========================
+                MAIN LAYOUT ROUTES
+            ========================= */}
+
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+
+              <Route path="notifications" element={<Notifications />} />
+
               <Route path="/balance-transfer" element={<BalanceTransfer />} />
 
 <Route

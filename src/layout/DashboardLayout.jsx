@@ -1,11 +1,37 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showBurger, setShowBurger] = useState(true);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY <= 10) {
+        setShowBurger(true);
+      } else {
+        setShowBurger(false);
+      }
+    };
+
+    const handleMouseMove = (event) => {
+      if (event.clientY <= 80) {
+        setShowBurger(true);
+      } else if (window.scrollY > 10) {
+        setShowBurger(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
 
   const pageMap = {
     "/dashboard": "dashboard",
