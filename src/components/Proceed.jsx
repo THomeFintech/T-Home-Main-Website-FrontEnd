@@ -34,10 +34,7 @@ const API_BASE = import.meta.env.VITE_API_URL;
 
 function resolveApplicationId(result = {}) {
   const raw =
-    result.applicationId ??
-    result.application_id ??
-    result.app_id ??
-    null;
+    result.applicationId ?? result.application_id ?? result.app_id ?? null;
 
   if (raw !== null && raw !== undefined) return Number(raw);
   return null;
@@ -108,7 +105,10 @@ async function uploadKyc({ files, contactData, loan_id, bank_selection_id }) {
 
   formData.append("loan_id", loan_id);
   formData.append("bank_selection_id", bank_selection_id);
-  formData.append("aadhaar_number", contactData.aadhaarNumber || contactData.aadhaar || "");
+  formData.append(
+    "aadhaar_number",
+    contactData.aadhaarNumber || contactData.aadhaar || "",
+  );
   formData.append("pan_number", contactData.panNumber || contactData.pan || "");
   formData.append("aadhaar_card", files.aadhaar);
   formData.append("pan_card", files.pan);
@@ -131,7 +131,12 @@ async function uploadKyc({ files, contactData, loan_id, bank_selection_id }) {
   return res.json();
 }
 
-async function uploadIncome({ files, employmentType, loan_id, bank_selection_id }) {
+async function uploadIncome({
+  files,
+  employmentType,
+  loan_id,
+  bank_selection_id,
+}) {
   const formData = new FormData();
 
   formData.append("loan_id", loan_id);
@@ -142,27 +147,35 @@ async function uploadIncome({ files, employmentType, loan_id, bank_selection_id 
   if (type === "salaried") {
     if (files.payslip1) formData.append("payslip_1", files.payslip1);
     if (files.payslip2) formData.append("payslip_2", files.payslip2);
-    if (files.bankStatement) formData.append("bank_statement", files.bankStatement);
+    if (files.bankStatement)
+      formData.append("bank_statement", files.bankStatement);
     if (files.form16) formData.append("form_16", files.form16);
   } else if (type === "self-employed") {
     if (files.itr1) formData.append("itr_year1", files.itr1);
     if (files.itr2) formData.append("itr_year2", files.itr2);
-    if (files.msmeCertificate) formData.append("msme_certificate", files.msmeCertificate);
-    if (files.labourLicense) formData.append("labour_license", files.labourLicense);
+    if (files.msmeCertificate)
+      formData.append("msme_certificate", files.msmeCertificate);
+    if (files.labourLicense)
+      formData.append("labour_license", files.labourLicense);
     if (files.gst) formData.append("gst_certificate", files.gst);
-    if (files.gstrStatement) formData.append("gstr_statement", files.gstrStatement);
+    if (files.gstrStatement)
+      formData.append("gstr_statement", files.gstrStatement);
   } else if (type === "professional") {
     if (files.itr1) formData.append("prof_itr_year1", files.itr1);
     if (files.itr2) formData.append("prof_itr_year2", files.itr2);
     if (files.degree) formData.append("degree_certificate", files.degree);
-    if (files.professionalReg) formData.append("registration_cert", files.professionalReg);
-    if (files.bankStatement) formData.append("practice_bank_stmt", files.bankStatement);
-    if (files.addressProof) formData.append("office_address_proof", files.addressProof);
+    if (files.professionalReg)
+      formData.append("registration_cert", files.professionalReg);
+    if (files.bankStatement)
+      formData.append("practice_bank_stmt", files.bankStatement);
+    if (files.addressProof)
+      formData.append("office_address_proof", files.addressProof);
     if (files.gst) formData.append("prof_gst_reg", files.gst);
   } else if (type === "freelancer" || type === "gig_worker") {
     if (files.itr1) formData.append("fl_itr_year1", files.itr1);
     if (files.itr2) formData.append("fl_itr_year2", files.itr2);
-    if (files.bankStatement) formData.append("fl_bank_statement", files.bankStatement);
+    if (files.bankStatement)
+      formData.append("fl_bank_statement", files.bankStatement);
     if (files.contracts) formData.append("fl_contracts", files.contracts);
     if (files.invoices) formData.append("fl_invoices", files.invoices);
     if (files.gst) formData.append("fl_gst_reg", files.gst);
@@ -187,7 +200,12 @@ async function uploadIncome({ files, employmentType, loan_id, bank_selection_id 
 
   return res.json();
 }
-async function submitCoApplicant({ coApplicant, files, loan_id, bank_selection_id }) {
+async function submitCoApplicant({
+  coApplicant,
+  files,
+  loan_id,
+  bank_selection_id,
+}) {
   const formData = new FormData();
 
   formData.append("loan_id", loan_id);
@@ -196,7 +214,8 @@ async function submitCoApplicant({ coApplicant, files, loan_id, bank_selection_i
   formData.append("phone", coApplicant.phone || "");
   if (coApplicant.email) formData.append("email", coApplicant.email);
   formData.append("relation", coApplicant.relation || "");
-  if (coApplicant.aadhaar) formData.append("aadhaar_number", coApplicant.aadhaar);
+  if (coApplicant.aadhaar)
+    formData.append("aadhaar_number", coApplicant.aadhaar);
   if (coApplicant.pan) formData.append("pan_number", coApplicant.pan);
   if (files.coAadhaar) formData.append("aadhaar_file", files.coAadhaar);
   if (files.coPan) formData.append("pan_file", files.coPan);
@@ -258,7 +277,7 @@ function UploadZone({
       if (!arr.length) return;
       onUpload(multiple ? arr : arr[0]);
     },
-    [onUpload, multiple]
+    [onUpload, multiple],
   );
 
   const onDrop = useCallback(
@@ -267,7 +286,7 @@ function UploadZone({
       setDragging(false);
       handleFiles(e.dataTransfer.files);
     },
-    [handleFiles]
+    [handleFiles],
   );
 
   const onDragOver = (e) => {
@@ -357,7 +376,9 @@ function UploadZone({
                     </div>
                   )}
                   <div>
-                    <p className="text-sm font-semibold text-[#1f2937]">{f.name}</p>
+                    <p className="text-sm font-semibold text-[#1f2937]">
+                      {f.name}
+                    </p>
                     <p className="text-xs text-gray-500">
                       {(f.size / 1024).toFixed(1)} KB
                     </p>
@@ -389,7 +410,9 @@ function UploadBanner({ status, error, successMsg }) {
     return (
       <div className="mt-4 flex items-center gap-3 rounded-[12px] border border-[#246BFF]/30 bg-[#246BFF]/10 px-4 py-3">
         <Loader2 className="h-5 w-5 shrink-0 animate-spin text-[#246BFF]" />
-        <span className="text-sm text-[#246BFF]">Uploading documents to server…</span>
+        <span className="text-sm text-[#246BFF]">
+          Uploading documents to server…
+        </span>
       </div>
     );
   }
@@ -425,7 +448,9 @@ function NoAppIdWarning({ applicationId }) {
     <div className="mb-6 flex items-start gap-3 rounded-[14px] border border-yellow-500/40 bg-yellow-500/10 px-4 py-4">
       <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-yellow-400" />
       <div>
-        <p className="text-sm font-semibold text-yellow-300">Application ID not found</p>
+        <p className="text-sm font-semibold text-yellow-300">
+          Application ID not found
+        </p>
         <p className="mt-1 text-xs text-yellow-400/80">
           Documents will be uploaded in <strong>demo mode (ID: 1)</strong>.
         </p>
@@ -448,8 +473,8 @@ export default function Proceed({
   const loanDataFinal = location.state?.loanData || loanData || {};
   const contactDataFinal = location.state?.contactData || contactData || {};
 
-  const applicationId = resolveApplicationId(result) ?? 1;
-  const isRealAppId = resolveApplicationId(result) !== null;
+  const applicationId = resolveApplicationId(result);
+  const isRealAppId = applicationId !== null;
 
   const [currentStep, setCurrentStep] = useState(1);
   const [addCoApplicant, setAddCoApplicant] = useState(false);
@@ -468,7 +493,7 @@ export default function Proceed({
     loanType: loanDataFinal?.loan_type || loanDataFinal?.loanType || "",
     loanAmount: loanDataFinal?.loan_amount || loanDataFinal?.loanAmount || "",
     employmentType: normalizeEmploymentType(
-      loanDataFinal?.employment_type || loanDataFinal?.employmentType || ""
+      loanDataFinal?.employment_type || loanDataFinal?.employmentType || "",
     ),
     tenureYears: loanDataFinal?.tenure || loanDataFinal?.tenureYears || "",
   });
@@ -535,7 +560,9 @@ export default function Proceed({
     const { loan_id, bank_selection_id } = getStoredIds();
 
     if (!loan_id || !bank_selection_id) {
-      alert("Loan or Bank selection missing. Please go back and select bank again.");
+      alert(
+        "Loan or Bank selection missing. Please go back and select bank again.",
+      );
       return;
     }
 
@@ -561,7 +588,7 @@ export default function Proceed({
           },
           loan_id,
           bank_selection_id,
-        })
+        }),
       );
       nextInternal();
     } catch (err) {
@@ -570,59 +597,64 @@ export default function Proceed({
   };
 
   const handleStep2Next = async () => {
-  const { loan_id, bank_selection_id } = getStoredIds();
+    const { loan_id, bank_selection_id } = getStoredIds();
 
-  if (!loan_id || !bank_selection_id) {
-    alert("Loan or Bank selection missing. Please restart from bank selection.");
-    return;
-  }
+    if (!loan_id || !bank_selection_id) {
+      alert(
+        "Loan or Bank selection missing. Please restart from bank selection.",
+      );
+      return;
+    }
 
-  const type = normalizeEmploymentType(editableLoan.employmentType);
-  const docGroup = getEmploymentDocGroup(type);
-  let required = [];
+    const type = normalizeEmploymentType(editableLoan.employmentType);
+    const docGroup = getEmploymentDocGroup(type);
+    let required = [];
 
-  if (docGroup === "salaried") {
-    required = [files.payslip1, files.payslip2, files.bankStatement, files.form16];
-  } else if (docGroup === "self_employed") {
-    required = [files.itr1, files.itr2];
-  } else if (docGroup === "professional") {
-    required = [
-      files.itr1,
-      files.degree,
-      files.professionalReg,
-    ];
-  } else if (docGroup === "freelancer") {
-    required = [files.itr1, files.bankStatement];
-  } else {
-    alert(`Unsupported employment type: ${editableLoan.employmentType}`);
-    return;
-  }
+    if (docGroup === "salaried") {
+      required = [
+        files.payslip1,
+        files.payslip2,
+        files.bankStatement,
+        files.form16,
+      ];
+    } else if (docGroup === "self_employed") {
+      required = [files.itr1, files.itr2];
+    } else if (docGroup === "professional") {
+      required = [files.itr1, files.degree, files.professionalReg];
+    } else if (docGroup === "freelancer") {
+      required = [files.itr1, files.bankStatement];
+    } else {
+      alert(`Unsupported employment type: ${editableLoan.employmentType}`);
+      return;
+    }
 
-  if (required.some((f) => !f)) {
-    alert("Please upload all required documents");
-    return;
-  }
+    if (required.some((f) => !f)) {
+      alert("Please upload all required documents");
+      return;
+    }
 
-  try {
-    await incomeUpload.run(() =>
-      uploadIncome({
-        files,
-        employmentType: type,
-        loan_id,
-        bank_selection_id,
-      })
-    );
-    nextInternal();
-  } catch (err) {
-    console.error("Income upload failed:", err);
-    alert(err.message || "Income upload failed");
-  }
-};
+    try {
+      await incomeUpload.run(() =>
+        uploadIncome({
+          files,
+          employmentType: type,
+          loan_id,
+          bank_selection_id,
+        }),
+      );
+      nextInternal();
+    } catch (err) {
+      console.error("Income upload failed:", err);
+      alert(err.message || "Income upload failed");
+    }
+  };
   const handleStep3Next = async () => {
     const { loan_id, bank_selection_id } = getStoredIds();
 
     if (!loan_id || !bank_selection_id) {
-      alert("Loan or Bank selection missing. Please restart from bank selection.");
+      alert(
+        "Loan or Bank selection missing. Please restart from bank selection.",
+      );
       return;
     }
 
@@ -641,7 +673,9 @@ export default function Proceed({
         });
       } catch (err) {
         console.error("Co-applicant submission failed:", err);
-        alert(err.message || "Co-applicant submission failed. Please try again.");
+        alert(
+          err.message || "Co-applicant submission failed. Please try again.",
+        );
         return;
       }
     }
@@ -666,6 +700,10 @@ export default function Proceed({
       return;
     }
 
+    // Show submitted screen immediately
+    setSubmitted(true);
+
+    // Submit to backend in background
     try {
       const res = await fetch(`${API_BASE}/applications/submit`, {
         method: "POST",
@@ -686,10 +724,8 @@ export default function Proceed({
 
       const data = await res.json();
       console.log("✅ FINAL SUBMIT:", data);
-      setSubmitted(true);
     } catch (err) {
-      console.error(err);
-      alert(err.message || "Submission failed");
+      console.error("Background final submission failed:", err);
     }
   };
 
@@ -698,8 +734,8 @@ export default function Proceed({
   };
 
   const handleGoToDashboard = () => {
-  navigate("/dashboard");
-};
+    navigate("/dashboard");
+  };
 
   const stepMeta = [
     { id: 1, label: "PERSONAL DETAILS" },
@@ -748,7 +784,9 @@ export default function Proceed({
             style={{ width: `${(currentStep / 4) * 100}%` }}
           />
         </div>
-        <span className="min-w-max text-xs text-white/50 sm:text-sm">{stepText}</span>
+        <span className="min-w-max text-xs text-white/50 sm:text-sm">
+          {stepText}
+        </span>
       </div>
 
       <button
@@ -792,8 +830,8 @@ export default function Proceed({
                     isDone
                       ? "border-[#08B981] bg-[#08B981] text-white"
                       : isActive
-                      ? "border-[#246BFF] bg-white text-[#606A78]"
-                      : "border-[#d9dde7] bg-[#f8f8f8] text-[#606A78]"
+                        ? "border-[#246BFF] bg-white text-[#606A78]"
+                        : "border-[#d9dde7] bg-[#f8f8f8] text-[#606A78]"
                   }`}
                 >
                   {isDone ? (
@@ -807,8 +845,8 @@ export default function Proceed({
                     isDone
                       ? "text-[#08B981]"
                       : isActive
-                      ? "text-[#246BFF]"
-                      : "text-white/40"
+                        ? "text-[#246BFF]"
+                        : "text-white/40"
                   }`}
                 >
                   {step.label}
@@ -823,8 +861,6 @@ export default function Proceed({
 
   const Step1 = () => (
     <div className="rounded-[22px] border border-white/20 bg-[linear-gradient(135deg,rgba(31,40,74,0.95),rgba(66,77,125,0.92),rgba(26,30,46,0.95))] p-4 shadow-[0_25px_80px_rgba(0,0,0,0.45)] sm:p-6 md:rounded-[28px] md:p-8">
-      <NoAppIdWarning applicationId={isRealAppId ? applicationId : null} />
-
       {sectionTitle(User, "Personal Information")}
       <div className="space-y-4 sm:space-y-5">
         <div>
@@ -849,7 +885,10 @@ export default function Proceed({
               className={inputClass}
               value={editableContact.phone}
               onChange={(e) =>
-                setEditableContact((prev) => ({ ...prev, phone: e.target.value }))
+                setEditableContact((prev) => ({
+                  ...prev,
+                  phone: e.target.value,
+                }))
               }
             />
           </div>
@@ -862,7 +901,10 @@ export default function Proceed({
               className={inputClass}
               value={editableContact.email}
               onChange={(e) =>
-                setEditableContact((prev) => ({ ...prev, email: e.target.value }))
+                setEditableContact((prev) => ({
+                  ...prev,
+                  email: e.target.value,
+                }))
               }
             />
           </div>
@@ -880,7 +922,10 @@ export default function Proceed({
               className={inputClass}
               value={editableContact.aadhaar}
               onChange={(e) =>
-                setEditableContact((prev) => ({ ...prev, aadhaar: e.target.value }))
+                setEditableContact((prev) => ({
+                  ...prev,
+                  aadhaar: e.target.value,
+                }))
               }
               placeholder="Enter Aadhaar Number"
             />
@@ -939,7 +984,7 @@ export default function Proceed({
               <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
               Auto-filled
             </span>
-          </span>
+          </span>,
         )}
 
         <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
@@ -951,7 +996,10 @@ export default function Proceed({
               className={inputClass}
               value={editableLoan.loanType}
               onChange={(e) =>
-                setEditableLoan((prev) => ({ ...prev, loanType: e.target.value }))
+                setEditableLoan((prev) => ({
+                  ...prev,
+                  loanType: e.target.value,
+                }))
               }
               placeholder="Loan Type"
             />
@@ -965,7 +1013,10 @@ export default function Proceed({
               className={inputClass}
               value={editableLoan.loanAmount}
               onChange={(e) =>
-                setEditableLoan((prev) => ({ ...prev, loanAmount: e.target.value }))
+                setEditableLoan((prev) => ({
+                  ...prev,
+                  loanAmount: e.target.value,
+                }))
               }
               placeholder="Loan Amount"
             />
@@ -979,7 +1030,10 @@ export default function Proceed({
               className={inputClass}
               value={editableLoan.tenureYears}
               onChange={(e) =>
-                setEditableLoan((prev) => ({ ...prev, tenureYears: e.target.value }))
+                setEditableLoan((prev) => ({
+                  ...prev,
+                  tenureYears: e.target.value,
+                }))
               }
               placeholder="Tenure"
             />
@@ -1061,19 +1115,69 @@ export default function Proceed({
 
         {getEmploymentDocGroup(editableLoan.employmentType) === "salaried" ? (
           <div className="grid gap-4 md:grid-cols-2">
-            <UploadZone label="Payslip 1" file={files.payslip1} onUpload={setFile("payslip1")} required />
-            <UploadZone label="Payslip 2" file={files.payslip2} onUpload={setFile("payslip2")} required />
-            <UploadZone label="Bank Statement" file={files.bankStatement} onUpload={setFile("bankStatement")} required />
-            <UploadZone label="Form 16" file={files.form16} onUpload={setFile("form16")} required />
+            <UploadZone
+              label="Payslip 1"
+              file={files.payslip1}
+              onUpload={setFile("payslip1")}
+              required
+            />
+            <UploadZone
+              label="Payslip 2"
+              file={files.payslip2}
+              onUpload={setFile("payslip2")}
+              required
+            />
+            <UploadZone
+              label="Bank Statement"
+              file={files.bankStatement}
+              onUpload={setFile("bankStatement")}
+              required
+            />
+            <UploadZone
+              label="Form 16"
+              file={files.form16}
+              onUpload={setFile("form16")}
+              required
+            />
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
-            <UploadZone label="ITR – Year 1" file={files.itr1} onUpload={setFile("itr1")} required />
-            <UploadZone label="ITR – Year 2" file={files.itr2} onUpload={setFile("itr2")} required />
-            <UploadZone label="Degree Certificate" file={files.degree} onUpload={setFile("degree")} required />
-            <UploadZone label="Professional Registration" file={files.professionalReg} onUpload={setFile("professionalReg")} required />
-            <UploadZone label="Bank Statement" file={files.bankStatement} onUpload={setFile("bankStatement")} required />
-            <UploadZone label="Address Proof" file={files.addressProof} onUpload={setFile("addressProof")} required />
+            <UploadZone
+              label="ITR – Year 1"
+              file={files.itr1}
+              onUpload={setFile("itr1")}
+              required
+            />
+            <UploadZone
+              label="ITR – Year 2"
+              file={files.itr2}
+              onUpload={setFile("itr2")}
+              required
+            />
+            <UploadZone
+              label="Degree Certificate"
+              file={files.degree}
+              onUpload={setFile("degree")}
+              required
+            />
+            <UploadZone
+              label="Professional Registration"
+              file={files.professionalReg}
+              onUpload={setFile("professionalReg")}
+              required
+            />
+            <UploadZone
+              label="Bank Statement"
+              file={files.bankStatement}
+              onUpload={setFile("bankStatement")}
+              required
+            />
+            <UploadZone
+              label="Address Proof"
+              file={files.addressProof}
+              onUpload={setFile("addressProof")}
+              required
+            />
           </div>
         )}
       </div>
@@ -1285,8 +1389,8 @@ export default function Proceed({
         </h3>
         <p className="mt-4 text-sm leading-7 text-[#667085] sm:text-[16px] sm:leading-8">
           Adding a co-applicant combines incomes for eligibility. A ₹40k/month
-          income may qualify for ₹24L — adding a spouse earning ₹35k/month raises
-          that to ₹45L+.
+          income may qualify for ₹24L — adding a spouse earning ₹35k/month
+          raises that to ₹45L+.
         </p>
       </div>
 
@@ -1371,7 +1475,11 @@ export default function Proceed({
             <div key={label}>
               <p className="text-sm text-white/45 sm:text-[15px]">{label}</p>
               <p className="mt-1 text-lg text-white sm:text-[19px]">
-                {val || <span className="text-base italic text-white/30">Not provided</span>}
+                {val || (
+                  <span className="text-base italic text-white/30">
+                    Not provided
+                  </span>
+                )}
               </p>
             </div>
           ))}
@@ -1383,47 +1491,138 @@ export default function Proceed({
         <div className="space-y-4">
           <div className="rounded-[18px] border border-white/10 bg-white/[0.04] p-4">
             <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm uppercase text-white/65 sm:text-[15px]">KYC & Photo</p>
+              <p className="text-sm uppercase text-white/65 sm:text-[15px]">
+                KYC & Photo
+              </p>
               <span className="w-fit rounded-full bg-[#0D8F61]/20 px-3 py-1 text-xs font-semibold text-[#08B981] sm:text-[13px]">
-                {[files.aadhaar, files.pan, files.passportPhoto].filter(Boolean).length} / 3 FILES
+                {
+                  [files.aadhaar, files.pan, files.passportPhoto].filter(
+                    Boolean,
+                  ).length
+                }{" "}
+                / 3 FILES
               </span>
             </div>
             <div className="grid gap-3 md:grid-cols-3">
-              {docChip(Landmark, "Aadhaar Card", files.aadhaar?.name || "Not uploaded", !!files.aadhaar)}
-              {docChip(CreditCard, "PAN Card", files.pan?.name || "Not uploaded", !!files.pan)}
-              {docChip(ImageIcon, "Passport Photo", files.passportPhoto?.name || "Not uploaded", !!files.passportPhoto)}
+              {docChip(
+                Landmark,
+                "Aadhaar Card",
+                files.aadhaar?.name || "Not uploaded",
+                !!files.aadhaar,
+              )}
+              {docChip(
+                CreditCard,
+                "PAN Card",
+                files.pan?.name || "Not uploaded",
+                !!files.pan,
+              )}
+              {docChip(
+                ImageIcon,
+                "Passport Photo",
+                files.passportPhoto?.name || "Not uploaded",
+                !!files.passportPhoto,
+              )}
             </div>
           </div>
 
           <div className="rounded-[18px] border border-white/10 bg-white/[0.04] p-4">
             <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm uppercase text-white/65 sm:text-[15px]">Income Documents</p>
+              <p className="text-sm uppercase text-white/65 sm:text-[15px]">
+                Income Documents
+              </p>
               <span className="w-fit rounded-full bg-[#0D8F61]/20 px-3 py-1 text-xs font-semibold text-[#08B981] sm:text-[13px]">
-                {getEmploymentDocGroup(editableLoan.employmentType) === "salaried"
-                  ? [files.payslip1, files.payslip2, files.bankStatement, files.form16].filter(Boolean).length
-                  : [files.itr1, files.itr2, files.degree, files.professionalReg, files.bankStatement, files.addressProof].filter(Boolean).length}
+                {getEmploymentDocGroup(editableLoan.employmentType) ===
+                "salaried"
+                  ? [
+                      files.payslip1,
+                      files.payslip2,
+                      files.bankStatement,
+                      files.form16,
+                    ].filter(Boolean).length
+                  : [
+                      files.itr1,
+                      files.itr2,
+                      files.degree,
+                      files.professionalReg,
+                      files.bankStatement,
+                      files.addressProof,
+                    ].filter(Boolean).length}
                 {" / "}
-                {getEmploymentDocGroup(editableLoan.employmentType) === "salaried" ? 4 : 6}
+                {getEmploymentDocGroup(editableLoan.employmentType) ===
+                "salaried"
+                  ? 4
+                  : 6}
                 {" FILES"}
               </span>
             </div>
 
             <div className="space-y-3">
-              {getEmploymentDocGroup(editableLoan.employmentType) === "salaried" ? (
+              {getEmploymentDocGroup(editableLoan.employmentType) ===
+              "salaried" ? (
                 <>
-                  {docChip(FileText, "Payslip 1", files.payslip1?.name || "Not uploaded", !!files.payslip1)}
-                  {docChip(FileText, "Payslip 2", files.payslip2?.name || "Not uploaded", !!files.payslip2)}
-                  {docChip(FileText, "Bank Statement", files.bankStatement?.name || "Not uploaded", !!files.bankStatement)}
-                  {docChip(FileText, "Form 16", files.form16?.name || "Not uploaded", !!files.form16)}
+                  {docChip(
+                    FileText,
+                    "Payslip 1",
+                    files.payslip1?.name || "Not uploaded",
+                    !!files.payslip1,
+                  )}
+                  {docChip(
+                    FileText,
+                    "Payslip 2",
+                    files.payslip2?.name || "Not uploaded",
+                    !!files.payslip2,
+                  )}
+                  {docChip(
+                    FileText,
+                    "Bank Statement",
+                    files.bankStatement?.name || "Not uploaded",
+                    !!files.bankStatement,
+                  )}
+                  {docChip(
+                    FileText,
+                    "Form 16",
+                    files.form16?.name || "Not uploaded",
+                    !!files.form16,
+                  )}
                 </>
               ) : (
                 <>
-                  {docChip(FileText, "ITR – Year 1", files.itr1?.name || "Not uploaded", !!files.itr1)}
-                  {docChip(FileText, "ITR – Year 2", files.itr2?.name || "Not uploaded", !!files.itr2)}
-                  {docChip(FileText, "Bank Statement", files.bankStatement?.name || "Not uploaded", !!files.bankStatement)}
-                  {docChip(FileText, "Degree Certificate", files.degree?.name || "Not uploaded", !!files.degree)}
-                  {docChip(FileText, "Professional Reg.", files.professionalReg?.name || "Not uploaded", !!files.professionalReg)}
-                  {docChip(FileText, "Address Proof", files.addressProof?.name || "Not uploaded", !!files.addressProof)}
+                  {docChip(
+                    FileText,
+                    "ITR – Year 1",
+                    files.itr1?.name || "Not uploaded",
+                    !!files.itr1,
+                  )}
+                  {docChip(
+                    FileText,
+                    "ITR – Year 2",
+                    files.itr2?.name || "Not uploaded",
+                    !!files.itr2,
+                  )}
+                  {docChip(
+                    FileText,
+                    "Bank Statement",
+                    files.bankStatement?.name || "Not uploaded",
+                    !!files.bankStatement,
+                  )}
+                  {docChip(
+                    FileText,
+                    "Degree Certificate",
+                    files.degree?.name || "Not uploaded",
+                    !!files.degree,
+                  )}
+                  {docChip(
+                    FileText,
+                    "Professional Reg.",
+                    files.professionalReg?.name || "Not uploaded",
+                    !!files.professionalReg,
+                  )}
+                  {docChip(
+                    FileText,
+                    "Address Proof",
+                    files.addressProof?.name || "Not uploaded",
+                    !!files.addressProof,
+                  )}
                 </>
               )}
             </div>
@@ -1454,7 +1653,9 @@ export default function Proceed({
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/5 sm:h-14 sm:w-14">
               <UserX className="h-6 w-6 text-white/35 sm:h-7 sm:w-7" />
             </div>
-            <p className="mt-4 text-lg text-white/85 sm:text-[22px]">No co-applicant added</p>
+            <p className="mt-4 text-lg text-white/85 sm:text-[22px]">
+              No co-applicant added
+            </p>
             <p className="mt-2 text-sm text-white/40 sm:text-[16px]">
               Co-applicants can help improve loan eligibility
             </p>
@@ -1505,7 +1706,9 @@ export default function Proceed({
             <ClipboardList className="h-7 w-7 text-[#246BFF] sm:h-8 sm:w-8" />
           </div>
           <div className="min-w-0 text-left">
-            <p className="text-sm text-white/55 sm:text-[15px]">Loan Reference ID</p>
+            <p className="text-sm text-white/55 sm:text-[15px]">
+              Loan Reference ID
+            </p>
             <p className="truncate text-lg font-semibold text-white sm:text-[22px] md:text-[24px]">
               {loanReferenceId}
             </p>
@@ -1532,10 +1735,34 @@ export default function Proceed({
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {[
-            { Icon: ImageIcon, title: "Under Review", sub: "Status: Active", badge: null, active: true },
-            { Icon: PhoneCall, title: "Team calls within 24h", sub: "Wait for call", badge: "Pending", active: false },
-            { Icon: ShieldCheck, title: "Documents verified", sub: "Post-call stage", badge: "Queued", active: false },
-            { Icon: Building2, title: "Bank matching starts", sub: "Final approval", badge: "Final", active: false },
+            {
+              Icon: ImageIcon,
+              title: "Under Review",
+              sub: "Status: Active",
+              badge: null,
+              active: true,
+            },
+            {
+              Icon: PhoneCall,
+              title: "Team calls within 24h",
+              sub: "Wait for call",
+              badge: "Pending",
+              active: false,
+            },
+            {
+              Icon: ShieldCheck,
+              title: "Documents verified",
+              sub: "Post-call stage",
+              badge: "Queued",
+              active: false,
+            },
+            {
+              Icon: Building2,
+              title: "Bank matching starts",
+              sub: "Final approval",
+              badge: "Final",
+              active: false,
+            },
           ].map(({ Icon, title, sub, badge, active }) => (
             <div
               key={title}
@@ -1595,26 +1822,26 @@ export default function Proceed({
           </button>
 
           <button
-  type="button"
-  onClick={handleGoToDashboard}
-  className="inline-flex w-full items-center justify-center gap-2 rounded-[16px] bg-[#246BFF] px-6 py-3.5 text-base font-medium text-white shadow-[0_10px_25px_rgba(36,107,255,0.35)] sm:w-auto sm:px-8 sm:py-4 sm:text-[17px]"
->
-  Go To Dashboard
-  <ArrowRight className="h-5 w-5" />
-</button>
+            type="button"
+            onClick={handleGoToDashboard}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-[16px] bg-[#246BFF] px-6 py-3.5 text-base font-medium text-white shadow-[0_10px_25px_rgba(36,107,255,0.35)] sm:w-auto sm:px-8 sm:py-4 sm:text-[17px]"
+          >
+            Go To Dashboard
+            <ArrowRight className="h-5 w-5" />
+          </button>
         </div>
       </div>
     </div>
   );
 
   return (
-    <section className="relative min-h-screen overflow-x-hidden bg-[#040814] px-4 pb-14 pt-24 sm:px-6 lg:px-8">
+    <section className="relative min-h-screen overflow-x-hidden bg-[#040814] px-4 pb-14 sm:px-6 lg:px-8">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(52,84,168,0.45),transparent_42%)]" />
         <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#1f3c88]/20 blur-3xl sm:h-[650px] sm:w-[650px] lg:h-[780px] lg:w-[780px]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-6xl">
+      <div className="relative z-10 mx-auto max-w-6xl pt-[55px] sm:pt-[65px] md:pt-[60px] lg:pt-40">
         {!submitted ? (
           <>
             {Stepper()}
