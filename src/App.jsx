@@ -317,6 +317,7 @@ function App() {
 <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </Suspense>
+        </Suspense>
       </BrowserRouter>
   );
 }

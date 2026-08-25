@@ -330,85 +330,60 @@ export default function Dashboard() {
     // ----------------------------------------------------------
 
     const [
-      summaryData,
-      loansData,
-      documentsData,
-      progressData,
-      notificationsData,
-      advisorData,
-    ] = await Promise.all([
-      apiFetch(`${API}/dashboard/summary`),
+  summaryData,
+  loansData,
+  documentsData,
+  progressData,
+  notificationsData,
+  advisorData,
+] = await Promise.all([
+  apiFetch(`${API}/dashboard/summary`),
+  apiFetch(`${API}/dashboard/loans`),
+  apiFetch(`${API}/dashboard/documents`),
+  apiFetch(`${API}/dashboard/progress`),
+  apiFetch(`${API}/dashboard/notifications`),
+  apiFetch(`${API}/dashboard/advisor`),
+]);
 
-      apiFetch(`${API}/dashboard/loans`),
+// SUMMARY
+if (summaryData) {
+  setSummary(summaryData);
+  setCachedData("dashboard_summary", summaryData);
+}
+setLoadingSummary(false);
 
-      apiFetch(`${API}/dashboard/documents`),
+// LOANS
+const newLoans = Array.isArray(loansData) ? loansData : [];
+setLoans(newLoans);
+setCachedData("dashboard_loans", newLoans);
 
-      apiFetch(`${API}/dashboard/progress`),
+if (newLoans.length > 0 && newLoans[0].application_id) {
+  localStorage.setItem(
+    "application_id",
+    String(newLoans[0].application_id)
+  );
+}
+setLoadingLoans(false);
 
-      apiFetch(`${API}/dashboard/notifications`),
+// DOCUMENTS
+setDocuments(documentsData?.documents ?? []);
+setDigilockerIdentity(documentsData?.digilocker_identity ?? null);
+setLoadingDocs(false);
 
-      apiFetch(`${API}/dashboard/advisor`),
-    ]);
+// PROGRESS
+const latest = progressData?.data?.[0] ?? null;
+setProgress(latest);
+setLoadingProgress(false);
 
-    // ----------------------------------------------------------
-    // SUMMARY
-    // ----------------------------------------------------------
+// NOTIFICATIONS
+setNotifications(notificationsData?.notifications ?? []);
+setLoadingNotifs(false);
 
-    if (summaryData) {
-      setSummary(summaryData);
+// ADVISOR
+setAdvisor(advisorData?.advisor ?? null);
+setLoadingAdvisor(false);
 
-      setCachedData("dashboard_summary", summaryData);
-    }
-
-    setLoadingSummary(false);
-
-    // ----------------------------------------------------------
-    // LOANS
-    // ----------------------------------------------------------
-
-    const newLoans = Array.isArray(loansData) ? loansData : [];
-
-    setLoans(newLoans);
-
-    setCachedData("dashboard_loans", newLoans);
-
-    if (newLoans.length > 0 && newLoans[0].application_id) {
-      localStorage.setItem(
-        "application_id",
-        String(newLoans[0].application_id),
-      );
-    }
-    })
-.finally(() => setLoadingLoans(false));
-
-    // documents
-     // documents
-apiFetch(`${API}/dashboard/documents`)
-  .then(d => {
-    setDocuments(d.documents ?? []);
-    setDigilockerIdentity(d.digilocker_identity ?? null);
-  })
-  .finally(() => setLoadingDocs(false));
-
-    // progress
-    // progress
-apiFetch(`${API}/dashboard/progress`)
-  .then(d => {
-    const latest = d?.data?.[0] ?? null;
-    setProgress(latest);
-  })
-  .finally(() => setLoadingProgress(false));
-
-    // notifications
-    apiFetch(`${API}/dashboard/notifications`)
-      .then(d => setNotifications(d.notifications ?? []))
-      .finally(() => setLoadingNotifs(false));
-
-    // advisor — 404 returns null from apiFetch
-     apiFetch(`${API}/dashboard/advisor`)
-  .then(d => setAdvisor(d?.advisor ?? null))
-  .catch(() => setAdvisor(null))
-  .finally(() => setLoadingAdvisor(false));
+   
   }, []);
 
   // ============================================================
