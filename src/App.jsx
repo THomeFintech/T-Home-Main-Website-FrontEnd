@@ -29,6 +29,7 @@ const Home = lazy(() => import("./pages/Home"));
 const Services = lazy(() => import("./pages/Services"));
 const Tools = lazy(() => import("./pages/Tools"));
 const About = lazy(() => import("./pages/About"));
+const Notifications = lazy(() => import("./pages/Notifications"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Career = lazy(() => import("./pages/Career"));
 const Collaborate = lazy(() => import("./pages/Collaborate"));
