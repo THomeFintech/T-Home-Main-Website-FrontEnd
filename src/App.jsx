@@ -4,6 +4,7 @@ import { lazy, Suspense, useEffect } from "react";
 const DashboardLayout = lazy(() => import("./layout/DashboardLayout"));
 const Navbar = lazy(() => import("./components/Navbar"));
 const Footer = lazy(() => import("./components/Footer"));
+const Notifications = lazy(() => import("./pages/Notifications"));
 
 const Register = lazy(() => import("./pages/Register"));
 const BalanceTransfer = lazy(() => import("./pages/BalanceTransfer"));
@@ -160,7 +161,7 @@ function App() {
     import("./pages/TrackApplication");
     import("./pages/DocumentsPage");
   }, []);
-
+ 
   return (
     <BrowserRouter>
       <Suspense fallback={<RouteFallback />}>
@@ -315,6 +316,7 @@ function App() {
 <Route path="/verify-reset-otp" element={<VerifyResetOtp />} />
 <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
+      </Suspense>
       </Suspense>
       </BrowserRouter>
   );

@@ -234,7 +234,7 @@ function UploadModal({ doc, applicationId, onClose, onUploaded }) {
       console.log("Application ID:", applicationId);
       console.log("Document Name:", doc.document_name);
       console.log("File:", file);
-      const token = localStorage.getItem("access_token");
+      const token = sessionStorage.getItem("access_token");
       const res = await fetch(`${API}/document/${applicationId}/upload`, {
         method: "POST",
         headers: {
@@ -524,7 +524,7 @@ function QuickUploadModal({ applicationId, onClose, onUploaded }) {
       const fd = new FormData();
       fd.append("file", file);
       fd.append("document_name", docName.trim());
-      const token = localStorage.getItem("access_token");
+      const token =sessionStorage.getItem("access_token");
       const res = await fetch(`${API}/document/${applicationId}/upload`, {
         method: "POST",
         headers: {
@@ -738,7 +738,7 @@ function DocRow({ doc, applicationId, onUploadClick, onRefresh }) {
       return;
     }
     const viewer = window.open("about:blank", "_blank");
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("access_token");
     const res = await fetch(`${API}/digilocker/documents/${doc.id}/view`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -939,7 +939,7 @@ export default function DocumentsPage() {
     setLoading(true);
     setFetchError(null);
     try {
-      const token = localStorage.getItem("access_token");
+      const token = sessionStorage.getItem("access_token");
 
       const res = await fetch(`${API}/document/${applicationId}`, {
         headers: {
@@ -977,7 +977,7 @@ export default function DocumentsPage() {
   }, [applicationId]);
 
   const fetchDigiLockerDocuments = useCallback(async () => {
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("access_token");
     if (!token) return;
     try {
       const res = await fetch(`${API}/digilocker/documents`, {
@@ -1014,7 +1014,7 @@ export default function DocumentsPage() {
 
   async function fetchFromDigiLocker() {
     if (digilockerLoading) return;
-    if (!localStorage.getItem("access_token")) {
+    if (!sessionStorage.getItem("access_token")) {
       setDigilockerError("Please log in before connecting DigiLocker.");
       return;
     }
@@ -1023,7 +1023,7 @@ export default function DocumentsPage() {
     setDigilockerMessage("");
 
     try {
-      const token = localStorage.getItem("access_token");
+      const token = sessionStorage.getItem("access_token");
       const res = await fetch(`${API}/digilocker/authorize`, {
         method: "GET",
         headers: {

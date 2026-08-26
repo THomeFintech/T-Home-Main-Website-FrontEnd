@@ -675,7 +675,7 @@ export default function Profilepage() {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
   const [avatar, setAvatar] = useState(null);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
   const [form, setForm] = useState({
     firstName: user?.name?.split(" ")[0] || "",
@@ -691,7 +691,7 @@ export default function Profilepage() {
     phone: "",
   });
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("access_token");
 
     if (!token) return;
 
@@ -771,7 +771,7 @@ export default function Profilepage() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+         Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
         },
         body: JSON.stringify({
           first_name: form.firstName,
@@ -790,7 +790,7 @@ export default function Profilepage() {
       }
 
       // ✅ Update localStorage
-      localStorage.setItem(
+      sessionStorage.setItem(
         "user",
         JSON.stringify({
           name: form.firstName + " " + form.lastName,
@@ -831,7 +831,7 @@ export default function Profilepage() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+         Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
         },
         body: JSON.stringify({
           email: contactDraft.email,
@@ -850,7 +850,7 @@ export default function Profilepage() {
       setEditContact(false);
 
       // ✅ update localStorage
-      localStorage.setItem(
+      sessionStorage.setItem(
         "user",
         JSON.stringify({
           name: form.firstName + " " + form.lastName,
@@ -877,7 +877,7 @@ export default function Profilepage() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+         Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
         },
         body: JSON.stringify({
           old_password: pw.current,

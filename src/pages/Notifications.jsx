@@ -233,7 +233,7 @@ export default function Notifications() {
       setLoading(true);
       setError("");
 
-      const token = localStorage.getItem("access_token");
+     const token = sessionStorage.getItem("access_token");
 
       console.log("Notification API URL:", BASE_URL);
       console.log("Access token exists:", !!token);
@@ -308,7 +308,7 @@ export default function Notifications() {
     try {
       setMarkingId(notification.id);
 
-      const token = localStorage.getItem("access_token");
+     const token = sessionStorage.getItem("access_token");
 
       const response = await fetch(
         `${BASE_URL}/dashboard/notifications/${notification.id}/read`,

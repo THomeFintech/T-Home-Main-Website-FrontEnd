@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 
 function authHeaders() {
-  const token = localStorage.getItem("access_token");
+  const token = sessionStorage.getItem("access_token");
 
   if (!token) {
     return null;
@@ -22,7 +22,7 @@ function authHeaders() {
 
 function getCachedData(key, fallback) {
   try {
-    const value = localStorage.getItem(key);
+    const value = sessionStorage.getItem(key);
     return value ? JSON.parse(value) : fallback;
   } catch {
     return fallback;
@@ -31,7 +31,7 @@ function getCachedData(key, fallback) {
 
 function setCachedData(key, value) {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    sessionStorage.setItem(key, JSON.stringify(value));
   } catch {
     // Ignore localStorage errors
   }
@@ -56,10 +56,10 @@ async function apiFetch(url) {
     });
 
     if (response.status === 401) {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("isLoggedIn");
+      sessionStorage.removeItem("access_token");
+      sessionStorage.removeItem("refresh_token");
+      sessionStorage.removeItem("user");
+      sessionStorage.removeItem("isLoggedIn");
 
       window.dispatchEvent(new Event("authChange"));
 
@@ -285,7 +285,7 @@ function normaliseApplicationSteps(apiSteps, currentStatus) {
 export default function Dashboard() {
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
   // ── API state ──
   const [summary,       setSummary]       = useState(null);
@@ -366,20 +366,22 @@ export default function Dashboard() {
     // LOANS
     // ----------------------------------------------------------
 
-    const newLoans = Array.isArray(loansData) ? loansData : [];
+  const newLoans = Array.isArray(loansData) ? loansData : [];
 
-    setLoans(newLoans);
+setLoans(newLoans);
 
-    setCachedData("dashboard_loans", newLoans);
+setCachedData("dashboard_loans", newLoans);
 
-    if (newLoans.length > 0 && newLoans[0].application_id) {
-      localStorage.setItem(
-        "application_id",
-        String(newLoans[0].application_id),
-      );
-    }
-    })
-.finally(() => setLoadingLoans(false));
+if (newLoans.length > 0 && newLoans[0].application_id) {
+  localStorage.setItem(
+    "application_id",
+    String(newLoans[0].application_id),
+  );
+}
+
+setLoadingLoans(false);
+    // })
+// .finally(() => setLoadingLoans(false));
 
     // documents
      // documents
