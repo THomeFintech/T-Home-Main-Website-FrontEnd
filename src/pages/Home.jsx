@@ -208,7 +208,7 @@ function Home() {
         ]}
       />
       {/* Mobile + Tablet navbar spacing */}
-      <div className="relative z-0 pt-[48px] md:pt-[48px] lg:pt-0">
+      <div className="relative z-0 pt-[10px] md:pt-[20px] lg:pt-0">
         <Hero />
       </div>
       {/* ── RECOGNITION SECTION ── */}
