@@ -113,7 +113,7 @@ function StatCard({
   loading,
 }) {
   return (
-    <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-5 flex flex-col gap-2.5 sm:gap-3">
+    <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-5 flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <span className="text-xs text-white/40 uppercase tracking-wider">
           {label}
@@ -125,7 +125,7 @@ function StatCard({
       {loading ? (
         <div className="h-8 w-28 rounded-lg bg-white/10 animate-pulse" />
       ) : (
-        <p className="text-xl sm:text-2xl font-semibold text-white">{value ?? "—"}</p>
+        <p className="text-2xl font-semibold text-white">{value ?? "—"}</p>
       )}
 
       {loading ? (
@@ -287,22 +287,68 @@ export default function Dashboard() {
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  // ── API state ──
-  const [summary,       setSummary]       = useState(null);
-  const [loans,         setLoans]         = useState([]);
-  const [documents,     setDocuments]     = useState([]);
-  const [digilockerIdentity, setDigilockerIdentity] = useState(null);
-  const [progress,      setProgress]      = useState(null);
-  const [notifications, setNotifications] = useState([]);
-  const [advisor,       setAdvisor]       = useState(null);
+  // ============================================================
+  // INITIAL DATA
+  // Cached data is loaded synchronously.
+  // This prevents the page from waiting for the API.
+  // ============================================================
 
-  // ── Loading ──
-  const [loadingSummary,  setLoadingSummary]  = useState(true);
-  const [loadingLoans,    setLoadingLoans]    = useState(true);
-  const [loadingDocs,     setLoadingDocs]     = useState(true);
-  const [loadingProgress, setLoadingProgress] = useState(true);
-  const [loadingNotifs,   setLoadingNotifs]   = useState(true);
-  const [loadingAdvisor,  setLoadingAdvisor]  = useState(true);
+  const cachedSummary = getCachedData("dashboard_summary", null);
+
+  const cachedLoans = getCachedData("dashboard_loans", []);
+
+  const cachedDocuments = getCachedData("dashboard_documents", []);
+
+  const cachedProgress = getCachedData("dashboard_progress", null);
+
+  const cachedNotifications = getCachedData("dashboard_notifications", []);
+
+  const cachedAdvisor = getCachedData("dashboard_advisor", null);
+
+  // ============================================================
+  // API STATE
+  // ============================================================
+
+  const [summary, setSummary] = useState(cachedSummary);
+
+  const [loans, setLoans] = useState(
+    Array.isArray(cachedLoans) ? cachedLoans : [],
+  );
+
+  const [documents, setDocuments] = useState(
+    Array.isArray(cachedDocuments) ? cachedDocuments : [],
+  );
+
+  const [progress, setProgress] = useState(cachedProgress);
+
+  const [notifications, setNotifications] = useState(
+    Array.isArray(cachedNotifications) ? cachedNotifications : [],
+  );
+
+  const [advisor, setAdvisor] = useState(cachedAdvisor);
+
+  // ============================================================
+  // LOADING STATE
+  // Only show skeleton when there is NO cached data.
+  // ============================================================
+
+  const [loadingSummary, setLoadingSummary] = useState(!cachedSummary);
+
+  const [loadingLoans, setLoadingLoans] = useState(cachedLoans.length === 0);
+
+  const [loadingDocs, setLoadingDocs] = useState(cachedDocuments.length === 0);
+
+  const [loadingProgress, setLoadingProgress] = useState(!cachedProgress);
+
+  const [loadingNotifs, setLoadingNotifs] = useState(
+    cachedNotifications.length === 0,
+  );
+
+  const [loadingAdvisor, setLoadingAdvisor] = useState(!cachedAdvisor);
+
+  // ============================================================
+  // FETCH ALL DATA IN PARALLEL
+  // ============================================================
 
   const fetchAll = useCallback(async () => {
     // ----------------------------------------------------------
@@ -330,60 +376,104 @@ export default function Dashboard() {
     // ----------------------------------------------------------
 
     const [
-  summaryData,
-  loansData,
-  documentsData,
-  progressData,
-  notificationsData,
-  advisorData,
-] = await Promise.all([
-  apiFetch(`${API}/dashboard/summary`),
-  apiFetch(`${API}/dashboard/loans`),
-  apiFetch(`${API}/dashboard/documents`),
-  apiFetch(`${API}/dashboard/progress`),
-  apiFetch(`${API}/dashboard/notifications`),
-  apiFetch(`${API}/dashboard/advisor`),
-]);
+      summaryData,
+      loansData,
+      documentsData,
+      progressData,
+      notificationsData,
+      advisorData,
+    ] = await Promise.all([
+      apiFetch(`${API}/dashboard/summary`),
 
-// SUMMARY
-if (summaryData) {
-  setSummary(summaryData);
-  setCachedData("dashboard_summary", summaryData);
-}
-setLoadingSummary(false);
+      apiFetch(`${API}/dashboard/loans`),
 
-// LOANS
-const newLoans = Array.isArray(loansData) ? loansData : [];
-setLoans(newLoans);
-setCachedData("dashboard_loans", newLoans);
+      apiFetch(`${API}/dashboard/documents`),
 
-if (newLoans.length > 0 && newLoans[0].application_id) {
-  localStorage.setItem(
-    "application_id",
-    String(newLoans[0].application_id)
-  );
-}
-setLoadingLoans(false);
+      apiFetch(`${API}/dashboard/progress`),
 
-// DOCUMENTS
-setDocuments(documentsData?.documents ?? []);
-setDigilockerIdentity(documentsData?.digilocker_identity ?? null);
-setLoadingDocs(false);
+      apiFetch(`${API}/dashboard/notifications`),
 
-// PROGRESS
-const latest = progressData?.data?.[0] ?? null;
-setProgress(latest);
-setLoadingProgress(false);
+      apiFetch(`${API}/dashboard/advisor`),
+    ]);
 
-// NOTIFICATIONS
-setNotifications(notificationsData?.notifications ?? []);
-setLoadingNotifs(false);
+    // ----------------------------------------------------------
+    // SUMMARY
+    // ----------------------------------------------------------
 
-// ADVISOR
-setAdvisor(advisorData?.advisor ?? null);
-setLoadingAdvisor(false);
+    if (summaryData) {
+      setSummary(summaryData);
 
-   
+      setCachedData("dashboard_summary", summaryData);
+    }
+
+    setLoadingSummary(false);
+
+    // ----------------------------------------------------------
+    // LOANS
+    // ----------------------------------------------------------
+
+    const newLoans = Array.isArray(loansData) ? loansData : [];
+
+    setLoans(newLoans);
+
+    setCachedData("dashboard_loans", newLoans);
+
+    if (newLoans.length > 0 && newLoans[0].application_id) {
+      localStorage.setItem(
+        "application_id",
+        String(newLoans[0].application_id),
+      );
+    }
+
+    setLoadingLoans(false);
+
+    // ----------------------------------------------------------
+    // DOCUMENTS
+    // ----------------------------------------------------------
+
+    const newDocuments = documentsData?.documents ?? [];
+
+    setDocuments(newDocuments);
+
+    setCachedData("dashboard_documents", newDocuments);
+
+    setLoadingDocs(false);
+
+    // ----------------------------------------------------------
+    // PROGRESS
+    // ----------------------------------------------------------
+
+    const newProgress = progressData?.data?.[0] ?? null;
+
+    setProgress(newProgress);
+
+    setCachedData("dashboard_progress", newProgress);
+
+    setLoadingProgress(false);
+
+    // ----------------------------------------------------------
+    // NOTIFICATIONS
+    // ----------------------------------------------------------
+
+    const newNotifications = notificationsData?.notifications ?? [];
+
+    setNotifications(newNotifications);
+
+    setCachedData("dashboard_notifications", newNotifications);
+
+    setLoadingNotifs(false);
+
+    // ----------------------------------------------------------
+    // ADVISOR
+    // ----------------------------------------------------------
+
+    const newAdvisor = advisorData?.advisor ?? null;
+
+    setAdvisor(newAdvisor);
+
+    setCachedData("dashboard_advisor", newAdvisor);
+
+    setLoadingAdvisor(false);
   }, []);
 
   // ============================================================
@@ -546,7 +636,10 @@ setLoadingAdvisor(false);
   // ============================================================
 
   return (
-    <main className="flex-1 min-w-0 overflow-y-auto px-4 sm:px-8 pt-6 sm:pt-8 pb-8 text-slate-100">
+    <main className="relative flex-1 overflow-y-auto pt-24 px-4 pb-4 sm:pt-24 sm:px-8 sm:pb-8 text-slate-100">
+      {/* ======================================================
+          HEADER
+      ====================================================== */}
 
       <div className="mb-6 sm:mb-8">
         <h1 className="text-xl sm:text-2xl font-semibold">
@@ -724,84 +817,76 @@ setLoadingAdvisor(false);
                 ))}
               </div>
             ) : (
-  <div className="relative flex items-start justify-between overflow-x-auto pb-2 -mx-1 px-1">
-    {steps.map((step, i) => {
-      const dot =
-        step.status === "done"
-          ? "bg-green-500 border-green-500"
-          : step.status === "active"
-          ? "bg-[#4f72e0] border-[#4f72e0] ring-4 ring-[#4f72e0]/30"
-          : "bg-transparent border-white/20";
+              <div className="relative flex items-start justify-between">
+                {steps.map((step, i) => {
+                  const dot =
+                    step.status === "done"
+                      ? "bg-green-500 border-green-500"
+                      : step.status === "active"
+                        ? "bg-[#4f72e0] border-[#4f72e0] ring-4 ring-[#4f72e0]/30"
+                        : "bg-transparent border-white/20";
 
-      return (
-        <div
-          key={i}
-          className="flex flex-col items-center flex-none w-[72px] sm:flex-1 sm:w-auto"
-        >
-          <div className="relative flex items-center w-full">
-            {i > 0 && (
-              <div
-                className={`flex-1 h-0.5 ${
-                  steps[i - 1].status === "done"
-                    ? "bg-green-500"
-                    : "bg-white/10"
-                }`}
-              />
+                  return (
+                    <div key={i} className="flex flex-col items-center flex-1">
+                      <div className="relative flex items-center w-full">
+                        {i > 0 && (
+                          <div
+                            className={`flex-1 h-0.5 ${
+                              steps[i - 1].status === "done"
+                                ? "bg-green-500"
+                                : "bg-white/10"
+                            }`}
+                          />
+                        )}
+
+                        <div
+                          className={`w-7 h-7 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${dot}`}
+                        >
+                          {step.status === "done" && (
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="white"
+                              strokeWidth="3"
+                            >
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          )}
+
+                          {step.status === "active" && (
+                            <div className="w-2.5 h-2.5 rounded-full bg-white" />
+                          )}
+                        </div>
+
+                        {i < steps.length - 1 && (
+                          <div
+                            className={`flex-1 h-0.5 ${
+                              step.status === "done"
+                                ? "bg-green-500"
+                                : "bg-white/10"
+                            }`}
+                          />
+                        )}
+                      </div>
+
+                      <span
+                        className={`mt-2 text-xs text-center ${
+                          step.status === "active"
+                            ? "text-white font-medium"
+                            : step.status === "done"
+                              ? "text-white/60"
+                              : "text-white/30"
+                        }`}
+                      >
+                        {step.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             )}
-
-            <div
-              className={`w-7 h-7 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${dot}`}
-            >
-              {step.status === "done" && (
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="3"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              )}
-
-              {step.status === "active" && (
-                <div className="w-2.5 h-2.5 rounded-full bg-white" />
-              )}
-            </div>
-
-            {i < steps.length - 1 && (
-              <div
-                className={`flex-1 h-0.5 ${
-                  step.status === "done"
-                    ? "bg-green-500"
-                    : "bg-white/10"
-                }`}
-              />
-            )}
-          </div>
-
-          <span
-            className={`mt-2 text-[10px] sm:text-xs text-center leading-tight ${
-              step.status === "active"
-                ? "text-white font-medium"
-                : step.status === "done"
-                ? "text-white/60"
-                : "text-white/30"
-            }`}
-          >
-            {step.label}
-          </span>
-        </div>
-      );
-    })}
-  </div>
-)}
-                      
-                  
-              
-              
-            
 
             <div className="mt-5 flex items-center gap-2 rounded-lg bg-white/[0.06] border border-white/20 px-4 py-2.5 backdrop-blur-xl">
               <svg
@@ -936,7 +1021,8 @@ setLoadingAdvisor(false);
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-6">
             <h2 className="font-medium text-white mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+
+            <div className="grid grid-cols-4 gap-3">
               {[
                 {
                   label: "Apply for New Loan",
@@ -1016,7 +1102,7 @@ setLoadingAdvisor(false);
                 <button
                   key={i}
                   onClick={action.onClick}
-                  className="min-w-0 flex flex-col items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[0.06] backdrop-blur-xl px-2 py-3 sm:px-3 sm:py-4 text-white/70 hover:text-white hover:border-[#9cc9ff]/60 hover:bg-white/[0.14] transition-all text-xs text-center leading-tight"
+                  className="flex flex-col items-center gap-2.5 rounded-xl border border-white/20 bg-white/[0.06] backdrop-blur-xl px-3 py-4 text-white/70 hover:text-white hover:border-[#9cc9ff]/60 hover:bg-white/[0.14] transition-all text-xs text-center"
                 >
                   {action.icon}
                   {action.label}
@@ -1049,22 +1135,25 @@ setLoadingAdvisor(false);
                 </p>
               ) : (
                 documents.map((doc, i) => (
-                  <div key={doc.id ?? i} className="flex items-center justify-between rounded-xl border border-white/20 bg-white/[0.06] backdrop-blur-xl px-4 py-3">
-                    <div className="flex min-w-0 items-center gap-2.5 text-white/50">
+                  <div
+                    key={doc.id ?? i}
+                    className="flex items-center justify-between rounded-xl border border-white/20 bg-white/[0.06] backdrop-blur-xl px-4 py-3"
+                  >
+                    <div className="flex items-center gap-2.5 text-white/50">
                       {DOC_ROW_ICON[doc.label] ?? DOC_ROW_ICON["Income Proof"]}
-                      <div className="min-w-0">
-                        <span className="block truncate text-sm text-white/70">{doc.label}</span>
-                        {doc.category && <span className="block truncate text-[11px] text-white/40">{doc.category}</span>}
-                      </div>
+
+                      <span className="text-sm text-white/70">{doc.label}</span>
                     </div>
-                    <div className="ml-3 flex flex-shrink-0 items-center gap-2">
-                      {doc.file_url && <a href={doc.file_url} target="_blank" rel="noreferrer" className="text-[11px] font-medium text-emerald-300 hover:text-emerald-200">View</a>}
-                      {doc.source !== "digilocker" && (
-                        <span className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium ${DOC_COLOR[doc.color] ?? DOC_COLOR.orange}`}>
-                          {DOC_STATUS_ICON[doc.color]} {doc.status}
-                        </span>
-                      )}
-                    </div>
+
+                    <span
+                      className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium ${
+                        DOC_COLOR[doc.color] ?? DOC_COLOR.orange
+                      }`}
+                    >
+                      {DOC_STATUS_ICON[doc.color]}
+
+                      {doc.status}
+                    </span>
                   </div>
                 ))
               )}
@@ -1090,18 +1179,10 @@ setLoadingAdvisor(false);
             </button>
           </div>
 
-          {digilockerIdentity && (digilockerIdentity.pan || digilockerIdentity.aadhaar || digilockerIdentity.name) && (
-            <div className="rounded-2xl border border-white/20 bg-white/[0.07] p-4 backdrop-blur-2xl sm:p-6">
-              <h2 className="mb-4 font-medium text-white">DigiLocker Information</h2>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {digilockerIdentity.name && <div><p className="text-xs text-white/40">Name</p><p className="mt-1 text-sm text-white/80">{digilockerIdentity.name}</p></div>}
-                {digilockerIdentity.pan && <div><p className="text-xs text-white/40">PAN Number</p><p className="mt-1 text-sm text-white/80">{digilockerIdentity.pan}</p></div>}
-                {digilockerIdentity.aadhaar && <div><p className="text-xs text-white/40">Aadhaar Number</p><p className="mt-1 text-sm text-white/80">XXXX XXXX {digilockerIdentity.aadhaar.slice(-4)}</p></div>}
-              </div>
-            </div>
-          )}
+          {/* ==================================================
+              RECENT UPDATES
+          ================================================== */}
 
-          {/* Recent Updates */}
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-6">
             <h2 className="font-medium text-white mb-4">Recent Updates</h2>
 
