@@ -1,35 +1,30 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showBurger, setShowBurger] = useState(true);
+  const mainRef = useRef(null);
   useEffect(() => {
+    const mainElement = mainRef.current;
+
+    if (!mainElement) return;
+
     const handleScroll = () => {
-      if (window.scrollY <= 10) {
-        setShowBurger(true);
-      } else {
-        setShowBurger(false);
-      }
+      setShowBurger(mainElement.scrollTop <= 10);
     };
 
-    const handleMouseMove = (event) => {
-      if (event.clientY <= 80) {
-        setShowBurger(true);
-      } else if (window.scrollY > 10) {
-        setShowBurger(false);
-      }
-    };
+    mainElement.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("mousemove", handleMouseMove);
+    handleScroll();
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMouseMove);
+      mainElement.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -54,10 +49,10 @@ function DashboardLayout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[radial-gradient(1200px_680px_at_20%_-10%,rgba(90,140,255,0.18),transparent_62%),radial-gradient(980px_580px_at_100%_0%,rgba(36,107,198,0.14),transparent_60%),linear-gradient(180deg,#071327_0%,#08162b_100%)] text-slate-100">
+    <div className="flex h-screen overflow-hidden bg-[radial-gradient(1200px_680px_at_20%_-10%,rgba(90,140,255,0.18),transparent_62%),radial-gradient(980px_580px_at_100%_0%,rgba(36,107,198,0.14),transparent_60%),linear-gradient(180deg,#071327_0%,#08162b_100%)] text-slate-100">
       {/* Burger for mobile */}
       <button
-        className={`fixed top-4 left-4 z-40 flex items-center justify-center w-10 h-10 rounded-lg bg-[#1e2447] text-white shadow-lg sm:hidden transition-all duration-300 ${
+        className={`fixed top-4 left-4 z-40 flex items-center justify-center w-10 h-10 rounded-lg bg-[#1e2447] text-white shadow-lg lg:hidden transition-all duration-300 ${
           showBurger
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 -translate-y-3 pointer-events-none"
@@ -103,7 +98,10 @@ function DashboardLayout() {
         )}
       </div>
 
-      <main className="flex-1 overflow-y-auto px-4 sm:px-6 backdrop-blur-[2px]">
+      <main
+        ref={mainRef}
+        className="min-h-0 flex-1 overflow-y-auto px-4 sm:px-6 backdrop-blur-[2px]"
+      >
         <Outlet />
       </main>
     </div>

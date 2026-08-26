@@ -813,7 +813,7 @@ export default function TrackApplication({ applicationId: propId }) {
         }
       `}</style>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-10">
+      <main className="relative w-full max-w-7xl mx-auto pt-24 px-4 pb-10 sm:px-8 sm:pt-24 sm:pb-8">
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>

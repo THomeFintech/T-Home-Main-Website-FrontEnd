@@ -6,34 +6,44 @@ import SEO from "../components/SEO";
 function FAQItem({ question }) {
   const [open, setOpen] = useState(false);
   const answers = {
-    "How do I track my home loan application status?": "You can track your application status in real-time from the Applications section in your dashboard. Each stage — Submitted, Verified, Under Review, Approved, and Disbursed — is clearly shown.",
-    "Can I prepay my personal loan without penalty?": "Yes, you can prepay your personal loan after 6 months of the first EMI with no foreclosure charges. Partial prepayment is also allowed at any time.",
-    "What documents are required for address proof?": "Accepted address proof documents include Aadhaar Card, Passport, Voter ID, Driving License, or a recent utility bill (not older than 3 months).",
-    "How is my CIBIL score calculated?": "Your CIBIL score (300–900) is calculated based on payment history (35%), credit utilization (30%), length of credit history (15%), credit mix (10%), and new credit inquiries (10%).",
+    "How do I track my home loan application status?":
+      "You can track your application status in real-time from the Applications section in your dashboard. Each stage — Submitted, Verified, Under Review, Approved, and Disbursed — is clearly shown.",
+    "Can I prepay my personal loan without penalty?":
+      "Yes, you can prepay your personal loan after 6 months of the first EMI with no foreclosure charges. Partial prepayment is also allowed at any time.",
+    "What documents are required for address proof?":
+      "Accepted address proof documents include Aadhaar Card, Passport, Voter ID, Driving License, or a recent utility bill (not older than 3 months).",
+    "How is my CIBIL score calculated?":
+      "Your CIBIL score (300–900) is calculated based on payment history (35%), credit utilization (30%), length of credit history (15%), credit mix (10%), and new credit inquiries (10%).",
   };
   return (
     <div className="rounded-xl overflow-hidden border border-white/20 bg-white/[0.05] backdrop-blur-xl">
       <button
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between px-5 py-4 text-sm text-white/80 hover:text-white hover:bg-white/[0.08] transition text-left"
       >
         <SEO
-  title="Support"
-  description="Need help? Contact the T-Home Fintech support team for assistance with loans, registrations, account queries, and application tracking."
-  path="/support"
-  keywords="support, customer service, help center, loan support"
-/>
+          title="Support"
+          description="Need help? Contact the T-Home Fintech support team for assistance with loans, registrations, account queries, and application tracking."
+          path="/support"
+          keywords="support, customer service, help center, loan support"
+        />
         <span>{question}</span>
         <svg
-          width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
           className={`flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
         >
-          <polyline points="6 9 12 15 18 9"/>
+          <polyline points="6 9 12 15 18 9" />
         </svg>
       </button>
       {open && (
         <div className="px-5 pb-4 text-sm text-white/55 border-t border-white/20 pt-3 bg-white/[0.03]">
-          {answers[question] || "Please contact our support team for more information."}
+          {answers[question] ||
+            "Please contact our support team for more information."}
         </div>
       )}
     </div>
@@ -44,12 +54,12 @@ export default function Support() {
   // For chatbot open
   const openChatbot = () => {
     // Try to find the chatbot widget and click its open button if available
-    const chatbotBtn = document.querySelector('[data-chatbot-open]');
+    const chatbotBtn = document.querySelector("[data-chatbot-open]");
     if (chatbotBtn) {
       chatbotBtn.click();
     } else {
       // Fallback: scroll to bottom where chatbot is usually docked
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }
   };
   const faqs = [
@@ -60,13 +70,31 @@ export default function Support() {
   ];
 
   const tickets = [
-    { id: "#TKT-8924", title: "Address change request",        sub: "Closed on 12 Oct, 2023",  status: "Resolved",    statusColor: "bg-green-500/15 text-green-400 border-green-400/20"  },
-    { id: "#TKT-9102", title: "Interest rate discrepancy",     sub: "Updated 2 hours ago",      status: "In Progress", statusColor: "bg-orange-500/15 text-orange-400 border-orange-400/20" },
-    { id: "#TKT-9255", title: "Missing document upload issue", sub: "Awaiting your reply",      status: "Pending User", statusColor: "bg-white/10 text-white/40 border-white/10"            },
+    {
+      id: "#TKT-8924",
+      title: "Address change request",
+      sub: "Closed on 12 Oct, 2023",
+      status: "Resolved",
+      statusColor: "bg-green-500/15 text-green-400 border-green-400/20",
+    },
+    {
+      id: "#TKT-9102",
+      title: "Interest rate discrepancy",
+      sub: "Updated 2 hours ago",
+      status: "In Progress",
+      statusColor: "bg-orange-500/15 text-orange-400 border-orange-400/20",
+    },
+    {
+      id: "#TKT-9255",
+      title: "Missing document upload issue",
+      sub: "Awaiting your reply",
+      status: "Pending User",
+      statusColor: "bg-white/10 text-white/40 border-white/10",
+    },
   ];
 
   return (
-    <main className="flex-1 overflow-y-auto pt-24 px-8 pb-8 text-slate-100">
+    <main className="flex-1 overflow-y-auto px-4 pb-8 pt-[76px] sm:px-6 sm:pt-[76px] md:px-8 md:pt-[76px] lg:px-8 lg:pt-24 text-slate-100">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold">Help & Support</h1>
