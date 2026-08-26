@@ -1,35 +1,30 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showBurger, setShowBurger] = useState(true);
+  const mainRef = useRef(null);
   useEffect(() => {
+    const mainElement = mainRef.current;
+
+    if (!mainElement) return;
+
     const handleScroll = () => {
-      if (window.scrollY <= 10) {
-        setShowBurger(true);
-      } else {
-        setShowBurger(false);
-      }
+      setShowBurger(mainElement.scrollTop <= 10);
     };
 
-    const handleMouseMove = (event) => {
-      if (event.clientY <= 80) {
-        setShowBurger(true);
-      } else if (window.scrollY > 10) {
-        setShowBurger(false);
-      }
-    };
+    mainElement.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("mousemove", handleMouseMove);
+    handleScroll();
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMouseMove);
+      mainElement.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -40,7 +35,6 @@ function DashboardLayout() {
     "/profile": "profile",
     "/support": "support",
   };
-
   const activePage = pageMap[location.pathname] ?? "dashboard";
 
   const handleLogout = () => {
@@ -54,127 +48,62 @@ function DashboardLayout() {
     navigate("/get-started");
   };
 
-  const handleNavigate = () => {
-    setSidebarOpen(false);
-  };
-
   return (
-    <div className="flex min-h-screen bg-[radial-gradient(1200px_680px_at_20%_-10%,rgba(90,140,255,0.18),transparent_62%),radial-gradient(980px_580px_at_100%_0%,rgba(36,107,198,0.14),transparent_60%),linear-gradient(180deg,#071327_0%,#08162b_100%)] text-slate-100">
-
-      {/* =========================
-          MOBILE HAMBURGER
-      ========================== */}
+    <div className="flex h-screen overflow-hidden bg-[radial-gradient(1200px_680px_at_20%_-10%,rgba(90,140,255,0.18),transparent_62%),radial-gradient(980px_580px_at_100%_0%,rgba(36,107,198,0.14),transparent_60%),linear-gradient(180deg,#071327_0%,#08162b_100%)] text-slate-100">
+      {/* Burger for mobile */}
       <button
-        type="button"
-        className="
-          fixed top-4 left-4 z-40
-          flex h-10 w-10
-          items-center justify-center
-          rounded-lg
-          bg-[#1e2447]
-          text-white
-          shadow-lg
-          sm:hidden
-        "
+        className={`fixed top-4 left-4 z-40 flex items-center justify-center w-10 h-10 rounded-lg bg-[#1e2447] text-white shadow-lg lg:hidden transition-all duration-300 ${
+          showBurger
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 -translate-y-3 pointer-events-none"
+        }`}
         onClick={() => setSidebarOpen(true)}
         aria-label="Open menu"
       >
-        <span className="text-xl leading-none">☰</span>
+        <span className="text-2xl">☰</span>
       </button>
 
-      {/* =========================
-          DESKTOP SIDEBAR
-      ========================== */}
-      <div className="hidden sm:block">
-        <Sidebar
-          activePage={activePage}
-          onNavigate={() => {}}
-          onLogout={handleLogout}
-        />
+      {/* Sidebar */}
+      <div>
+        <div className="hidden sm:block">
+          <Sidebar
+            activePage={activePage}
+            onNavigate={() => {}}
+            onLogout={handleLogout}
+          />
+        </div>
+
+        {/* Mobile Drawer */}
+        {sidebarOpen && (
+          <div className="fixed inset-0 z-50 flex">
+            <div
+              className="fixed inset-0 bg-black/40"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <div className="relative w-64 max-w-[80vw] h-full bg-[#101a2b] shadow-2xl animate-slideInLeft">
+              <Sidebar
+                activePage={activePage}
+                onNavigate={() => setSidebarOpen(false)}
+                onLogout={handleLogout}
+              />
+              <button
+                className="absolute top-7 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full text-white/90 text-3xl leading-none transition hover:bg-white/10 hover:text-white"
+                onClick={() => setSidebarOpen(false)}
+                aria-label="Close menu"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* =========================
-          MOBILE SIDEBAR DRAWER
-      ========================== */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-50 sm:hidden">
-
-          {/* Overlay */}
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setSidebarOpen(false)}
-          />
-
-          {/* Drawer */}
-          <div
-            className="
-              absolute
-              left-0
-              top-0
-              h-full
-              w-64
-              max-w-[85vw]
-              overflow-hidden
-              bg-[#0d1b32]
-              shadow-2xl
-              animate-slideInLeft
-            "
-          >
-
-            {/* Close button */}
-            <button
-              type="button"
-              onClick={() => setSidebarOpen(false)}
-              className="
-                absolute
-                top-4
-                right-4
-                z-50
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-                rounded-lg
-                text-white
-                text-2xl
-                leading-none
-                hover:bg-white/10
-                transition
-              "
-              aria-label="Close menu"
-            >
-              ×
-            </button>
-
-            {/* Sidebar */}
-            <Sidebar
-              activePage={activePage}
-              onNavigate={handleNavigate}
-              onLogout={handleLogout}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* =========================
-          MAIN CONTENT
-      ========================== */}
       <main
-        className="
-          flex-1
-          min-w-0
-          overflow-y-auto
-          px-4
-          pt-20
-          sm:px-6
-          sm:pt-0
-          backdrop-blur-[2px]
-        "
+        ref={mainRef}
+        className="min-h-0 flex-1 overflow-y-auto px-4 sm:px-6 backdrop-blur-[2px]"
       >
         <Outlet />
       </main>
-
     </div>
   );
 }

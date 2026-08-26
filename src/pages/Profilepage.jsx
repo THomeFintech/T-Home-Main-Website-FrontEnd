@@ -909,7 +909,7 @@ export default function Profilepage() {
 
   return (
     <div
-      className="min-h-screen text-slate-100 font-sans pt-24 pb-10 px-4 sm:px-6 lg:px-8"
+      className="min-h-screen text-slate-100 font-sans pt-20 sm:pt-20 md:pt-20 lg:pt-20 pb-10 px-4 sm:px-6 lg:px-8"
       style={{
         background:
           "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
