@@ -218,6 +218,17 @@ function Icon({ type, className = "w-4 h-4" }) {
           />
         </svg>
       );
+    case "digilocker":
+      return (
+        <svg {...p}>
+          <rect x="4" y="3" width="16" height="18" rx="3" strokeWidth={1.7} />
+          <path
+            strokeLinecap="round"
+            strokeWidth={2.2}
+            d="M9 8h2.5a3 3 0 010 6H9m0-6v8m0-4h2"
+          />
+        </svg>
+      );
     default:
       return (
         <svg {...p}>
@@ -999,6 +1010,10 @@ export default function DocumentsPage() {
   const [groups, setGroups] = useState([]); // [{ category, documents[] }]
   const [verStatus, setVerStatus] = useState(null); // verification-status response
   const [loading, setLoading] = useState(true);
+  const [digilockerDocuments, setDigilockerDocuments] = useState([]);
+  const [digilockerLoading, setDigilockerLoading] = useState(false);
+  const [digilockerError, setDigilockerError] = useState("");
+  const [digilockerMessage, setDigilockerMessage] = useState("");
   const [verLoading, setVerLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
 
@@ -1052,17 +1067,85 @@ export default function DocumentsPage() {
     }
   }, [applicationId]);
 
+  const fetchDigiLockerDocuments = useCallback(async () => {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${API}/digilocker/documents`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setDigilockerDocuments(data.documents ?? []);
+    } catch {
+      // DigiLocker is optional, so don't break the normal document feed.
+    }
+  }, []);
+
   useEffect(() => {
     fetchDocs();
     fetchVerStatus();
-  }, [fetchDocs, fetchVerStatus]);
+    fetchDigiLockerDocuments();
+  }, [fetchDocs, fetchVerStatus, fetchDigiLockerDocuments]);
 
   // ── After a successful upload: refresh both feeds ────────────────────────
   function handleUploaded() {
     fetchDocs();
     fetchVerStatus();
+    fetchDigiLockerDocuments();
   }
 
+  async function fetchFromDigiLocker() {
+    if (digilockerLoading) return;
+
+    if (!localStorage.getItem("access_token")) {
+      setDigilockerError("Please log in before connecting DigiLocker.");
+      return;
+    }
+
+    setDigilockerLoading(true);
+    setDigilockerError("");
+    setDigilockerMessage("");
+
+    try {
+      const token = localStorage.getItem("access_token");
+
+      const res = await fetch(`${API}/digilocker/authorize`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(
+          data.message ??
+            data.detail ??
+            `DigiLocker authorization failed (${res.status}).`,
+        );
+      }
+
+      if (!data.authorization_url) {
+        throw new Error("DigiLocker authorization URL was not returned.");
+      }
+
+      window.location.assign(data.authorization_url);
+    } catch (err) {
+      setDigilockerError(
+        err.message ?? "Unable to fetch documents from DigiLocker.",
+      );
+    } finally {
+      setDigilockerLoading(false);
+    }
+  }
   // ── Flatten all docs across groups for tab filtering ────────────────────
   const allDocs = groups.flatMap((g) => g.documents);
   const actionRequiredCount = allDocs.filter(
@@ -1240,6 +1323,74 @@ export default function DocumentsPage() {
 
           {/* ── RIGHT: Sidebar ───────────────────────────────────────── */}
           <div className="flex flex-col gap-5">
+            {/* DigiLocker */}
+            <div
+              className="rounded-2xl p-5 relative overflow-hidden"
+              style={{
+                ...GLASS.card,
+                border: "1px solid rgba(22,119,210,0.65)",
+                boxShadow:
+                  "0 0 0 1px rgba(22,119,210,0.12), 0 12px 36px rgba(22,119,210,0.18)",
+              }}
+            >
+              <div
+                className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl pointer-events-none"
+                style={{
+                  background: "rgba(22,119,210,0.22)",
+                }}
+              />
+
+              <div className="relative">
+                <div className="flex items-start gap-3 mb-4">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{
+                      background: "rgba(22,119,210,0.22)",
+                      border: "1px solid rgba(80,170,255,0.5)",
+                    }}
+                  >
+                    <Icon type="digilocker" className="w-5 h-5 text-sky-300" />
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-bold text-white">DigiLocker</h3>
+
+                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                      Fetch your verified documents directly from DigiLocker.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={fetchFromDigiLocker}
+                  disabled={digilockerLoading}
+                  className={`w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
+                    !digilockerLoading
+                      ? "bg-sky-500 text-white shadow-lg shadow-sky-500/25 hover:bg-sky-400 hover:shadow-sky-500/40"
+                      : "bg-white/5 text-slate-500 cursor-not-allowed"
+                  }`}
+                >
+                  <Icon type="digilocker" className="w-4 h-4" />
+
+                  {digilockerLoading
+                    ? "Fetching documents..."
+                    : "Fetch from DigiLocker"}
+                </button>
+
+                {digilockerError && (
+                  <p className="mt-3 text-xs leading-relaxed text-red-300">
+                    {digilockerError}
+                  </p>
+                )}
+
+                {digilockerMessage && (
+                  <p className="mt-3 text-xs leading-relaxed text-emerald-300">
+                    {digilockerMessage}
+                  </p>
+                )}
+              </div>
+            </div>
             {/* Quick Upload */}
             <div className="rounded-2xl p-5" style={GLASS.card}>
               <h3 className="text-sm font-semibold text-white mb-4">
