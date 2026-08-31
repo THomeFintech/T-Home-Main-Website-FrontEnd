@@ -45,14 +45,16 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
         alert(data.message || "Google login failed");
         return;
       }
+sessionStorage.setItem("access_token", data.token);
+sessionStorage.setItem("user", JSON.stringify(data.user));
+sessionStorage.setItem("isLoggedIn", "true");
+window.dispatchEvent(new Event("authChange"));
 
-      localStorage.setItem("access_token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("isLoggedIn", "true");
 
-      window.dispatchEvent(new Event("authChange"));
 
-      navigate("/");
+navigate("/");
+
+console.log("🟢 AFTER NAVIGATE:", window.location.pathname);
     } catch (err) {
       console.error(err);
       alert("Google authentication failed.");
