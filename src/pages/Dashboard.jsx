@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 
 function authHeaders() {
-  const token = sessionStorage.getItem("access_token");
+  const token = localStorage.getItem("access_token");
 
   if (!token) {
     return null;
@@ -22,7 +22,7 @@ function authHeaders() {
 
 function getCachedData(key, fallback) {
   try {
-    const value = sessionStorage.getItem(key);
+    const value = localStorage.getItem(key);
     return value ? JSON.parse(value) : fallback;
   } catch {
     return fallback;
@@ -31,7 +31,7 @@ function getCachedData(key, fallback) {
 
 function setCachedData(key, value) {
   try {
-    sessionStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, JSON.stringify(value));
   } catch {
     // Ignore localStorage errors
   }
@@ -56,10 +56,10 @@ async function apiFetch(url) {
     });
 
     if (response.status === 401) {
-      sessionStorage.removeItem("access_token");
-      sessionStorage.removeItem("refresh_token");
-      sessionStorage.removeItem("user");
-      sessionStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("isLoggedIn");
 
       window.dispatchEvent(new Event("authChange"));
 
@@ -285,7 +285,7 @@ function normaliseApplicationSteps(apiSteps, currentStatus) {
 export default function Dashboard() {
   const navigate = useNavigate();
 
-  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   // ============================================================
   // INITIAL DATA
@@ -351,10 +351,6 @@ export default function Dashboard() {
   // ============================================================
 
   const fetchAll = useCallback(async () => {
-    // ----------------------------------------------------------
-    // Existing pending loan sync
-    // ----------------------------------------------------------
-
     const pendingLoanId = localStorage.getItem("loan_id");
 
     if (pendingLoanId) {
@@ -369,6 +365,17 @@ export default function Dashboard() {
           console.warn("Sync failed:", error);
         });
     }
+
+
+    // Load important dashboard data immediately
+    apiFetch(`${API}/dashboard/summary`)
+      .then((data) => {
+        if (data) {
+          setSummary(data);
+          setCachedData("dashboard_summary", data);
+        }
+      })
+      .finally(() => setLoadingSummary(false));
 
     // ----------------------------------------------------------
     // IMPORTANT:
@@ -450,31 +457,62 @@ setLoadingLoans(false);
 
     setCachedData("dashboard_progress", newProgress);
 
-    setLoadingProgress(false);
 
-    // ----------------------------------------------------------
-    // NOTIFICATIONS
-    // ----------------------------------------------------------
+    apiFetch(`${API}/dashboard/loans`)
+      .then((data) => {
+        const newLoans = Array.isArray(data) ? data : [];
 
-    const newNotifications = notificationsData?.notifications ?? [];
+        setLoans(newLoans);
+        setCachedData("dashboard_loans", newLoans);
 
-    setNotifications(newNotifications);
+        if (newLoans.length > 0 && newLoans[0].application_id) {
+          localStorage.setItem(
+            "application_id",
+            String(newLoans[0].application_id),
+          );
+        }
+      })
+      .finally(() => setLoadingLoans(false));
 
-    setCachedData("dashboard_notifications", newNotifications);
+    apiFetch(`${API}/dashboard/documents`)
+      .then((data) => {
+        const newDocuments = data?.documents ?? [];
 
-    setLoadingNotifs(false);
+        setDocuments(newDocuments);
+        setCachedData("dashboard_documents", newDocuments);
+      })
+      .finally(() => setLoadingDocs(false));
 
-    // ----------------------------------------------------------
-    // ADVISOR
-    // ----------------------------------------------------------
+    // Load secondary data in background
+    apiFetch(`${API}/dashboard/progress`)
+      .then((data) => {
+        const newProgress = data?.data?.[0] ?? null;
 
-    const newAdvisor = advisorData?.advisor ?? null;
+        setProgress(newProgress);
+        setCachedData("dashboard_progress", newProgress);
+      })
+      .finally(() => setLoadingProgress(false));
 
-    setAdvisor(newAdvisor);
+    apiFetch(`${API}/dashboard/notifications`)
+      .then((data) => {
+        const newNotifications = data?.notifications ?? [];
 
-    setCachedData("dashboard_advisor", newAdvisor);
+        setNotifications(newNotifications);
+        setCachedData("dashboard_notifications", newNotifications);
+      })
+      .finally(() => setLoadingNotifs(false));
 
-    setLoadingAdvisor(false);
+    apiFetch(`${API}/dashboard/advisor`)
+      .then((data) => {
+        const newAdvisor = data?.advisor ?? null;
+
+        setAdvisor(newAdvisor);
+        setCachedData("dashboard_advisor", newAdvisor);
+      })
+      .catch(() => {
+        setAdvisor(null);
+      })
+      .finally(() => setLoadingAdvisor(false));
   }, []);
 
   // ============================================================
