@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 
 function authHeaders() {
-  const token = localStorage.getItem("access_token");
+  // Prefer sessionStorage (set by login), fall back to localStorage if present
+  const token = sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
 
   if (!token) {
     return null;
@@ -56,6 +57,12 @@ async function apiFetch(url) {
     });
 
     if (response.status === 401) {
+      // Clear tokens from both storage locations to be safe
+      sessionStorage.removeItem("access_token");
+      sessionStorage.removeItem("refresh_token");
+      sessionStorage.removeItem("user");
+      sessionStorage.removeItem("isLoggedIn");
+
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
       localStorage.removeItem("user");
