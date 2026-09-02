@@ -220,7 +220,7 @@ localStorage.setItem("btFinalReport", JSON.stringify(result));
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(47,77,167,0.34),transparent_60%)]" />
 
       <div className="relative z-10 mx-auto max-w-[1320px] rounded-[14px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0.06)_100%)] p-3 shadow-[0_18px_60px_rgba(0,0,0,0.48)] backdrop-blur-xl sm:p-5">
-        <div className="rounded-[8px] border border-slate-200/80 bg-[#f7f9fc] p-4 text-[#1f2937]">
+        <div className="rounded-[12px] border border-white/20 bg-[#182537] px-3 py-2 text-[12px] text-white/85">
           <h2 className="text-[30px] font-semibold leading-none">Our Recommendation</h2>
 
           <div className="mx-auto mt-4 max-w-[760px] text-center">
@@ -237,7 +237,7 @@ localStorage.setItem("btFinalReport", JSON.stringify(result));
                 />
               ) : null}
 
-              <p className="text-[32px] font-semibold text-slate-700">
+              <p className="text-[32px] font-semibold text-white">
                 <span className="inline-flex rounded-[3px] bg-[#8d1f50] px-2 py-0.5 text-[15px] font-semibold text-white">
                   {report.recommended_bank_name}
                 </span>
@@ -245,18 +245,18 @@ localStorage.setItem("btFinalReport", JSON.stringify(result));
               </p>
             </div>
 
-            <p className="mt-2 text-[62px] font-bold leading-none text-[#111827]">
+            <p className="mt-2 text-[62px] font-bold leading-none text-white">
               {formatINR(report.best_net_savings)}{" "}
               <span className="text-[34px] font-semibold text-emerald-600">Total Savings</span>
             </p>
 
-            <div className="mt-2 border-t border-slate-300" />
-            <p className="py-2 text-[28px] text-slate-700">
+            <div className="mt-2 border-t border-white/20" />
+            <p className="py-2 text-[28px] text-white/85">
               Compared to continuing with your current bank.
             </p>
-            <div className="border-t border-slate-300" />
+            <div className="border-t border-white/20" />
 
-            <p className="mt-2 text-[12px] text-slate-500">
+            <p className="mt-2 text-[12px] text-white/60">
               This option offers lower total outflow, manageable EMI stress, and an approval probability of{" "}
               {getApprovalPercent(report.transfer_success_probability)}.
             </p>
@@ -269,20 +269,20 @@ localStorage.setItem("btFinalReport", JSON.stringify(result));
             return (
               <article
                 key={m.title}
-                className="rounded-[12px] border border-slate-200/80 bg-[#f7f9fc] p-3 text-[#1f2937]"
+                className="rounded-[12px] border border-white/20 bg-[#182537] p-3 text-white"
               >
-                <div className="mx-auto mb-1 inline-flex h-7 w-7 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                <div className="mx-auto mb-1 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#173a72] text-blue-300">
                   <Icon size={13} />
                 </div>
                 <h3 className="text-center text-[14px] font-semibold">{m.title}</h3>
                 <div className="mt-2 text-[12px]">
-                  <div className="flex items-center justify-between text-slate-500">
+                  <div className="flex items-center justify-between text-white/60">
                     <span>{m.k1}</span>
-                    <span className={`font-semibold ${m.accent || "text-slate-700"}`}>{m.v1}</span>
+                    <span className={`font-semibold ${m.accent || "text-white"}`}>{m.v1}</span>
                   </div>
-                  <div className="mt-1 flex items-center justify-between text-slate-500">
+                  <div className="mt-1 flex items-center justify-between text-white/60">
                     <span>{m.k2}</span>
-                    <span className={`font-semibold ${m.accent || "text-slate-700"}`}>{m.v2}</span>
+                    <span className={`font-semibold ${m.accent || "text-white"}`}>{m.v2}</span>
                   </div>
                 </div>
               </article>
@@ -291,12 +291,12 @@ localStorage.setItem("btFinalReport", JSON.stringify(result));
         </div>
 
         <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
-          <article className="rounded-[12px] border border-slate-200/80 bg-[#f7f9fc] p-4 text-[#1f2937]">
+          <article className="rounded-[12px] border border-white/20 bg-[#182537] p-4 text-white">
             <h3 className="text-[30px] font-semibold leading-none">Why this bank is recommended</h3>
-            <p className="mt-1 text-[12px] text-slate-500">
+            <p className="mt-1 text-[12px] text-white/60">
               A quick explanation of the factors that improve your balance transfer outcome.
             </p>
-            <ul className="mt-3 space-y-2 text-[14px] text-slate-700">
+            <ul className="mt-3 space-y-2 text-[14px] text-white/85">
               <li className="inline-flex gap-2">
                 <CheckCircle2 size={14} className="mt-0.5 text-emerald-500" />
                 Lower total outflow than your current loan, helping reduce your overall repayment burden.
@@ -314,33 +314,33 @@ localStorage.setItem("btFinalReport", JSON.stringify(result));
                 EMI stress level is marked as <strong>{report.emi_stress_level}</strong>, making the repayment plan easier to manage.
               </li>
             </ul>
-            <div className="mt-3 rounded-[6px] border border-blue-200 bg-blue-50 px-3 py-2 text-[12px] text-blue-700">
+            <div className="mt-3 rounded-[6px] border border-blue-400/30 bg-blue-500/10 px-3 py-2 text-[12px] text-blue-300">
               Decision Benefit: {report.decision || "Lower total outflow compared to your current bank."}
             </div>
           </article>
 
-          <article className="rounded-[12px] border border-slate-200/80 bg-[#f7f9fc] p-4 text-[#1f2937]">
+          <article className="rounded-[12px] border border-white/20 bg-[#182537] p-4 text-white">
             <h3 className="text-[30px] font-semibold leading-none">Comparison visualization</h3>
-            <p className="mt-1 text-[12px] text-slate-500">
+            <p className="mt-1 text-[12px] text-white/60">
               Current Loan vs Recommended Bank across the metrics that matter most.
             </p>
             <div className="mt-3 space-y-3">
               {bars.map((b) => (
                 <div key={b.label}>
-                  <div className="mb-1 flex items-center justify-between text-[12px] text-slate-600">
+                  <div className="mb-1 flex items-center justify-between text-[12px] text-white/70">
                     <span>{b.label}</span>
                     <span>
                       {b.left} → {b.right}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-200">
+                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-white/10">
                       <div
                         className="h-full rounded-full bg-[linear-gradient(90deg,#2f6fff,#284ec4)]"
                         style={{ width: b.width }}
                       />
                     </div>
-                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                    <span className="rounded-full bg-emerald-400/20 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
                       {b.tag}
                     </span>
                   </div>
@@ -351,25 +351,25 @@ localStorage.setItem("btFinalReport", JSON.stringify(result));
         </div>
 
         <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-[12px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-[12px] text-white/85">
+          <div className="rounded-[12px] border border-white/20 bg-[#182537] px-3 py-2 text-[12px] text-white/85">
             <p className="inline-flex items-center gap-2 font-semibold">
               <Lock size={13} className="text-amber-400" /> Secure & Confidential
             </p>
-            <p className="mt-1 text-white/65">Your loan analysis details stay protected and private.</p>
+            <p className="mt-1 text-white/75">Your loan analysis details stay protected and private.</p>
           </div>
-          <div className="rounded-[12px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-[12px] text-white/85">
+          <div className="rounded-[12px] border border-white/20 bg-[#182537] px-3 py-2 text-[12px] text-white/85">
             <p className="inline-flex items-center gap-2 font-semibold">
               <Brain size={13} className="text-blue-400" /> AI-Powered Analysis
             </p>
-            <p className="mt-1 text-white/65">Recommendations are generated using structured financial comparisons.</p>
+            <p className="mt-1 text-white/75">Recommendations are generated using structured financial comparisons.</p>
           </div>
-          <div className="rounded-[12px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-[12px] text-white/85">
+          <div className="rounded-[12px] border border-white/20 bg-[#182537] px-3 py-2 text-[12px] text-white/85">
             <p className="inline-flex items-center gap-2 font-semibold">
               <FileBarChart2 size={13} className="text-emerald-400" /> Transparent Results
             </p>
-            <p className="mt-1 text-white/65">See every major number behind the recommendation before you proceed.</p>
+            <p className="mt-1 text-white/75">See every major number behind the recommendation before you proceed.</p>
           </div>
-          <div className="rounded-[12px] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-3 py-2 text-[12px] text-white/85">
+          <div className="rounded-[12px] border border-white/20 bg-[#182537] px-3 py-2 text-[12px] text-white/85">
            <p className="inline-flex items-center gap-2 font-semibold">
              <FileBarChart2 size={13} className="text-cyan-400" />
               Formula Breakdown
