@@ -5,7 +5,7 @@ import "../App.css";
 
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-
+console.log("BASE_URL:", BASE_URL);
 /* ══════════════════════════════════════
    SHARED CARD SHELL
 ══════════════════════════════════════ */
@@ -112,9 +112,9 @@ const handleLogin = async () => {
       return;
     }
 
-    localStorage.setItem("access_token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    localStorage.setItem("isLoggedIn", "true");
+    sessionStorage.setItem("access_token", data.token);
+    sessionStorage.setItem("user", JSON.stringify(data.user));
+    sessionStorage.setItem("isLoggedIn", "true");
 
     window.dispatchEvent(new Event("authChange"));
 
@@ -482,7 +482,7 @@ function OtpPage({ email, onVerify, onBack }) {
         return;
       }
       if (data.token) {
-  localStorage.setItem("access_token", data.token);
+ sessionStorage.setItem("access_token", data.token);
 }
       onVerify(); // navigate to home / dashboard
     } catch (error) {
@@ -567,24 +567,25 @@ export default function GetStarted({ initialPage = "landing" }) {
     if (initialPage === "login") {
       return (
         <LoginPage
-  onBack={() => setPage("landing")}
-  onForgotPassword={() => navigate("/forgot-password")}
-  onLogin={() => {
-  navigate("/");
-
-  }}
-/>
+          onBack={() => setPage("landing")}
+          onLogin={() => {
+           sessionStorage.setItem("isLoggedIn", "true");
+            window.dispatchEvent(new Event("authChange"));
+            navigate("/");
+          }}
+        />
       );
     }
-     return (
-  <LoginPage
-    onBack={() => setPage("landing")}
-    onForgotPassword={() => navigate("/forgot-password")}
-     onLogin={() => {
-  navigate("/");
-}}
-  />
-);
+    return (
+      <LoginPage
+        onBack={() => setPage("landing")}
+        onLogin={() => {
+          sessionStorage.setItem("isLoggedIn", "true");
+          window.dispatchEvent(new Event("authChange"));
+          navigate("/");
+        }}
+      />
+    );
   }
 
   if (page === "signup") {

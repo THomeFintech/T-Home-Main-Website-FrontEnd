@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import "../styles/Login.css";
@@ -20,11 +21,11 @@ const IconLockDark = () => (
   </svg>
 );
 
-/*const IconPhoneDark = () => (
+const IconPhoneDark = () => (
   <svg className="login-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.42 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 5.5 5.5l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z" />
   </svg>
-);*/
+);
 
 const IconEyeDark = () => (
   <svg className="login-icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -63,11 +64,21 @@ const IconApple = () => (
 );
 
 export default function Login() {
+  console.log("🔴 LOGIN COMPONENT RENDERED");
+
   const navigate = useNavigate();
- // const [mode, setMode] = useState("email");
+    useEffect(() => {
+    console.log("🔴 LOGIN MOUNTED");
+
+    return () => {
+      console.log("🔵 LOGIN UNMOUNTED");
+    };
+  }, []);
+  
+ const [mode, setMode] = useState("email");
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
-  //const [mobile, setMobile] = useState("");
+  const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -82,7 +93,7 @@ export default function Login() {
       headers: {
         "Content-Type": "application/json"
       },
-    /*  body: JSON.stringify(
+    body: JSON.stringify(
   mode === "email"
     ? {
         email: email,
@@ -92,11 +103,8 @@ export default function Login() {
         phone: mobile,
         password: password
       }
-      )*/
-      body: JSON.stringify({
-  email,
-  password,
-})
+      )
+      
     });
      
 
@@ -108,12 +116,9 @@ export default function Login() {
   return;
 }
 
-    // Save token
-    localStorage.setItem("access_token", data.token);
-
-    // Fetch correct user
-    localStorage.setItem("user", JSON.stringify(data.user));
-    localStorage.setItem("isLoggedIn", "true");
+  sessionStorage.setItem("access_token", data.token);
+sessionStorage.setItem("user", JSON.stringify(data.user));
+sessionStorage.setItem("isLoggedIn", "true");
 
     // Notify app
     window.dispatchEvent(new Event("authChange"));
@@ -147,7 +152,7 @@ export default function Login() {
               <h1 className="login-brand">T-HOME</h1>
             </div>
             <h2 className="login-title">Welcome Back!</h2>
-           {/* <div className="login-mode-switch" role="tablist" aria-label="Login mode">
+           <div className="login-mode-switch" role="tablist" aria-label="Login mode">
               <button
                 type="button"
                 className={`login-mode-btn ${mode === "email" ? "login-mode-btn-active" : ""}`}
@@ -164,10 +169,10 @@ export default function Login() {
               >
                 Mobile Number
               </button>
-            </div>*/}
+            </div>
             <form onSubmit={handleLogin} className="login-form">
               <div className="login-field">
-               {/*} <label className="login-label">{mode === "email" ? "Email" : "Mobile Number"}</label>
+                <label className="login-label">{mode === "email" ? "Email" : "Mobile Number"}</label>
                 <div className="login-input-wrapper">
                   {mode === "email" ? <IconMailDark /> : <IconPhoneDark />}
                   <input
@@ -187,20 +192,8 @@ export default function Login() {
                     pattern={mode === "email" ? undefined : "[0-9]{10}"}
                     required
                   />
-                </div>*/}
-                <label className="login-label">Email</label>
-
-<div className="login-input-wrapper">
-  <IconMailDark />
-  <input
-    type="email"
-    className="login-input"
-    placeholder="hello@example.com"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    required
-  />
-</div>
+                </div>
+                 
               </div>
               <div className="login-field">
                  <div className="login-field-top">
