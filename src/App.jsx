@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 
-
 // =========================
 // Lazy Loaded Pages
 // =========================
@@ -17,7 +16,6 @@ const DashboardLayout = lazy(() => import("./layout/DashboardLayout"));
 const Navbar = lazy(() => import("./components/Navbar"));
 const Footer = lazy(() => import("./components/Footer"));
 const Notifications = lazy(() => import("./pages/Notifications"));
-
 
 const Register = lazy(() => import("./pages/Register"));
 
@@ -89,11 +87,6 @@ const DocumentsPage = lazy(() => import("./pages/DocumentsPage"));
 const Profilepage = lazy(() => import("./pages/Profilepage"));
 const Support = lazy(() => import("./pages/Support"));
 
-const Notifications = lazy(() => import("./pages/Notifications"));
-
-
-
-
 // =========================
 // Service Pages
 // =========================
@@ -127,18 +120,6 @@ const PanAadhaarLinking = lazy(() => import("./pages/PanAadhaarLinking"));
 const Proceed = lazy(() => import("./components/Proceed"));
 const LoanForm = lazy(() => import("./components/LoanForm"));
 const ContactForm = lazy(() => import("./components/ContactForm"));
-
-// =========================
-// Keep Main Layout Components
-// Loaded Normally
-// =========================
-
-
-import DashboardLayout from "./layout/DashboardLayout";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-
-
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -232,7 +213,7 @@ function App() {
     import("./pages/TrackApplication");
     import("./pages/DocumentsPage");
   }, []);
- 
+
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <BrowserRouter>
@@ -345,23 +326,6 @@ function App() {
               />
 
               <Route path="services" element={<Services />} />
-
-
-              <Route path="tools" element={<Tools />} />
-
-              <Route path="about" element={<About />} />
-
-              <Route path="contact" element={<Contact />} />
-
-              <Route path="proceed" element={<Proceed />} />
-
-              <Route path="career" element={<Career />} />
-
-              <Route path="collaborate" element={<Collaborate />} />
-
-              <Route path="privacy-policy" element={<PrivacyPolicy />} />
-
-
               <Route path="tools" element={<Tools />} />
               <Route path="about" element={<About />} />
               <Route path="contact" element={<Contact />} />
@@ -408,6 +372,7 @@ function App() {
                 path="udyam-msme-registration"
                 element={<UdyamMsmeRegistration />}
               />
+
               <Route
                 path="company-registration"
                 element={<CompanyRegistration />}
