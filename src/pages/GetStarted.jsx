@@ -112,9 +112,9 @@ const handleLogin = async () => {
       return;
     }
 
-    localStorage.setItem("access_token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    localStorage.setItem("isLoggedIn", "true");
+    sessionStorage.setItem("access_token", data.token);
+    sessionStorage.setItem("user", JSON.stringify(data.user));
+    sessionStorage.setItem("isLoggedIn", "true");
 
     window.dispatchEvent(new Event("authChange"));
 
@@ -482,7 +482,7 @@ function OtpPage({ email, onVerify, onBack }) {
         return;
       }
       if (data.token) {
-  localStorage.setItem("access_token", data.token);
+ sessionStorage.setItem("access_token", data.token);
 }
       onVerify(); // navigate to home / dashboard
     } catch (error) {
@@ -569,7 +569,7 @@ export default function GetStarted({ initialPage = "landing" }) {
         <LoginPage
           onBack={() => setPage("landing")}
           onLogin={() => {
-            localStorage.setItem("isLoggedIn", "true");
+           sessionStorage.setItem("isLoggedIn", "true");
             window.dispatchEvent(new Event("authChange"));
             navigate("/");
           }}

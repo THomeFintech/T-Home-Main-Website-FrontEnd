@@ -815,7 +815,7 @@ export default function TrackApplication({ applicationId: propId }) {
       return;
     }
 
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("access_token");
 
     if (!token) {
       setFindError("Please login to view your applications.");

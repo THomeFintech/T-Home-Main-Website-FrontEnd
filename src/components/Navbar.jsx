@@ -27,13 +27,15 @@ function Navbar() {
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true);
 
+  // AUTH
   const [isLoggedIn, setIsLoggedIn] = useState(
-    () => localStorage.getItem("isLoggedIn") === "true",
+    () => sessionStorage.getItem("isLoggedIn") === "true"
   );
 
   const [user, setUser] = useState(() =>
-    JSON.parse(localStorage.getItem("user") || "{}"),
+    JSON.parse(sessionStorage.getItem("user") || "{}")
   );
+
   const [hasNotifications, setHasNotifications] = useState(false);
 
   const serviceLinks = [
@@ -81,24 +83,28 @@ function Navbar() {
   ];
 
   const orderedMobileServices = mobileServiceOrder.map((label) =>
-    serviceLinks.find((item) => item.label === label),
+    serviceLinks.find((item) => item.label === label)
   );
 
+  // Update auth state when route changes
   useEffect(() => {
-    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
-    setUser(JSON.parse(localStorage.getItem("user") || "{}"));
+    setIsLoggedIn(sessionStorage.getItem("isLoggedIn") === "true");
+    setUser(JSON.parse(sessionStorage.getItem("user") || "{}"));
   }, [location.pathname]);
+
+  // Check notifications
   useEffect(() => {
     let cancelled = false;
 
     const checkNotifications = async () => {
-      if (localStorage.getItem("isLoggedIn") !== "true") {
+      if (sessionStorage.getItem("isLoggedIn") !== "true") {
         if (!cancelled) setHasNotifications(false);
         return;
       }
 
       const token =
-        localStorage.getItem("access_token") || localStorage.getItem("token");
+        sessionStorage.getItem("access_token") ||
+        sessionStorage.getItem("token");
 
       if (!token) {
         if (!cancelled) setHasNotifications(false);
@@ -110,13 +116,16 @@ function Navbar() {
           import.meta.env.VITE_API_URL || "http://localhost:5000"
         ).replace(/\/$/, "");
 
-        const response = await fetch(`${API_BASE}/dashboard/notifications`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `${API_BASE}/dashboard/notifications`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         // Token expired/invalid
         if (response.status === 401) {
@@ -124,9 +133,8 @@ function Navbar() {
             setHasNotifications(false);
           }
 
-          // Stop using the invalid token
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("token");
+          sessionStorage.removeItem("access_token");
+          sessionStorage.removeItem("token");
 
           return;
         }
@@ -154,7 +162,7 @@ function Navbar() {
 
     checkNotifications();
 
-    // Check every 30 seconds instead of every 5 seconds
+    // Check every 30 seconds
     const interval = setInterval(checkNotifications, 30000);
 
     return () => {
@@ -163,10 +171,11 @@ function Navbar() {
     };
   }, [isLoggedIn, location.pathname]);
 
+  // Listen for authentication changes
   useEffect(() => {
     const onAuthChange = () => {
-      setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
-      setUser(JSON.parse(localStorage.getItem("user") || "{}"));
+      setIsLoggedIn(sessionStorage.getItem("isLoggedIn") === "true");
+      setUser(JSON.parse(sessionStorage.getItem("user") || "{}"));
     };
 
     window.addEventListener("authChange", onAuthChange);
@@ -178,6 +187,7 @@ function Navbar() {
     };
   }, []);
 
+  // Navbar scroll behavior
   useEffect(() => {
     const onScroll = () => setShowNavbar(window.scrollY <= 10);
 
@@ -186,9 +196,13 @@ function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close services dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
         setServicesOpen(false);
       }
     }
@@ -204,6 +218,7 @@ function Navbar() {
     };
   }, [servicesOpen]);
 
+  // Clear hover timeout
   useEffect(() => {
     return () => {
       if (hoverTimeoutRef.current) {
@@ -212,12 +227,13 @@ function Navbar() {
     };
   }, []);
 
+  // LOGOUT
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("isLoggedIn");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("refresh_token");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("isLoggedIn");
 
     setIsLoggedIn(false);
     setUser({});
@@ -260,8 +276,7 @@ function Navbar() {
     }, 100);
   };
 
-  // Direct notification navigation.
-  // No dropdown/popup.
+  // Notification navigation
   const handleNotificationClick = () => {
     setMenuOpen(false);
     setServicesOpen(false);
@@ -308,7 +323,7 @@ function Navbar() {
             className="h-full w-full object-cover"
             onError={(e) => {
               e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                user?.name || "U",
+                user?.name || "U"
               )}&background=4f72e0&color=fff`;
             }}
           />
