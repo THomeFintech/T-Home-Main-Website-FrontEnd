@@ -351,10 +351,6 @@ export default function Dashboard() {
   // ============================================================
 
   const fetchAll = useCallback(async () => {
-    // ----------------------------------------------------------
-    // Existing pending loan sync
-    // ----------------------------------------------------------
-
     const pendingLoanId = localStorage.getItem("loan_id");
 
     if (pendingLoanId) {
@@ -370,110 +366,71 @@ export default function Dashboard() {
         });
     }
 
-    // ----------------------------------------------------------
-    // IMPORTANT:
-    // All requests start at the same time.
-    // ----------------------------------------------------------
+    // Load important dashboard data immediately
+    apiFetch(`${API}/dashboard/summary`)
+      .then((data) => {
+        if (data) {
+          setSummary(data);
+          setCachedData("dashboard_summary", data);
+        }
+      })
+      .finally(() => setLoadingSummary(false));
 
-    const [
-      summaryData,
-      loansData,
-      documentsData,
-      progressData,
-      notificationsData,
-      advisorData,
-    ] = await Promise.all([
-      apiFetch(`${API}/dashboard/summary`),
+    apiFetch(`${API}/dashboard/loans`)
+      .then((data) => {
+        const newLoans = Array.isArray(data) ? data : [];
 
-      apiFetch(`${API}/dashboard/loans`),
+        setLoans(newLoans);
+        setCachedData("dashboard_loans", newLoans);
 
-      apiFetch(`${API}/dashboard/documents`),
+        if (newLoans.length > 0 && newLoans[0].application_id) {
+          localStorage.setItem(
+            "application_id",
+            String(newLoans[0].application_id),
+          );
+        }
+      })
+      .finally(() => setLoadingLoans(false));
 
-      apiFetch(`${API}/dashboard/progress`),
+    apiFetch(`${API}/dashboard/documents`)
+      .then((data) => {
+        const newDocuments = data?.documents ?? [];
 
-      apiFetch(`${API}/dashboard/notifications`),
+        setDocuments(newDocuments);
+        setCachedData("dashboard_documents", newDocuments);
+      })
+      .finally(() => setLoadingDocs(false));
 
-      apiFetch(`${API}/dashboard/advisor`),
-    ]);
+    // Load secondary data in background
+    apiFetch(`${API}/dashboard/progress`)
+      .then((data) => {
+        const newProgress = data?.data?.[0] ?? null;
 
-    // ----------------------------------------------------------
-    // SUMMARY
-    // ----------------------------------------------------------
+        setProgress(newProgress);
+        setCachedData("dashboard_progress", newProgress);
+      })
+      .finally(() => setLoadingProgress(false));
 
-    if (summaryData) {
-      setSummary(summaryData);
+    apiFetch(`${API}/dashboard/notifications`)
+      .then((data) => {
+        const newNotifications = data?.notifications ?? [];
 
-      setCachedData("dashboard_summary", summaryData);
-    }
+        setNotifications(newNotifications);
+        setCachedData("dashboard_notifications", newNotifications);
+      })
+      .finally(() => setLoadingNotifs(false));
 
-    setLoadingSummary(false);
+    apiFetch(`${API}/dashboard/advisor`)
+      .then((data) => {
+        const newAdvisor = data?.advisor ?? null;
 
-    // ----------------------------------------------------------
-    // LOANS
-    // ----------------------------------------------------------
-
-    const newLoans = Array.isArray(loansData) ? loansData : [];
-
-    setLoans(newLoans);
-
-    setCachedData("dashboard_loans", newLoans);
-
-    if (newLoans.length > 0 && newLoans[0].application_id) {
-      localStorage.setItem(
-        "application_id",
-        String(newLoans[0].application_id),
-      );
-    }
-
-    setLoadingLoans(false);
-
-    // ----------------------------------------------------------
-    // DOCUMENTS
-    // ----------------------------------------------------------
-
-    const newDocuments = documentsData?.documents ?? [];
-
-    setDocuments(newDocuments);
-
-    setCachedData("dashboard_documents", newDocuments);
-
-    setLoadingDocs(false);
-
-    // ----------------------------------------------------------
-    // PROGRESS
-    // ----------------------------------------------------------
-
-    const newProgress = progressData?.data?.[0] ?? null;
-
-    setProgress(newProgress);
-
-    setCachedData("dashboard_progress", newProgress);
-
-    setLoadingProgress(false);
-
-    // ----------------------------------------------------------
-    // NOTIFICATIONS
-    // ----------------------------------------------------------
-
-    const newNotifications = notificationsData?.notifications ?? [];
-
-    setNotifications(newNotifications);
-
-    setCachedData("dashboard_notifications", newNotifications);
-
-    setLoadingNotifs(false);
-
-    // ----------------------------------------------------------
-    // ADVISOR
-    // ----------------------------------------------------------
-
-    const newAdvisor = advisorData?.advisor ?? null;
-
-    setAdvisor(newAdvisor);
-
-    setCachedData("dashboard_advisor", newAdvisor);
-
-    setLoadingAdvisor(false);
+        setAdvisor(newAdvisor);
+        setCachedData("dashboard_advisor", newAdvisor);
+      })
+      .catch(() => {
+        setAdvisor(null);
+      })
+      .finally(() => setLoadingAdvisor(false));
   }, []);
 
   // ============================================================

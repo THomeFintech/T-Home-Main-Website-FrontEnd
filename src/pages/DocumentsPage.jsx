@@ -1002,20 +1002,36 @@ function SidebarSkeleton() {
 // ─────────────────────────────────────────────────────────────────────────────
 export default function DocumentsPage() {
   // ── applicationId from localStorage (set by TrackApplication after /submit) ─
-  const applicationId = localStorage.getItem("application_id")
-    ? Number(localStorage.getItem("application_id"))
-    : null;
+  const applicationId = Number(localStorage.getItem("application_id")) || null;
 
   // ── State ─────────────────────────────────────────────────────────────────
-  const [groups, setGroups] = useState([]); // [{ category, documents[] }]
-  const [verStatus, setVerStatus] = useState(null); // verification-status response
-  const [loading, setLoading] = useState(true);
+  const getCacheKey = (id) => `documents_cache_${id}`;
+
+  const cachedDocuments = applicationId
+    ? sessionStorage.getItem(getCacheKey(applicationId))
+    : null;
+
+  const [groups, setGroups] = useState(() => {
+    try {
+      return cachedDocuments ? JSON.parse(cachedDocuments) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [verStatus, setVerStatus] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+
   const [digilockerDocuments, setDigilockerDocuments] = useState([]);
   const [digilockerLoading, setDigilockerLoading] = useState(false);
   const [digilockerError, setDigilockerError] = useState("");
   const [digilockerMessage, setDigilockerMessage] = useState("");
-  const [verLoading, setVerLoading] = useState(true);
+
+  const [verLoading, setVerLoading] = useState(false);
   const [fetchError, setFetchError] = useState(null);
+
+  const fetchedRef = useRef(false);
 
   const [activeTab, setActiveTab] = useState("All Documents");
   const [uploadTarget, setUploadTarget] = useState(null); // doc object for UploadModal
@@ -1027,8 +1043,11 @@ export default function DocumentsPage() {
       setLoading(false);
       return;
     }
-    setLoading(true);
+
+    // IMPORTANT:
+    // Do not block the page while fetching.
     setFetchError(null);
+
     try {
       const token = localStorage.getItem("access_token");
 
@@ -1037,9 +1056,22 @@ export default function DocumentsPage() {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+
+      if (!res.ok) {
+        throw new Error(`Server returned ${res.status}`);
+      }
+
       const data = await res.json();
-      setGroups(data.groups ?? []);
+      const freshGroups = data.groups ?? [];
+
+      // Update UI immediately when fresh data arrives
+      setGroups(freshGroups);
+
+      // Cache for instant display next time
+      sessionStorage.setItem(
+        getCacheKey(applicationId),
+        JSON.stringify(freshGroups),
+      );
     } catch (err) {
       setFetchError(err.message);
     } finally {
@@ -1053,15 +1085,21 @@ export default function DocumentsPage() {
       setVerLoading(false);
       return;
     }
-    setVerLoading(true);
+
     try {
       const res = await fetch(
         `${API}/document/${applicationId}/verification-status`,
       );
+
       if (!res.ok) throw new Error();
-      setVerStatus(await res.json());
+
+      const data = await res.json();
+
+      // Update sidebar when response arrives.
+      // It does NOT block the document page.
+      setVerStatus(data);
     } catch {
-      /* non-critical — sidebar will degrade gracefully */
+      // Non-critical.
     } finally {
       setVerLoading(false);
     }
@@ -1082,17 +1120,25 @@ export default function DocumentsPage() {
       if (!res.ok) return;
 
       const data = await res.json();
+
+      // Update DigiLocker independently.
       setDigilockerDocuments(data.documents ?? []);
     } catch {
-      // DigiLocker is optional, so don't break the normal document feed.
+      // DigiLocker is optional.
     }
   }, []);
 
   useEffect(() => {
+    if (!applicationId || fetchedRef.current) return;
+
+    fetchedRef.current = true;
+
+    // Start all requests in background.
+    // None of them blocks the page rendering.
     fetchDocs();
     fetchVerStatus();
     fetchDigiLockerDocuments();
-  }, [fetchDocs, fetchVerStatus, fetchDigiLockerDocuments]);
+  }, [applicationId, fetchDocs, fetchVerStatus, fetchDigiLockerDocuments]);
 
   // ── After a successful upload: refresh both feeds ────────────────────────
   function handleUploaded() {
@@ -1286,9 +1332,7 @@ export default function DocumentsPage() {
               </div>
 
               {/* Content */}
-              {loading ? (
-                <DocListSkeleton />
-              ) : visibleGroups.length === 0 ? (
+              {visibleGroups.length === 0 ? (
                 <div className="flex flex-col items-center py-16 gap-3 text-slate-500">
                   <Icon type="doc" className="w-10 h-10 opacity-30" />
                   <p className="text-sm">No documents in this category</p>
@@ -1455,107 +1499,99 @@ export default function DocumentsPage() {
                 </div>
               </div>
 
-              {verLoading ? (
-                <SidebarSkeleton />
-              ) : (
-                <>
-                  <div className="mb-3">
-                    <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-xs text-slate-400 font-medium">
-                        Progress
-                      </span>
-                      <span className="text-xs font-bold text-blue-400">
-                        {progress}%
-                      </span>
-                    </div>
+              <div className="mb-3">
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className="text-xs text-slate-400 font-medium">
+                    Progress
+                  </span>
+                  <span className="text-xs font-bold text-blue-400">
+                    {progress}%
+                  </span>
+                </div>
+                <div
+                  className="h-1.5 rounded-full w-full"
+                  style={{ background: "rgba(80,130,220,0.15)" }}
+                >
+                  <div
+                    className="h-1.5 progress-bar-fill"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Counts row */}
+              {verStatus && (
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  {[
+                    {
+                      label: "Verified",
+                      value: verStatus.verified_count,
+                      color: "text-emerald-400",
+                    },
+                    {
+                      label: "Pending",
+                      value: verStatus.pending_count,
+                      color: "text-amber-400",
+                    },
+                    {
+                      label: "Required",
+                      value: verStatus.action_required_count,
+                      color: "text-red-400",
+                    },
+                  ].map(({ label, value, color }) => (
                     <div
-                      className="h-1.5 rounded-full w-full"
-                      style={{ background: "rgba(80,130,220,0.15)" }}
+                      key={label}
+                      className="rounded-xl p-2.5 text-center"
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.07)",
+                      }}
                     >
-                      <div
-                        className="h-1.5 progress-bar-fill"
-                        style={{ width: `${progress}%` }}
-                      />
+                      <p className={`text-lg font-bold ${color}`}>{value}</p>
+                      <p className="text-[10px] text-slate-500 mt-0.5">
+                        {label}
+                      </p>
                     </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Next steps */}
+              {nextSteps.length > 0 && (
+                <div
+                  className="rounded-xl p-3"
+                  style={
+                    hasActions
+                      ? {
+                          background: "rgba(239,68,68,0.06)",
+                          border: "1px solid rgba(239,68,68,0.2)",
+                        }
+                      : {
+                          background: "rgba(16,185,129,0.06)",
+                          border: "1px solid rgba(16,185,129,0.2)",
+                        }
+                  }
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Icon
+                      type={hasActions ? "clock" : "check"}
+                      className={`w-3.5 h-3.5 ${hasActions ? "text-slate-400" : "text-emerald-400"}`}
+                    />
+                    <p className="text-xs font-semibold text-slate-300">
+                      Next Steps
+                    </p>
                   </div>
-
-                  {/* Counts row */}
-                  {verStatus && (
-                    <div className="grid grid-cols-3 gap-2 mb-3">
-                      {[
-                        {
-                          label: "Verified",
-                          value: verStatus.verified_count,
-                          color: "text-emerald-400",
-                        },
-                        {
-                          label: "Pending",
-                          value: verStatus.pending_count,
-                          color: "text-amber-400",
-                        },
-                        {
-                          label: "Required",
-                          value: verStatus.action_required_count,
-                          color: "text-red-400",
-                        },
-                      ].map(({ label, value, color }) => (
-                        <div
-                          key={label}
-                          className="rounded-xl p-2.5 text-center"
-                          style={{
-                            background: "rgba(255,255,255,0.04)",
-                            border: "1px solid rgba(255,255,255,0.07)",
-                          }}
-                        >
-                          <p className={`text-lg font-bold ${color}`}>
-                            {value}
-                          </p>
-                          <p className="text-[10px] text-slate-500 mt-0.5">
-                            {label}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Next steps */}
-                  {nextSteps.length > 0 && (
-                    <div
-                      className="rounded-xl p-3"
-                      style={
-                        hasActions
-                          ? {
-                              background: "rgba(239,68,68,0.06)",
-                              border: "1px solid rgba(239,68,68,0.2)",
-                            }
-                          : {
-                              background: "rgba(16,185,129,0.06)",
-                              border: "1px solid rgba(16,185,129,0.2)",
-                            }
-                      }
-                    >
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <Icon
-                          type={hasActions ? "clock" : "check"}
-                          className={`w-3.5 h-3.5 ${hasActions ? "text-slate-400" : "text-emerald-400"}`}
-                        />
-                        <p className="text-xs font-semibold text-slate-300">
-                          Next Steps
-                        </p>
-                      </div>
-                      <ul className="space-y-1">
-                        {nextSteps.map((step, i) => (
-                          <li
-                            key={i}
-                            className="text-xs text-slate-400 leading-relaxed"
-                          >
-                            {step}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </>
+                  <ul className="space-y-1">
+                    {nextSteps.map((step, i) => (
+                      <li
+                        key={i}
+                        className="text-xs text-slate-400 leading-relaxed"
+                      >
+                        {step}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </div>
 
