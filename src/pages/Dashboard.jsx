@@ -366,6 +366,7 @@ export default function Dashboard() {
         });
     }
 
+
     // Load important dashboard data immediately
     apiFetch(`${API}/dashboard/summary`)
       .then((data) => {
@@ -375,6 +376,87 @@ export default function Dashboard() {
         }
       })
       .finally(() => setLoadingSummary(false));
+
+    // ----------------------------------------------------------
+    // IMPORTANT:
+    // All requests start at the same time.
+    // ----------------------------------------------------------
+
+    const [
+      summaryData,
+      loansData,
+      documentsData,
+      progressData,
+      notificationsData,
+      advisorData,
+    ] = await Promise.all([
+      apiFetch(`${API}/dashboard/summary`),
+
+      apiFetch(`${API}/dashboard/loans`),
+
+      apiFetch(`${API}/dashboard/documents`),
+
+      apiFetch(`${API}/dashboard/progress`),
+
+      apiFetch(`${API}/dashboard/notifications`),
+
+      apiFetch(`${API}/dashboard/advisor`),
+    ]);
+
+    // ----------------------------------------------------------
+    // SUMMARY
+    // ----------------------------------------------------------
+
+    if (summaryData) {
+      setSummary(summaryData);
+
+      setCachedData("dashboard_summary", summaryData);
+    }
+
+    setLoadingSummary(false);
+
+    // ----------------------------------------------------------
+    // LOANS
+    // ----------------------------------------------------------
+
+  const newLoans = Array.isArray(loansData) ? loansData : [];
+
+setLoans(newLoans);
+
+setCachedData("dashboard_loans", newLoans);
+
+if (newLoans.length > 0 && newLoans[0].application_id) {
+  localStorage.setItem(
+    "application_id",
+    String(newLoans[0].application_id),
+  );
+}
+
+setLoadingLoans(false);
+  
+
+    // ----------------------------------------------------------
+    // DOCUMENTS
+    // ----------------------------------------------------------
+
+    const newDocuments = documentsData?.documents ?? [];
+
+    setDocuments(newDocuments);
+
+    setCachedData("dashboard_documents", newDocuments);
+
+    setLoadingDocs(false);
+
+    // ----------------------------------------------------------
+    // PROGRESS
+    // ----------------------------------------------------------
+
+    const newProgress = progressData?.data?.[0] ?? null;
+
+    setProgress(newProgress);
+
+    setCachedData("dashboard_progress", newProgress);
+
 
     apiFetch(`${API}/dashboard/loans`)
       .then((data) => {

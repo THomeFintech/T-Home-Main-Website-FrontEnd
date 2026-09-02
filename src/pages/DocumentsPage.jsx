@@ -218,6 +218,7 @@ function Icon({ type, className = "w-4 h-4" }) {
           />
         </svg>
       );
+
     case "digilocker":
       return (
         <svg {...p}>
@@ -229,6 +230,7 @@ function Icon({ type, className = "w-4 h-4" }) {
           />
         </svg>
       );
+
     default:
       return (
         <svg {...p}>
@@ -854,6 +856,39 @@ function DocRow({ doc, applicationId, onUploadClick, onRefresh }) {
   const status = normaliseStatus(doc.status);
   const isActionRequired = status === "action-required";
 
+const isDigiLocker = doc.source === "digilocker";
+
+async function handleView() {
+  if (doc.file_url) {
+    window.open(doc.file_url, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  const viewer = window.open("about:blank", "_blank");
+  const token = sessionStorage.getItem("access_token");
+
+  const res = await fetch(`${API}/digilocker/documents/${doc.id}/view`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+
+    if (viewer) {
+      viewer.document.title = "Document unavailable";
+      viewer.document.body.textContent =
+        error.message || "Unable to view this document.";
+    }
+
+    return;
+  }
+
+  const url = URL.createObjectURL(await res.blob());
+
+  if (viewer) viewer.location.href = url;
+}
+
+
   async function handleDownload() {
     setMenuOpen(false);
     if (!doc.id || !applicationId) return;
@@ -1005,6 +1040,7 @@ export default function DocumentsPage() {
   const applicationId = Number(localStorage.getItem("application_id")) || null;
 
   // ── State ─────────────────────────────────────────────────────────────────
+
   const getCacheKey = (id) => `documents_cache_${id}`;
 
   const cachedDocuments = applicationId
@@ -1029,6 +1065,12 @@ export default function DocumentsPage() {
   const [digilockerMessage, setDigilockerMessage] = useState("");
 
   const [verLoading, setVerLoading] = useState(false);
+
+  const [groups, setGroups] = useState([]); // [{ category, documents[] }]
+  const [verStatus, setVerStatus] = useState(null); // verification-status response
+  const [loading, setLoading] = useState(true);
+  const [verLoading, setVerLoading] = useState(true);
+
   const [fetchError, setFetchError] = useState(null);
 
   const fetchedRef = useRef(false);
@@ -1105,6 +1147,7 @@ export default function DocumentsPage() {
     }
   }, [applicationId]);
 
+
   const fetchDigiLockerDocuments = useCallback(async () => {
     const token = localStorage.getItem("access_token");
 
@@ -1140,12 +1183,39 @@ export default function DocumentsPage() {
     fetchDigiLockerDocuments();
   }, [applicationId, fetchDocs, fetchVerStatus, fetchDigiLockerDocuments]);
 
+
+const fetchDigiLockerDocuments = useCallback(async () => {
+  const token = sessionStorage.getItem("access_token");
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${API}/digilocker/documents`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) return;
+
+    const data = await res.json();
+    setDigilockerDocuments(data.documents ?? []);
+  } catch {
+    // The application document feed remains available if this optional feed fails.
+  }
+}, []);
+
+useEffect(() => {
+  fetchDocs();
+  fetchVerStatus();
+  fetchDigiLockerDocuments();
+}, [fetchDocs, fetchVerStatus, fetchDigiLockerDocuments]);
+ 
+
   // ── After a successful upload: refresh both feeds ────────────────────────
   function handleUploaded() {
     fetchDocs();
     fetchVerStatus();
     fetchDigiLockerDocuments();
   }
+
 
   async function fetchFromDigiLocker() {
     if (digilockerLoading) return;
@@ -1190,8 +1260,42 @@ export default function DocumentsPage() {
       );
     } finally {
       setDigilockerLoading(false);
+
+  setDigilockerLoading(true);
+  setDigilockerError("");
+  setDigilockerMessage("");
+
+  try {
+    const token = sessionStorage.getItem("access_token");
+
+    const res = await fetch(`${API}/digilocker/authorize`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      throw new Error(
+        data.message ??
+          data.detail ??
+          `DigiLocker authorization failed (${res.status}).`
+      );
+    }
+
+    if (!data.authorization_url) {
+      throw new Error("DigiLocker authorization URL was not returned.");
+
     }
   }
+
+
+}
+  
+
+
   // ── Flatten all docs across groups for tab filtering ────────────────────
   const allDocs = groups.flatMap((g) => g.documents);
   const actionRequiredCount = allDocs.filter(
@@ -1367,6 +1471,7 @@ export default function DocumentsPage() {
 
           {/* ── RIGHT: Sidebar ───────────────────────────────────────── */}
           <div className="flex flex-col gap-5">
+
             {/* DigiLocker */}
             <div
               className="rounded-2xl p-5 relative overflow-hidden"
@@ -1435,6 +1540,7 @@ export default function DocumentsPage() {
                 )}
               </div>
             </div>
+
             {/* Quick Upload */}
             <div className="rounded-2xl p-5" style={GLASS.card}>
               <h3 className="text-sm font-semibold text-white mb-4">
