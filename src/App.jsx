@@ -122,11 +122,6 @@ const ContactForm = lazy(() => import("./components/ContactForm"));
 // Keep Main Layout Components
 // Loaded Normally
 // =========================
-
-
-
-import { GoogleOAuthProvider } from "@react-oauth/google";
-
 /* =========================
    SCROLL FIX
 ========================= */
@@ -219,14 +214,13 @@ function App() {
   }, []);
  
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <BrowserRouter>
-        {/* SCROLL FIX */}
-        <ScrollToTop />
+    <BrowserRouter>
+      {/* SCROLL FIX */}
+      <ScrollToTop />
 
-        {/* LAZY LOADING */}
-        <Suspense fallback={<LazyLoadingScreen />}>
-          <Routes>
+      {/* LAZY LOADING */}
+      <Suspense fallback={<LazyLoadingScreen />}>
+        <Routes>
             {/* =========================
                 DASHBOARD ROUTES
             ========================= */}
@@ -388,7 +382,6 @@ function App() {
           </Routes>
         </Suspense>
       </BrowserRouter>
-    </GoogleOAuthProvider>
   );
 }
 
