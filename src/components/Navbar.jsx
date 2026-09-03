@@ -12,13 +12,11 @@ import {
   Utensils,
   Briefcase,
   Repeat,
-  Bell,
 } from "lucide-react";
 
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-
   const dropdownRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
 
@@ -26,46 +24,26 @@ function Navbar() {
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true);
-
-  // AUTH
   const [isLoggedIn, setIsLoggedIn] = useState(
-    () => sessionStorage.getItem("isLoggedIn") === "true"
+    () => localStorage.getItem("isLoggedIn") === "true"
   );
 
-  const [user, setUser] = useState(() =>
-    JSON.parse(sessionStorage.getItem("user") || "{}")
+  const [user, setUser] = useState(
+    () => JSON.parse(localStorage.getItem("user") || "{}")
   );
-
-  const [hasNotifications, setHasNotifications] = useState(false);
 
   const serviceLinks = [
     { label: "Home Loan", to: "/home-loans", icon: Home },
-    {
-      label: "Company Registration",
-      to: "/company-registration",
-      icon: Building,
-    },
+    { label: "Company Registration", to: "/company-registration", icon: Building },
     { label: "Mortgage Loan", to: "/mortgage-loan", icon: Building2 },
     { label: "GST Registration", to: "/gst-registration", icon: Banknote },
-    {
-      label: "Loan Against Property",
-      to: "/loan-against-property",
-      icon: Landmark,
-    },
-    {
-      label: "UDYAM/MSME Registration",
-      to: "/udyam-msme-registration",
-      icon: BadgePercent,
-    },
+    { label: "Loan Against Property", to: "/loan-against-property", icon: Landmark },
+    { label: "UDYAM/MSME Registration", to: "/udyam-msme-registration", icon: BadgePercent },
     { label: "Personal Loan", to: "/personal-loans", icon: Briefcase },
     { label: "ITR Tax Filing", to: "/itr-filing", icon: FileText },
     { label: "Balance Transfer", to: "/balance-transfer", icon: Repeat },
     { label: "Food License", to: "/food-license", icon: Utensils },
-    {
-      label: "PAN & Aadhaar Linking",
-      to: "/pan-aadhaar-linking",
-      icon: LucideLink,
-    },
+    { label: "PAN & Aadhaar Linking", to: "/pan-aadhaar-linking", icon: LucideLink },
   ];
 
   const mobileServiceOrder = [
@@ -86,96 +64,15 @@ function Navbar() {
     serviceLinks.find((item) => item.label === label)
   );
 
-  // Update auth state when route changes
   useEffect(() => {
-    setIsLoggedIn(sessionStorage.getItem("isLoggedIn") === "true");
-    setUser(JSON.parse(sessionStorage.getItem("user") || "{}"));
+    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+    setUser(JSON.parse(localStorage.getItem("user") || "{}"));
   }, [location.pathname]);
 
-  // Check notifications
-  useEffect(() => {
-    let cancelled = false;
-
-    const checkNotifications = async () => {
-      if (sessionStorage.getItem("isLoggedIn") !== "true") {
-        if (!cancelled) setHasNotifications(false);
-        return;
-      }
-
-      const token =
-        sessionStorage.getItem("access_token") ||
-        sessionStorage.getItem("token");
-
-      if (!token) {
-        if (!cancelled) setHasNotifications(false);
-        return;
-      }
-
-      try {
-        const API_BASE = (
-          import.meta.env.VITE_API_URL || "http://localhost:5000"
-        ).replace(/\/$/, "");
-
-        const response = await fetch(
-          `${API_BASE}/dashboard/notifications`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        // Token expired/invalid
-        if (response.status === 401) {
-          if (!cancelled) {
-            setHasNotifications(false);
-          }
-
-          sessionStorage.removeItem("access_token");
-          sessionStorage.removeItem("token");
-
-          return;
-        }
-
-        if (!response.ok) {
-          if (!cancelled) setHasNotifications(false);
-          return;
-        }
-
-        const data = await response.json();
-
-        const notifications = Array.isArray(data)
-          ? data
-          : data.notifications || [];
-
-        if (!cancelled) {
-          setHasNotifications(notifications.length > 0);
-        }
-      } catch {
-        if (!cancelled) {
-          setHasNotifications(false);
-        }
-      }
-    };
-
-    checkNotifications();
-
-    // Check every 30 seconds
-    const interval = setInterval(checkNotifications, 30000);
-
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [isLoggedIn, location.pathname]);
-
-  // Listen for authentication changes
   useEffect(() => {
     const onAuthChange = () => {
-      setIsLoggedIn(sessionStorage.getItem("isLoggedIn") === "true");
-      setUser(JSON.parse(sessionStorage.getItem("user") || "{}"));
+      setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+      setUser(JSON.parse(localStorage.getItem("user") || "{}"));
     };
 
     window.addEventListener("authChange", onAuthChange);
@@ -187,22 +84,15 @@ function Navbar() {
     };
   }, []);
 
-  // Navbar scroll behavior
   useEffect(() => {
     const onScroll = () => setShowNavbar(window.scrollY <= 10);
-
     window.addEventListener("scroll", onScroll);
-
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close services dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setServicesOpen(false);
       }
     }
@@ -218,7 +108,6 @@ function Navbar() {
     };
   }, [servicesOpen]);
 
-  // Clear hover timeout
   useEffect(() => {
     return () => {
       if (hoverTimeoutRef.current) {
@@ -227,13 +116,11 @@ function Navbar() {
     };
   }, []);
 
-  // LOGOUT
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("access_token");
-    sessionStorage.removeItem("refresh_token");
-    sessionStorage.removeItem("user");
-    sessionStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("isLoggedIn");
 
     setIsLoggedIn(false);
     setUser({});
@@ -255,18 +142,11 @@ function Navbar() {
     setMenuOpen(false);
     setServicesOpen(false);
     setMobileServicesOpen(false);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleServicesMouseEnter = () => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-    }
-
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     setServicesOpen(true);
   };
 
@@ -276,41 +156,27 @@ function Navbar() {
     }, 100);
   };
 
-  // Notification navigation
-  const handleNotificationClick = () => {
-    setMenuOpen(false);
-    setServicesOpen(false);
-    setMobileServicesOpen(false);
-
-    navigate("/notifications");
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
-  const NotificationButton = () => (
-    <button
-      type="button"
-      onClick={handleNotificationClick}
-      className="relative flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/80 transition hover:bg-white/20 hover:text-white"
-      title="Notifications"
-      aria-label="Notifications"
-    >
-      <Bell className="h-[18px] w-[18px]" />
-
-      {hasNotifications && (
-        <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full border border-[#0a1628] bg-[#4f72e0]" />
-      )}
-    </button>
-  );
-
   const AuthButtons = () =>
     isLoggedIn ? (
       <>
-        {/* Desktop + Tablet notification button */}
-        <NotificationButton />
+        <button
+          onClick={() => navigate("/notifications")}
+          className="relative flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/80 transition hover:bg-white/20 hover:text-white"
+          title="Notifications"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full border border-[#0a1628] bg-[#4f72e0]" />
+        </button>
 
         <Link
           to="/dashboard"
@@ -367,10 +233,7 @@ function Navbar() {
             px-4 py-[11px]
             shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_0_0_1px_rgba(80,120,200,0.25),0_16px_40px_rgba(5,16,46,0.45)]
             backdrop-blur-[16px]
-            sm:rounded-full sm:px-6
-            sm:bg-[linear-gradient(120deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_42%,rgba(255,255,255,0.04)_100%)]
-            sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]
-            lg:px-8
+            sm:rounded-full sm:px-6 sm:bg-[linear-gradient(120deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_42%,rgba(255,255,255,0.04)_100%)] sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.3)] lg:px-8
           "
         >
           <div className="flex items-center justify-between">
@@ -380,26 +243,16 @@ function Navbar() {
                 alt="T-HOME Logo"
                 className="h-9 w-9 flex-shrink-0 sm:h-10 sm:w-10"
               />
-
               <h1
                 className="truncate text-lg font-semibold text-white sm:text-xl lg:text-2xl"
-                style={{
-                  fontFamily: "Poppins, sans-serif",
-                  fontWeight: 600,
-                }}
+                style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600 }}
               >
                 T-HOME
               </h1>
             </Link>
 
-            {/* DESKTOP NAV */}
             <div className="hidden items-center gap-6 lg:flex xl:gap-8">
-              <NavLink
-                to="/"
-                end
-                className={navLinkClass}
-                onClick={handleNavLink}
-              >
+              <NavLink to="/" end className={navLinkClass} onClick={handleNavLink}>
                 Home
               </NavLink>
 
@@ -429,7 +282,7 @@ function Navbar() {
                 </div>
 
                 {servicesOpen && (
-                  <div className="absolute left-1/2 top-full z-50 mt-3 grid w-[640px] -translate-x-1/2 grid-cols-2 gap-x-5 gap-y-2 rounded-2xl border border-white/20 bg-[rgba(8,20,45,0.94)] p-4 backdrop-blur-3xl backdrop-saturate-150 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+                  <div className="absolute left-1/2 top-full z-50 mt-2 grid w-[640px] -translate-x-1/2 grid-cols-2 gap-x-5 gap-y-2 rounded-xl border border-white/20 bg-white/70 p-4 backdrop-blur-xl shadow-[0_12px_30px_rgba(4,12,38,0.18)]">
                     {serviceLinks.map((item) => {
                       const Icon = item.icon;
 
@@ -438,12 +291,11 @@ function Navbar() {
                           key={item.to}
                           to={item.to}
                           onClick={() => setServicesOpen(false)}
-                          className="group flex min-w-[200px] items-center gap-3 rounded-lg px-3 py-2 text-[14px] font-medium text-white/90 transition-all duration-200 hover:bg-white/10 hover:text-[#4f8fff]"
+                          className="flex min-w-[200px] items-center gap-3 rounded-md px-2 py-1 text-[14px] font-medium text-[#1a2b44] transition hover:bg-white/40 hover:text-[#2563eb]"
                         >
-                          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 shadow-sm transition-all duration-200 group-hover:bg-[#4f8fff]/15">
-                            <Icon className="h-5 w-5 text-white/75 transition-colors duration-200 group-hover:text-[#4f8fff]" />
+                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/60 shadow-sm">
+                            <Icon className="h-5 w-5 text-[#294a6d]" />
                           </span>
-
                           {item.label}
                         </Link>
                       );
@@ -455,32 +307,20 @@ function Navbar() {
               <button
                 onClick={() => {
                   handleNavLink();
-
                   navigate("/tools", {
                     state: { resetTools: true },
                   });
                 }}
-                className="text-white/80 transition hover:text-[#4f72e0]"
+                className="text-white/80 hover:text-[#4f72e0] transition"
               >
                 Financial Tools
               </button>
-
-              <NavLink
-                to="/about"
-                className={navLinkClass}
-                onClick={handleNavLink}
-              >
+              <NavLink to="/about" className={navLinkClass} onClick={handleNavLink}>
                 About
               </NavLink>
-
-              <NavLink
-                to="/career"
-                className={navLinkClass}
-                onClick={handleNavLink}
-              >
+              <NavLink to="/career" className={navLinkClass} onClick={handleNavLink}>
                 Career
               </NavLink>
-
               <NavLink
                 to="/collaborate"
                 className={navLinkClass}
@@ -488,47 +328,27 @@ function Navbar() {
               >
                 Collaborate
               </NavLink>
-
-              <NavLink
-                to="/contact"
-                className={navLinkClass}
-                onClick={handleNavLink}
-              >
+              <NavLink to="/contact" className={navLinkClass} onClick={handleNavLink}>
                 Contact
               </NavLink>
             </div>
 
-            {/* DESKTOP AUTH */}
             <div className="hidden items-center gap-3 md:flex lg:gap-4">
               <AuthButtons />
             </div>
 
-            {/* MOBILE HEADER */}
-            <div className="flex items-center gap-2 md:hidden">
-              {isLoggedIn && <NotificationButton />}
-
-              <button
-                type="button"
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="flex h-10 w-10 items-center justify-center rounded-lg text-white transition hover:bg-white/10"
-                aria-label="Open menu"
-              >
-                <span className="text-2xl leading-none">
-                  {menuOpen ? "✕" : "☰"}
-                </span>
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-white transition hover:bg-white/10 md:hidden"
+            >
+              <span className="text-2xl leading-none">{menuOpen ? "✕" : "☰"}</span>
+            </button>
           </div>
 
-          {/* TABLET NAV */}
           <div className="mt-4 hidden flex-wrap items-center justify-between gap-y-3 border-t border-white/10 pt-4 md:flex lg:hidden">
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-              <NavLink
-                to="/"
-                end
-                className={navLinkClass}
-                onClick={handleNavLink}
-              >
+              <NavLink to="/" end className={navLinkClass} onClick={handleNavLink}>
                 Home
               </NavLink>
 
@@ -540,7 +360,6 @@ function Navbar() {
                 >
                   Services
                 </NavLink>
-
                 <button
                   type="button"
                   onClick={() => setServicesOpen((p) => !p)}
@@ -550,53 +369,32 @@ function Navbar() {
                 </button>
 
                 {servicesOpen && (
-                  <div className="absolute left-0 top-full z-50 mt-3 w-[280px] rounded-2xl border border-white/20 bg-[rgba(10,22,48,0.82)] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
+                  <div className="absolute left-0 top-full z-50 mt-3 w-[280px] rounded-xl border border-[#d8ecff]/30 bg-[#12224d]/95 p-3 shadow-[0_16px_40px_rgba(4,12,38,0.48)] backdrop-blur-xl">
                     <div className="flex flex-col gap-1 text-left">
-                      {serviceLinks.map((item) => {
-                        const Icon = item.icon;
-
-                        return (
-                          <Link
-                            key={`tablet-${item.to}`}
-                            to={item.to}
-                            onClick={() => setServicesOpen(false)}
-                            className="group flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/85 transition-all duration-200 hover:bg-white/10 hover:text-[#4f8fff]"
-                          >
-                            <Icon className="h-4 w-4 text-white/70 transition-colors duration-200 group-hover:text-[#4f8fff]" />
-
-                            {item.label}
-                          </Link>
-                        );
-                      })}
+                      {serviceLinks.map((item) => (
+                        <Link
+                          key={`tablet-${item.to}`}
+                          to={item.to}
+                          onClick={() => setServicesOpen(false)}
+                          className="rounded-md px-3 py-2 text-sm text-white/85 transition hover:bg-[#213a7a]/55 hover:text-[#4f72e0]"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
                     </div>
                   </div>
                 )}
               </div>
 
-              <NavLink
-                to="/tools"
-                className={navLinkClass}
-                onClick={handleNavLink}
-              >
+              <NavLink to="/tools" className={navLinkClass} onClick={handleNavLink}>
                 Financial Tools
               </NavLink>
-
-              <NavLink
-                to="/about"
-                className={navLinkClass}
-                onClick={handleNavLink}
-              >
+              <NavLink to="/about" className={navLinkClass} onClick={handleNavLink}>
                 About
               </NavLink>
-
-              <NavLink
-                to="/career"
-                className={navLinkClass}
-                onClick={handleNavLink}
-              >
+              <NavLink to="/career" className={navLinkClass} onClick={handleNavLink}>
                 Career
               </NavLink>
-
               <NavLink
                 to="/collaborate"
                 className={navLinkClass}
@@ -604,23 +402,16 @@ function Navbar() {
               >
                 Collaborate
               </NavLink>
-
-              <NavLink
-                to="/contact"
-                className={navLinkClass}
-                onClick={handleNavLink}
-              >
+              <NavLink to="/contact" className={navLinkClass} onClick={handleNavLink}>
                 Contact
               </NavLink>
             </div>
 
-            {/* TABLET AUTH + BELL */}
             <div className="flex items-center gap-3">
               <AuthButtons />
             </div>
           </div>
 
-          {/* MOBILE MENU */}
           {menuOpen && (
             <div className="mt-4 space-y-4 border-t border-white/10 pt-4 text-left md:hidden">
               <div className="flex flex-col gap-3">
@@ -642,7 +433,6 @@ function Navbar() {
                     >
                       Services
                     </NavLink>
-
                     <button
                       type="button"
                       onClick={() => setMobileServicesOpen((p) => !p)}
@@ -656,7 +446,6 @@ function Navbar() {
                     <div className="ml-3 mt-2 flex flex-col gap-1 rounded-lg border border-white/10 bg-white/5 p-2">
                       {orderedMobileServices.filter(Boolean).map((item) => {
                         const Icon = item.icon;
-
                         return (
                           <Link
                             key={`mobile-${item.to}`}
@@ -665,12 +454,11 @@ function Navbar() {
                               setMenuOpen(false);
                               setMobileServicesOpen(false);
                             }}
-                            className="group flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-white/80 transition-all duration-200 hover:bg-white/10 hover:text-[#4f8fff]"
+                            className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-white/80 transition hover:bg-[#213a7a]/45 hover:text-[#4f72e0]"
                           >
                             <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white/10">
-                              <Icon className="h-4 w-4 text-white/70 transition-colors duration-200 group-hover:text-[#4f8fff]" />
+                              <Icon className="h-4 w-4" />
                             </span>
-
                             {item.label}
                           </Link>
                         );
@@ -686,7 +474,6 @@ function Navbar() {
                 >
                   Financial Tools
                 </NavLink>
-
                 <NavLink
                   to="/about"
                   className={navLinkClass}
@@ -694,7 +481,6 @@ function Navbar() {
                 >
                   About
                 </NavLink>
-
                 <NavLink
                   to="/career"
                   className={navLinkClass}
@@ -702,7 +488,6 @@ function Navbar() {
                 >
                   Career
                 </NavLink>
-
                 <NavLink
                   to="/collaborate"
                   className={navLinkClass}
@@ -710,7 +495,6 @@ function Navbar() {
                 >
                   Collaborate
                 </NavLink>
-
                 <NavLink
                   to="/contact"
                   className={navLinkClass}

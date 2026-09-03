@@ -30,7 +30,7 @@ useEffect(() => {
   const tool = params.get("tool");
 
   if (tool === "loan-prediction") {
-   const token = sessionStorage.getItem("access_token");
+    const token = localStorage.getItem("access_token");
 
     if (token) {
       setStep(1);
@@ -142,7 +142,7 @@ useEffect(() => {
       }
 
       console.log("Calling /applications/select-bank with payload:", payload);
-const token = sessionStorage.getItem("access_token");// Your login stores the token as "token"
+const token = localStorage.getItem("access_token");// Your login stores the token as "token"
 
 const response = await fetch(`${API_BASE}/applications/select-bank`, {
   method: "POST",
@@ -203,7 +203,7 @@ const response = await fetch(`${API_BASE}/applications/select-bank`, {
       buttonText: "Check Eligibility",
       icon: Shield,
      onClick: () => {
-  const token = sessionStorage.getItem("access_token");
+  const token = localStorage.getItem("access_token");
 
   if (token) {
     setStep(1);
@@ -227,7 +227,7 @@ const response = await fetch(`${API_BASE}/applications/select-bank`, {
       buttonText: "Calculate Now",
       icon: TrendingUp,
      onClick: () => {
-const token = sessionStorage.getItem("access_token");
+const token = localStorage.getItem("access_token");
 
 if (token) {
   navigate("/balance-transfer-contact");

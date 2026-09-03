@@ -19,8 +19,7 @@ export default function ContactForm({
     policyAgree: contactData.policyAgree || false,
   });
 
-const [errors, setErrors] = useState({});
-const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const services = [
     "Home Loan",
@@ -123,79 +122,59 @@ const [submitting, setSubmitting] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (submitting) return;
-
     if (!validateForm()) return;
 
-    setSubmitting(true);
-
-    const currentFormData = { ...formData };
-
-    const payload = {
-      name: currentFormData.name.trim(),
-      phone: currentFormData.phone,
-      email: currentFormData.email.trim(),
-      service_type: currentFormData.service,
-    };
-
-    // Save form data immediately
-    localStorage.setItem("contact_data", JSON.stringify(currentFormData));
-
-    setContactData(currentFormData);
-
-    // Move to next page immediately
-    onNext(currentFormData.service);
-
-    // Create contact in background
     try {
-      const response = await fetch(`${API_BASE}/applications/contact/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const text = await response.text();
-
-      let data = {};
-
-      try {
-        data = text ? JSON.parse(text) : {};
-      } catch {
-        console.error("Contact API returned invalid JSON:", text);
-        return;
-      }
-
-      if (!response.ok) {
-        console.error("Contact API Error:", response.status, data);
-        return;
-      }
-
-      console.log("Contact API Response:", data);
-
-      if (data.contact_group_id) {
-        localStorage.setItem("contact_group_id", String(data.contact_group_id));
-      }
-
-      if (data.contact_id) {
-        localStorage.setItem("contact_id", String(data.contact_id));
-      }
-
-      if (data.loan_id) {
-        localStorage.setItem("loan_id", String(data.loan_id));
-      }
-    } catch (error) {
-      console.error("Background contact creation failed:", error);
-    } finally {
-      setSubmitting(false);
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/applications/contact/create`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        service_type: formData.service,
+      }),
     }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to create contact");
+  }
+
+  const data = await response.json();
+
+  console.log("Contact API Response:", data);
+
+  localStorage.setItem("contact_data", JSON.stringify(formData));
+
+  if (data.contact_group_id) {
+    localStorage.setItem("contact_group_id", data.contact_group_id);
+  }
+
+  if (data.contact_id) {
+    localStorage.setItem("contact_id", data.contact_id);
+  }
+
+  if (data.loan_id) {
+    localStorage.setItem("loan_id", data.loan_id);
+  }
+
+  setContactData(formData);
+
+  onNext(formData.service);
+
+} catch (err) {
+  console.error(err);
+  alert(err.message);
+}
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#040814] px-4 pb-10 sm:px-6 md:px-8">
-      {/* NAVBAR SAFE SPACE */}
-      <div className="h-[70px] w-full sm:h-[115px] md:h-[120px] lg:h-[115px]" />
+    <section className="relative min-h-screen overflow-hidden bg-[#040814] px-4 pt-28 pb-10 sm:px-6 md:pt-32 lg:px-8 lg:pt-36">
       {/* BACKGROUND EFFECTS */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(52,84,168,0.45),transparent_42%)]" />
@@ -210,8 +189,7 @@ const [submitting, setSubmitting] = useState(false);
           </h1>
 
           <p className="mt-2 text-xs sm:text-sm md:text-[15px] font-normal text-white/85 px-2">
-            Provide your details to access our advanced financial planning
-            tools.
+            Provide your details to access our advanced financial planning tools.
           </p>
         </div>
 
@@ -315,20 +293,16 @@ const [submitting, setSubmitting] = useState(false);
                   value={formData.service}
                   onChange={handleChange}
                   className={`h-[44px] sm:h-[46px] w-full appearance-none rounded-[10px] border bg-[rgba(255,255,255,0.08)] px-3 sm:px-4 pr-10 text-[12px] sm:text-[16px] text-white outline-none transition ${
-                    errors.service
-                      ? "border-red-400 focus:border-red-400"
-                      : "border-white/20 focus:border-[#4d8cff]"
-                  }`}
+                      errors.service
+                        ? "border-red-400 focus:border-red-400"
+                        : "border-white/20 focus:border-[#4d8cff]"
+                    }`}
                 >
                   <option value="" className="text-black">
                     Select a service
                   </option>
                   {services.map((service) => (
-                    <option
-                      key={service}
-                      value={service}
-                      className="text-black"
-                    >
+                    <option key={service} value={service} className="text-black">
                       {service}
                     </option>
                   ))}
@@ -340,9 +314,7 @@ const [submitting, setSubmitting] = useState(false);
                 />
               </div>
               {errors.service && (
-                <p className="mt-1 text-[11px] text-red-400">
-                  {errors.service}
-                </p>
+                <p className="mt-1 text-[11px] text-red-400">{errors.service}</p>
               )}
             </div>
 
@@ -357,8 +329,7 @@ const [submitting, setSubmitting] = useState(false);
                   className="mt-1 h-4 w-4 rounded border border-white/30 bg-transparent accent-[#2f73ff]"
                 />
                 <span className="text-[11px] sm:text-[12px] leading-5 text-white/65">
-                  I Solely agree the T&C and the predictions are Totally basing
-                  on my Inputs given.
+                  I Solely agree the T&C and the predictions are Totally basing on my Inputs given.
                 </span>
               </label>
 
@@ -378,41 +349,24 @@ const [submitting, setSubmitting] = useState(false);
                   className="mt-1 h-4 w-4 rounded border border-white/30 bg-transparent accent-[#2f73ff]"
                 />
                 <span className="text-[11px] sm:text-[12px] leading-5 text-white/65">
-                  * I agree to the{" "}
-                  <a
-                    href="/privacy-policy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#50a2ff] underline hover:text-[#2563ff]"
-                  >
-                    Privacy Policy
-                  </a>{" "}
-                  and{" "}
-                  <a
-                    href="/terms-and-conditions"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#50a2ff] underline hover:text-[#2563ff]"
-                  >
-                    Terms & Conditions
-                  </a>{" "}
-                  of T-Home Fintech.
+                  * I agree to the{' '}
+                  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#50a2ff] underline hover:text-[#2563ff]">Privacy Policy</a>
+                  {' '}and{' '}
+                  <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-[#50a2ff] underline hover:text-[#2563ff]">Terms & Conditions</a>
+                  {' '}of T-Home Fintech.
                 </span>
               </label>
               {errors.policyAgree && (
-                <p className="mt-1 text-[11px] text-red-400">
-                  {errors.policyAgree}
-                </p>
+                <p className="mt-1 text-[11px] text-red-400">{errors.policyAgree}</p>
               )}
             </div>
 
             {/* BUTTON */}
             <button
               type="submit"
-              disabled={submitting}
-              className="mt-2 flex h-[44px] sm:h-[46px] w-full items-center justify-center gap-2 rounded-[10px] bg-[#2563ff] text-[12px] sm:text-[16px] font-medium text-white shadow-[0_10px_30px_rgba(37,99,255,0.45)] transition hover:bg-[#1d56e4] disabled:cursor-not-allowed disabled:opacity-70"
+              className="mt-2 flex h-[44px] sm:h-[46px] w-full items-center justify-center gap-2 rounded-[10px] bg-[#2563ff] text-[12px] sm:text-[16px] font-medium text-white shadow-[0_10px_30px_rgba(37,99,255,0.45)] transition hover:bg-[#1d56e4]"
             >
-              {submitting ? "Submitting..." : submitText}
+              {submitText}
             </button>
           </form>
         </div>

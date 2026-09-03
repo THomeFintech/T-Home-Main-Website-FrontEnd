@@ -1,7 +1,7 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const GoogleGIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24">
@@ -45,16 +45,14 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
         alert(data.message || "Google login failed");
         return;
       }
-sessionStorage.setItem("access_token", data.token);
-sessionStorage.setItem("user", JSON.stringify(data.user));
-sessionStorage.setItem("isLoggedIn", "true");
-window.dispatchEvent(new Event("authChange"));
 
+      localStorage.setItem("access_token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("isLoggedIn", "true");
 
+      window.dispatchEvent(new Event("authChange"));
 
-navigate("/");
-
-console.log("🟢 AFTER NAVIGATE:", window.location.pathname);
+      navigate("/");
     } catch (err) {
       console.error(err);
       alert("Google authentication failed.");
