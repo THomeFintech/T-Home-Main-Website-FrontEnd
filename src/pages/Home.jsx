@@ -17,47 +17,32 @@ function Home() {
     { img: "/home/scrolling icons/personal loan.png", text: "Personal Loans" },
     { img: "/home/scrolling icons/home loan.png", text: "Home Loans" },
     { img: "/home/scrolling icons/mortgage loans.png", text: "Mortgage Loans" },
-    {
-      img: "/home/scrolling icons/balance transfer.png",
-      text: "Balance Transfer",
-    },
-    {
-      img: "/home/scrolling icons/company registration.png",
-      text: "Company Registration",
-    },
+    { img: "/home/scrolling icons/balance transfer.png", text: "Balance Transfer" },
+    { img: "/home/scrolling icons/company registration.png", text: "Company Registration" },
     { img: "/home/scrolling icons/Food License.png", text: "Food License" },
     { img: "/home/scrolling icons/gst services.png", text: "GST Services" },
     { img: "/home/scrolling icons/itr tax filing.png", text: "ITR Tax Filing" },
-    {
-      img: "/home/scrolling icons/loan against property.png",
-      text: "Loan Against Property",
-    },
+    { img: "/home/scrolling icons/loan against property.png", text: "Loan Against Property" },
     { img: "/home/scrolling icons/MSME.png", text: "MSME" },
-    {
-      img: "/home/scrolling icons/pan adhaar linking.png",
-      text: "Pan Aadhaar Linking",
-    },
+    { img: "/home/scrolling icons/pan adhaar linking.png", text: "Pan Aadhaar Linking" },
   ];
 
   const services = [
     {
       title: "Loans",
-      description:
-        "Find the right loan, check your eligibility, compare options, and get closer to the funds you need.",
+      description: "Calculate your monthly EMI and understand your repayment plan.",
       button: "View All",
       path: "/services",
     },
     {
       title: "Tax & Compliance",
-      description:
-        "Simplify tax filing and stay compliant with reliable solutions for your financial needs.",
+      description: "Understand your loan approval chances with smart predictions.",
       button: "View All",
       path: "/services",
     },
     {
       title: "Business Registrations",
-      description:
-        "Start and grow your business with easy company, GST, UDYAM, and other registration services.",
+      description: "See how much you can save by switching to a low-interest loan.",
       button: "View All",
       path: "/services",
     },
@@ -68,6 +53,7 @@ function Home() {
 
   const homeSectionBackground =
     "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)";
+
 
   const testimonials = [
     {
@@ -95,64 +81,56 @@ function Home() {
   };
 
   const prevTestimonials = () => {
-    setTestimonialStart(
-      (prev) => (prev - 1 + testimonials.length) % testimonials.length,
-    );
+    setTestimonialStart((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
   const testimonialTrack = [...testimonials, ...testimonials];
 
   const activeTestimonial = testimonials[testimonialStart];
   const renderTestimonialCard = (t, i, key) => {
-    const isCenter =
-      i % testimonials.length === (testimonialStart + 1) % testimonials.length;
+    const isCenter = i % testimonials.length === (testimonialStart + 1) % testimonials.length;
 
     return (
+    <div
+      key={key}
+      className={`rounded-[16px] border px-8 py-10 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_34px_rgba(0,0,0,0.3)] backdrop-blur-md transition-transform duration-700 ease-in-out ${
+        isCenter
+          ? "border-[#7ea7ff]/70 bg-[linear-gradient(180deg,rgba(58,95,218,0.96)_0%,rgba(39,68,184,0.96)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_18px_40px_rgba(8,20,60,0.42)]"
+          : "border-[#c9dcff]/52 bg-[linear-gradient(180deg,rgba(24,34,84,0.84)_0%,rgba(14,22,58,0.9)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_34px_rgba(2,8,28,0.34)]"
+      }`}
+    >
       <div
-        key={key}
-        className={`rounded-[16px] border px-8 py-10 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_34px_rgba(0,0,0,0.3)] backdrop-blur-md transition-transform duration-700 ease-in-out ${
-          isCenter
-            ? "border-[#7ea7ff]/70 bg-[linear-gradient(180deg,rgba(58,95,218,0.96)_0%,rgba(39,68,184,0.96)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_18px_40px_rgba(8,20,60,0.42)]"
-            : "border-[#c9dcff]/52 bg-[linear-gradient(180deg,rgba(24,34,84,0.84)_0%,rgba(14,22,58,0.9)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_34px_rgba(2,8,28,0.34)]"
+        className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full text-[28px] font-semibold leading-none ${
+          isCenter ? "bg-[#3d59b6] text-[#cfe0ff]" : "bg-[#1b336f] text-[#4f7fd7]"
         }`}
       >
-        <div
-          className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full text-[28px] font-semibold leading-none ${
-            isCenter
-              ? "bg-[#3d59b6] text-[#cfe0ff]"
-              : "bg-[#1b336f] text-[#4f7fd7]"
-          }`}
-        >
-          <span className="block -translate-y-px leading-none">"</span>
-        </div>
-        <p
-          className={`mx-auto mt-6 max-w-[320px] leading-[1.45] ${
-            isCenter ? "text-white/95" : "text-white/75"
-          }`}
-          style={{ fontSize: "clamp(13px, 0.85vw, 16px)" }}
-        >
-          {t.text}
-        </p>
-
-        <img
-          src={t.img}
-          alt={t.name}
-          className="mx-auto mt-4 h-16 w-16 rounded-full border border-white/30 object-cover"
-        />
-        <h3
-          className="mt-4 font-semibold text-white"
-          style={{ fontSize: "clamp(14px, 0.95vw, 18px)" }}
-        >
-          {t.name}
-        </h3>
-        <p
-          className={`mt-1 text-sm font-semibold uppercase tracking-wide ${
-            isCenter ? "text-[#69bbff]" : "text-[#4e95ff]"
-          }`}
-        >
-          {t.location}
-        </p>
+        <span className="block -translate-y-px leading-none">"</span>
       </div>
+      <p
+        className={`mx-auto mt-6 max-w-[320px] leading-[1.45] ${
+          isCenter ? "text-white/95" : "text-white/75"
+        }`}
+        style={{ fontSize: "clamp(13px, 0.85vw, 16px)" }}
+      >
+        {t.text}
+      </p>
+  
+      <img
+        src={t.img}
+        alt={t.name}
+        className="mx-auto mt-4 h-16 w-16 rounded-full border border-white/30 object-cover"
+      />
+      <h3 className="mt-4 font-semibold text-white" style={{ fontSize: "clamp(14px, 0.95vw, 18px)" }}>
+        {t.name}
+      </h3>
+      <p
+        className={`mt-1 text-sm font-semibold uppercase tracking-wide ${
+          isCenter ? "text-[#69bbff]" : "text-[#4e95ff]"
+        }`}
+      >
+        {t.location}
+      </p>
+    </div>
     );
   };
 
@@ -194,23 +172,22 @@ function Home() {
     },
   ]);
 
+
   return (
     <div style={{ fontFamily: "'Outfit', sans-serif" }}>
       <SEO
-        title="Home"
-        description="T-Home Fintech provides Home Loans, Personal Loans, Mortgage Loans, Loan Against Property, Business Loans, MSME Registration, GST Registration, Food License, ITR Filing and financial consulting services across India."
-        path="/"
-        keywords="home loans, personal loans, mortgage loans, loan against property, business loans, MSME registration, GST registration, food license, ITR filing, T-Home Fintech"
-        structuredData={[
-          organizationSchema,
-          financialServiceSchema,
-          breadcrumbSchema,
-        ]}
-      />
-      {/* Mobile + Tablet navbar spacing */}
-      <div className="relative z-0 pt-[10px] md:pt-[20px] lg:pt-0">
-        <Hero />
-      </div>
+  title="Home"
+  description="T-Home Fintech provides Home Loans, Personal Loans, Mortgage Loans, Loan Against Property, Business Loans, MSME Registration, GST Registration, Food License, ITR Filing and financial consulting services across India."
+  path="/"
+  keywords="home loans, personal loans, mortgage loans, loan against property, business loans, MSME registration, GST registration, food license, ITR filing, T-Home Fintech"
+  structuredData={[
+    organizationSchema,
+    financialServiceSchema,
+    breadcrumbSchema
+  ]}
+/>
+      {/* here i have deleted */}
+      <Hero />
       {/* ── RECOGNITION SECTION ── */}
       <section
         className="relative w-full overflow-hidden py-[100px]"
@@ -219,10 +196,7 @@ function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_45%,transparent_76%)]"></div>
 
         <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-6 text-center">
-          <h2
-            className="mb-10 text-4xl md:text-5xl font-semibold text-white drop-shadow-[0_10px_24px_rgba(0,0,0,0.45)]"
-            style={{ fontFamily: "'Outfit', sans-serif" }}
-          >
+          <h2 className="mb-10 text-4xl md:text-5xl font-semibold text-white drop-shadow-[0_10px_24px_rgba(0,0,0,0.45)]" style={{fontFamily: "'Outfit', sans-serif"}}>
             Officially Recognized. Nationally Trusted.
           </h2>
 
@@ -246,13 +220,10 @@ function Home() {
       >
         <div className="mx-auto max-w-[1500px] px-6">
           <div className="mx-auto max-w-4xl text-center">
-            <h2
-              className="mb-5 text-3xl font-semibold leading-tight text-white md:text-4xl"
-              style={{ fontFamily: "'Outfit', sans-serif" }}
-            >
-              Our Financial Services
+            <h2 className="mb-5 text-3xl font-semibold leading-tight text-white md:text-4xl" style={{fontFamily: "'Outfit', sans-serif"}}>
+              Our Financial Services 
             </h2>
-            <p className="mx-auto max-w-2xl leading-7 text-white/80">
+          <p className="mx-auto max-w-2xl leading-7 text-white/80">
               Expert solution to streamlines and optimize
               <br className="hidden md:block" />
               your company's financial operations
@@ -260,7 +231,10 @@ function Home() {
           </div>
 
           <div className="relative mt-16 flex items-center justify-center">
-            <button className="hidden" aria-hidden="true">
+            <button
+              className="hidden"
+              aria-hidden="true"
+            >
               <span className="block -translate-y-px leading-none">‹</span>
             </button>
 
@@ -288,7 +262,10 @@ function Home() {
               ))}
             </div>
 
-            <button className="hidden" aria-hidden="true">
+            <button
+              className="hidden"
+              aria-hidden="true"
+            >
               <span className="block -translate-y-px leading-none">›</span>
             </button>
           </div>
@@ -305,10 +282,7 @@ function Home() {
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_45%,transparent_76%)]"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6">
-          <h2
-            className="text-center text-4xl md:text-5xl font-semibold text-white mb-8"
-            style={{ fontFamily: "'Outfit', sans-serif" }}
-          >
+          <h2 className="text-center text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
             How T-Home Works
           </h2>
 
@@ -350,12 +324,11 @@ function Home() {
                 active: false,
               },
             ].map((step, index) => (
-              <div
-                key={index}
-                className="group flex flex-col items-center text-center"
-              >
+              <div key={index} className="group flex flex-col items-center text-center">
                 <div className="relative">
-                  <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-[#c9dcff]/36 bg-[linear-gradient(180deg,rgba(33,46,97,0.42)_0%,rgba(20,30,74,0.36)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-md transition-all duration-300 group-hover:border-[#5ea6ff]/55 group-hover:bg-[linear-gradient(180deg,rgba(46,88,182,0.58)_0%,rgba(25,52,127,0.52)_100%)] group-hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_0_24px_rgba(66,132,235,0.28)]">
+                  <div
+                    className="flex h-24 w-24 items-center justify-center rounded-2xl border border-[#c9dcff]/36 bg-[linear-gradient(180deg,rgba(33,46,97,0.42)_0%,rgba(20,30,74,0.36)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-md transition-all duration-300 group-hover:border-[#5ea6ff]/55 group-hover:bg-[linear-gradient(180deg,rgba(46,88,182,0.58)_0%,rgba(25,52,127,0.52)_100%)] group-hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_0_24px_rgba(66,132,235,0.28)]"
+                  >
                     <img
                       src={step.icon}
                       alt={step.title}
@@ -366,12 +339,8 @@ function Home() {
                     {step.number}
                   </div>
                 </div>
-                <h3 className="mt-4 text-base font-semibold text-white transition-colors duration-300 group-hover:text-[#dbe8ff]">
-                  {step.title}
-                </h3>
-                <p className="mt-2 max-w-[200px] text-sm leading-6 text-white/85 transition-colors duration-300 group-hover:text-white">
-                  {step.desc}
-                </p>
+                <h3 className="mt-4 text-base font-semibold text-white transition-colors duration-300 group-hover:text-[#dbe8ff]">{step.title}</h3>
+                <p className="mt-2 max-w-[200px] text-sm leading-6 text-white/85 transition-colors duration-300 group-hover:text-white">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -408,35 +377,33 @@ function Home() {
                 btn: "Check Eligibility",
                 path: "/tools?tool=loan-prediction",
               },
-              {
-                title: "Balance Transfer",
-                desc: "Estimate your savings quickly and plan your loan transfer better.",
-                btn: "Calculate Transfer",
-                path: "/balance-transfer",
-              },
+            {
+  title: "Balance Transfer",
+  desc: "Estimate your savings quickly and plan your loan transfer better.",
+  btn: "Calculate Transfer",
+  path: "/balance-transfer",
+}
             ].map((tool, i) => (
               <div
                 key={i}
                 className="group rounded-[18px] border border-[#c9dcff]/36 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] px-6 py-8 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur-md transition-colors duration-300 hover:border-[#4e83ff]/60 hover:bg-[linear-gradient(180deg,rgba(50,78,205,0.84)_0%,rgba(33,52,159,0.8)_100%)]"
               >
-                <h3 className="text-base md:text-lg font-semibold text-white">
-                  {tool.title}
-                </h3>
-                <p className="mx-auto mt-4 min-h-[70px] max-w-[220px] leading-6 text-white/90">
+                <h3 className="text-base md:text-lg font-semibold text-white">{tool.title}</h3>
+          <p className="mx-auto mt-4 min-h-[70px] max-w-[220px] leading-6 text-white/90">
                   {tool.desc}
                 </p>
                 <button
-                  onClick={() => {
-                    if (tool.path.startsWith("http")) {
-                      window.location.href = tool.path;
-                    } else {
-                      navigate(tool.path);
-                    }
-                  }}
-                  className="mt-6 rounded-lg border border-[#5ea6ff]/45 bg-[linear-gradient(180deg,rgba(58,108,197,0.46)_0%,rgba(36,73,148,0.4)_100%)] px-5 py-2 text-sm font-medium text-[#e8f2ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]"
-                >
-                  {tool.btn}
-                </button>
+  onClick={() => {
+    if (tool.path.startsWith("http")) {
+      window.location.href = tool.path;
+    } else {
+      navigate(tool.path);
+    }
+  }}
+  className="mt-6 rounded-lg border border-[#5ea6ff]/45 bg-[linear-gradient(180deg,rgba(58,108,197,0.46)_0%,rgba(36,73,148,0.4)_100%)] px-5 py-2 text-sm font-medium text-[#e8f2ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]"
+>
+  {tool.btn}
+</button>
               </div>
             ))}
           </div>
@@ -450,12 +417,7 @@ function Home() {
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_45%,transparent_76%)]"></div>
         <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
-          <h2
-            className="text-3xl md:text-5xl font-semibold text-white mb-8"
-            style={{ fontFamily: "'Outfit', sans-serif" }}
-          >
-            Why Choose T-Home
-          </h2>
+          <h2 className="text-3xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>Why Choose T-Home</h2>
           <p className="mx-auto mt-5 max-w-2xl text-white/70 leading-relaxed">
             Everything you need to manage payments, compliance, and finances —
             all powered by intelligent automation.
@@ -467,8 +429,7 @@ function Home() {
                 icon: "⚙️",
                 iconBg: "bg-[#0f2a5c]",
                 iconColor: "text-blue-400",
-                hoverClass:
-                  "hover:border-blue-500/40 hover:shadow-[0_20px_60px_rgba(37,99,235,0.25)]",
+                hoverClass: "hover:border-blue-500/40 hover:shadow-[0_20px_60px_rgba(37,99,235,0.25)]",
                 title: "Instant Loan Comparison",
                 desc: "Compare loan interest rates from multiple banks and choose the best option instantly.",
               },
@@ -476,8 +437,7 @@ function Home() {
                 icon: "⚡",
                 iconBg: "bg-[#1a1045]",
                 iconColor: "text-purple-400",
-                hoverClass:
-                  "hover:border-purple-500/40 hover:shadow-[0_20px_60px_rgba(168,85,247,0.25)]",
+                hoverClass: "hover:border-purple-500/40 hover:shadow-[0_20px_60px_rgba(168,85,247,0.25)]",
                 title: "Fast Approval Process",
                 desc: "Our digital process ensures faster approvals and minimal paperwork.",
               },
@@ -485,8 +445,7 @@ function Home() {
                 icon: "🛡️",
                 iconBg: "bg-[#0f3d2e]",
                 iconColor: "text-green-400",
-                hoverClass:
-                  "hover:border-green-500/40 hover:shadow-[0_20px_60px_rgba(34,197,94,0.25)]",
+                hoverClass: "hover:border-green-500/40 hover:shadow-[0_20px_60px_rgba(34,197,94,0.25)]",
                 title: "Secure Document Handling",
                 desc: "Your financial documents are protected with bank-level encryption and secure storage.",
               },
@@ -495,14 +454,10 @@ function Home() {
                 key={i}
                 className={`group rounded-2xl border border-white/10 bg-gradient-to-b from-[#0b1a3a]/80 to-[#050c1f]/80 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 ${card.hoverClass}`}
               >
-                <div
-                  className={`mb-4 mx-auto flex h-11 w-11 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}
-                >
+                <div className={`mb-4 mx-auto flex h-11 w-11 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
                   {card.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-white">
-                  {card.title}
-                </h3>
+                <h3 className="text-xl font-semibold text-white">{card.title}</h3>
                 <p className="mt-3 text-sm text-white/70">{card.desc}</p>
               </div>
             ))}
@@ -519,9 +474,7 @@ function Home() {
                 key={i}
                 className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-5 backdrop-blur-xl"
               >
-                <h4 className="text-3xl font-semibold text-white">
-                  {item.value}
-                </h4>
+                <h4 className="text-3xl font-semibold text-white">{item.value}</h4>
                 <p className="mt-2 text-sm text-white/70">{item.label}</p>
               </div>
             ))}
@@ -541,15 +494,11 @@ function Home() {
               Testimonials
             </span>
           </div>
-          <h2
-            className="mt-6 text-center text-4xl md:text-5xl font-semibold text-white mb-8"
-            style={{ fontFamily: "'Outfit', sans-serif" }}
-          >
+          <h2 className="mt-6 text-center text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
             What Our Client Says
           </h2>
           <p className="mx-auto mt-5 max-w-3xl text-center leading-7 text-white/75">
-            Our clients trust us for hassle-free home loans with quick approvals
-            and excellent service.
+            Our clients trust us for hassle-free home loans with quick approvals and excellent service.
           </p>
 
           <div className="relative mx-auto mt-14 hidden max-w-7xl items-center justify-center md:flex">
@@ -561,17 +510,15 @@ function Home() {
             </button>
 
             <div className="mx-16 w-full overflow-hidden">
-              <div
-                className="grid auto-cols-[calc((100%-48px)/3)] grid-flow-col gap-6"
-                style={{
-                  transform: `translateX(calc(-${testimonialStart} * ((100% - 48px) / 3 + 24px)))`,
-                  transition: "none",
-                }}
-              >
-                {testimonialTrack.map((t, i) =>
-                  renderTestimonialCard(t, i, `${i}-${t.name}`),
-                )}
-              </div>
+               <div
+                 className="grid auto-cols-[calc((100%-48px)/3)] grid-flow-col gap-6"
+                 style={{
+                   transform: `translateX(calc(-${testimonialStart} * ((100% - 48px) / 3 + 24px)))`,
+                   transition: 'none'
+                 }}
+               >
+                 {testimonialTrack.map((t, i) => renderTestimonialCard(t, i, `${i}-${t.name}`))}
+               </div>
             </div>
 
             <button
@@ -598,9 +545,7 @@ function Home() {
                 alt={activeTestimonial.name}
                 className="mx-auto mt-4 h-16 w-16 rounded-full border border-white/30 object-cover"
               />
-              <h3 className="mt-4 text-lg font-semibold text-white">
-                {activeTestimonial.name}
-              </h3>
+              <h3 className="mt-4 text-lg font-semibold text-white">{activeTestimonial.name}</h3>
               <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-[#4e95ff]">
                 📍 {activeTestimonial.location}
               </p>
@@ -610,39 +555,30 @@ function Home() {
       </section>
 
       {/* ── CTA SECTION ── */}
-      <section
-        className="relative flex w-full justify-center overflow-hidden px-6 py-[72px]"
-        style={{ background: homeSectionBackground }}
-      >
+      <section className="relative flex w-full justify-center overflow-hidden px-6 py-[72px]" style={{ background: homeSectionBackground }}>
         <div className="w-full max-w-6xl rounded-[14px] border border-[#5374df]/55 bg-[linear-gradient(90deg,#2438c8_0%,#3249d6_52%,#2438c8_100%)] px-5 py-10 text-center shadow-[0_22px_55px_rgba(6,14,44,0.45)] md:px-10 md:py-12">
-          <h2
-            className="text-4xl md:text-5xl font-semibold text-white mb-8"
-            style={{ fontFamily: "'Outfit', sans-serif" }}
-          >
+
+          <h2 className="text-4xl md:text-5xl font-semibold text-white mb-8" style={{fontFamily: "'Outfit', sans-serif"}}>
             Start Your Financial Journey Today
           </h2>
-          <p
-            className="mx-auto mt-4 max-w-2xl text-sm text-white/85 md:text-[34px]"
-            style={{ fontSize: "clamp(18px, 1.05vw, 34px)" }}
-          >
-            Join thousands of satisfied users who have transformed their
-            financial experience with T-Home.
+          <p className="mx-auto mt-4 max-w-2xl text-sm text-white/85 md:text-[34px]" style={{ fontSize: "clamp(18px, 1.05vw, 34px)" }}>
+            Join thousands of satisfied users who have transformed their financial experience with T-Home.
           </p>
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <button
-              onClick={() => navigate("/get-started")}
-              className="rounded-lg border border-white/70 bg-white px-7 py-3 font-semibold text-[#1f4de2] shadow-[0_8px_20px_rgba(0,0,0,0.2)] transition hover:bg-[#f2f6ff]"
-            >
-              Create Free Account
-            </button>
+         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+  <button
+    onClick={() => navigate("/get-started")}
+    className="rounded-lg border border-white/70 bg-white px-7 py-3 font-semibold text-[#1f4de2] shadow-[0_8px_20px_rgba(0,0,0,0.2)] transition hover:bg-[#f2f6ff]"
+  >
+    Create Free Account
+  </button>
 
-            <button
-              onClick={() => navigate("/contact")}
-              className="rounded-lg border border-[#7e96f0]/85 bg-[linear-gradient(180deg,#425ac9_0%,#344bb6_100%)] px-7 py-3 font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-[linear-gradient(180deg,#4d67db_0%,#3e57c7_100%)]"
-            >
-              Speak to an Expert
-            </button>
-          </div>
+  <button
+    onClick={() => navigate("/contact")}
+    className="rounded-lg border border-[#7e96f0]/85 bg-[linear-gradient(180deg,#425ac9_0%,#344bb6_100%)] px-7 py-3 font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-[linear-gradient(180deg,#4d67db_0%,#3e57c7_100%)]"
+  >
+    Speak to an Expert
+  </button>
+</div>
         </div>
       </section>
     </div>

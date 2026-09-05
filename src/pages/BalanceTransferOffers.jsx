@@ -66,7 +66,7 @@ function normalizeOfferCard(item, index) {
     tenure: formatTenure(item.tenure_months),
     rate: `${item.interest_rate}% p.a.`,
     customerAmount: formatCurrency(
-      Number(item.loan_amount_offered || 0) - Number(item.processing_fee || 0),
+      Number(item.loan_amount_offered || 0) - Number(item.processing_fee || 0)
     ),
     fee: formatCurrency(item.processing_fee),
     raw: item,
@@ -88,33 +88,37 @@ export default function BalanceTransferOffers() {
 
   const normalOffers = useMemo(
     () => manualOffers.map((item, index) => normalizeOfferCard(item, index)),
-    [manualOffers],
+    [manualOffers]
   );
 
   const aiSuggestedOffers = useMemo(() => {
-    const stored = JSON.parse(
-      localStorage.getItem("btOfferEvaluation") || "[]",
+  const stored = JSON.parse(
+    localStorage.getItem("btOfferEvaluation") || "[]"
+  );
+  const currentBank = localStorage.getItem("currentBankName");
+
+console.log("Current Bank:", currentBank);
+  console.log("AI STORED DATA:", stored);
+
+  return stored
+  .filter((item) => {
+    const source = item.offer_source?.toUpperCase();
+    const decision = item.decision?.toUpperCase();
+    const currentBank =
+      localStorage.getItem("currentBankName");
+
+    return (
+      item.bank_name !== currentBank &&
+      (
+        source?.includes("AI") ||
+        decision === "BENEFICIAL"
+      )
     );
-    const currentBank = localStorage.getItem("currentBankName");
-
-    console.log("Current Bank:", currentBank);
-    console.log("AI STORED DATA:", stored);
-
-    return stored
-      .filter((item) => {
-        const source = item.offer_source?.toUpperCase();
-        const decision = item.decision?.toUpperCase();
-        const currentBank = localStorage.getItem("currentBankName");
-
-        return (
-          item.bank_name !== currentBank &&
-          (source?.includes("AI") || decision === "BENEFICIAL")
-        );
-      })
-      .sort((a, b) => Number(b.savings || 0) - Number(a.savings || 0))
-      .slice(0, 3)
-      .map((item, index) => normalizeOfferCard(item, index));
-  }, [showAiRecommended, compareLoading]);
+  })
+    .sort((a, b) => Number(b.savings || 0) - Number(a.savings || 0))
+    .slice(0, 3)
+    .map((item, index) => normalizeOfferCard(item, index));
+}, [showAiRecommended, compareLoading]);
 
   const inputClass =
     "h-[42px] w-full rounded-[8px] border border-white/15 bg-[rgba(255,255,255,0.07)] px-3 text-[13px] text-white placeholder:text-white/45 outline-none transition focus:border-[#5b93ff]";
@@ -124,37 +128,31 @@ export default function BalanceTransferOffers() {
     setEditIndex(null);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+ const handleChange = (e) => {
+  const { name, value } = e.target;
 
-    if (value !== "" && Number(value) < 0) {
-      return;
-    }
+  if (value !== "" && Number(value) < 0) {
+    return;
+  }
 
-    setOffer((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  setOffer((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
   const handleAddOffer = () => {
     setError("");
     if (
-      Number(offer.rate) < 0 ||
-      Number(offer.amount) < 0 ||
-      Number(offer.tenure) <= 0 ||
-      Number(offer.fee) < 0
-    ) {
-      setError("Please enter valid positive values.");
-      return;
-    }
+  Number(offer.rate) < 0 ||
+  Number(offer.amount) < 0 ||
+  Number(offer.tenure) <= 0 ||
+  Number(offer.fee) < 0
+) {
+  setError("Please enter valid positive values.");
+  return;
+}
 
-    if (
-      !offer.bankName ||
-      !offer.rate ||
-      !offer.amount ||
-      !offer.tenure ||
-      !offer.fee
-    ) {
+    if (!offer.bankName || !offer.rate || !offer.amount || !offer.tenure || !offer.fee) {
       setError("Please fill all offer fields before adding.");
       return;
     }
@@ -212,9 +210,7 @@ export default function BalanceTransferOffers() {
       const loanReference = localStorage.getItem("btLoanReference");
 
       if (!loanReference) {
-        setError(
-          "Loan reference not found. Please go back and submit loan details.",
-        );
+        setError("Loan reference not found. Please go back and submit loan details.");
         return;
       }
 
@@ -224,23 +220,23 @@ export default function BalanceTransferOffers() {
       };
 
       const response = await fetch(
-        `${BT_API_BASE}/loan/${loanReference}/offers`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        },
-      );
+  `${BT_API_BASE}/loan/${loanReference}/offers`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  }
+);
 
-      if (!response.ok) {
-        const error = await response.json();
-        console.log("Offers API Error:", error);
-        throw new Error("Failed to get AI suggestions");
-      }
+if (!response.ok) {
+  const error = await response.json();
+  console.log("Offers API Error:", error);
+  throw new Error("Failed to get AI suggestions");
+}
 
-      const result = await response.json();
+const result = await response.json();
 
       localStorage.setItem("btOfferEvaluation", JSON.stringify(result));
 
@@ -261,9 +257,7 @@ export default function BalanceTransferOffers() {
       const loanReference = localStorage.getItem("btLoanReference");
 
       if (!loanReference) {
-        setError(
-          "Loan reference not found. Please go back and submit loan details.",
-        );
+        setError("Loan reference not found. Please go back and submit loan details.");
         return;
       }
 
@@ -287,68 +281,71 @@ export default function BalanceTransferOffers() {
         };
       }
 
-      const response = await fetch(
-        `${BT_API_BASE}/loan/${loanReference}/offers`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        },
-      );
+     const response = await fetch(
+  `${BT_API_BASE}/loan/${loanReference}/offers`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  }
+);
 
-      if (!response.ok) {
-        const error = await response.json();
-        console.log("Compare API Error:", error);
-        throw new Error("Failed to compare offers");
-      }
+if (!response.ok) {
+  const error = await response.json();
+  console.log("Compare API Error:", error);
+  throw new Error("Failed to compare offers");
+}
 
-      const result = await response.json();
-      console.log("Offers API Response:", result);
+const result = await response.json();
+console.log("Offers API Response:", result);
 
       localStorage.setItem("btOfferEvaluation", JSON.stringify(result));
       const bestOffer = result
-        .filter((item) => {
-          const source = item.offer_source?.toUpperCase();
-          const decision = item.decision?.toUpperCase();
+  .filter((item) => {
+    const source = item.offer_source?.toUpperCase();
+    const decision = item.decision?.toUpperCase();
 
-          return (
-            item.bank_name !== localStorage.getItem("currentBankName") &&
-            (source?.includes("AI") || decision === "BENEFICIAL")
-          );
-        })
-        .sort((a, b) => Number(b.savings || 0) - Number(a.savings || 0))[0];
+    return (
+      item.bank_name !== localStorage.getItem("currentBankName") &&
+      (
+        source?.includes("AI") ||
+        decision === "BENEFICIAL"
+      )
+    );
+  })
+  .sort((a, b) => Number(b.savings || 0) - Number(a.savings || 0))[0];
 
-      if (bestOffer) {
-        localStorage.setItem("btBestOffer", JSON.stringify(bestOffer));
-      }
+if (bestOffer) {
+  localStorage.setItem(
+    "btBestOffer",
+    JSON.stringify(bestOffer)
+  );
+}
 
       navigate("/balance-transfer/review");
     } catch (err) {
-      setError(
-        err?.response?.data?.detail || "Failed to compare balance transfer.",
-      );
+      setError(err?.response?.data?.detail || "Failed to compare balance transfer.");
     } finally {
       setCompareLoading(false);
     }
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden px-4 pb-12 pt-28 sm:px-6 sm:pt-32 md:pt-36 lg:px-8 lg:pt-36">
+    <section className="relative min-h-screen overflow-hidden px-4 pb-12 pt-28 sm:px-6 md:pt-32 lg:px-8 lg:pt-36">
       <div className="pointer-events-none absolute inset-0 bg-[#030a1a]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(44,78,173,0.36),transparent_58%)]" />
 
       <div className="relative z-10 mx-auto max-w-[1300px] rounded-[16px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.11)_0%,rgba(255,255,255,0.06)_100%)] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-8">
         <div className="mx-auto max-w-[1160px]">
-          <div className="text-center pt-16 sm:pt-16 md:pt-20 lg:pt-0">
+          <div className="text-center">
             <h1 className="text-[36px] font-semibold leading-tight text-white sm:text-[58px]">
               Add Bank <span className="text-[#2572ff]">Offers to</span> Compare
             </h1>
 
             <p className="mt-2 text-[12px] text-white/70 sm:text-[13px]">
-              Add one or more bank offers to see which balance transfer saves
-              you the most.
+              Add one or more bank offers to see which balance transfer saves you the most.
             </p>
           </div>
 
@@ -360,8 +357,7 @@ export default function BalanceTransferOffers() {
                 </h2>
 
                 <p className="mt-1 max-w-[720px] text-[12px] text-white/60">
-                  Enter one or more bank offers to compare balance transfer
-                  savings with your current loan.
+                  Enter one or more bank offers to compare balance transfer savings with your current loan.
                 </p>
               </div>
 

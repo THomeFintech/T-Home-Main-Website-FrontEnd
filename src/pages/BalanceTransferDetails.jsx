@@ -8,9 +8,7 @@ const initialState = {
   originalPrincipal: "",
   amountPaid: "",
   remainingTenure: "",
-  newLoanTenure: "",
   currentInterestRate: "",
-  proposedInterestRate: "",
   monthlyIncome: "",
   foreclosureFee: "",
   cibilScore: "",
@@ -80,11 +78,14 @@ function numberToWords(num) {
   const inWords = (n) => {
     if (n < 20) return a[n];
 
-    if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? " " + a[n % 10] : "");
+    if (n < 100)
+      return b[Math.floor(n / 10)] + (n % 10 ? " " + a[n % 10] : "");
 
     if (n < 1000)
       return (
-        a[Math.floor(n / 100)] + " Hundred " + (n % 100 ? inWords(n % 100) : "")
+        a[Math.floor(n / 100)] +
+        " Hundred " +
+        (n % 100 ? inWords(n % 100) : "")
       );
 
     if (n < 100000)
@@ -117,16 +118,15 @@ function formatINR(value) {
 
 export default function BalanceTransferDetails() {
   const navigate = useNavigate();
-  const location = useLocation();
+const location = useLocation();
 
-  const selectedService = location.state?.service || "";
-  const [formData, setFormData] = useState({
-    ...initialState,
-    loanType: selectedService,
-  });
+const selectedService = location.state?.service || "";
+ const [formData, setFormData] = useState({
+  ...initialState,
+  loanType: selectedService,
+});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showCibilInfo, setShowCibilInfo] = useState(false);
 
   const numbers = useMemo(() => {
     const principal = Number(formData.originalPrincipal) || 0;
@@ -147,32 +147,30 @@ export default function BalanceTransferDetails() {
   }, [formData]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+  const { name, value } = e.target;
 
-    // Don't allow negative numbers
-    if (value !== "" && Number(value) < 0) {
-      return;
-    }
+  // Don't allow negative numbers
+  if (value !== "" && Number(value) < 0) {
+    return;
+  }
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
   const handleAnalyzeLoan = async () => {
     try {
       setLoading(true);
       setError("");
-
+      
       const payload = {
         loan_type: formData.loanType,
         current_bank_name: formData.bankName,
         original_principal: Number(formData.originalPrincipal),
         amount_paid: Number(formData.amountPaid),
         remaining_tenure_months: Number(formData.remainingTenure),
-        new_tenure_months: Number(formData.newLoanTenure || 0),
         current_interest_rate: Number(formData.currentInterestRate),
-        proposed_interest_rate: Number(formData.proposedInterestRate || 0),
         net_monthly_income: Number(formData.monthlyIncome),
         foreclosure_fee: Number(formData.foreclosureFee || 0),
         cibil_score: Number(formData.cibilScore),
@@ -182,7 +180,7 @@ export default function BalanceTransferDetails() {
         !payload.loan_type ||
         !payload.current_bank_name ||
         !payload.original_principal ||
-        (!payload.amount_paid && payload.amount_paid !== 0) ||
+        !payload.amount_paid && payload.amount_paid !== 0 ||
         !payload.remaining_tenure_months ||
         !payload.current_interest_rate ||
         !payload.net_monthly_income ||
@@ -192,39 +190,55 @@ export default function BalanceTransferDetails() {
         return;
       }
 
-      const res = await fetch(`${BT_API_BASE}/loan/loan`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      
+const res = await fetch(`${BT_API_BASE}/loan/loan`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(payload),
+});
 
-      if (!res.ok) {
-        const error = await res.json();
-        console.log("Loan API Error:", error);
-        throw new Error("Loan creation failed");
-      }
+if (!res.ok) {
+  const error = await res.json();
+  console.log("Loan API Error:", error);
+  throw new Error("Loan creation failed");
+}
 
-      const result = await res.json();
+const result = await res.json();
 
-      console.log("Loan Response:", result);
+console.log("Loan Response:", result);
 
-      localStorage.setItem("btLoanReference", result.loan_reference);
+localStorage.setItem(
+  "btLoanReference",
+  result.loan_reference
+);
 
-      localStorage.setItem("btLoanId", result.loan_id);
+localStorage.setItem(
+  "btLoanId",
+  result.loan_id
+);
 
-      localStorage.setItem("btLoanForm", JSON.stringify(payload));
+localStorage.setItem(
+  "btLoanForm",
+  JSON.stringify(payload)
+);
 
-      localStorage.setItem("btLoanResult", JSON.stringify(result));
-      localStorage.setItem("currentBankName", formData.bankName);
+localStorage.setItem(
+  "btLoanResult",
+  JSON.stringify(result)
+);
+localStorage.setItem(
+  "currentBankName",
+  formData.bankName
+);
 
-      navigate("/balance-transfer/offers");
-    } catch (err) {
+navigate("/balance-transfer/offers");    }
+ catch (err) {
       setError(
         err?.response?.data?.detail ||
           err?.message ||
-          "Failed to connect to backend.",
+          "Failed to connect to backend."
       );
     } finally {
       setLoading(false);
@@ -235,21 +249,18 @@ export default function BalanceTransferDetails() {
     "h-[44px] w-full rounded-[9px] border border-white/20 bg-[rgba(255,255,255,0.08)] px-3 text-[13px] text-white placeholder:text-white/50 outline-none transition focus:border-[#4e8fff]";
 
   return (
-    <section className="relative min-h-screen overflow-hidden px-4 pb-12 pt-[190px] sm:px-6 md:pt-[190px] lg:px-8 lg:pt-36">
+    <section className="relative min-h-screen overflow-hidden px-4 pb-12 pt-28 sm:px-6 md:pt-32 lg:px-8 lg:pt-36">
       <div className="pointer-events-none absolute inset-0 bg-[#030a1a]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(44,78,173,0.36),transparent_58%)]" />
 
       <div className="relative z-10 mx-auto max-w-[1300px] rounded-[16px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.11)_0%,rgba(255,255,255,0.06)_100%)] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-8">
         <div className="mx-auto max-w-[1160px]">
-          <div className="h-[80px] lg:hidden" />
-
           <div className="text-center">
             <h1 className="text-[32px] font-semibold leading-tight text-white sm:text-[54px]">
               Your <span className="text-[#2572ff]">Current Loan</span> Details
             </h1>
             <p className="mt-2 text-[12px] text-white/70 sm:text-[13px]">
-              This helps us understand your existing loan and calculate accurate
-              savings.
+              This helps us understand your existing loan and calculate accurate savings.
             </p>
             <div className="mt-3 inline-flex items-center rounded-full border border-[#4f84ff]/55 bg-[#1c4fbf]/20 px-3 py-1 text-[10px] text-[#7db2ff]">
               256-bit SSL secured • No data sharing • No spam calls
@@ -259,35 +270,31 @@ export default function BalanceTransferDetails() {
           <form className="mt-8 space-y-5" onSubmit={(e) => e.preventDefault()}>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <Field label="Loan Type *">
-                <input
-                  type="text"
-                  name="loanType"
-                  value={formData.loanType}
-                  readOnly
-                  className={inputClass}
-                />
-              </Field>
+  <input
+    type="text"
+    name="loanType"
+    value={formData.loanType}
+    readOnly
+    className={inputClass}
+  />
+</Field>
               <Field label="Current Bank Name *">
                 <select
-                  name="bankName"
-                  value={formData.bankName}
-                  onChange={handleChange}
-                  className={`${inputClass} text-white`}
-                >
-                  <option value="" className="text-black bg-white">
-                    Select current bank
-                  </option>
+  name="bankName"
+  value={formData.bankName}
+  onChange={handleChange}
+  className={`${inputClass} text-white`}
+>
+  <option value="" className="text-black bg-white">
+    Select current bank
+  </option>
 
-                  {bankOptions.map((bank) => (
-                    <option
-                      key={bank}
-                      value={bank}
-                      className="text-black bg-white"
-                    >
-                      {bank}
-                    </option>
-                  ))}
-                </select>
+  {bankOptions.map((bank) => (
+    <option key={bank} value={bank} className="text-black bg-white">
+      {bank}
+    </option>
+  ))}
+</select>
               </Field>
 
               <Field label="Original Principal (₹) *">
@@ -300,9 +307,10 @@ export default function BalanceTransferDetails() {
                   className={inputClass}
                 />
                 <p className="mt-1 text-[11px] text-white/55">
-                  {numberToWords(formData.originalPrincipal)}
-                </p>
+  {numberToWords(formData.originalPrincipal)}
+</p>
               </Field>
+              
 
               <Field label="Amount Paid (₹) *">
                 <input
@@ -313,9 +321,9 @@ export default function BalanceTransferDetails() {
                   placeholder="Enter amount paid"
                   className={inputClass}
                 />
-                <p className="mt-1 text-[11px] text-white/55">
-                  {numberToWords(formData.amountPaid)}
-                </p>
+                 <p className="mt-1 text-[11px] text-white/55">
+    {numberToWords(formData.amountPaid)}
+  </p>
               </Field>
 
               <Field label="Remaining Tenure(Months) *">
@@ -325,22 +333,7 @@ export default function BalanceTransferDetails() {
                   value={formData.remainingTenure}
                   onChange={handleChange}
                   placeholder="Enter remaining tenure"
-                  min="1"
-                  max="360"
                   className={inputClass}
-                />
-                <p className="mt-1 text-[11px] text-white/60">
-    Enter the number of months remaining to fully repay your current loan.
-  </p>
-              </Field>
-              <Field label="New Loan Tenure (Months) *">
-                <input
-                 type="number"
-                 name="newLoanTenure"
-                 value={formData.newLoanTenure}
-                 onChange={handleChange}
-                 placeholder="Enter new loan tenure"
-                 className={inputClass}
                 />
               </Field>
 
@@ -354,17 +347,6 @@ export default function BalanceTransferDetails() {
                   placeholder="Enter current interest rate"
                   className={inputClass}
                 />
-              </Field>
-              <Field label="Proposed Interest Rate (%) *">
-               <input
-                  type="number"
-                  step="0.01"
-                  name="proposedInterestRate"
-                  value={formData.proposedInterestRate}
-                  onChange={handleChange}
-                  placeholder="Enter proposed interest rate"
-                  className={inputClass}
-                 />
               </Field>
 
               <Field label="Net Monthly Income (₹) *">
@@ -401,50 +383,12 @@ export default function BalanceTransferDetails() {
               />
               <div className="mt-1 flex items-center justify-between text-[10px] text-white/45">
                 <span>Don&apos;t know your CIBIL Score ?</span>
-                <button
-                  type="button"
-                  onClick={() => setShowCibilInfo((prev) => !prev)}
-                  className="text-[#3f8bff] hover:underline"
-                >
-                 Click here
-                </button>
+                <span className="text-[#3f8bff]">Click here</span>
               </div>
-              {showCibilInfo && (
-               <div className="mt-2 rounded-[8px] border border-white/15 bg-white/[0.05] px-3 py-2 text-[11px] leading-relaxed text-white/70">
-                 <p>
-                   <span className="font-semibold text-white">What is CIBIL Score?</span>{" "}
-                   A CIBIL Score is a 3-digit number, usually between 300 and 900, that
-                   indicates your creditworthiness based on your credit history.
-                 </p>
-                 <p className="mt-1">
-                   <span className="font-semibold text-white">Where can you get it?</span>{" "}
-                     You can usually check your CIBIL Score through the official CIBIL
-                     website or through eligible financial services that provide credit-score
-                     access.
-                  </p>
-                 <p className="mt-1">
-                   <span className="font-semibold text-white">For example:</span>{" "}
-                     If your CIBIL Score is 780, it generally indicates a good credit profile
-                     and may improve your chances of getting better loan terms.
-                  </p>
-
-                  <p className="mt-1">
-                    <span className="font-semibold text-white">
-                      Why does it matter for Balance Transfer?
-                    </span>{" "}
-                    Banks may consider your CIBIL Score when evaluating a balance-transfer
-                    application. A stronger credit profile can help you qualify for better
-                    interest rates and loan terms.
-                  </p>
-               </div>
-              )}
             </Field>
-               
 
             <div className="pt-2 text-center">
-              <h3 className="text-[19px] font-medium text-white">
-                Current Loan Overview
-              </h3>
+              <h3 className="text-[19px] font-medium text-white">Current Loan Overview</h3>
               <div className="mt-3 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <div className="min-w-[200px] rounded-[8px] border border-white/15 bg-white/[0.9] px-6 py-3">
                   <p className="text-[11px] text-[#6b7280]">Outstanding</p>
@@ -453,9 +397,7 @@ export default function BalanceTransferDetails() {
                   </p>
                 </div>
                 <div className="min-w-[220px] rounded-[8px] border border-white/15 bg-white/[0.9] px-6 py-3">
-                  <p className="text-[11px] text-[#6b7280]">
-                    Remaining total Outflow
-                  </p>
+                  <p className="text-[11px] text-[#6b7280]">Remaining total Outflow</p>
                   <p className="text-[38px] font-semibold leading-none text-[#04a36d]">
                     {formatINR(numbers.remainingOutflow)}
                   </p>
@@ -467,8 +409,7 @@ export default function BalanceTransferDetails() {
               <p>• You are eligible for a higher loan</p>
               <p className="mt-1">• Consider balance transfer to reduce EMI</p>
               <p className="mt-1">
-                • You can save {formatINR(numbers.estimatedSaving)} with a lower
-                interest rate
+                • You can save {formatINR(numbers.estimatedSaving)} with a lower interest rate
               </p>
             </div>
 
@@ -496,9 +437,7 @@ export default function BalanceTransferDetails() {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="mb-1.5 block text-[12px] font-medium text-white/90">
-        {label}
-      </label>
+      <label className="mb-1.5 block text-[12px] font-medium text-white/90">{label}</label>
       {children}
     </div>
   );

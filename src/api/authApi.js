@@ -10,7 +10,7 @@ const authApi = {
     const response = await apiClient.post("/auth/login", payload);
 
     if (response.data?.token) {
-      sessionStorage.setItem("access_token", response.data.token);
+      localStorage.setItem("access_token", response.data.token);
     }
 
     return response.data;
@@ -20,7 +20,7 @@ const authApi = {
     const response = await apiClient.post("/auth/verify-otp", payload);
 
     if (response.data?.token) {
-      sessionStorage.setItem("access_token", response.data.token);
+      localStorage.setItem("access_token", response.data.token);
     }
 
     return response.data;
@@ -37,11 +37,11 @@ const authApi = {
   },
 
   logout: () => {
-    sessionStorage.removeItem("access_token");
+    localStorage.removeItem("access_token");
   },
 
   getToken: () => {
-    return sessionStorage.getItem("access_token");
+    return localStorage.getItem("access_token");
   },
 };
 

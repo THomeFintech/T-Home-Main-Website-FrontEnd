@@ -12,17 +12,15 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token = sessionStorage.getItem("access_token");
-
+    const token = localStorage.getItem("access_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config;
   },
   (error) => Promise.reject(error)
 );
-
+ 
 export const getApiErrorMessage = (error) => {
   if (error?.response?.data?.message) {
     return error.response.data.message;
@@ -32,7 +30,6 @@ export const getApiErrorMessage = (error) => {
     if (typeof error.response.data.detail === "string") {
       return error.response.data.detail;
     }
-
     return JSON.stringify(error.response.data.detail);
   }
 

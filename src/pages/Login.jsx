@@ -1,5 +1,4 @@
-// import React, { useState } from "react";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import "../styles/Login.css";
@@ -64,17 +63,7 @@ const IconApple = () => (
 );
 
 export default function Login() {
-  console.log("🔴 LOGIN COMPONENT RENDERED");
-
   const navigate = useNavigate();
-    useEffect(() => {
-    console.log("🔴 LOGIN MOUNTED");
-
-    return () => {
-      console.log("🔵 LOGIN UNMOUNTED");
-    };
-  }, []);
-  
  const [mode, setMode] = useState("email");
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -116,9 +105,12 @@ export default function Login() {
   return;
 }
 
-  sessionStorage.setItem("access_token", data.token);
-sessionStorage.setItem("user", JSON.stringify(data.user));
-sessionStorage.setItem("isLoggedIn", "true");
+    // Save token
+    localStorage.setItem("access_token", data.token);
+
+    // Fetch correct user
+    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("isLoggedIn", "true");
 
     // Notify app
     window.dispatchEvent(new Event("authChange"));
