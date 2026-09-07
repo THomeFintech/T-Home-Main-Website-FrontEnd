@@ -164,6 +164,7 @@ export default function BalanceTransferDetails() {
       setLoading(true);
       setError("");
 
+
       const tenure = Number(formData.remainingTenure);
       if (tenure < 1 || tenure > 360) {
         setError("Remaining tenure must be between 1 and 360 months.");
