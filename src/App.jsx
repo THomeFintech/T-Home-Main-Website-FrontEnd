@@ -8,6 +8,10 @@ import {
 } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 
+// =========================
+// Lazy Loaded Pages
+// =========================
+
 const DashboardLayout = lazy(() => import("./layout/DashboardLayout"));
 const Navbar = lazy(() => import("./components/Navbar"));
 const Footer = lazy(() => import("./components/Footer"));
@@ -82,7 +86,6 @@ const TrackApplication = lazy(() => import("./pages/TrackApplication"));
 const DocumentsPage = lazy(() => import("./pages/DocumentsPage"));
 const Profilepage = lazy(() => import("./pages/Profilepage"));
 const Support = lazy(() => import("./pages/Support"));
-
 
 // =========================
 // Service Pages
@@ -217,16 +220,15 @@ function App() {
     import("./pages/TrackApplication");
     import("./pages/DocumentsPage");
   }, []);
- 
-  return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <BrowserRouter>
-        {/* SCROLL FIX */}
-        <ScrollToTop />
 
-        {/* LAZY LOADING */}
-        <Suspense fallback={<LazyLoadingScreen />}>
-          <Routes>
+  return (
+    <BrowserRouter>
+      {/* SCROLL FIX */}
+      <ScrollToTop />
+
+      {/* LAZY LOADING */}
+      <Suspense fallback={<LazyLoadingScreen />}>
+        <Routes>
             {/* =========================
                 DASHBOARD ROUTES
             ========================= */}
@@ -337,58 +339,86 @@ function App() {
               <Route path="career" element={<Career />} />
               <Route path="collaborate" element={<Collaborate />} />
               <Route path="privacy-policy" element={<PrivacyPolicy />} />
+
               <Route
                 path="terms-and-conditions"
                 element={<TermsAndConditions />}
               />
+
               <Route path="apply" element={<EmployeeForm />} />
+
               <Route path="/register" element={<Register />} />
 
-              {/* SERVICE ROUTES */}
+              {/* =========================
+                  SERVICE ROUTES
+              ========================= */}
+
               <Route path="home-loans" element={<HomeLoan />} />
+
               <Route path="emi-calculator" element={<Emi />} />
+
               <Route path="contact-form" element={<ContactForm />} />
+
               <Route path="loan-form" element={<LoanForm />} />
+
               <Route path="coming-soon" element={<ComingSoon />} />
+
               <Route path="itr-filing" element={<ITRFiling />} />
+
               <Route
                 path="pan-aadhaar-linking"
                 element={<PanAadhaarLinking />}
               />
+
               <Route path="gst-registration" element={<GstRegistration />} />
+
               <Route path="food-license" element={<FoodLicense />} />
+
               <Route
                 path="udyam-msme-registration"
                 element={<UdyamMsmeRegistration />}
               />
+
               <Route
                 path="company-registration"
                 element={<CompanyRegistration />}
               />
+
               <Route path="personal-loans" element={<PersonalLoan />} />
+
               <Route
                 path="loan-against-property"
                 element={<LoanAgainstProperty />}
               />
+
               <Route path="mortgage-loan" element={<MortgageLoan />} />
+
               <Route path="balance-transfer" element={<BalanceTransfer />} />
+
               <Route
                 path="balance-transfer-contact"
                 element={<BalanceTransferContact />}
               />
+
               <Route path="*" element={<NotFound />} />
             </Route>
 
-            {/* AUTH ROUTES */}
+            {/* =========================
+                AUTH ROUTES
+            ========================= */}
+
             <Route path="get-started" element={<GetStarted />} />
+
             <Route path="/login" element={<Login />} />
+
             <Route path="/forgot-password" element={<ForgotPassword />} />
+
             <Route path="/verify-reset-otp" element={<VerifyResetOtp />} />
+
             <Route path="/reset-password" element={<ResetPassword />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
-    </GoogleOAuthProvider>
   );
 }
 

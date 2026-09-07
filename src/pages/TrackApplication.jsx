@@ -6,40 +6,117 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 // ── API HOOKS ─────────────────────────────────────────────────────────────────
 
 function useApplicationData(applicationId) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const cacheKey = applicationId ? `track_application_${applicationId}` : null;
+
+  const getCachedData = () => {
+    if (!cacheKey) return null;
+
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const cachedData = getCachedData();
+
+  const [data, setData] = useState(cachedData);
+  const [loading, setLoading] = useState(!cachedData);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!applicationId) return;
+    if (!applicationId) {
+      setLoading(false);
+      return;
+    }
 
+    const controller = new AbortController();
     let cancelled = false;
-    setLoading(true);
+
+    // If cached data exists, show it immediately.
+    const cached = (() => {
+      try {
+        const value = sessionStorage.getItem(
+          `track_application_${applicationId}`,
+        );
+        return value ? JSON.parse(value) : null;
+      } catch {
+        return null;
+      }
+    })();
+
+    if (cached) {
+      setData(cached);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+
     setError(null);
 
-    fetch(`${BASE_URL}/applications/${applicationId}/full`)
+    fetch(`${BASE_URL}/applications/${applicationId}/full`, {
+      signal: controller.signal,
+    })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
       .then((json) => {
         if (cancelled) return;
+
         setData(json);
+
+        try {
+          sessionStorage.setItem(
+            `track_application_${applicationId}`,
+            JSON.stringify(json),
+          );
+        } catch {
+          // Ignore storage errors
+        }
       })
       .catch((err) => {
-        if (cancelled) return;
+        if (cancelled || err.name === "AbortError") return;
+
         setError(err.message);
+
+        // Keep cached data visible if API fails.
+        if (!cached) {
+          setData(null);
+        }
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       });
 
     return () => {
       cancelled = true;
+      controller.abort();
     };
   }, [applicationId]);
 
-  return { data, loading, error, refetch: () => setData(null) };
+  const refetch = () => {
+    if (!applicationId) return;
+
+    try {
+      sessionStorage.removeItem(`track_application_${applicationId}`);
+    } catch {
+      // Ignore storage errors
+    }
+
+    setData(null);
+    setLoading(true);
+  };
+
+  return {
+    data,
+    loading,
+    error,
+    refetch,
+  };
 }
 
 // ── PROGRESS STEP MAPPING ─────────────────────────────────────────────────────
@@ -582,7 +659,7 @@ function DocumentStatus({
         Document Status
       </h3>
 
-      {loading || !localDocs.length ? (
+      {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex items-center justify-between">
@@ -705,13 +782,35 @@ function ErrorBanner({ message, onRetry }) {
 // ── MAIN PAGE ─────────────────────────────────────────────────────────────────
 export default function TrackApplication({ applicationId: propId }) {
   const navigate = useNavigate();
-  const [applicationId, setApplicationId] = useState(propId || null);
-  const [findingApplication, setFindingApplication] = useState(!propId);
+  const savedApplicationId = localStorage.getItem("application_id");
+
+  const [applicationId, setApplicationId] = useState(
+    propId || savedApplicationId || null,
+  );
+
+  const [findingApplication, setFindingApplication] = useState(
+    !propId && !savedApplicationId,
+  );
+
   const [findError, setFindError] = useState(null);
 
   useEffect(() => {
     if (propId) {
       setApplicationId(propId);
+      setFindingApplication(false);
+      return;
+    }
+    if (propId) {
+      setApplicationId(propId);
+      localStorage.setItem("application_id", String(propId));
+      setFindingApplication(false);
+      return;
+    }
+
+    const savedId = localStorage.getItem("application_id");
+
+    if (savedId) {
+      setApplicationId(savedId);
       setFindingApplication(false);
       return;
     }
@@ -747,7 +846,11 @@ export default function TrackApplication({ applicationId: propId }) {
         }
 
         // Latest application
-        setApplicationId(applications[0].id);
+        const latestApplicationId = applications[0].id;
+
+        localStorage.setItem("application_id", String(latestApplicationId));
+
+        setApplicationId(latestApplicationId);
       })
       .catch((err) => {
         console.error("Application lookup error:", err);

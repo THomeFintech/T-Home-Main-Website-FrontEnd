@@ -1,7 +1,14 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { createPortal } from "react-dom";
 
 // ── API base ─────────────────────────────────────────────────────────────────
 const API = import.meta.env.VITE_API_URL;
+
+const getStoredAccessToken = () => {
+  const sessionToken = sessionStorage.getItem("access_token");
+  if (sessionToken) return sessionToken;
+  return localStorage.getItem("access_token");
+};
 
 // ── Glass style constants (matches TrackApplication) ─────────────────────────
 const GLASS = {
@@ -85,6 +92,75 @@ function fmtDate(iso) {
     month: "short",
     year: "numeric",
   });
+}
+
+function extractPanFromUri(uri) {
+  if (!uri) return null;
+  const match = String(uri).match(/[A-Z]{5}[0-9]{4}[A-Z]/);
+  return match ? match[0] : null;
+}
+
+function getDigiLockerMetadata(doc) {
+  const raw = doc?.raw || doc?.extracted_info || {};
+  const uri = doc?.uri || raw.uri || "";
+  const source =
+    raw.source ||
+    doc?.source_label ||
+    (doc?.source === "digilocker" ? "Issued" : "DigiLocker");
+  const name =
+    doc?.document_name ||
+    raw.name ||
+    raw.document_name ||
+    raw.title ||
+    "DigiLocker Document";
+  const description =
+    raw.description ||
+    raw.desc ||
+    raw.document_description ||
+    name;
+  const issuer =
+    raw.issuer ||
+    raw.issuer_name ||
+    raw.issuedBy ||
+    raw.issued_by ||
+    null;
+  const documentType =
+    raw.doctype ||
+    raw.documentType ||
+    raw.type ||
+    raw.docType ||
+    null;
+  const documentDate =
+    raw.date ||
+    raw.document_date ||
+    raw.createdAt ||
+    raw.created_at ||
+    doc?.uploaded_at ||
+    null;
+  const mimeTypes = [];
+
+  if (Array.isArray(raw.mime)) {
+    raw.mime.forEach((value) => value && mimeTypes.push(value));
+  }
+  if (Array.isArray(raw.mimetype)) {
+    raw.mimetype.forEach((value) => value && mimeTypes.push(value));
+  }
+  if (raw.mimeType) mimeTypes.push(raw.mimeType);
+  if (doc?.mimetype) mimeTypes.push(doc.mimetype);
+
+  const uniqueMimeTypes = [...new Set(mimeTypes.filter(Boolean))];
+
+  return {
+    name,
+    pan: raw.pan || extractPanFromUri(uri),
+    description,
+    issuer,
+    documentType,
+    source: source ? String(source).replace(/^issued$/i, "Issued").replace(/^uploaded$/i, "Uploaded") : "DigiLocker",
+    documentDate,
+    mimeTypes: uniqueMimeTypes,
+    uri,
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -354,7 +430,7 @@ function UploadModal({ doc, applicationId, onClose, onUploaded }) {
       console.log("Application ID:", applicationId);
       console.log("Document Name:", doc.document_name);
       console.log("File:", file);
-      const token = localStorage.getItem("access_token");
+      const token = getStoredAccessToken();
       const res = await fetch(`${API}/document/${applicationId}/upload`, {
         method: "POST",
         headers: {
@@ -644,7 +720,7 @@ function QuickUploadModal({ applicationId, onClose, onUploaded }) {
       const fd = new FormData();
       fd.append("file", file);
       fd.append("document_name", docName.trim());
-      const token = localStorage.getItem("access_token");
+      const token = getStoredAccessToken();
       const res = await fetch(`${API}/document/${applicationId}/upload`, {
         method: "POST",
         headers: {
@@ -847,114 +923,506 @@ function QuickUploadModal({ applicationId, onClose, onUploaded }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Doc Row
+// DigiLocker Details Modal
 // ─────────────────────────────────────────────────────────────────────────────
-function DocRow({ doc, applicationId, onUploadClick, onRefresh }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const status = normaliseStatus(doc.status);
-  const isActionRequired = status === "action-required";
+function DigiLockerDetailsModal({ doc, onClose }) {
+  const digiLockerMeta = getDigiLockerMetadata(doc);
+  const [copied, setCopied] = useState(false);
 
-  async function handleDownload() {
-    setMenuOpen(false);
-    if (!doc.id || !applicationId) return;
+  const displayDate = digiLockerMeta?.documentDate
+    ? fmtDate(digiLockerMeta.documentDate) || digiLockerMeta.documentDate
+    : null;
+
+  const fileFormats =
+    digiLockerMeta?.mimeTypes?.length > 0
+      ? digiLockerMeta.mimeTypes
+          .map((type) => {
+            const map = {
+              "application/pdf": "PDF",
+              "application/json": "JSON",
+              "application/xml": "XML",
+            };
+
+            return map[type] || type;
+          })
+          .join(", ")
+      : null;
+
+  async function copyUri() {
+    if (!digiLockerMeta?.uri) return;
+
     try {
-      const res = await fetch(
-        `${API}/document/${applicationId}/${doc.id}/download`,
-      );
-      if (!res.ok) throw new Error("Download failed");
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = doc.filename ?? doc.document_name;
-      a.click();
-      URL.revokeObjectURL(url);
+      await navigator.clipboard.writeText(digiLockerMeta.uri);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
     } catch {
-      /* swallow — could show toast */
+      // Clipboard permission may be unavailable
     }
   }
 
   return (
-    <div
-      className="flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all group relative"
-      style={isActionRequired ? GLASS.rowRed : GLASS.row}
-    >
-      <DocIconBox type={iconForCategory(doc.category)} status={status} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+        onClick={onClose}
+      />
 
-      <div className="flex-1 min-w-0">
-        <p
-          className={`text-sm font-semibold truncate ${isActionRequired ? "text-red-300" : "text-white"}`}
-        >
-          {doc.document_name}
-        </p>
-        {doc.uploaded_at ? (
-          <p className="text-xs text-slate-500 mt-0.5">
-            Uploaded {fmtDate(doc.uploaded_at)}
-            {doc.file_size ? ` · ${fmtSize(doc.file_size)}` : ""}
-          </p>
-        ) : (
-          <p className="text-xs text-red-400/80 mt-0.5">
-            Action Required: Document is missing
-          </p>
-        )}
-      </div>
+      <div
+        className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 shadow-2xl"
+        style={GLASS.modal}
+      >
+        <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-white/10">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10 border border-sky-400/20 text-sky-300">
+                <Icon type="digilocker" className="w-4 h-4" />
+              </div>
 
-      <div className="flex items-center gap-2 flex-shrink-0">
-        {isActionRequired ? (
+              <span className="text-xs font-semibold text-sky-300">DigiLocker</span>
+
+              <span className="rounded-full border border-sky-400/20 bg-sky-500/10 px-2 py-0.5 text-[10px] font-medium text-sky-200">
+                Verified Source
+              </span>
+            </div>
+
+            <h2 className="text-xl font-semibold text-white">Document Details</h2>
+
+            <p className="text-sm text-slate-400 mt-1">
+              Information received from DigiLocker
+            </p>
+          </div>
+
           <button
-            onClick={() => onUploadClick(doc)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
+            onClick={onClose}
+            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-colors"
+            aria-label="Close"
           >
-            <Icon type="upload" className="w-3.5 h-3.5" />
-            Upload
+            <Icon type="close" className="w-5 h-5" />
           </button>
-        ) : (
-          <StatusBadge status={status} />
-        )}
+        </div>
 
-        <div className="relative">
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-colors"
-          >
-            <Icon type="dots" className="w-4 h-4" />
-          </button>
-          {menuOpen && (
-            <>
-              <div
-                className="fixed inset-0 z-10"
-                onClick={() => setMenuOpen(false)}
-              />
-              <div
-                className="absolute right-0 top-8 z-20 w-40 rounded-xl overflow-hidden text-xs"
-                style={GLASS.modal}
-              >
+        <div className="px-6 pt-6">
+          <div className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.025] p-4">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-sky-500/10 text-sky-300 border border-sky-400/15">
+              <Icon type="doc" className="w-6 h-6" />
+            </div>
+
+            <div className="min-w-0">
+              <h3 className="text-base font-semibold text-white truncate">
+                {digiLockerMeta?.name || doc.document_name || "DigiLocker Document"}
+              </h3>
+
+              <p className="text-sm text-slate-400 mt-1 truncate">
+                {digiLockerMeta?.description || "Document information fetched from DigiLocker"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-6 py-5">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Document Information
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {digiLockerMeta?.pan && (
+              <div className="rounded-xl border border-sky-400/20 bg-sky-500/[0.06] p-4">
+                <p className="text-[11px] font-medium uppercase tracking-wide text-sky-300">
+                  PAN Number
+                </p>
+
+                <p className="mt-1.5 text-base font-semibold tracking-wide text-white">
+                  {digiLockerMeta.pan}
+                </p>
+              </div>
+            )}
+
+            {digiLockerMeta?.documentType && (
+              <div className="rounded-xl border border-white/10 bg-white/[0.025] p-4">
+                <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                  Document Type
+                </p>
+
+                <p className="mt-1.5 text-sm font-semibold text-white">
+                  {digiLockerMeta.documentType}
+                </p>
+              </div>
+            )}
+
+            {digiLockerMeta?.issuer && (
+              <div className="rounded-xl border border-white/10 bg-white/[0.025] p-4">
+                <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                  Issuer
+                </p>
+
+                <p className="mt-1.5 text-sm font-semibold text-white">
+                  {digiLockerMeta.issuer}
+                </p>
+              </div>
+            )}
+
+            {digiLockerMeta?.source && (
+              <div className="rounded-xl border border-white/10 bg-white/[0.025] p-4">
+                <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                  Source
+                </p>
+
+                <p className="mt-1.5 text-sm font-semibold text-emerald-400">
+                  {digiLockerMeta.source} Document
+                </p>
+              </div>
+            )}
+
+            {displayDate && (
+              <div className="rounded-xl border border-white/10 bg-white/[0.025] p-4">
+                <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                  Document Date
+                </p>
+
+                <p className="mt-1.5 text-sm font-semibold text-white">
+                  {displayDate}
+                </p>
+              </div>
+            )}
+
+            {fileFormats && (
+              <div className="rounded-xl border border-white/10 bg-white/[0.025] p-4">
+                <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                  Available Formats
+                </p>
+
+                <p className="mt-1.5 text-sm font-semibold text-white">
+                  {fileFormats}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {digiLockerMeta?.uri && (
+            <div className="mt-4 rounded-xl border border-white/10 bg-black/10 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                  DigiLocker Document URI
+                </p>
+
                 <button
-                  className="w-full text-left px-3 py-2.5 text-slate-300 hover:bg-white/5 transition-colors flex items-center gap-2"
-                  onClick={handleDownload}
+                  onClick={copyUri}
+                  className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-slate-300 hover:bg-white/[0.08] transition-colors"
                 >
-                  <Icon type="download" className="w-3.5 h-3.5" />
-                  Download
-                </button>
-                <button
-                  className="w-full text-left px-3 py-2.5 text-slate-300 hover:bg-white/5 transition-colors flex items-center gap-2"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    onUploadClick(doc);
-                  }}
-                >
-                  <Icon type="upload" className="w-3.5 h-3.5" />
-                  Replace
+                  {copied ? "Copied" : "Copy"}
                 </button>
               </div>
-            </>
+
+              <p className="mt-2 break-all font-mono text-xs text-slate-300">
+                {digiLockerMeta.uri}
+              </p>
+            </div>
           )}
+
+          <div className="mt-5 flex gap-3 rounded-xl border border-sky-400/15 bg-sky-500/[0.05] p-4">
+            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-sky-500/10 text-xs font-bold text-sky-300">
+              i
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold text-sky-200">Document summary</p>
+
+              <p className="mt-1 text-xs leading-relaxed text-slate-400">
+                This information was fetched directly from DigiLocker. The current integration displays document metadata only. File preview and download are not supported.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end border-t border-white/10 px-6 py-4">
+          <button
+            onClick={onClose}
+            className="rounded-lg border border-white/10 bg-white/[0.04] px-5 py-2 text-sm font-semibold text-slate-200 hover:bg-white/[0.08] transition-colors"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>
   );
 }
 
+function DocRow({ doc, applicationId, onUploadClick, onRefresh, onViewDetails }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const menuButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (!menuOpen || !menuButtonRef.current) return;
+
+    const rect = menuButtonRef.current.getBoundingClientRect();
+    setMenuPosition({
+      top: rect.bottom + 8,
+      left: Math.max(12, rect.right - 176),
+    });
+  }, [menuOpen]);
+
+  const status = normaliseStatus(doc.status);
+  const isActionRequired = status === "action-required";
+  const isDigiLockerDoc = doc.source === "digilocker";
+
+  const digiLockerMeta = isDigiLockerDoc
+    ? getDigiLockerMetadata(doc)
+    : null;
+
+  async function handleView() {
+    setMenuOpen(false);
+
+    if (isDigiLockerDoc) {
+      onViewDetails?.(doc);
+      return;
+    }
+
+    try {
+      if (doc.file_url) {
+        window.open(doc.file_url, "_blank", "noopener,noreferrer");
+        return;
+      }
+
+      if (!applicationId || !doc.id) return;
+
+      const res = await fetch(
+        `${API}/document/${applicationId}/${doc.id}/download`,
+      );
+
+      if (!res.ok) {
+        throw new Error("Document preview failed");
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+
+      window.open(url, "_blank", "noopener,noreferrer");
+
+      setTimeout(() => URL.revokeObjectURL(url), 15000);
+    } catch {
+      // Optional: add toast/error handling later
+    }
+  }
+
+  async function handleDownload() {
+    setMenuOpen(false);
+
+    try {
+      if (doc.file_url) {
+        const a = document.createElement("a");
+
+        a.href = doc.file_url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.download =
+          doc.filename ?? doc.document_name ?? "document";
+
+        a.click();
+        return;
+      }
+
+      if (!applicationId || !doc.id) return;
+
+      const res = await fetch(
+        `${API}/document/${applicationId}/${doc.id}/download`,
+      );
+
+      if (!res.ok) {
+        throw new Error("Download failed");
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+
+      a.href = url;
+      a.download =
+        doc.filename ?? doc.document_name ?? "document";
+
+      a.click();
+
+      URL.revokeObjectURL(url);
+    } catch {
+      // Optional: add toast/error handling later
+    }
+  }
+
+  async function copyUri() {
+    if (!digiLockerMeta?.uri) return;
+
+    try {
+      await navigator.clipboard.writeText(digiLockerMeta.uri);
+
+      setCopied(true);
+
+      setTimeout(() => {
+        setCopied(false);
+      }, 1500);
+    } catch {
+      // Clipboard permission may be unavailable
+    }
+  }
+
+  const displayDate = digiLockerMeta?.documentDate
+    ? fmtDate(digiLockerMeta.documentDate) ||
+      digiLockerMeta.documentDate
+    : null;
+
+  const fileFormats =
+    digiLockerMeta?.mimeTypes?.length > 0
+      ? digiLockerMeta.mimeTypes
+          .map((type) => {
+            const map = {
+              "application/pdf": "PDF",
+              "application/json": "JSON",
+              "application/xml": "XML",
+            };
+
+            return map[type] || type;
+          })
+          .join(", ")
+      : null;
+
+  return (
+    <>
+      {/* ── Document Row ───────────────────────────────────────────── */}
+      <div
+        className="flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all group relative z-10"
+        style={isActionRequired ? GLASS.rowRed : GLASS.row}
+      >
+        <DocIconBox
+          type={
+            isDigiLockerDoc
+              ? "digilocker"
+              : iconForCategory(doc.category)
+          }
+          status={status}
+        />
+
+        {/* Document information */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <p
+              className={`text-sm font-semibold truncate ${
+                isActionRequired
+                  ? "text-red-300"
+                  : "text-white"
+              }`}
+            >
+              {doc.document_name}
+            </p>
+
+            {isDigiLockerDoc && (
+              <span className="hidden sm:inline-flex items-center gap-1 rounded-full border border-sky-400/20 bg-sky-500/10 px-2 py-0.5 text-[10px] font-semibold text-sky-300">
+                DigiLocker
+              </span>
+            )}
+          </div>
+
+          {isDigiLockerDoc ? (
+            <p className="text-xs text-slate-500 mt-1 truncate">
+              Verified document details from DigiLocker
+            </p>
+          ) : doc.uploaded_at ? (
+            <p className="text-xs text-slate-500 mt-0.5">
+              Uploaded {fmtDate(doc.uploaded_at)}
+              {doc.file_size
+                ? ` · ${fmtSize(doc.file_size)}`
+                : ""}
+            </p>
+          ) : (
+            <p className="text-xs text-red-400/80 mt-0.5">
+              Action Required: Document is missing
+            </p>
+          )}
+        </div>
+
+        {/* Status + actions */}
+        <div className="flex items-center justify-end gap-2 flex-shrink-0 ml-auto">
+          {isActionRequired ? (
+            <button
+              onClick={() => onUploadClick(doc)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
+            >
+              <Icon
+                type="upload"
+                className="w-3.5 h-3.5"
+              />
+              Upload
+            </button>
+          ) : (
+            <StatusBadge status={status} />
+          )}
+
+          <div className="relative flex-shrink-0">
+            <button
+              ref={menuButtonRef}
+              onClick={() => setMenuOpen((value) => !value)}
+              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-colors"
+              aria-label="Document actions"
+            >
+              <Icon type="dots" className="w-4 h-4" />
+            </button>
+
+            {menuOpen &&
+              createPortal(
+                <>
+                  <div
+                    className="fixed inset-0 z-[9998]"
+                    onClick={() => setMenuOpen(false)}
+                  />
+
+                  <div
+                    className="fixed z-[9999] w-44 rounded-xl overflow-hidden text-xs"
+                    style={{
+                      ...GLASS.modal,
+                      top: menuPosition.top,
+                      left: menuPosition.left,
+                    }}
+                  >
+                    <button
+                      className="w-full flex items-center justify-start gap-2 px-3 py-2.5 text-left text-slate-300 hover:bg-white/5 transition-colors"
+                      onClick={handleView}
+                    >
+                      <Icon type="doc" className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span>{isDigiLockerDoc ? "View Details" : "View"}</span>
+                    </button>
+
+                    {!isDigiLockerDoc && (
+                      <button
+                        className="w-full flex items-center justify-start gap-2 px-3 py-2.5 text-left text-slate-300 hover:bg-white/5 transition-colors"
+                        onClick={handleDownload}
+                      >
+                        <Icon type="download" className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span>Download</span>
+                      </button>
+                    )}
+
+                    {!isDigiLockerDoc && (
+                      <button
+                        className="w-full flex items-center justify-start gap-2 px-3 py-2.5 text-left text-slate-300 hover:bg-white/5 transition-colors"
+                        onClick={() => {
+                          setMenuOpen(false);
+                          onUploadClick(doc);
+                        }}
+                      >
+                        <Icon type="upload" className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span>Replace</span>
+                      </button>
+                    )}
+                  </div>
+                </>,
+                document.body,
+              )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
 // ─────────────────────────────────────────────────────────────────────────────
 // Skeleton loaders
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1001,10 +1469,42 @@ function SidebarSkeleton() {
 // Main Page
 // ─────────────────────────────────────────────────────────────────────────────
 export default function DocumentsPage() {
-  // ── applicationId from localStorage (set by TrackApplication after /submit) ─
-  const applicationId = localStorage.getItem("application_id")
-    ? Number(localStorage.getItem("application_id"))
-    : null;
+  const [applicationId, setApplicationId] = useState(() => {
+    const stored = localStorage.getItem("application_id");
+    return stored ? Number(stored) : null;
+  });
+
+  const resolveCurrentApplicationId = useCallback(async () => {
+    const stored = localStorage.getItem("application_id");
+    const token = getStoredAccessToken();
+    if (!token) return null;
+
+    let nextId = stored ? Number(stored) : null;
+
+    if (!nextId) {
+      try {
+        const res = await fetch(`${API}/dashboard/loans`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        const latest = Array.isArray(data) ? data[0] : Array.isArray(data?.loans) ? data.loans[0] : null;
+        nextId = latest?.application_id ?? null;
+      } catch {
+        return null;
+      }
+    }
+
+    if (nextId) {
+      localStorage.setItem("application_id", String(nextId));
+      setApplicationId(Number(nextId));
+      return Number(nextId);
+    }
+
+    localStorage.removeItem("application_id");
+    setApplicationId(null);
+    return null;
+  }, []);
 
   // ── State ─────────────────────────────────────────────────────────────────
   const [groups, setGroups] = useState([]); // [{ category, documents[] }]
@@ -1019,25 +1519,49 @@ export default function DocumentsPage() {
 
   const [activeTab, setActiveTab] = useState("All Documents");
   const [uploadTarget, setUploadTarget] = useState(null); // doc object for UploadModal
+  const [detailDoc, setDetailDoc] = useState(null);
   const [showQuick, setShowQuick] = useState(false);
 
   // ── Fetch document list ───────────────────────────────────────────────────
   const fetchDocs = useCallback(async () => {
-    if (!applicationId) {
+    let activeApplicationId = applicationId;
+
+    if (!activeApplicationId) {
+      activeApplicationId = await resolveCurrentApplicationId();
+    }
+
+    if (!activeApplicationId) {
+      setGroups([]);
+      setFetchError("No active application found. Please submit or select an application first.");
       setLoading(false);
       return;
     }
+
     setLoading(true);
     setFetchError(null);
     try {
-      const token = localStorage.getItem("access_token");
+      const token = getStoredAccessToken();
 
-      const res = await fetch(`${API}/document/${applicationId}`, {
+      if (!token) {
+        setFetchError("Please log in to view your documents.");
+        return;
+      }
+
+      const res = await fetch(`${API}/document/${activeApplicationId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      if (!res.ok) {
+        if (res.status === 404) {
+          localStorage.removeItem("application_id");
+          setApplicationId(null);
+          setGroups([]);
+          setFetchError("No active application found for this user. Please submit or reopen an application.");
+          return;
+        }
+        throw new Error(`Server returned ${res.status}`);
+      }
       const data = await res.json();
       setGroups(data.groups ?? []);
     } catch (err) {
@@ -1045,7 +1569,7 @@ export default function DocumentsPage() {
     } finally {
       setLoading(false);
     }
-  }, [applicationId]);
+  }, [applicationId, resolveCurrentApplicationId]);
 
   // ── Fetch verification status ─────────────────────────────────────────────
   const fetchVerStatus = useCallback(async () => {
@@ -1055,8 +1579,20 @@ export default function DocumentsPage() {
     }
     setVerLoading(true);
     try {
+      const token = getStoredAccessToken();
+
+      if (!token) {
+        setVerStatus(null);
+        return;
+      }
+
       const res = await fetch(
         `${API}/document/${applicationId}/verification-status`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
       if (!res.ok) throw new Error();
       setVerStatus(await res.json());
@@ -1068,7 +1604,7 @@ export default function DocumentsPage() {
   }, [applicationId]);
 
   const fetchDigiLockerDocuments = useCallback(async () => {
-    const token = localStorage.getItem("access_token");
+    const token = getStoredAccessToken();
 
     if (!token) return;
 
@@ -1089,10 +1625,18 @@ export default function DocumentsPage() {
   }, []);
 
   useEffect(() => {
-    fetchDocs();
-    fetchVerStatus();
-    fetchDigiLockerDocuments();
-  }, [fetchDocs, fetchVerStatus, fetchDigiLockerDocuments]);
+    const syncAndFetch = async () => {
+      const current = await resolveCurrentApplicationId();
+      if (current && Number(current) !== Number(applicationId)) {
+        setApplicationId(Number(current));
+      }
+      fetchDocs();
+      fetchVerStatus();
+      fetchDigiLockerDocuments();
+    };
+
+    syncAndFetch();
+  }, [fetchDocs, fetchVerStatus, fetchDigiLockerDocuments, resolveCurrentApplicationId, applicationId]);
 
   // ── After a successful upload: refresh both feeds ────────────────────────
   function handleUploaded() {
@@ -1104,7 +1648,9 @@ export default function DocumentsPage() {
   async function fetchFromDigiLocker() {
     if (digilockerLoading) return;
 
-    if (!localStorage.getItem("access_token")) {
+    const token = getStoredAccessToken();
+
+    if (!token) {
       setDigilockerError("Please log in before connecting DigiLocker.");
       return;
     }
@@ -1114,7 +1660,6 @@ export default function DocumentsPage() {
     setDigilockerMessage("");
 
     try {
-      const token = localStorage.getItem("access_token");
 
       const res = await fetch(`${API}/digilocker/authorize`, {
         method: "GET",
@@ -1163,7 +1708,45 @@ export default function DocumentsPage() {
     return true;
   }
 
-  const visibleGroups = groups
+  const mergedGroups = useMemo(() => {
+    const grouped = new Map();
+
+    groups.forEach((group) => {
+      grouped.set(group.category, {
+        category: group.category,
+        documents: [...(group.documents || [])],
+      });
+    });
+
+    digilockerDocuments.forEach((doc) => {
+      const category = doc.category || "Other";
+      const mappedDoc = {
+        id: doc.id,
+        document_name: doc.document_name || doc.filename || "DigiLocker Document",
+        category,
+        status: doc.status || "pending_review",
+        filename: doc.filename || "digilocker-document",
+        file_size: doc.file_size || null,
+        uploaded_at: doc.uploaded_at || null,
+        file_url: doc.file_url || null,
+        source: "digilocker",
+        uri: doc.uri || null,
+        mimetype: doc.mimetype || null,
+        raw: doc.extracted_info || null,
+        source_label: doc.source || "Issued",
+      };
+
+      if (!grouped.has(category)) {
+        grouped.set(category, { category, documents: [] });
+      }
+
+      grouped.get(category).documents.push(mappedDoc);
+    });
+
+    return Array.from(grouped.values());
+  }, [groups, digilockerDocuments]);
+
+  const visibleGroups = mergedGroups
     .map((g) => ({
       ...g,
       documents: g.documents.filter((d) => filterStatus(d.status)),
@@ -1239,7 +1822,7 @@ export default function DocumentsPage() {
         )}
 
         {/* ── Fetch error ─────────────────────────────────────────────── */}
-        {fetchError && (
+        {fetchError && !fetchError.includes("No active application") && (
           <div
             className="rounded-xl px-5 py-4 mb-6 flex items-center gap-3"
             style={{
@@ -1262,7 +1845,7 @@ export default function DocumentsPage() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* ── LEFT: Document List ──────────────────────────────────── */}
           <div className="xl:col-span-2">
-            <div className="rounded-2xl overflow-hidden" style={GLASS.card}>
+            <div className="rounded-2xl overflow-visible" style={GLASS.card}>
               {/* Tabs */}
               <div
                 className="flex gap-2 p-4 flex-wrap"
@@ -1307,6 +1890,7 @@ export default function DocumentsPage() {
                             doc={doc}
                             applicationId={applicationId}
                             onUploadClick={setUploadTarget}
+                            onViewDetails={setDetailDoc}
                             onRefresh={() => {
                               fetchDocs();
                               fetchVerStatus();
@@ -1603,6 +2187,14 @@ export default function DocumentsPage() {
             setUploadTarget(null);
             handleUploaded();
           }}
+        />
+      )}
+
+      {/* ── DigiLocker Document Details Modal ───────────────────────────── */}
+      {detailDoc && (
+        <DigiLockerDetailsModal
+          doc={detailDoc}
+          onClose={() => setDetailDoc(null)}
         />
       )}
 
