@@ -1,7 +1,7 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const GoogleGIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24">
@@ -45,14 +45,16 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
         alert(data.message || "Google login failed");
         return;
       }
+sessionStorage.setItem("access_token", data.token);
+sessionStorage.setItem("user", JSON.stringify(data.user));
+sessionStorage.setItem("isLoggedIn", "true");
+window.dispatchEvent(new Event("authChange"));
 
-      localStorage.setItem("access_token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("isLoggedIn", "true");
 
-      window.dispatchEvent(new Event("authChange"));
 
-      navigate("/");
+navigate("/");
+
+console.log("🟢 AFTER NAVIGATE:", window.location.pathname);
     } catch (err) {
       console.error(err);
       alert("Google authentication failed.");
@@ -72,7 +74,7 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
     // normal OAuth flow — the user only ever sees our custom icon, so the
     // visual is no longer dependent on Google's icon-button rendering.
     return (
-      <div className={className} style={{ position: "relative", width: 44, height: 44 }}>
+      <div className={className} style={{ position: "relative", width: 48, height: 48, overflow: "visible"}}>
         <div
           style={{
             position: "absolute",
@@ -87,10 +89,11 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
         </div>
         <div
           style={{
-            position: "absolute",
-            inset: 0,
-            opacity: 0,
-            overflow: "hidden",
+              position: "absolute",
+    inset: 0,
+    opacity: 0.01,   
+    overflow: "visible",
+    zIndex: 10,
           }}
         >
           <GoogleLogin

@@ -1,18 +1,39 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showBurger, setShowBurger] = useState(true);
+  const mainRef = useRef(null);
+  useEffect(() => {
+    const mainElement = mainRef.current;
+
+    if (!mainElement) return;
+
+    const handleScroll = () => {
+      setShowBurger(mainElement.scrollTop <= 10);
+    };
+
+    mainElement.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    handleScroll();
+
+    return () => {
+      mainElement.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const pageMap = {
-    "/dashboard":     "dashboard",
-    "/applications":  "applications",
-    "/documents":     "documents",
-    "/profile":       "profile",
-    "/support":       "support",
+    "/dashboard": "dashboard",
+    "/applications": "applications",
+    "/documents": "documents",
+    "/profile": "profile",
+    "/support": "support",
   };
   const activePage = pageMap[location.pathname] ?? "dashboard";
 
@@ -28,11 +49,14 @@ function DashboardLayout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[radial-gradient(1200px_680px_at_20%_-10%,rgba(90,140,255,0.18),transparent_62%),radial-gradient(980px_580px_at_100%_0%,rgba(36,107,198,0.14),transparent_60%),linear-gradient(180deg,#071327_0%,#08162b_100%)] text-slate-100">
-
+    <div className="flex h-screen overflow-hidden bg-[radial-gradient(1200px_680px_at_20%_-10%,rgba(90,140,255,0.18),transparent_62%),radial-gradient(980px_580px_at_100%_0%,rgba(36,107,198,0.14),transparent_60%),linear-gradient(180deg,#071327_0%,#08162b_100%)] text-slate-100">
       {/* Burger for mobile */}
       <button
-        className="fixed top-4 left-4 z-40 flex items-center justify-center w-10 h-10 rounded-lg bg-[#1e2447] text-white shadow-lg sm:hidden"
+        className={`fixed top-4 left-4 z-40 flex items-center justify-center w-10 h-10 rounded-lg bg-[#1e2447] text-white shadow-lg lg:hidden transition-all duration-300 ${
+          showBurger
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 -translate-y-3 pointer-events-none"
+        }`}
         onClick={() => setSidebarOpen(true)}
         aria-label="Open menu"
       >
@@ -42,13 +66,20 @@ function DashboardLayout() {
       {/* Sidebar */}
       <div>
         <div className="hidden sm:block">
-          <Sidebar activePage={activePage} onNavigate={() => {}} onLogout={handleLogout} />
+          <Sidebar
+            activePage={activePage}
+            onNavigate={() => {}}
+            onLogout={handleLogout}
+          />
         </div>
 
         {/* Mobile Drawer */}
         {sidebarOpen && (
           <div className="fixed inset-0 z-50 flex">
-            <div className="fixed inset-0 bg-black/40" onClick={() => setSidebarOpen(false)} />
+            <div
+              className="fixed inset-0 bg-black/40"
+              onClick={() => setSidebarOpen(false)}
+            />
             <div className="relative w-64 max-w-[80vw] h-full bg-[#101a2b] shadow-2xl animate-slideInLeft">
               <Sidebar
                 activePage={activePage}
@@ -56,18 +87,21 @@ function DashboardLayout() {
                 onLogout={handleLogout}
               />
               <button
-                className="absolute top-3 right-3 text-white text-2xl"
+                className="absolute top-7 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full text-white/90 text-3xl leading-none transition hover:bg-white/10 hover:text-white"
                 onClick={() => setSidebarOpen(false)}
                 aria-label="Close menu"
               >
-                ✕
+                ×
               </button>
             </div>
           </div>
         )}
       </div>
 
-      <main className="flex-1 overflow-y-auto px-4 sm:px-6 backdrop-blur-[2px]">
+      <main
+        ref={mainRef}
+        className="min-h-0 flex-1 overflow-y-auto px-4 sm:px-6 backdrop-blur-[2px]"
+      >
         <Outlet />
       </main>
     </div>

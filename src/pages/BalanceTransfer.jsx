@@ -44,38 +44,38 @@ export default function BalanceTransfer() {
           "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
-
-<SEO
-  title="Home Loan Balance Transfer"
-  description="Transfer your existing Home Loan to T-Home Fintech and benefit from lower interest rates, reduced EMIs, and better repayment flexibility."
-  path="/balance-transfer"
-  keywords="home loan balance transfer, refinance home loan, lower EMI, balance transfer loan"
-  structuredData={[
-    financialServiceSchema,
-    breadcrumbSchema,
-  ]}
-/>
+      <SEO
+        title="Home Loan Balance Transfer"
+        description="Transfer your existing Home Loan to T-Home Fintech and benefit from lower interest rates, reduced EMIs, and better repayment flexibility."
+        path="/balance-transfer"
+        keywords="home loan balance transfer, refinance home loan, lower EMI, balance transfer loan"
+        structuredData={[financialServiceSchema, breadcrumbSchema]}
+      />
 
       {/* HERO */}
       <div className="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-2 gap-8 items-center">
         <div>
-          <p className="text-blue-400 text-xs mb-3">TRUSTED FINANCIAL SERVICES</p>
+          <p className="text-blue-400 text-xs mb-3">
+            TRUSTED FINANCIAL SERVICES
+          </p>
 
           <h1 className="text-5xl font-bold mb-4 leading-tight">
             Balance Transfer
           </h1>
 
           <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-            Reduce your current loan interest rates and save thousands. Transfer your existing loan to better banks with lower rates, flexible terms, and zero processing fees.
+            Reduce your current loan interest rates and save thousands. Transfer
+            your existing loan to better banks with lower rates, flexible terms,
+            and zero processing fees.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
-           <button
-  onClick={() => navigate("/balance-transfer-contact")}
-  className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
->
-  Apply Now
-</button>
+            <button
+              onClick={() => navigate("/balance-transfer-contact")}
+              className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              Apply Now
+            </button>
             <button
               onClick={() => navigate("/emi-calculator")}
               className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300"
@@ -101,7 +101,7 @@ export default function BalanceTransfer() {
         </div>
 
         <div className="rounded-[28px] overflow-hidden border border-white/20 bg-white/[0.06] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] h-[360px]">
-  <img
+          <img
             src={BalanceTransferImg}
             alt="Balance Transfer"
             className="w-full h-full object-cover"
@@ -111,16 +111,32 @@ export default function BalanceTransfer() {
 
       {/* WHY CHOOSE */}
       <div className="max-w-7xl mx-auto px-4 py-10">
-<h1 className="text-center text-3xl font-bold mb-10 text-white">
+        <h1 className="text-center text-3xl font-bold mb-10 text-white">
           Why Choose T-Home Balance Transfer?
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
-            { title: "Massive Savings", desc: "Reduce interest by 2-4% and save ₹2-5 lakhs over loan tenure.", icon: "💰" },
-            { title: "Zero Processing Fee", desc: "Transfer without any hidden charges or prepayment penalties.", icon: "🆓" },
-            { title: "Multiple Offers", desc: "Compare 10+ bank offers instantly and pick the best.", icon: "🏦" },
-            { title: "Seamless Process", desc: "Online application with doorstep document collection.", icon: "📱" }
+            {
+              title: "Massive Savings",
+              desc: "Reduce interest by 2-4% and save ₹2-5 lakhs over loan tenure.",
+              icon: "💰",
+            },
+            {
+              title: "Zero Processing Fee",
+              desc: "Transfer without any hidden charges or prepayment penalties.",
+              icon: "🆓",
+            },
+            {
+              title: "Multiple Offers",
+              desc: "Compare 10+ bank offers instantly and pick the best.",
+              icon: "🏦",
+            },
+            {
+              title: "Seamless Process",
+              desc: "Online application with doorstep document collection.",
+              icon: "📱",
+            },
           ].map((item, i) => (
             <div
               key={i}
@@ -129,8 +145,12 @@ export default function BalanceTransfer() {
               <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600/20 text-base border border-blue-500/30">
                 {item.icon}
               </div>
-              <h3 className="font-semibold text-white text-base">{item.title}</h3>
-              <p className="text-gray-400 text-xs leading-relaxed">{item.desc}</p>
+              <h3 className="font-semibold text-white text-base">
+                {item.title}
+              </h3>
+              <p className="text-gray-400 text-xs leading-relaxed">
+                {item.desc}
+              </p>
             </div>
           ))}
         </div>
@@ -138,7 +158,9 @@ export default function BalanceTransfer() {
 
       {/* PROCESS */}
       <div className="max-w-5xl mx-auto px-4 py-10">
-        <h1 className="text-center text-3xl font-bold mb-10 text-white">Simple Process</h1>
+        <h1 className="text-center text-3xl font-bold mb-10 text-white">
+          Simple Process
+        </h1>
         <p className="text-center text-gray-400 text-xs mb-12"> </p>
 
         {isDesktop ? (
@@ -146,31 +168,70 @@ export default function BalanceTransfer() {
             <div className="absolute top-4 left-1/2 -translate-x-1/2 w-full max-w-[400px] h-[2px] bg-white/20 rounded-full"></div>
 
             {[
-              { title: "Application", desc: "Fill out the online form with your current loan details." },
-              { title: "Document Collection", desc: "Submit KYC and existing loan statements." },
-              { title: "Verification", desc: "Our team verifies your details and credit." },
-              { title: "Offers", desc: "Receive and compare multiple bank offers." },
-              { title: "Transfer", desc: "New loan disbursed, old loan closed." }
+              {
+                title: "Application",
+                desc: "Fill out the online form with your current loan details.",
+              },
+              {
+                title: "Document Collection",
+                desc: "Submit KYC and existing loan statements.",
+              },
+              {
+                title: "Verification",
+                desc: "Our team verifies your details and credit.",
+              },
+              {
+                title: "Offers",
+                desc: "Receive and compare multiple bank offers.",
+              },
+              {
+                title: "Transfer",
+                desc: "New loan disbursed, old loan closed.",
+              },
             ].map((step, i) => (
-              <div key={i} className="relative flex flex-col items-center text-center flex-1">
+              <div
+                key={i}
+                className="relative flex flex-col items-center text-center flex-1"
+              >
                 <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white shadow-lg z-10 mb-3">
                   0{String(i + 1)}
                 </div>
 
-                <p className="text-blue-400 text-xs font-medium mb-2">STEP 0{String(i + 1)}</p>
-                <h4 className="font-semibold text-sm mb-1 text-white">{step.title}</h4>
-                <p className="text-gray-400 text-xs max-w-[140px]">{step.desc}</p>
+                <p className="text-blue-400 text-xs font-medium mb-2">
+                  STEP 0{String(i + 1)}
+                </p>
+                <h4 className="font-semibold text-sm mb-1 text-white">
+                  {step.title}
+                </h4>
+                <p className="text-gray-400 text-xs max-w-[140px]">
+                  {step.desc}
+                </p>
               </div>
             ))}
           </div>
         ) : (
           <div className="space-y-6">
             {[
-              { title: "Application", desc: "Fill out the online form with your current loan details." },
-              { title: "Document Collection", desc: "Submit KYC and existing loan statements." },
-              { title: "Verification", desc: "Our team verifies your details and credit." },
-              { title: "Offers", desc: "Receive and compare multiple bank offers." },
-              { title: "Transfer", desc: "New loan disbursed, old loan closed." }
+              {
+                title: "Application",
+                desc: "Fill out the online form with your current loan details.",
+              },
+              {
+                title: "Document Collection",
+                desc: "Submit KYC and existing loan statements.",
+              },
+              {
+                title: "Verification",
+                desc: "Our team verifies your details and credit.",
+              },
+              {
+                title: "Offers",
+                desc: "Receive and compare multiple bank offers.",
+              },
+              {
+                title: "Transfer",
+                desc: "New loan disbursed, old loan closed.",
+              },
             ].map((step, i) => (
               <div key={i} className="flex gap-4 items-start">
                 <div className="flex flex-col items-center">
@@ -181,8 +242,12 @@ export default function BalanceTransfer() {
                 </div>
 
                 <div className="bg-white/5 border border-white/10 rounded-xl p-4 w-full hover:bg-white/10 transition">
-                  <p className="text-blue-400 text-xs font-medium mb-1">STEP 0{String(i + 1)}</p>
-                  <h4 className="font-semibold text-sm mb-1 text-white">{step.title}</h4>
+                  <p className="text-blue-400 text-xs font-medium mb-1">
+                    STEP 0{String(i + 1)}
+                  </p>
+                  <h4 className="font-semibold text-sm mb-1 text-white">
+                    {step.title}
+                  </h4>
                   <p className="text-gray-400 text-xs">{step.desc}</p>
                 </div>
               </div>
@@ -190,7 +255,6 @@ export default function BalanceTransfer() {
           </div>
         )}
       </div>
-
 
       {/* ELIGIBILITY */}
       <div className="max-w-7xl mx-auto px-4 py-10">
@@ -232,7 +296,8 @@ export default function BalanceTransfer() {
             Ready to Save on Interest?
           </h2>
           <p className="text-white/80 mb-6 text-sm">
-            Experience the future of balance transfer. Get started now and save thousands.
+            Experience the future of balance transfer. Get started now and save
+            thousands.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -252,27 +317,27 @@ export default function BalanceTransfer() {
         </div>
       </div>
       <RelatedServices
-  services={[
-    {
-      title: "Home Loan",
-      path: "/home-loan",
-      description:
-        "Compare home loan options with attractive interest rates.",
-    },
-    {
-      title: "Mortgage Loan",
-      path: "/mortgage-loan",
-      description:
-        "Secure financing using residential or commercial property.",
-    },
-    {
-      title: "Personal Loan",
-      path: "/personal-loan",
-      description:
-        "Meet your financial goals with hassle-free personal loans.",
-    },
-  ]}
-/>
+        services={[
+          {
+            title: "Home Loan",
+            path: "/home-loan",
+            description:
+              "Compare home loan options with attractive interest rates.",
+          },
+          {
+            title: "Mortgage Loan",
+            path: "/mortgage-loan",
+            description:
+              "Secure financing using residential or commercial property.",
+          },
+          {
+            title: "Personal Loan",
+            path: "/personal-loan",
+            description:
+              "Meet your financial goals with hassle-free personal loans.",
+          },
+        ]}
+      />
     </div>
   );
 }
