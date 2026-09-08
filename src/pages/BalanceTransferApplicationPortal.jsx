@@ -93,6 +93,36 @@ export default function BalanceTransferApplicationPortal() {
           : "",
     }));
 
+    const token =
+      sessionStorage.getItem("access_token") ||
+      localStorage.getItem("access_token");
+
+    if (token) {
+      const apiBase = import.meta.env.VITE_API_URL || "";
+      Promise.all([
+        fetch(`${apiBase}/digilocker/identity`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then((res) => (res.ok ? res.json() : null))
+          .catch(() => null),
+        fetch(`${apiBase}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then((res) => (res.ok ? res.json() : null))
+          .catch(() => null),
+      ]).then(([identity, meData]) => {
+        const user = meData?.user || {};
+        setFormData((prev) => ({
+          ...prev,
+          fullName: prev.fullName || identity?.name || user.name || "",
+          mobile: prev.mobile || identity?.phone || user.phone || "",
+          email: prev.email || identity?.email || user.email || "",
+          aadhaar: prev.aadhaar || identity?.aadhaar || "",
+          pan: prev.pan || identity?.pan || user.pan || "",
+        }));
+      });
+    }
+
     if (loanResult?.loan_reference) {
       localStorage.setItem("btLoanReference", loanResult.loan_reference);
     }
