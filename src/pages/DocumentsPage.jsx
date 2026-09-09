@@ -1129,13 +1129,13 @@ function DigiLockerDetailsModal({ doc, onClose }) {
               <p className="text-sm font-semibold text-sky-200">Document summary</p>
 
               <p className="mt-1 text-xs leading-relaxed text-slate-400">
-                This document was fetched directly from DigiLocker and verified.
+                This information was fetched directly from DigiLocker. The current integration displays document metadata only. File preview and download are not supported.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-end border-t border-white/10 px-6 py-4">
+        <div className="flex justify-end border-t border-white/10 px-6 py-4">
           <button
             onClick={onClose}
             className="rounded-lg border border-white/10 bg-white/[0.04] px-5 py-2 text-sm font-semibold text-slate-200 hover:bg-white/[0.08] transition-colors"
@@ -1176,10 +1176,6 @@ function DocRow({ doc, applicationId, onUploadClick, onRefresh, onViewDetails })
     setMenuOpen(false);
 
     if (isDigiLockerDoc) {
-      if (doc.file_url) {
-        window.open(doc.file_url, "_blank", "noopener,noreferrer");
-        return;
-      }
       onViewDetails?.(doc);
       return;
     }
@@ -1216,38 +1212,16 @@ function DocRow({ doc, applicationId, onUploadClick, onRefresh, onViewDetails })
 
     try {
       if (doc.file_url) {
-        try {
-          const res = await fetch(doc.file_url);
-          if (res.ok) {
-            const blob = await res.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = doc.filename ?? doc.document_name ?? "document.pdf";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            return;
-          }
-        } catch {
-          const a = document.createElement("a");
-          a.href = doc.file_url;
-          a.target = "_blank";
-          a.rel = "noopener noreferrer";
-          a.download = doc.filename ?? doc.document_name ?? "document.pdf";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          return;
-        }
-      }
+        const a = document.createElement("a");
 
-      if (isDigiLockerDoc) {
-        if (!doc.file_url) {
-          onViewDetails?.(doc);
-          return;
-        }
+        a.href = doc.file_url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.download =
+          doc.filename ?? doc.document_name ?? "document";
+
+        a.click();
+        return;
       }
 
       if (!applicationId || !doc.id) return;
@@ -1269,9 +1243,7 @@ function DocRow({ doc, applicationId, onUploadClick, onRefresh, onViewDetails })
       a.download =
         doc.filename ?? doc.document_name ?? "document";
 
-      document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
 
       URL.revokeObjectURL(url);
     } catch {
@@ -1386,62 +1358,51 @@ function DocRow({ doc, applicationId, onUploadClick, onRefresh, onViewDetails })
             <StatusBadge status={status} />
           )}
 
-          {isDigiLockerDoc ? (
+          <div className="relative flex-shrink-0">
             <button
-              onClick={() => onViewDetails?.(doc)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium transition-colors"
-              title="View DigiLocker Details"
+              ref={menuButtonRef}
+              onClick={() => setMenuOpen((value) => !value)}
+              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-colors"
+              aria-label="Document actions"
             >
-              <Icon type="info" className="w-3.5 h-3.5 text-sky-400" />
-              <span>Details</span>
+              <Icon type="dots" className="w-4 h-4" />
             </button>
-          ) : (
-            <div className="relative flex-shrink-0">
-              <button
-                ref={menuButtonRef}
-                onClick={() => setMenuOpen((value) => !value)}
-                className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-colors"
-                aria-label="Document actions"
-              >
-                <Icon type="dots" className="w-4 h-4" />
-              </button>
 
-              {menuOpen &&
-                createPortal(
-                  <>
-                    <div
-                      className="fixed inset-0 z-[9998]"
-                      onClick={() => setMenuOpen(false)}
-                    />
+            {menuOpen &&
+              createPortal(
+                <>
+                  <div
+                    className="fixed inset-0 z-[9998]"
+                    onClick={() => setMenuOpen(false)}
+                  />
 
-                    <div
-                      className="fixed z-[9999] w-44 rounded-xl overflow-hidden text-xs"
-                      style={{
-                        ...GLASS.modal,
-                        top: menuPosition.top,
-                        left: menuPosition.left,
-                      }}
+                  <div
+                    className="fixed z-[9999] w-44 rounded-xl overflow-hidden text-xs"
+                    style={{
+                      ...GLASS.modal,
+                      top: menuPosition.top,
+                      left: menuPosition.left,
+                    }}
+                  >
+                    <button
+                      className="w-full flex items-center justify-start gap-2 px-3 py-2.5 text-left text-slate-300 hover:bg-white/5 transition-colors"
+                      onClick={handleView}
                     >
-                      {doc.file_url && (
-                        <>
-                          <button
-                            className="w-full flex items-center justify-start gap-2 px-3 py-2.5 text-left text-slate-300 hover:bg-white/5 transition-colors"
-                            onClick={handleView}
-                          >
-                            <Icon type="doc" className="w-3.5 h-3.5 flex-shrink-0" />
-                            <span>View</span>
-                          </button>
+                      <Icon type="doc" className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span>{isDigiLockerDoc ? "View Details" : "View"}</span>
+                    </button>
 
-                          <button
-                            className="w-full flex items-center justify-start gap-2 px-3 py-2.5 text-left text-slate-300 hover:bg-white/5 transition-colors"
-                            onClick={handleDownload}
-                          >
-                            <Icon type="download" className="w-3.5 h-3.5 flex-shrink-0" />
-                            <span>Download</span>
-                          </button>
-                        </>
-                      )}
+                    {!isDigiLockerDoc && (
+                      <button
+                        className="w-full flex items-center justify-start gap-2 px-3 py-2.5 text-left text-slate-300 hover:bg-white/5 transition-colors"
+                        onClick={handleDownload}
+                      >
+                        <Icon type="download" className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span>Download</span>
+                      </button>
+                    )}
 
+                    {!isDigiLockerDoc && (
                       <button
                         className="w-full flex items-center justify-start gap-2 px-3 py-2.5 text-left text-slate-300 hover:bg-white/5 transition-colors"
                         onClick={() => {
@@ -1450,14 +1411,14 @@ function DocRow({ doc, applicationId, onUploadClick, onRefresh, onViewDetails })
                         }}
                       >
                         <Icon type="upload" className="w-3.5 h-3.5 flex-shrink-0" />
-                        <span>{doc.file_url ? "Replace" : "Upload"}</span>
+                        <span>Replace</span>
                       </button>
-                    </div>
-                  </>,
-                  document.body,
-                )}
-            </div>
-          )}
+                    )}
+                  </div>
+                </>,
+                document.body,
+              )}
+          </div>
         </div>
       </div>
     </>
@@ -1678,25 +1639,6 @@ export default function DocumentsPage() {
     syncAndFetch();
   }, [fetchDocs, fetchVerStatus, fetchDigiLockerDocuments, resolveCurrentApplicationId, applicationId]);
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const digilockerStatus = params.get("digilocker");
-    if (digilockerStatus === "error") {
-      const msg = params.get("message") || "DigiLocker authorization failed.";
-      setDigilockerError(msg);
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (digilockerStatus === "success") {
-      const count = params.get("imported");
-      setDigilockerMessage(
-        count && Number(count) > 0
-          ? `Successfully imported ${count} document${Number(count) === 1 ? "" : "s"} from DigiLocker.`
-          : "DigiLocker connected successfully.",
-      );
-      fetchDigiLockerDocuments();
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, [fetchDigiLockerDocuments]);
-
   // ── After a successful upload: refresh both feeds ────────────────────────
   function handleUploaded() {
     fetchDocs();
@@ -1719,11 +1661,6 @@ export default function DocumentsPage() {
     setDigilockerMessage("");
 
     try {
-      const origin = window.location.origin;
-      const queryParams = new URLSearchParams({ origin });
-      if (applicationId) {
-        queryParams.set("applicationId", String(applicationId));
-      }
 
       const res = await fetch(`${API}/digilocker/authorize?${queryParams.toString()}`, {
         method: "GET",
