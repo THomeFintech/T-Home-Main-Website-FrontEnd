@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { createPortal } from "react-dom";
 
 // ── API base ─────────────────────────────────────────────────────────────────
-//safe line
 const API = import.meta.env.VITE_API_URL;
 
 const getStoredAccessToken = () => {
@@ -1662,7 +1661,7 @@ export default function DocumentsPage() {
 
     try {
 
-      const res = await fetch(`${API}/digilocker/authorize?${queryParams.toString()}`, {
+      const res = await fetch(`${API}/digilocker/authorize`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

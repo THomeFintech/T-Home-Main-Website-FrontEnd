@@ -219,8 +219,8 @@ const getStressLevel = (percentage) => {
 };
 
 const getNeedleRotation = (percentage) => {
-  const clamped = Math.max(0, Math.min(percentage, 100));
-  return clamped * 1.8 - 90;
+  const clamped = Math.max(0, Math.min(percentage, 200));
+  return clamped * 0.9 - 90;
 };
 
 // ---------- ANIMATION ----------
@@ -299,14 +299,27 @@ const BalanceChart = ({ data }) => (
     className={`${colors.card} w-full max-w-[360px] sm:max-w-[420px] md:max-w-none mx-auto md:mx-0 p-4 rounded-2xl h-72`}
   >
     <h3 className="mb-2">Loan Balance</h3>
-    <ResponsiveContainer>
-      <BarChart data={data}>
+
+    <ResponsiveContainer width="100%" height="90%">
+      <BarChart
+        data={data}
+        margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
+      >
         <XAxis dataKey="month" />
+
         <Tooltip
-          formatter={(value) => [`₹${Number(value).toFixed(2)}`, "Balance"]}
+          formatter={(value) => [
+            `₹${Number(value).toFixed(2)}`,
+            "Balance",
+          ]}
           labelFormatter={(label) => `Month ${label}`}
         />
-        <Bar dataKey="balance" fill="#2563eb" />
+
+        <Bar
+          dataKey="balance"
+          fill="#2563eb"
+          radius={[4, 4, 0, 0]}
+        />
       </BarChart>
     </ResponsiveContainer>
   </motion.div>
@@ -396,11 +409,22 @@ export default function EMIPage() {
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [existingEmis, setExistingEmis] = useState("");
   const [showAllRows, setShowAllRows] = useState(false);
+const handleReset = () => {
+  const defaults = loanThresholds[loanType].defaults;
+
+  setAmount(defaults.amount);
+  setRate(defaults.interest);
+  setYears(defaults.tenure);
+  setFirstPaymentCustomDate("");
+  setMonthlyIncome("");
+  setExistingEmis("");
+  setShowAnalytics(false);
+  setShowAllRows(false);
+};
 
   const currentThreshold = loanThresholds[loanType];
 
   useEffect(() => {
-    setAmount(currentThreshold.defaults.amount);
     setRate(currentThreshold.defaults.interest);
     setYears(currentThreshold.defaults.tenure);
     setShowAnalytics(false);
@@ -676,11 +700,7 @@ const lastPaymentDate = formatDateDisplay(
 
     setAmount(num);
   }}
-  onBlur={() => {
-    if (amount === 0) {
-      setAmount(currentThreshold.minAmount);
-    }
-  }}
+  onBlur={() => {}}
   placeholder="Enter loan amount"
   className="w-full h-[44px] rounded-[10px] border border-white/20 bg-white/90 px-3 text-[14px] font-semibold text-black outline-none focus:border-blue-400"
 />
@@ -837,7 +857,24 @@ const lastPaymentDate = formatDateDisplay(
               }}
             >
               Calculate Now
-            </button>
+
+             </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setAmount(0);
+              setRate(0);
+              setYears(0);
+              setMonthlyIncome("");
+              setExistingEmis("");
+              setShowAnalytics(false);
+            }}
+          >
+            Reset / Clear
+          </button>
+
+          
 
             <button
   onClick={() => navigate("/tools?tool=loan-prediction")}
@@ -856,6 +893,28 @@ const lastPaymentDate = formatDateDisplay(
               <StatCard title="Total Interest" value={interest.toFixed(2)} />
               <StatCard title="Total Amount" value={total.toFixed(2)} />
             </div>
+
+            <details className="mt-3">
+  <summary className="cursor-pointer text-sm text-cyan-300 underline">
+    ⓘ How are these values calculated?
+  </summary>
+
+  <div className="mt-3 rounded-xl border border-white/20 bg-white/10 p-4 text-sm text-white/80">
+    <p><strong>Monthly EMI:</strong> Based on the loan amount, interest rate, and tenure.</p>
+
+    <p className="mt-2">
+      <strong>Total Interest:</strong> Total interest paid over the loan tenure.
+    </p>
+
+    <p className="mt-2">
+      <strong>Total Amount:</strong> Principal + Total Interest.
+    </p>
+
+    <p className="mt-2">
+      <strong>Validation:</strong> ₹{Number(amount).toLocaleString()} + ₹{Number(interest).toFixed(2)} = ₹{Number(total).toFixed(2)}
+    </p>
+  </div>
+</details>
 
             <div className="grid md:grid-cols-2 gap-4">
               <PieBreakdown
@@ -887,15 +946,26 @@ const lastPaymentDate = formatDateDisplay(
                     {months} months.
                   </p>
 
-                  <div className="flex justify-between items-center bg-white/90 text-black rounded-md px-4 py-3 mb-3">
-                    <span className="text-sm font-medium">📅 First Payment</span>
-                    <input
-  type="date"
-  value={firstPaymentDateValue}
-  onChange={(e) => setFirstPaymentCustomDate(e.target.value)}
-  className="rounded-md bg-white px-2 py-1 text-sm font-semibold text-black outline-none"
-/>
-                  </div>
+               <div className="flex justify-between items-center bg-white/90 text-black rounded-md px-4 py-3 mb-3">
+  <span className="text-sm font-medium">
+    📅 First Payment
+  </span>
+
+  <div className="relative flex items-center gap-2">
+    <span className="text-sm font-semibold">
+      {formatDateDisplay(new Date(firstPaymentDateValue))}
+    </span>
+
+    <input
+      type="date"
+      value={firstPaymentDateValue}
+      onChange={(e) => setFirstPaymentCustomDate(e.target.value)}
+      className="absolute right-0 w-8 h-8 opacity-0 cursor-pointer"
+    />
+
+    <span className="text-lg cursor-pointer">📅</span>
+  </div>
+</div>
 
                   <div className="flex justify-between items-center bg-white/90 text-black rounded-md px-4 py-3 mb-3">
                     <span className="text-sm font-medium">📅 Last Payment</span>
@@ -908,6 +978,16 @@ const lastPaymentDate = formatDateDisplay(
                     <span className="text-sm font-medium">🗓 Total Months</span>
                     <span className="text-sm font-semibold">{months}</span>
                   </div>
+                  <div className="flex justify-between items-center bg-green-500/10 text-green-400 rounded-md px-4 py-3 mb-5">
+  <span className="text-sm font-medium">✅ Final Balance</span>
+  <span className="text-sm font-semibold">
+    ₹{schedule[schedule.length - 1]?.balance.toFixed(2)}
+  </span>
+</div>
+
+<div className="text-center text-sm font-semibold text-green-400 mb-5">
+  ✅ Loan Fully Repaid
+</div>
 
                   <button
                     className="w-full rounded-[12px] bg-blue-600 py-2.5 text-sm font-medium text-white hover:bg-blue-500 transition"
@@ -927,7 +1007,10 @@ const lastPaymentDate = formatDateDisplay(
                   </h3>
 
                   <ResponsiveContainer width="100%" height={220}>
-                    <BarChart data={schedule.slice(0, 6)}>
+                    <BarChart data={schedule.slice(0, 6).map((item) => ({
+  month: item.month,
+  balance: Number(item.balance),
+}))}>
                       <XAxis dataKey="month" stroke="#aaa" />
                       <Tooltip
                         formatter={(value) => [
@@ -973,7 +1056,7 @@ const lastPaymentDate = formatDateDisplay(
                     <input
                       type="number"
                       min="0"
-                      placeholder="Enter income"
+                      placeholder="Enter monthly income"
                       value={monthlyIncome}
                       onChange={(e) => setMonthlyIncome(e.target.value)}
                       className="w-full mb-3 rounded-md bg-white/90 text-black px-3 py-2 text-sm outline-none"
@@ -982,7 +1065,7 @@ const lastPaymentDate = formatDateDisplay(
                     <input
                       type="number"
                       min="0"
-                      placeholder="Enter existing EMI’s"
+                      placeholder="Enter existing monthly EMI’s"
                       value={existingEmis}
                       onChange={(e) => setExistingEmis(e.target.value)}
                       className="w-full mb-4 rounded-md bg-white/90 text-black px-3 py-2 text-sm outline-none"
@@ -1006,7 +1089,7 @@ const lastPaymentDate = formatDateDisplay(
                     </p>
 
                     <div className="relative flex justify-center items-center h-32">
-                      <div className="w-40 h-20 bg-gradient-to-r from-green-500 via-yellow-400 to-red-500 rounded-t-full" />
+                      <div className="relative w-40 h-20 bg-gradient-to-r from-green-500 via-yellow-400 to-red-500 rounded-t-full" />
 
                       <div
                         className="absolute w-1 h-16 bg-white origin-bottom rounded-full transition-transform duration-500 ease-in-out"
@@ -1014,6 +1097,28 @@ const lastPaymentDate = formatDateDisplay(
                           transform: `rotate(${needleRotation}deg)`,
                         }}
                       />
+
+ {/* Stress Scale */}
+<div className="absolute inset-0 pointer-events-none">
+  {[
+    { label: "0%", angle: -78 },
+    { label: "30%", angle: -40 },
+    { label: "50%", angle: 0 },
+    { label: "70%", angle: 40 },
+        { label: "100%", angle: 78},
+  ].map(({ label, angle }) => (
+    <span
+      key={label}
+      className="absolute left-1/2 bottom-0 text-[9px] text-white/80 whitespace-nowrap"
+      style={{
+        transform: `translate(-50%, 0) rotate(${angle}deg) translateY(-105px) rotate(${-angle}deg)`,
+      }}
+    >
+      {label}
+    </span>
+  ))}
+</div>
+
                     </div>
 
                     <div>
