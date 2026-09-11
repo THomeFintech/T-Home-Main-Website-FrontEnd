@@ -201,7 +201,7 @@ export default function LoanForm({
       return;
     }
 
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("access_token");
 
     if (!token) {
       alert("Please login first");
