@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { notificationApi } from "../api";
 
 const API = import.meta.env.VITE_API_URL;
 
 function authHeaders() {
   // Prefer sessionStorage (set by login), fall back to localStorage if present
-  const token = sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
+  const token =
+    sessionStorage.getItem("access_token") ||
+    localStorage.getItem("access_token");
 
   if (!token) {
     return null;
@@ -308,7 +311,10 @@ export default function Dashboard() {
 
   const cachedProgress = getCachedData("dashboard_progress", null);
 
-  const cachedNotifications = getCachedData("dashboard_notifications", []);
+  const cachedNotifications = getCachedData(
+    "dashboard_notifications",
+    [],
+  );
 
   const cachedAdvisor = getCachedData("dashboard_advisor", null);
 
@@ -341,11 +347,17 @@ export default function Dashboard() {
 
   const [loadingSummary, setLoadingSummary] = useState(!cachedSummary);
 
-  const [loadingLoans, setLoadingLoans] = useState(cachedLoans.length === 0);
+  const [loadingLoans, setLoadingLoans] = useState(
+    cachedLoans.length === 0,
+  );
 
-  const [loadingDocs, setLoadingDocs] = useState(cachedDocuments.length === 0);
+  const [loadingDocs, setLoadingDocs] = useState(
+    cachedDocuments.length === 0,
+  );
 
-  const [loadingProgress, setLoadingProgress] = useState(!cachedProgress);
+  const [loadingProgress, setLoadingProgress] = useState(
+    !cachedProgress,
+  );
 
   const [loadingNotifs, setLoadingNotifs] = useState(
     cachedNotifications.length === 0,
@@ -373,22 +385,7 @@ export default function Dashboard() {
         });
     }
 
-
-    // Load important dashboard data immediately
-    apiFetch(`${API}/dashboard/summary`)
-      .then((data) => {
-        if (data) {
-          setSummary(data);
-          setCachedData("dashboard_summary", data);
-        }
-      })
-      .finally(() => setLoadingSummary(false));
-
-    // ----------------------------------------------------------
-    // IMPORTANT:
-    // All requests start at the same time.
-    // ----------------------------------------------------------
-
+    // Load all dashboard data in parallel
     const [
       summaryData,
       loansData,
@@ -405,7 +402,7 @@ export default function Dashboard() {
 
       apiFetch(`${API}/dashboard/progress`),
 
-      apiFetch(`${API}/dashboard/notifications`),
+      notificationApi.getNotifications().catch(() => null),
 
       apiFetch(`${API}/dashboard/advisor`),
     ]);
@@ -426,21 +423,20 @@ export default function Dashboard() {
     // LOANS
     // ----------------------------------------------------------
 
-  const newLoans = Array.isArray(loansData) ? loansData : [];
+    const newLoans = Array.isArray(loansData) ? loansData : [];
 
-setLoans(newLoans);
+    setLoans(newLoans);
 
-setCachedData("dashboard_loans", newLoans);
+    setCachedData("dashboard_loans", newLoans);
 
-if (newLoans.length > 0 && newLoans[0].application_id) {
-  localStorage.setItem(
-    "application_id",
-    String(newLoans[0].application_id),
-  );
-}
+    if (newLoans.length > 0 && newLoans[0].application_id) {
+      localStorage.setItem(
+        "application_id",
+        String(newLoans[0].application_id),
+      );
+    }
 
-setLoadingLoans(false);
-  
+    setLoadingLoans(false);
 
     // ----------------------------------------------------------
     // DOCUMENTS
@@ -464,62 +460,35 @@ setLoadingLoans(false);
 
     setCachedData("dashboard_progress", newProgress);
 
+    setLoadingProgress(false);
 
-    apiFetch(`${API}/dashboard/loans`)
-      .then((data) => {
-        const newLoans = Array.isArray(data) ? data : [];
+    // ----------------------------------------------------------
+    // NOTIFICATIONS
+    // ----------------------------------------------------------
 
-        setLoans(newLoans);
-        setCachedData("dashboard_loans", newLoans);
+    const newNotifications = Array.isArray(notificationsData)
+      ? notificationsData
+      : Array.isArray(notificationsData?.notifications)
+        ? notificationsData.notifications
+        : [];
 
-        if (newLoans.length > 0 && newLoans[0].application_id) {
-          localStorage.setItem(
-            "application_id",
-            String(newLoans[0].application_id),
-          );
-        }
-      })
-      .finally(() => setLoadingLoans(false));
+    setNotifications(newNotifications);
 
-    apiFetch(`${API}/dashboard/documents`)
-      .then((data) => {
-        const newDocuments = data?.documents ?? [];
+    setCachedData("dashboard_notifications", newNotifications);
 
-        setDocuments(newDocuments);
-        setCachedData("dashboard_documents", newDocuments);
-      })
-      .finally(() => setLoadingDocs(false));
+    setLoadingNotifs(false);
 
-    // Load secondary data in background
-    apiFetch(`${API}/dashboard/progress`)
-      .then((data) => {
-        const newProgress = data?.data?.[0] ?? null;
+    // ----------------------------------------------------------
+    // ADVISOR
+    // ----------------------------------------------------------
 
-        setProgress(newProgress);
-        setCachedData("dashboard_progress", newProgress);
-      })
-      .finally(() => setLoadingProgress(false));
+    const newAdvisor = advisorData?.advisor ?? null;
 
-    apiFetch(`${API}/dashboard/notifications`)
-      .then((data) => {
-        const newNotifications = data?.notifications ?? [];
+    setAdvisor(newAdvisor);
 
-        setNotifications(newNotifications);
-        setCachedData("dashboard_notifications", newNotifications);
-      })
-      .finally(() => setLoadingNotifs(false));
+    setCachedData("dashboard_advisor", newAdvisor);
 
-    apiFetch(`${API}/dashboard/advisor`)
-      .then((data) => {
-        const newAdvisor = data?.advisor ?? null;
-
-        setAdvisor(newAdvisor);
-        setCachedData("dashboard_advisor", newAdvisor);
-      })
-      .catch(() => {
-        setAdvisor(null);
-      })
-      .finally(() => setLoadingAdvisor(false));
+    setLoadingAdvisor(false);
   }, []);
 
   // ============================================================
@@ -536,10 +505,7 @@ setLoadingLoans(false);
 
   const markRead = async (id) => {
     try {
-      await fetch(`${API}/dashboard/notifications/${id}/read`, {
-        method: "PATCH",
-        headers: authHeaders(),
-      });
+      await notificationApi.markAsRead(id);
 
       setNotifications((prev) => {
         const updated = prev.map((n) =>
@@ -550,6 +516,8 @@ setLoadingLoans(false);
 
         return updated;
       });
+
+      window.dispatchEvent(new Event("notificationChange"));
     } catch (error) {
       console.warn("Failed to mark notification:", error);
     }
@@ -669,11 +637,16 @@ setLoadingLoans(false);
   // APPLICATION STATUS
   // ============================================================
 
-  const currentStatus = APPLICATION_STEPS.includes(progress?.current_status)
+  const currentStatus = APPLICATION_STEPS.includes(
+    progress?.current_status,
+  )
     ? progress.current_status
     : "Initiated";
 
-  const steps = normaliseApplicationSteps(progress?.steps, currentStatus);
+  const steps = normaliseApplicationSteps(
+    progress?.steps,
+    currentStatus,
+  );
 
   const expectedDays = progress?.expected_days;
 
@@ -726,7 +699,9 @@ setLoadingLoans(false);
         <StatCard
           loading={loadingSummary}
           label="Total Loan Amount"
-          value={summary ? fmtINR(summary.total_loan_amount) : null}
+          value={
+            summary ? fmtINR(summary.total_loan_amount) : null
+          }
           sub={summary ? `● ${summary.total_loan_summary}` : ""}
           subColor="text-blue-400"
           icon={
@@ -822,14 +797,17 @@ setLoadingLoans(false);
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-medium text-white">Application Progress</h2>
+              <h2 className="font-medium text-white">
+                Application Progress
+              </h2>
 
               {loadingProgress ? (
                 <Skeleton className="h-6 w-28" />
               ) : (
                 <span
                   className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs border ${
-                    STATUS_BADGE[currentStatus] ?? STATUS_BADGE.Submitted
+                    STATUS_BADGE[currentStatus] ??
+                    STATUS_BADGE.Submitted
                   }`}
                 >
                   {currentStatus}
@@ -844,7 +822,12 @@ setLoadingLoans(false);
                   >
                     <circle cx="12" cy="12" r="10" />
                     <line x1="12" y1="8" x2="12" y2="12" />
-                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                    <line
+                      x1="12"
+                      y1="16"
+                      x2="12.01"
+                      y2="16"
+                    />
                   </svg>
                 </span>
               )}
@@ -873,7 +856,10 @@ setLoadingLoans(false);
                         : "bg-transparent border-white/20";
 
                   return (
-                    <div key={i} className="flex flex-col items-center flex-1">
+                    <div
+                      key={i}
+                      className="flex flex-col items-center flex-1"
+                    >
                       <div className="relative flex items-center w-full">
                         {i > 0 && (
                           <div
@@ -964,7 +950,9 @@ setLoadingLoans(false);
           ================================================== */}
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-6">
-            <h2 className="font-medium text-white mb-4">Your Active Loans</h2>
+            <h2 className="font-medium text-white mb-4">
+              Your Active Loans
+            </h2>
 
             {loadingLoans ? (
               <div className="rounded-xl border border-white/20 bg-white/[0.05] p-4 space-y-3">
@@ -1019,7 +1007,9 @@ setLoadingLoans(false);
                         },
                         {
                           label: "Remaining Balance",
-                          value: fmtINR(loan.repayment?.remaining_balance ?? 0),
+                          value: fmtINR(
+                            loan.repayment?.remaining_balance ?? 0,
+                          ),
                         },
                       ].map((item) => (
                         <div key={item.label}>
@@ -1066,7 +1056,9 @@ setLoadingLoans(false);
           ================================================== */}
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-6">
-            <h2 className="font-medium text-white mb-4">Quick Actions</h2>
+            <h2 className="font-medium text-white mb-4">
+              Quick Actions
+            </h2>
 
             <div className="grid grid-cols-4 gap-3">
               {[
@@ -1168,7 +1160,9 @@ setLoadingLoans(false);
           ================================================== */}
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-6">
-            <h2 className="font-medium text-white mb-4">Your Documents</h2>
+            <h2 className="font-medium text-white mb-4">
+              Your Documents
+            </h2>
 
             <div className="flex flex-col gap-2 mb-4">
               {loadingDocs ? (
@@ -1186,9 +1180,12 @@ setLoadingLoans(false);
                     className="flex items-center justify-between rounded-xl border border-white/20 bg-white/[0.06] backdrop-blur-xl px-4 py-3"
                   >
                     <div className="flex items-center gap-2.5 text-white/50">
-                      {DOC_ROW_ICON[doc.label] ?? DOC_ROW_ICON["Income Proof"]}
+                      {DOC_ROW_ICON[doc.label] ??
+                        DOC_ROW_ICON["Income Proof"]}
 
-                      <span className="text-sm text-white/70">{doc.label}</span>
+                      <span className="text-sm text-white/70">
+                        {doc.label}
+                      </span>
                     </div>
 
                     <span
@@ -1230,12 +1227,17 @@ setLoadingLoans(false);
           ================================================== */}
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-6">
-            <h2 className="font-medium text-white mb-4">Recent Updates</h2>
+            <h2 className="font-medium text-white mb-4">
+              Recent Updates
+            </h2>
 
             {loadingNotifs ? (
               <div className="flex flex-col gap-4">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex items-start gap-3">
+                  <div
+                    key={i}
+                    className="flex items-start gap-3"
+                  >
                     <Skeleton className="mt-1 w-2 h-2 rounded-full flex-shrink-0" />
 
                     <div className="flex-1 space-y-1.5">
@@ -1251,31 +1253,40 @@ setLoadingLoans(false);
               </p>
             ) : (
               <div className="flex flex-col gap-4">
-                {(Array.isArray(notifications) ? notifications : []).map(
-                  (item) => (
+                {(Array.isArray(notifications)
+                  ? notifications
+                  : []
+                ).map((item) => (
+                  <div
+                    key={item.id}
+                    className={`flex items-start gap-3 cursor-pointer ${
+                      !item.is_read ? "opacity-100" : "opacity-60"
+                    }`}
+                    onClick={() =>
+                      !item.is_read && markRead(item.id)
+                    }
+                  >
                     <div
-                      key={item.id}
-                      className={`flex items-start gap-3 cursor-pointer ${
-                        !item.is_read ? "opacity-100" : "opacity-60"
+                      className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
+                        NOTIF_DOT[item.color] ?? "bg-blue-500"
                       }`}
-                      onClick={() => !item.is_read && markRead(item.id)}
-                    >
-                      <div
-                        className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
-                          NOTIF_DOT[item.color] ?? "bg-blue-500"
-                        }`}
-                      />
+                    />
 
-                      <div>
-                        <p className="text-sm text-white/70">{item.message}</p>
+                    <div>
+                      <p className="text-sm font-medium text-white/80">
+                        {item.title}
+                      </p>
 
-                        <p className="text-xs text-white/30 mt-0.5">
-                          {fmtDate(item.created_at)}
-                        </p>
-                      </div>
+                      <p className="text-sm text-white/70">
+                        {item.message}
+                      </p>
+
+                      <p className="text-xs text-white/30 mt-0.5">
+                        {item.time_ago || fmtDate(item.created_at)}
+                      </p>
                     </div>
-                  ),
-                )}
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -1285,7 +1296,9 @@ setLoadingLoans(false);
           ================================================== */}
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-5">
-            <p className="font-medium text-white text-sm mb-0.5">Need help?</p>
+            <p className="font-medium text-white text-sm mb-0.5">
+              Need help?
+            </p>
 
             <p className="text-xs text-white/30 mb-4">
               {loadingAdvisor
@@ -1319,9 +1332,13 @@ setLoadingLoans(false);
                 )}
 
                 <div>
-                  <p className="text-sm text-white/80">{advisor.name}</p>
+                  <p className="text-sm text-white/80">
+                    {advisor.name}
+                  </p>
 
-                  <p className="text-xs text-white/30">{advisor.designation}</p>
+                  <p className="text-xs text-white/30">
+                    {advisor.designation}
+                  </p>
                 </div>
               </div>
             ) : (
@@ -1342,9 +1359,13 @@ setLoadingLoans(false);
                 </div>
 
                 <div>
-                  <p className="text-sm text-white/80">Support Team</p>
+                  <p className="text-sm text-white/80">
+                    Support Team
+                  </p>
 
-                  <p className="text-xs text-white/30">Available 9AM – 6PM</p>
+                  <p className="text-xs text-white/30">
+                    Available 9AM – 6PM
+                  </p>
                 </div>
               </div>
             )}

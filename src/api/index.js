@@ -7,3 +7,4 @@ export { default as offersApi } from "./offersApi";
 export { default as recommendationApi } from "./recommendationApi";
 export { default as applicationApi } from "./applicationApi";
 export { default as contactApi } from "./contactApi";
+export { default as notificationApi } from "./notificationApi";
