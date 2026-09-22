@@ -104,40 +104,58 @@ const joinBenefits = [
 
 const testimonials = [
   {
+    name: "Chittiboina Mohit",
+    role: "Backend Developer Intern",
+    image: "/testimonials/chittiboina-mohit.jpg",
+    text: "Working at T-Home has been a great learning opportunity. With constant mentor guidance and a friendly culture, I significantly improved my technical and problem-solving skills.",
+  },
+  {
+    name: "Sai Krishna Bathina",
+    role: "Backend Developer Intern",
+    image: "/testimonials/sai-krishna-bathina.png",
+    text: "Working on fast-paced fintech features alongside a supportive team has been transformative, offering invaluable industry exposure and continuous learning.",
+  },
+  {
+    name: "Gopireddy Sakshi",
+    role: "Research & Graphic Design Intern",
+    image: "/testimonials/gopireddy-sakshi.jpg",
+    text: "Working at T-Home has been a truly positive experience. The freedom to share ideas, try new things, and receive encouraging mentorship has helped me grow both personally and professionally.",
+  },
+  {
+    name: "Himavanth Molala",
+    role: "AI/ML Intern",
+    image: "/testimonials/himavanth-molala.png",
+    text: "My experience at T-Home has been a rewarding journey. Gaining practical AI experience with strong mentorship has helped me sharpen my technical and professional skills.",
+  },
+  {
+    name: "Siri Artham",
+    role: "Backend Development Intern",
+    image: "/testimonials/siri-artham.png",
+    text: "Gaining hands-on backend experience on real-world projects has been invaluable. Strong mentorship and a collaborative culture have boosted my technical skills and confidence.",
+  },
+  {
+    name: "Mary Angel M",
+    role: "Full Stack Developer Intern",
+    image: "/testimonials/mary-angel-m.png",
+    text: "Building real-world full-stack applications with constant guidance from a supportive team has helped me troubleshoot complex challenges and grow rapidly as a developer.",
+  },
+  {
     name: "Sai Susritha Vemuri",
     role: "Product Architect Intern",
-    image: "/home/testimonial-1.png",
-    text: "Over the past few months at T-Home, my experience has been extremely positive and rewarding.The mentorship helped me gain valuable real-world insights into machine learning.",
+    image: null,
+    text: "Over the past few months at T-Home, my experience has been extremely positive and rewarding. The mentorship helped me gain valuable real-world insights into machine learning.",
   },
   {
     name: "Akhil Kumar Rotta",
     role: "Designer",
-    image: "/home/testimonial-2.png",
+    image: null,
     text: "The last five months at T-Home have been a meaningful experience. With constant support and guidance, I’ve grown in confidence and creativity.",
   },
   {
     name: "P. Siri Chandana",
     role: "Machine Learning Intern",
-    image: "/home/testimonial-3.png",
+    image: null,
     text: "My experience at T-Home has been enriching and rewarding. I gained hands-on exposure to real-time projects and bridged the gap between theory and practice.",
-  },
-  {
-    name: "Shivani",
-    role: "ML Intern",
-    image: "/home/testimonial-1.png",
-    text: "My journey at T-Home has been enriching, with strong mentorship improving my skills. The supportive culture inspired growth, collaboration, and continuous improvement every day.",
-  },
-  {
-    name: "Bhanu Sri",
-    role: "UI/UX Design Intern",
-    image: "/home/testimonial-2.png",
-    text: "My journey at T-Home has been enriching, with strong mentorship improving my skills. The supportive culture inspired growth, collaboration, and continuous improvement every day.",
-  },
-  {
-    name: "Waseem Ahmed",
-    role: "ML Intern",
-    image: "/home/testimonial-3.png",
-    text: "My journey at T-Home has been enriching, with strong mentorship improving my skills. The supportive culture inspired growth, collaboration, and continuous improvement every day.",
   },
 ];
 
@@ -407,10 +425,9 @@ export default function CareerSection() {
 
             <div className="mx-16 w-full overflow-hidden">
                <div
-                 className="grid auto-cols-[calc((100%-48px)/3)] grid-flow-col gap-6"
+                 className="grid auto-cols-[calc((100%-48px)/3)] grid-flow-col gap-6 transition-transform duration-500 ease-in-out"
                  style={{
                    transform: `translateX(calc(-${testimonialStart} * ((100% - 48px) / 3 + 24px)))`,
-                   transition: 'none'
                  }}
                >
                  {testimonialTrack.map((t, i) => {
@@ -425,7 +442,7 @@ export default function CareerSection() {
     delay: 0.1,
   }}
   viewport={{ once: true }}
-  className={`flex h-[360px] flex-col justify-between rounded-[16px] border px-6 py-7 text-center backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_34px_rgba(0,0,0,0.3)] transition-transform duration-700 ease-in-out ${
+  className={`flex h-[390px] flex-col justify-between rounded-[16px] border px-6 py-7 text-center backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_34px_rgba(0,0,0,0.3)] transition-transform duration-700 ease-in-out ${
     isCenter
       ? "border-[#7ea7ff]/70 bg-[linear-gradient(180deg,rgba(58,95,218,0.96)_0%,rgba(39,68,184,0.96)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_18px_40px_rgba(8,20,60,0.42)]"
       : "border-[#c9dcff]/52 bg-[linear-gradient(180deg,rgba(24,34,84,0.84)_0%,rgba(14,22,58,0.9)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_34px_rgba(2,8,28,0.34)]"
@@ -442,7 +459,7 @@ export default function CareerSection() {
     </div>
 
     <p
-      className={`mx-auto mt-6 max-w-[320px] text-[15px] leading-7 ${
+      className={`mx-auto mt-4 max-w-[320px] text-[14px] leading-6 sm:text-[15px] sm:leading-6 ${
         isCenter ? "text-white/95" : "text-white/75"
       }`}
     >
@@ -451,8 +468,24 @@ export default function CareerSection() {
   </div>
 
   {/* BOTTOM (ALWAYS SAME POSITION) */}
-  <div className="mt-6 flex items-center justify-center gap-3">
-    <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#9fc1ff]">
+  <div className="mt-4 flex shrink-0 items-center justify-center gap-3">
+    {t.image ? (
+      <img
+        src={t.image}
+        alt={t.name}
+        className="h-10 w-10 rounded-full border border-white/30 object-cover"
+        onError={(e) => {
+          e.currentTarget.style.display = "none";
+          if (e.currentTarget.nextElementSibling) {
+            e.currentTarget.nextElementSibling.style.display = "inline-flex";
+          }
+        }}
+      />
+    ) : null}
+    <div
+      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#9fc1ff]"
+      style={{ display: t.image ? "none" : "inline-flex" }}
+    >
       <User size={16} />
     </div>
 
@@ -478,10 +511,10 @@ export default function CareerSection() {
            <div className="mx-auto mt-10 w-full max-w-[360px] md:hidden">
 
   <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6 }}
-    viewport={{ once: true }}
+    key={testimonials[testimonialStart].name}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
     className="rounded-[16px] border border-[#d6e6ff]/62 bg-[linear-gradient(180deg,rgba(44,66,132,0.74)_0%,rgba(25,42,102,0.68)_100%)] p-7 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_14px_38px_rgba(0,0,0,0.34)] backdrop-blur-md"
   >
 
@@ -489,15 +522,29 @@ export default function CareerSection() {
       <span className="block -translate-y-px leading-none">"</span>
     </div>
 
-    <p className="mx-auto mt-6 max-w-[320px] text-[15px] leading-7 text-[#e3eeff]/90">
+    <p className="mx-auto mt-6 max-w-[320px] text-[14px] leading-6 text-[#e3eeff]/90">
       {testimonials[testimonialStart].text}
     </p>
 
-    <img
-      src={testimonials[testimonialStart].image}
-      alt={testimonials[testimonialStart].name}
-      className="mx-auto mt-4 h-16 w-16 rounded-full border border-white/30 object-cover"
-    />
+    {testimonials[testimonialStart].image ? (
+      <img
+        src={testimonials[testimonialStart].image}
+        alt={testimonials[testimonialStart].name}
+        className="mx-auto mt-4 h-16 w-16 rounded-full border border-white/30 object-cover"
+        onError={(e) => {
+          e.currentTarget.style.display = "none";
+          if (e.currentTarget.nextElementSibling) {
+            e.currentTarget.nextElementSibling.style.display = "flex";
+          }
+        }}
+      />
+    ) : null}
+    <div
+      className="mx-auto mt-4 flex h-16 w-16 items-center justify-center rounded-full border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#9fc1ff]"
+      style={{ display: testimonials[testimonialStart].image ? "none" : "flex" }}
+    >
+      <User size={28} />
+    </div>
 
     <h3 className="mt-4 text-lg font-semibold text-white">
       {testimonials[testimonialStart].name}
@@ -508,6 +555,29 @@ export default function CareerSection() {
     </p>
 
   </motion.div>
+
+  {/* Mobile controls */}
+  <div className="mt-6 flex items-center justify-center gap-4">
+    <button
+      type="button"
+      onClick={prevTestimonials}
+      aria-label="Previous testimonial"
+      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-[linear-gradient(180deg,rgba(34,41,66,0.98)_0%,rgba(18,22,37,0.98)_100%)] text-2xl text-white shadow transition hover:border-[#4f72e0]/55"
+    >
+      ‹
+    </button>
+    <span className="text-xs text-[#cfe0ff]">
+      {testimonialStart + 1} / {testimonials.length}
+    </span>
+    <button
+      type="button"
+      onClick={nextTestimonials}
+      aria-label="Next testimonial"
+      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-[linear-gradient(180deg,rgba(34,41,66,0.98)_0%,rgba(18,22,37,0.98)_100%)] text-2xl text-white shadow transition hover:border-[#4f72e0]/55"
+    >
+      ›
+    </button>
+  </div>
 
 </div>
         </section>
