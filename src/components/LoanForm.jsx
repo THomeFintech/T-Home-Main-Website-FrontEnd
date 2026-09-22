@@ -80,7 +80,6 @@ export default function LoanForm({
   setLoanData,
   onSubmit,
   loading,
-  onOpenCibil,
   service,
 }) {
   const mapServiceToLoanType = (service) => {
@@ -116,6 +115,19 @@ export default function LoanForm({
   const [activeLoanDetails, setActiveLoanDetails] = useState([]);
   const [currentLoanIndex, setCurrentLoanIndex] = useState(0);
   const [isCalculating, setIsCalculating] = useState(false);
+
+  const [showCibilForm, setShowCibilForm] = useState(false);
+  const [cibilLoading, setCibilLoading] = useState(false);
+  const [cibilError, setCibilError] = useState("");
+
+  const [cibilForm, setCibilForm] = useState({
+    firstName: "",
+    lastName: "",
+    pan: "",
+    phone: "",
+    gender: "",
+    dob: "",
+  });
 
   useEffect(() => {
     if (passedLoanType && setLoanData) {
@@ -171,6 +183,103 @@ export default function LoanForm({
     },
     [setLoanData],
   );
+  const handleCibilChange = (e) => {
+    const { name, value } = e.target;
+
+    setCibilForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setCibilError("");
+  };
+  const handleCibilSubmit = async (e) => {
+    e.preventDefault();
+
+    const token =
+      localStorage.getItem("access_token") ||
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("access_token") ||
+      sessionStorage.getItem("token");
+
+    console.log("CIBIL auth token found:", !!token);
+
+    if (!token) {
+      setCibilError("Login session not found. Please login again.");
+      return;
+    }
+
+    setCibilLoading(true);
+    setCibilError("");
+
+    try {
+      const response = await fetch(`${API_BASE}/cibil/test-fetch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          firstName: cibilForm.firstName.trim(),
+          lastName: cibilForm.lastName.trim(),
+          pan: cibilForm.pan.trim().toUpperCase(),
+          phone: cibilForm.phone.trim(),
+          gender: cibilForm.gender,
+          dob: cibilForm.dob,
+        }),
+      });
+
+      const data = await response.json();
+
+      console.log("CIBIL Response:", data);
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Unable to fetch CIBIL score.");
+      }
+
+      if (
+        data.status !== "success" ||
+        data.score === null ||
+        data.score === undefined
+      ) {
+        throw new Error(data?.message || "CIBIL score could not be retrieved.");
+      }
+
+      const score = Number(data.score);
+
+      // Update CIBIL score in LoanForm
+      setLoanData((prev) => ({
+        ...prev,
+        cibilScore: score,
+      }));
+
+      // Save application ID if returned by backend
+      if (data.application_id) {
+        localStorage.setItem("application_id", String(data.application_id));
+      }
+
+      // Notify dashboard / other components
+      window.dispatchEvent(
+        new CustomEvent("cibilScoreUpdated", {
+          detail: {
+            score,
+            application_id: data.application_id || null,
+            label: data.label || null,
+            eligible: data.eligible ?? null,
+          },
+        }),
+      );
+
+      // Close popup
+      setShowCibilForm(false);
+    } catch (error) {
+      console.error("CIBIL fetch error:", error);
+
+      setCibilError(error.message || "Unable to fetch CIBIL score.");
+    } finally {
+      setCibilLoading(false);
+    }
+  };
 
   const handleLoanDetailChange = useCallback(
     (field, value) => {
@@ -599,13 +708,13 @@ export default function LoanForm({
               type="number"
               id="cibilScore"
               name="cibilScore"
-              placeholder="Enter CIBIL score (300-900)"
-              value={formData.cibilScore}
-              onChange={handleChange}
+              placeholder="Click 'Click here' to get CIBIL score"
+              value={formData.cibilScore ?? ""}
+              readOnly
               required
               min="300"
               max="900"
-              className={inputClass}
+              className={`${inputClass} cursor-not-allowed opacity-90`}
             />
 
             <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
@@ -615,7 +724,10 @@ export default function LoanForm({
 
               <button
                 type="button"
-                onClick={onOpenCibil}
+                onClick={() => {
+                  setCibilError("");
+                  setShowCibilForm(true);
+                }}
                 className="self-start sm:self-auto text-sm font-semibold text-[#1d78ff] transition hover:text-[#57a3ff]"
               >
                 Click here
@@ -743,6 +855,153 @@ export default function LoanForm({
           </button>
         </form>
       </div>
+      {showCibilForm && (
+        <div className="fixed inset-0 z-[9999] flex items-start justify-center bg-black/70 p-4 pt-16 sm:items-center sm:pt-4 backdrop-blur-sm overflow-y-auto">
+          <div className="w-full max-w-lg rounded-2xl border border-white/20 bg-[#111827] p-5 sm:p-7 shadow-2xl">
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <h3 className="text-xl sm:text-2xl font-semibold text-white">
+                  Get Your CIBIL Score
+                </h3>
+
+                <p className="mt-1 text-sm text-white/60">
+                  Enter your details to retrieve your CIBIL score.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (!cibilLoading) {
+                    setShowCibilForm(false);
+                  }
+                }}
+                className="text-2xl text-white/60 hover:text-white"
+              >
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={handleCibilSubmit} className="space-y-4">
+              {/* First Name */}
+              <div>
+                <label className={labelClass}>First Name</label>
+
+                <input
+                  type="text"
+                  name="firstName"
+                  value={cibilForm.firstName}
+                  onChange={handleCibilChange}
+                  placeholder="Enter first name"
+                  required
+                  className={inputClass}
+                />
+              </div>
+
+              {/* Last Name */}
+              <div>
+                <label className={labelClass}>Last Name</label>
+
+                <input
+                  type="text"
+                  name="lastName"
+                  value={cibilForm.lastName}
+                  onChange={handleCibilChange}
+                  placeholder="Enter last name"
+                  required
+                  className={inputClass}
+                />
+              </div>
+
+              {/* PAN */}
+              <div>
+                <label className={labelClass}>PAN</label>
+
+                <input
+                  type="text"
+                  name="pan"
+                  value={cibilForm.pan}
+                  onChange={handleCibilChange}
+                  placeholder="Enter PAN"
+                  required
+                  maxLength={10}
+                  className={`${inputClass} uppercase`}
+                />
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className={labelClass}>Phone Number</label>
+
+                <input
+                  type="tel"
+                  name="phone"
+                  value={cibilForm.phone}
+                  onChange={handleCibilChange}
+                  placeholder="Enter phone number"
+                  required
+                  maxLength={10}
+                  className={inputClass}
+                />
+              </div>
+
+              {/* Gender */}
+              <div>
+                <label className={labelClass}>Gender</label>
+
+                <select
+                  name="gender"
+                  value={cibilForm.gender}
+                  onChange={handleCibilChange}
+                  required
+                  className={`${inputClass} appearance-none`}
+                >
+                  <option value="">Select Gender</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                </select>
+              </div>
+
+              {/* DOB */}
+              <div>
+                <label className={labelClass}>Date of Birth</label>
+
+                <input
+                  type="date"
+                  name="dob"
+                  value={cibilForm.dob}
+                  onChange={handleCibilChange}
+                  required
+                  className={inputClass}
+                />
+              </div>
+
+              {/* Error */}
+              {cibilError && (
+                <div className="rounded-lg border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-300">
+                  {cibilError}
+                </div>
+              )}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={cibilLoading}
+                className="w-full rounded-xl bg-[#2563ff] px-5 py-3.5 font-semibold text-white transition hover:bg-[#1f57e5] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {cibilLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Fetching CIBIL Score...
+                  </span>
+                ) : (
+                  "Get CIBIL Score"
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

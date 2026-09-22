@@ -295,7 +295,16 @@ function normaliseApplicationSteps(apiSteps, currentStatus) {
 export default function Dashboard() {
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(
+    sessionStorage.getItem("user") || localStorage.getItem("user") || "{}",
+  );
+
+  const userName =
+    user?.name ||
+    user?.full_name ||
+    user?.fullName ||
+    `${user?.firstName || ""} ${user?.lastName || ""}`.trim() ||
+    "User";
 
   // ============================================================
   // INITIAL DATA
@@ -500,6 +509,39 @@ export default function Dashboard() {
   }, [fetchAll]);
 
   // ============================================================
+  // UPDATE CIBIL SCORE IMMEDIATELY
+  // ============================================================
+
+  useEffect(() => {
+    const handleCibilScoreUpdated = (event) => {
+      const score = event.detail?.score;
+      const label = event.detail?.label;
+
+      if (score === null || score === undefined) return;
+
+      setSummary((prev) => ({
+        ...(prev || {}),
+        cibil_score: Number(score),
+        cibil_label: label || "N/A",
+      }));
+
+      const cached = getCachedData("dashboard_summary", {});
+
+      setCachedData("dashboard_summary", {
+        ...(cached || {}),
+        cibil_score: Number(score),
+        cibil_label: label || "N/A",
+      });
+    };
+
+    window.addEventListener("cibilScoreUpdated", handleCibilScoreUpdated);
+
+    return () => {
+      window.removeEventListener("cibilScoreUpdated", handleCibilScoreUpdated);
+    };
+  }, []);
+
+  // ============================================================
   // MARK NOTIFICATION AS READ
   // ============================================================
 
@@ -662,7 +704,7 @@ export default function Dashboard() {
 
       <div className="mb-6 sm:mb-8">
         <h1 className="text-xl sm:text-2xl font-semibold">
-          Welcome back, {user?.name} 👋
+          Welcome back, {userName} 👋
         </h1>
 
         <p className="text-white/40 text-xs sm:text-sm mt-1">
