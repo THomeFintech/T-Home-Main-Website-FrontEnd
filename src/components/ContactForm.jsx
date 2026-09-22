@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ShieldCheck, ChevronDown } from "lucide-react";
 
 const API_BASE = import.meta.env.VITE_API_URL;
@@ -18,6 +18,32 @@ export default function ContactForm({
     agree: contactData.agree || false,
     policyAgree: contactData.policyAgree || false,
   });
+
+  useEffect(() => {
+    const token =
+      sessionStorage.getItem("access_token") ||
+      localStorage.getItem("access_token");
+    if (!token) return;
+
+    fetch(`${API_BASE}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data?.user) return;
+        setFormData((prev) => {
+          const updated = {
+            ...prev,
+            name: prev.name || data.user.name || "",
+            phone: prev.phone || data.user.phone || "",
+            email: prev.email || data.user.email || "",
+          };
+          setContactData(updated);
+          return updated;
+        });
+      })
+      .catch(() => {});
+  }, [setContactData]);
 
 const [errors, setErrors] = useState({});
 const [submitting, setSubmitting] = useState(false);

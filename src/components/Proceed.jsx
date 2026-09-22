@@ -100,7 +100,7 @@ function getEmploymentDocGroup(type = "") {
   return "unknown";
 }
 
-async function uploadKyc({ files, contactData, loan_id, bank_selection_id }) {
+async function uploadKyc({ files, contactData, loan_id, bank_selection_id, digilockerDocs }) {
   const formData = new FormData();
 
   formData.append("loan_id", loan_id);
@@ -110,9 +110,22 @@ async function uploadKyc({ files, contactData, loan_id, bank_selection_id }) {
     contactData.aadhaarNumber || contactData.aadhaar || "",
   );
   formData.append("pan_number", contactData.panNumber || contactData.pan || "");
-  formData.append("aadhaar_card", files.aadhaar);
-  formData.append("pan_card", files.pan);
-  formData.append("passport_photo", files.passportPhoto);
+
+  if (files.aadhaar) {
+    formData.append("aadhaar_card", files.aadhaar);
+  } else if (digilockerDocs?.aadhaar?.file_url) {
+    formData.append("aadhaar_url", digilockerDocs.aadhaar.file_url);
+  }
+
+  if (files.pan) {
+    formData.append("pan_card", files.pan);
+  } else if (digilockerDocs?.pan?.file_url) {
+    formData.append("pan_url", digilockerDocs.pan.file_url);
+  }
+
+  if (files.passportPhoto) {
+    formData.append("passport_photo", files.passportPhoto);
+  }
 
   for (const [key, value] of formData.entries()) {
     console.log("KYC FormData:", key, value);
@@ -267,6 +280,7 @@ function UploadZone({
   onUpload,
   required = false,
   full = false,
+  digilockerDoc = null,
 }) {
   const inputRef = useRef(null);
   const [dragging, setDragging] = useState(false);
@@ -298,7 +312,7 @@ function UploadZone({
   const onInputChange = (e) => handleFiles(e.target.files);
   const open = () => inputRef.current?.click();
 
-  const uploaded = multiple ? files && files.length > 0 : !!file;
+  const uploaded = multiple ? files && files.length > 0 : Boolean(file || digilockerDoc);
   const displayFiles = multiple ? files || [] : file ? [file] : [];
 
   return (
@@ -358,29 +372,57 @@ function UploadZone({
           </div>
 
           <div className="space-y-3">
-            {displayFiles.map((f, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between gap-3 rounded-xl border border-[#08B981]/40 bg-[#08B981]/10 px-3 py-3"
-              >
-                <div className="flex items-center gap-3">
-                  {f.type.startsWith("image/") ? (
-                    <img
-                      src={URL.createObjectURL(f)}
-                      alt="preview"
-                      className="h-12 w-12 rounded-lg border object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-lg">
-                      📄
+            {displayFiles.length > 0 ? (
+              displayFiles.map((f, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-[#08B981]/40 bg-[#08B981]/10 px-3 py-3"
+                >
+                  <div className="flex items-center gap-3">
+                    {f.type && f.type.startsWith("image/") ? (
+                      <img
+                        src={URL.createObjectURL(f)}
+                        alt="preview"
+                        className="h-12 w-12 rounded-lg border object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-lg">
+                        📄
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm font-semibold text-[#1f2937]">
+                        {f.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {f.size ? `${(f.size / 1024).toFixed(1)} KB` : ""}
+                      </p>
                     </div>
-                  )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-[#08B981]" />
+                    <button
+                      type="button"
+                      onClick={open}
+                      className="text-xs text-[#246BFF] underline"
+                    >
+                      Replace
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : digilockerDoc ? (
+              <div className="flex items-center justify-between gap-3 rounded-xl border border-[#08B981]/40 bg-[#08B981]/10 px-3 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-100 text-lg">
+                    🏛️
+                  </div>
                   <div>
                     <p className="text-sm font-semibold text-[#1f2937]">
-                      {f.name}
+                      {digilockerDoc.name || label}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {(f.size / 1024).toFixed(1)} KB
+                    <p className="text-xs font-semibold text-emerald-700">
+                      ✓ Verified from DigiLocker
                     </p>
                   </div>
                 </div>
@@ -395,7 +437,7 @@ function UploadZone({
                   </button>
                 </div>
               </div>
-            ))}
+            ) : null}
           </div>
         </div>
       )}
@@ -489,22 +531,47 @@ export default function Proceed({
     pan: contactDataFinal?.pan || contactDataFinal?.panNumber || "",
   });
 
+  const [digilockerKycDocs, setDigilockerKycDocs] = useState({
+    pan: null,
+    aadhaar: null,
+  });
+
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const token =
+      sessionStorage.getItem("access_token") ||
+      localStorage.getItem("access_token");
     if (!token) return;
-    fetch(`${API_BASE}/digilocker/identity`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((identity) => {
-        if (!identity) return;
-        setEditableContact((previous) => ({
-          ...previous,
-          aadhaar: previous.aadhaar || identity.aadhaar || "",
-          pan: previous.pan || identity.pan || "",
-        }));
+
+    Promise.all([
+      fetch(`${API_BASE}/digilocker/identity`, {
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .catch(() => {});
+        .then((res) => (res.ok ? res.json() : null))
+        .catch(() => null),
+      fetch(`${API_BASE}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .catch(() => null),
+    ]).then(([identity, meData]) => {
+      const user = meData?.user || {};
+
+      setEditableContact((previous) => ({
+        ...previous,
+        name: previous.name || identity?.name || user.name || "",
+        phone: previous.phone || identity?.phone || user.phone || "",
+        email: previous.email || identity?.email || user.email || "",
+        aadhaar: previous.aadhaar || identity?.aadhaar || "",
+        pan: previous.pan || identity?.pan || user.pan || "",
+      }));
+
+      if (identity?.pan_document || identity?.aadhaar_document) {
+        setDigilockerKycDocs({
+          pan: identity.pan_document || null,
+          aadhaar: identity.aadhaar_document || null,
+        });
+      }
+    });
   }, []);
 
   const [editableLoan, setEditableLoan] = useState({
@@ -584,9 +651,12 @@ export default function Proceed({
       return;
     }
 
-    const required = [files.aadhaar, files.pan, files.passportPhoto];
-    if (required.some((f) => !f)) {
-      alert("Please upload all KYC documents");
+    const hasAadhaar = Boolean(files.aadhaar || digilockerKycDocs.aadhaar);
+    const hasPan = Boolean(files.pan || digilockerKycDocs.pan);
+    const hasPhoto = Boolean(files.passportPhoto);
+
+    if (!hasAadhaar || !hasPan || !hasPhoto) {
+      alert("Please upload or verify all KYC documents (Aadhaar, PAN, and Passport Photo)");
       return;
     }
 
@@ -606,6 +676,7 @@ export default function Proceed({
           },
           loan_id,
           bank_selection_id,
+          digilockerDocs: digilockerKycDocs,
         }),
       );
       nextInternal();
@@ -970,6 +1041,7 @@ export default function Proceed({
             accept="image/*,.pdf"
             file={files.aadhaar}
             onUpload={setFile("aadhaar")}
+            digilockerDoc={digilockerKycDocs.aadhaar}
             required
           />
           <UploadZone
@@ -977,6 +1049,7 @@ export default function Proceed({
             accept="image/*,.pdf"
             file={files.pan}
             onUpload={setFile("pan")}
+            digilockerDoc={digilockerKycDocs.pan}
             required
           />
         </div>
@@ -1514,9 +1587,11 @@ export default function Proceed({
               </p>
               <span className="w-fit rounded-full bg-[#0D8F61]/20 px-3 py-1 text-xs font-semibold text-[#08B981] sm:text-[13px]">
                 {
-                  [files.aadhaar, files.pan, files.passportPhoto].filter(
-                    Boolean,
-                  ).length
+                  [
+                    Boolean(files.aadhaar || digilockerKycDocs.aadhaar),
+                    Boolean(files.pan || digilockerKycDocs.pan),
+                    Boolean(files.passportPhoto),
+                  ].filter(Boolean).length
                 }{" "}
                 / 3 FILES
               </span>
@@ -1525,14 +1600,14 @@ export default function Proceed({
               {docChip(
                 Landmark,
                 "Aadhaar Card",
-                files.aadhaar?.name || "Not uploaded",
-                !!files.aadhaar,
+                files.aadhaar?.name || (digilockerKycDocs.aadhaar ? "Verified via DigiLocker" : "Not uploaded"),
+                Boolean(files.aadhaar || digilockerKycDocs.aadhaar),
               )}
               {docChip(
                 CreditCard,
                 "PAN Card",
-                files.pan?.name || "Not uploaded",
-                !!files.pan,
+                files.pan?.name || (digilockerKycDocs.pan ? "Verified via DigiLocker" : "Not uploaded"),
+                Boolean(files.pan || digilockerKycDocs.pan),
               )}
               {docChip(
                 ImageIcon,

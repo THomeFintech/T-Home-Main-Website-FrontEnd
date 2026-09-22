@@ -1,11 +1,22 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { lazy, Suspense, useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import GoogleAuthButton from "../components/GoogleAuthButton";
 import "../App.css";
 
+const GoogleAuthButton = lazy(() => import("../components/GoogleAuthButton"));
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-console.log("BASE_URL:", BASE_URL);
+
+function GoogleAuthFallback() {
+  return <div className="soc-btn" aria-hidden="true" />;
+}
+
+function DeferredGoogleAuthButton(props) {
+  return (
+    <Suspense fallback={<GoogleAuthFallback />}>
+      <GoogleAuthButton {...props} />
+    </Suspense>
+  );
+}
 /* ══════════════════════════════════════
    SHARED CARD SHELL
 ══════════════════════════════════════ */
@@ -190,7 +201,7 @@ const handleLogin = async () => {
 
         <div className="social-row">
           
-            <GoogleAuthButton
+            <DeferredGoogleAuthButton
     className="soc-btn"
     iconOnly={true}
   />
@@ -404,7 +415,7 @@ function SignupPage({ onLogin, onContinue }) {
         </div>
 
         <div className="social-row">
-  <GoogleAuthButton
+  <DeferredGoogleAuthButton
     className="soc-btn"
     iconOnly={true}
   />

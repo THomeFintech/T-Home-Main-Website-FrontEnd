@@ -1,7 +1,8 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const GoogleGIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24">
@@ -24,7 +25,10 @@ const GoogleGIcon = () => (
   </svg>
 );
 
-export default function GoogleAuthButton({ className = "", iconOnly = false }) {
+export default function GoogleAuthButton({
+  className = "",
+  iconOnly = false,
+}) {
   const navigate = useNavigate();
 
   const handleSuccess = async (credentialResponse) => {
@@ -45,16 +49,19 @@ export default function GoogleAuthButton({ className = "", iconOnly = false }) {
         alert(data.message || "Google login failed");
         return;
       }
-sessionStorage.setItem("access_token", data.token);
-sessionStorage.setItem("user", JSON.stringify(data.user));
-sessionStorage.setItem("isLoggedIn", "true");
-window.dispatchEvent(new Event("authChange"));
 
+      sessionStorage.setItem("access_token", data.token);
+      sessionStorage.setItem("user", JSON.stringify(data.user));
+      sessionStorage.setItem("isLoggedIn", "true");
 
+      window.dispatchEvent(new Event("authChange"));
 
-navigate("/");
+      navigate("/");
 
-console.log("🟢 AFTER NAVIGATE:", window.location.pathname);
+      console.log(
+        "🟢 AFTER NAVIGATE:",
+        window.location.pathname
+      );
     } catch (err) {
       console.error(err);
       alert("Google authentication failed.");
@@ -65,16 +72,35 @@ console.log("🟢 AFTER NAVIGATE:", window.location.pathname);
     alert("Google Sign-In failed.");
   };
 
+  /*
+   * Icon-only Google Login
+   *
+   * We use our own circular UI for the visible button.
+   * The actual GoogleLogin component is placed invisibly
+   * on top so that Google OAuth still works normally.
+   */
   if (iconOnly) {
-    // Google's type="icon" button intermittently renders blank (a known
-    // reliability issue with the GSI script/library, not our styling).
-    // Instead we render our own circular G icon for the visible UI, and
-    // stack the real, reliable type="standard" button underneath it fully
-    // transparent. Clicks pass through to the real button and trigger the
-    // normal OAuth flow — the user only ever sees our custom icon, so the
-    // visual is no longer dependent on Google's icon-button rendering.
     return (
-      <div className={className} style={{ position: "relative", width: 48, height: 48, overflow: "visible"}}>
+      <div
+        className={className}
+        style={{
+          position: "relative",
+          width: "44px",
+          height: "44px",
+          borderRadius: "50%",
+          background: "rgba(255, 255, 255, 0.08)",
+          border: "1px solid rgba(255, 255, 255, 0.18)",
+          boxShadow:
+            "inset 0 1px 0 rgba(255,255,255,0.14), 0 8px 32px 0 rgba(0,0,0,0.20)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          overflow: "hidden",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* Visible Google G Icon */}
         <div
           style={{
             position: "absolute",
@@ -83,17 +109,20 @@ console.log("🟢 AFTER NAVIGATE:", window.location.pathname);
             alignItems: "center",
             justifyContent: "center",
             pointerEvents: "none",
+            zIndex: 1,
           }}
         >
           <GoogleGIcon />
         </div>
+
+        {/* Actual Google Login Button */}
         <div
           style={{
-              position: "absolute",
-    inset: 0,
-    opacity: 0.01,   
-    overflow: "visible",
-    zIndex: 10,
+            position: "absolute",
+            inset: 0,
+            opacity: 0.01,
+            zIndex: 10,
+            overflow: "hidden",
           }}
         >
           <GoogleLogin
@@ -110,6 +139,9 @@ console.log("🟢 AFTER NAVIGATE:", window.location.pathname);
     );
   }
 
+  /*
+   * Normal Google Login button
+   */
   return (
     <div className={className}>
       <GoogleLogin

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-
-const BASE_URL = import.meta.env.VITE_API_URL;
+import { getApiErrorMessage, notificationApi } from "../api";
 
 function Icon({ type = "bell", className = "w-5 h-5" }) {
   const common = {
@@ -233,66 +232,31 @@ export default function Notifications() {
       setLoading(true);
       setError("");
 
-     const token = sessionStorage.getItem("access_token");
+      const data = await notificationApi.getNotifications();
 
-      console.log("Notification API URL:", BASE_URL);
-      console.log("Access token exists:", !!token);
+      const notificationsList = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.notifications)
+          ? data.notifications
+          : [];
 
-      if (!BASE_URL) {
-        throw new Error(
-          "VITE_API_URL is missing. Check your frontend .env file.",
-        );
-      }
+      setNotifications(notificationsList);
 
-      if (!token) {
-        throw new Error("Access token is missing. Please log in again.");
-      }
+      const unreadFromList = notificationsList.filter(
+        (notification) => !notification.is_read,
+      ).length;
 
-      const url = `${BASE_URL}/dashboard/notifications`;
-
-      console.log("Fetching notifications from:", url);
-
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      console.log("Notification response status:", response.status);
-
-      const text = await response.text();
-
-      console.log("Notification response:", text);
-
-      let data;
-
-      try {
-        data = JSON.parse(text);
-      } catch {
-        throw new Error(
-          `Backend returned a non-JSON response. HTTP status: ${response.status}`,
-        );
-      }
-
-      if (!response.ok) {
-        throw new Error(
-          data?.message ||
-            data?.detail ||
-            `Request failed with HTTP ${response.status}`,
-        );
-      }
-
-      setNotifications(
-        Array.isArray(data.notifications) ? data.notifications : [],
+      setUnreadCount(
+        Number(
+          !Array.isArray(data) && data?.unread_count != null
+            ? data.unread_count
+            : unreadFromList,
+        ),
       );
-
-      setUnreadCount(Number(data.unread_count || 0));
     } catch (err) {
       console.error("Notifications Error:", err);
 
-      setError(err.message || "Unable to load notifications.");
+      setError(getApiErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -308,23 +272,7 @@ export default function Notifications() {
     try {
       setMarkingId(notification.id);
 
-     const token = sessionStorage.getItem("access_token");
-
-      const response = await fetch(
-        `${BASE_URL}/dashboard/notifications/${notification.id}/read`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data?.message || "Failed to mark notification as read");
-      }
+      await notificationApi.markAsRead(notification.id);
 
       setNotifications((current) =>
         current.map((item) =>
@@ -333,6 +281,7 @@ export default function Notifications() {
       );
 
       setUnreadCount((count) => Math.max(0, count - 1));
+      window.dispatchEvent(new Event("notificationChange"));
     } catch (err) {
       console.error("Mark notification error:", err);
     } finally {
@@ -498,7 +447,9 @@ export default function Notifications() {
             {filteredNotifications.length > 0 ? (
               <div className="space-y-3">
                 {filteredNotifications.map((notification) => {
-                  const style = getNotificationType(notification.type);
+                  const style = getNotificationType(
+                    notification.type || notification.category || notification.title,
+                  );
 
                   const unread = !notification.is_read;
 
@@ -572,12 +523,12 @@ export default function Notifications() {
                                 formatDate(notification.created_at)}
                             </span>
 
-                            {notification.type && (
+                            {(notification.type || notification.category) && (
                               <>
                                 <span className="text-slate-700">•</span>
 
                                 <span className="text-[10px] uppercase tracking-wide text-slate-500">
-                                  {notification.type}
+                                  {notification.type || notification.category}
                                 </span>
                               </>
                             )}

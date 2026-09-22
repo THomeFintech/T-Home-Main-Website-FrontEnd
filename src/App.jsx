@@ -128,8 +128,6 @@ const ContactForm = lazy(() => import("./components/ContactForm"));
 
 
 
-import { GoogleOAuthProvider } from "@react-oauth/google";
-
 /* =========================
    SCROLL FIX
 ========================= */
@@ -215,10 +213,19 @@ function LazyLoadingScreen() {
 
 function App() {
   useEffect(() => {
-    // Preload frequently used dashboard pages in the background
-    import("./pages/Dashboard");
-    import("./pages/TrackApplication");
-    import("./pages/DocumentsPage");
+    const preload = () => {
+      import("./pages/Dashboard");
+      import("./pages/TrackApplication");
+      import("./pages/DocumentsPage");
+    };
+
+    if ("requestIdleCallback" in window) {
+      const idleId = window.requestIdleCallback(preload);
+      return () => window.cancelIdleCallback(idleId);
+    }
+
+    const timeoutId = window.setTimeout(preload, 0);
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   return (
@@ -229,196 +236,196 @@ function App() {
       {/* LAZY LOADING */}
       <Suspense fallback={<LazyLoadingScreen />}>
         <Routes>
-            {/* =========================
-                DASHBOARD ROUTES
-            ========================= */}
+          {/* =========================
+              DASHBOARD ROUTES
+          ========================= */}
 
-            <Route element={<DashboardLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
 
-              <Route path="/applications" element={<TrackApplication />} />
+            <Route path="/applications" element={<TrackApplication />} />
 
-              <Route
-                path="/applications/:applicationId"
-                element={<TrackApplicationWithParam />}
-              />
+            <Route
+              path="/applications/:applicationId"
+              element={<TrackApplicationWithParam />}
+            />
 
-              <Route path="/documents" element={<DocumentsPage />} />
+            <Route path="/documents" element={<DocumentsPage />} />
 
-              <Route path="/profile" element={<Profilepage />} />
+            <Route path="/profile" element={<Profilepage />} />
 
-              <Route path="/support" element={<Support />} />
-            </Route>
+            <Route path="/support" element={<Support />} />
+          </Route>
 
-            {/* =========================
-                MAIN LAYOUT ROUTES
-            ========================= */}
+          {/* =========================
+              MAIN LAYOUT ROUTES
+          ========================= */}
 
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
 
-              <Route path="notifications" element={<Notifications />} />
+            <Route path="notifications" element={<Notifications />} />
 
-              <Route path="/balance-transfer" element={<BalanceTransfer />} />
+            <Route path="/balance-transfer" element={<BalanceTransfer />} />
 
-              <Route
-                path="/balance-transfer/details"
-                element={<BalanceTransferDetails />}
-              />
+            <Route
+              path="/balance-transfer/details"
+              element={<BalanceTransferDetails />}
+            />
 
-              <Route
-                path="/balance-transfer/offers"
-                element={<BalanceTransferOffers />}
-              />
+            <Route
+              path="/balance-transfer/offers"
+              element={<BalanceTransferOffers />}
+            />
 
-              <Route
-                path="/balance-transfer/review"
-                element={<BalanceTransferReview />}
-              />
+            <Route
+              path="/balance-transfer/review"
+              element={<BalanceTransferReview />}
+            />
 
-              <Route
-                path="/balance-transfer/analysis"
-                element={<BalanceTransferAnalysis />}
-              />
+            <Route
+              path="/balance-transfer/analysis"
+              element={<BalanceTransferAnalysis />}
+            />
 
-              <Route
-                path="/balance-transfer/comparison"
-                element={<BalanceTransferComparison />}
-              />
+            <Route
+              path="/balance-transfer/comparison"
+              element={<BalanceTransferComparison />}
+            />
 
-              <Route
-                path="/balance-transfer/detailed-table"
-                element={<BalanceTransferDetailedTable />}
-              />
+            <Route
+              path="/balance-transfer/detailed-table"
+              element={<BalanceTransferDetailedTable />}
+            />
 
-              <Route
-                path="/balance-transfer/amortization"
-                element={<BalanceTransferAmortization />}
-              />
+            <Route
+              path="/balance-transfer/amortization"
+              element={<BalanceTransferAmortization />}
+            />
 
-              <Route
-                path="/balance-transfer/ready"
-                element={<BalanceTransferReady />}
-              />
+            <Route
+              path="/balance-transfer/ready"
+              element={<BalanceTransferReady />}
+            />
 
-              <Route
-                path="/balance-transfer/application-portal"
-                element={<BalanceTransferApplicationPortal />}
-              />
+            <Route
+              path="/balance-transfer/application-portal"
+              element={<BalanceTransferApplicationPortal />}
+            />
 
-              <Route
-                path="/balance-transfer/application-portal/income-documents"
-                element={<BalanceTransferIncomeDocuments />}
-              />
+            <Route
+              path="/balance-transfer/application-portal/income-documents"
+              element={<BalanceTransferIncomeDocuments />}
+            />
 
-              <Route
-                path="/balance-transfer/application-portal/existing-loan-documents"
-                element={<BalanceTransferExistingLoanDocuments />}
-              />
+            <Route
+              path="/balance-transfer/application-portal/existing-loan-documents"
+              element={<BalanceTransferExistingLoanDocuments />}
+            />
 
-              <Route
-                path="/balance-transfer/application-portal/co-applicant-details"
-                element={<BalanceTransferCoApplicantDetails />}
-              />
+            <Route
+              path="/balance-transfer/application-portal/co-applicant-details"
+              element={<BalanceTransferCoApplicantDetails />}
+            />
 
-              <Route
-                path="/balance-transfer/application-portal/review-submit"
-                element={<BalanceTransferReviewSubmit />}
-              />
+            <Route
+              path="/balance-transfer/application-portal/review-submit"
+              element={<BalanceTransferReviewSubmit />}
+            />
 
-              <Route
-                path="/balance-transfer/application-portal/submitted"
-                element={<BalanceTransferSubmitted />}
-              />
+            <Route
+              path="/balance-transfer/application-portal/submitted"
+              element={<BalanceTransferSubmitted />}
+            />
 
-              <Route path="services" element={<Services />} />
-              <Route path="tools" element={<Tools />} />
-              <Route path="about" element={<About />} />
-              <Route path="contact" element={<Contact />} />
-              <Route path="proceed" element={<Proceed />} />
-              <Route path="career" element={<Career />} />
-              <Route path="collaborate" element={<Collaborate />} />
-              <Route path="privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="services" element={<Services />} />
+            <Route path="tools" element={<Tools />} />
+            <Route path="about" element={<About />} />
+            <Route path="contact" element={<Contact />} />
+            <Route path="proceed" element={<Proceed />} />
+            <Route path="career" element={<Career />} />
+            <Route path="collaborate" element={<Collaborate />} />
+            <Route path="privacy-policy" element={<PrivacyPolicy />} />
 
-              <Route
-                path="terms-and-conditions"
-                element={<TermsAndConditions />}
-              />
+            <Route
+              path="terms-and-conditions"
+              element={<TermsAndConditions />}
+            />
 
-              <Route path="apply" element={<EmployeeForm />} />
+            <Route path="apply" element={<EmployeeForm />} />
 
-              <Route path="/register" element={<Register />} />
-
-              {/* =========================
-                  SERVICE ROUTES
-              ========================= */}
-
-              <Route path="home-loans" element={<HomeLoan />} />
-
-              <Route path="emi-calculator" element={<Emi />} />
-
-              <Route path="contact-form" element={<ContactForm />} />
-
-              <Route path="loan-form" element={<LoanForm />} />
-
-              <Route path="coming-soon" element={<ComingSoon />} />
-
-              <Route path="itr-filing" element={<ITRFiling />} />
-
-              <Route
-                path="pan-aadhaar-linking"
-                element={<PanAadhaarLinking />}
-              />
-
-              <Route path="gst-registration" element={<GstRegistration />} />
-
-              <Route path="food-license" element={<FoodLicense />} />
-
-              <Route
-                path="udyam-msme-registration"
-                element={<UdyamMsmeRegistration />}
-              />
-
-              <Route
-                path="company-registration"
-                element={<CompanyRegistration />}
-              />
-
-              <Route path="personal-loans" element={<PersonalLoan />} />
-
-              <Route
-                path="loan-against-property"
-                element={<LoanAgainstProperty />}
-              />
-
-              <Route path="mortgage-loan" element={<MortgageLoan />} />
-
-              <Route path="balance-transfer" element={<BalanceTransfer />} />
-
-              <Route
-                path="balance-transfer-contact"
-                element={<BalanceTransferContact />}
-              />
-
-              <Route path="*" element={<NotFound />} />
-            </Route>
+            <Route path="/register" element={<Register />} />
 
             {/* =========================
-                AUTH ROUTES
+                SERVICE ROUTES
             ========================= */}
 
-            <Route path="get-started" element={<GetStarted />} />
+            <Route path="home-loans" element={<HomeLoan />} />
 
-            <Route path="/login" element={<Login />} />
+            <Route path="emi-calculator" element={<Emi />} />
 
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="contact-form" element={<ContactForm />} />
 
-            <Route path="/verify-reset-otp" element={<VerifyResetOtp />} />
+            <Route path="loan-form" element={<LoanForm />} />
 
-            <Route path="/reset-password" element={<ResetPassword />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
+            <Route path="coming-soon" element={<ComingSoon />} />
+
+            <Route path="itr-filing" element={<ITRFiling />} />
+
+            <Route
+              path="pan-aadhaar-linking"
+              element={<PanAadhaarLinking />}
+            />
+
+            <Route path="gst-registration" element={<GstRegistration />} />
+
+            <Route path="food-license" element={<FoodLicense />} />
+
+            <Route
+              path="udyam-msme-registration"
+              element={<UdyamMsmeRegistration />}
+            />
+
+            <Route
+              path="company-registration"
+              element={<CompanyRegistration />}
+            />
+
+            <Route path="personal-loans" element={<PersonalLoan />} />
+
+            <Route
+              path="loan-against-property"
+              element={<LoanAgainstProperty />}
+            />
+
+            <Route path="mortgage-loan" element={<MortgageLoan />} />
+
+            <Route path="balance-transfer" element={<BalanceTransfer />} />
+
+            <Route
+              path="balance-transfer-contact"
+              element={<BalanceTransferContact />}
+            />
+
+            <Route path="*" element={<NotFound />} />
+          </Route>
+
+          {/* =========================
+              AUTH ROUTES
+          ========================= */}
+
+          <Route path="get-started" element={<GetStarted />} />
+
+          <Route path="/login" element={<Login />} />
+
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+
+          <Route path="/verify-reset-otp" element={<VerifyResetOtp />} />
+
+          <Route path="/reset-password" element={<ResetPassword />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
   );
 }
 

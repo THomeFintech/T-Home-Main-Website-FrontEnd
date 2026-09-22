@@ -14,6 +14,7 @@ import {
   Repeat,
   Bell,
 } from "lucide-react";
+import { notificationApi } from "../api";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -36,7 +37,8 @@ function Navbar() {
     JSON.parse(sessionStorage.getItem("user") || "{}")
   );
 
-  const [hasNotifications, setHasNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notificationRefresh, setNotificationRefresh] = useState(0);
 
   const serviceLinks = [
     { label: "Home Loan", to: "/home-loans", icon: Home },
@@ -98,7 +100,7 @@ function Navbar() {
 
     const checkNotifications = async () => {
       if (sessionStorage.getItem("isLoggedIn") !== "true") {
-        if (!cancelled) setHasNotifications(false);
+        if (!cancelled) setUnreadCount(0);
         return;
       }
 
@@ -107,55 +109,18 @@ function Navbar() {
         sessionStorage.getItem("token");
 
       if (!token) {
-        if (!cancelled) setHasNotifications(false);
+        if (!cancelled) setUnreadCount(0);
         return;
       }
 
       try {
-        const API_BASE = (
-          import.meta.env.VITE_API_URL || "http://localhost:5000"
-        ).replace(/\/$/, "");
-
-        const response = await fetch(
-          `${API_BASE}/dashboard/notifications`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        // Token expired/invalid
-        if (response.status === 401) {
-          if (!cancelled) {
-            setHasNotifications(false);
-          }
-
-          sessionStorage.removeItem("access_token");
-          sessionStorage.removeItem("token");
-
-          return;
-        }
-
-        if (!response.ok) {
-          if (!cancelled) setHasNotifications(false);
-          return;
-        }
-
-        const data = await response.json();
-
-        const notifications = Array.isArray(data)
-          ? data
-          : data.notifications || [];
-
+        const data = await notificationApi.getNotifications();
         if (!cancelled) {
-          setHasNotifications(notifications.length > 0);
+          setUnreadCount(Number(data?.unread_count || 0));
         }
       } catch {
         if (!cancelled) {
-          setHasNotifications(false);
+          setUnreadCount(0);
         }
       }
     };
@@ -169,7 +134,15 @@ function Navbar() {
       cancelled = true;
       clearInterval(interval);
     };
-  }, [isLoggedIn, location.pathname]);
+  }, [isLoggedIn, location.pathname, notificationRefresh]);
+
+  useEffect(() => {
+    const refreshNotifications = () => setNotificationRefresh((value) => value + 1);
+
+    window.addEventListener("notificationChange", refreshNotifications);
+    return () =>
+      window.removeEventListener("notificationChange", refreshNotifications);
+  }, []);
 
   // Listen for authentication changes
   useEffect(() => {
@@ -300,8 +273,10 @@ function Navbar() {
     >
       <Bell className="h-[18px] w-[18px]" />
 
-      {hasNotifications && (
-        <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full border border-[#0a1628] bg-[#4f72e0]" />
+      {unreadCount > 0 && (
+        <span className="absolute -right-1 -top-1 min-w-4 h-4 rounded-full border border-[#0a1628] bg-[#4f72e0] px-1 text-[10px] leading-[14px] text-white">
+          {unreadCount > 99 ? "99+" : unreadCount}
+        </span>
       )}
     </button>
   );

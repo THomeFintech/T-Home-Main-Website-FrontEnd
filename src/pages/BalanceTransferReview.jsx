@@ -16,7 +16,7 @@ import {
 import { getBankLogo } from "../utils/Banklogos";
 
 function formatINR(value) {
-  return `Rs${Number(value || 0).toLocaleString("en-IN", {
+  return `₹${Number(value || 0).toLocaleString("en-IN", {
     maximumFractionDigits: 2,
   })}`;
 }
