@@ -5,7 +5,9 @@ const API = import.meta.env.VITE_API_URL;
 
 function authHeaders() {
   // Prefer sessionStorage (set by login), fall back to localStorage if present
-  const token = sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
+  const token =
+    sessionStorage.getItem("access_token") ||
+    localStorage.getItem("access_token");
 
   if (!token) {
     return null;
@@ -292,7 +294,16 @@ function normaliseApplicationSteps(apiSteps, currentStatus) {
 export default function Dashboard() {
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(
+    sessionStorage.getItem("user") || localStorage.getItem("user") || "{}",
+  );
+
+  const userName =
+    user?.name ||
+    user?.full_name ||
+    user?.fullName ||
+    `${user?.firstName || ""} ${user?.lastName || ""}`.trim() ||
+    "User";
 
   // ============================================================
   // INITIAL DATA
@@ -373,7 +384,6 @@ export default function Dashboard() {
         });
     }
 
-
     // Load important dashboard data immediately
     apiFetch(`${API}/dashboard/summary`)
       .then((data) => {
@@ -426,21 +436,20 @@ export default function Dashboard() {
     // LOANS
     // ----------------------------------------------------------
 
-  const newLoans = Array.isArray(loansData) ? loansData : [];
+    const newLoans = Array.isArray(loansData) ? loansData : [];
 
-setLoans(newLoans);
+    setLoans(newLoans);
 
-setCachedData("dashboard_loans", newLoans);
+    setCachedData("dashboard_loans", newLoans);
 
-if (newLoans.length > 0 && newLoans[0].application_id) {
-  localStorage.setItem(
-    "application_id",
-    String(newLoans[0].application_id),
-  );
-}
+    if (newLoans.length > 0 && newLoans[0].application_id) {
+      localStorage.setItem(
+        "application_id",
+        String(newLoans[0].application_id),
+      );
+    }
 
-setLoadingLoans(false);
-  
+    setLoadingLoans(false);
 
     // ----------------------------------------------------------
     // DOCUMENTS
@@ -463,7 +472,6 @@ setLoadingLoans(false);
     setProgress(newProgress);
 
     setCachedData("dashboard_progress", newProgress);
-
 
     apiFetch(`${API}/dashboard/loans`)
       .then((data) => {
@@ -529,6 +537,39 @@ setLoadingLoans(false);
   useEffect(() => {
     fetchAll();
   }, [fetchAll]);
+
+  // ============================================================
+  // UPDATE CIBIL SCORE IMMEDIATELY
+  // ============================================================
+
+  useEffect(() => {
+    const handleCibilScoreUpdated = (event) => {
+      const score = event.detail?.score;
+      const label = event.detail?.label;
+
+      if (score === null || score === undefined) return;
+
+      setSummary((prev) => ({
+        ...(prev || {}),
+        cibil_score: Number(score),
+        cibil_label: label || "N/A",
+      }));
+
+      const cached = getCachedData("dashboard_summary", {});
+
+      setCachedData("dashboard_summary", {
+        ...(cached || {}),
+        cibil_score: Number(score),
+        cibil_label: label || "N/A",
+      });
+    };
+
+    window.addEventListener("cibilScoreUpdated", handleCibilScoreUpdated);
+
+    return () => {
+      window.removeEventListener("cibilScoreUpdated", handleCibilScoreUpdated);
+    };
+  }, []);
 
   // ============================================================
   // MARK NOTIFICATION AS READ
@@ -689,7 +730,7 @@ setLoadingLoans(false);
 
       <div className="mb-6 sm:mb-8">
         <h1 className="text-xl sm:text-2xl font-semibold">
-          Welcome back, {user?.name} 👋
+          Welcome back, {userName} 👋
         </h1>
 
         <p className="text-white/40 text-xs sm:text-sm mt-1">
