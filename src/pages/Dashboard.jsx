@@ -313,6 +313,9 @@ export default function Dashboard() {
   // ============================================================
 
   const cachedSummary = getCachedData("dashboard_summary", null);
+  const cachedCibilScore = getCachedData("dashboard_cibil_score", null);
+  const cachedCibilLabel = getCachedData("dashboard_cibil_label", null);
+  const cachedCibilReport = getCachedData("dashboard_cibil_report", null);
 
   const cachedLoans = getCachedData("dashboard_loans", []);
 
@@ -320,10 +323,7 @@ export default function Dashboard() {
 
   const cachedProgress = getCachedData("dashboard_progress", null);
 
-  const cachedNotifications = getCachedData(
-    "dashboard_notifications",
-    [],
-  );
+  const cachedNotifications = getCachedData("dashboard_notifications", []);
 
   const cachedAdvisor = getCachedData("dashboard_advisor", null);
 
@@ -331,8 +331,14 @@ export default function Dashboard() {
   // API STATE
   // ============================================================
 
-  const [summary, setSummary] = useState(cachedSummary);
-
+  const [summary, setSummary] = useState({
+    ...(cachedSummary || {}),
+    ...(cachedCibilScore !== null
+      ? { cibil_score: Number(cachedCibilScore) }
+      : {}),
+    ...(cachedCibilLabel ? { cibil_label: cachedCibilLabel } : {}),
+  });
+  const [cibilReport, setCibilReport] = useState(cachedCibilReport);
   const [loans, setLoans] = useState(
     Array.isArray(cachedLoans) ? cachedLoans : [],
   );
@@ -356,17 +362,11 @@ export default function Dashboard() {
 
   const [loadingSummary, setLoadingSummary] = useState(!cachedSummary);
 
-  const [loadingLoans, setLoadingLoans] = useState(
-    cachedLoans.length === 0,
-  );
+  const [loadingLoans, setLoadingLoans] = useState(cachedLoans.length === 0);
 
-  const [loadingDocs, setLoadingDocs] = useState(
-    cachedDocuments.length === 0,
-  );
+  const [loadingDocs, setLoadingDocs] = useState(cachedDocuments.length === 0);
 
-  const [loadingProgress, setLoadingProgress] = useState(
-    !cachedProgress,
-  );
+  const [loadingProgress, setLoadingProgress] = useState(!cachedProgress);
 
   const [loadingNotifs, setLoadingNotifs] = useState(
     cachedNotifications.length === 0,
@@ -421,9 +421,20 @@ export default function Dashboard() {
     // ----------------------------------------------------------
 
     if (summaryData) {
-      setSummary(summaryData);
+      const latestCibilScore = getCachedData("dashboard_cibil_score", null);
 
-      setCachedData("dashboard_summary", summaryData);
+      const latestCibilLabel = getCachedData("dashboard_cibil_label", null);
+
+      const mergedSummary = {
+        ...summaryData,
+        ...(latestCibilScore !== null
+          ? { cibil_score: Number(latestCibilScore) }
+          : {}),
+        ...(latestCibilLabel ? { cibil_label: latestCibilLabel } : {}),
+      };
+
+      setSummary(mergedSummary);
+      setCachedData("dashboard_summary", mergedSummary);
     }
 
     setLoadingSummary(false);
@@ -513,10 +524,7 @@ export default function Dashboard() {
   // ============================================================
 
   useEffect(() => {
-    const handleCibilScoreUpdated = (event) => {
-      const score = event.detail?.score;
-      const label = event.detail?.label;
-
+    const applyCibilUpdate = (score, label, report) => {
       if (score === null || score === undefined) return;
 
       setSummary((prev) => ({
@@ -524,6 +532,14 @@ export default function Dashboard() {
         cibil_score: Number(score),
         cibil_label: label || "N/A",
       }));
+
+      setCachedData("dashboard_cibil_score", Number(score));
+      setCachedData("dashboard_cibil_label", label || "N/A");
+
+      if (report) {
+        setCibilReport(report);
+        setCachedData("dashboard_cibil_report", report);
+      }
 
       const cached = getCachedData("dashboard_summary", {});
 
@@ -534,7 +550,23 @@ export default function Dashboard() {
       });
     };
 
+    const handleCibilScoreUpdated = (event) => {
+      applyCibilUpdate(
+        event.detail?.score,
+        event.detail?.label,
+        event.detail?.cibilReport,
+      );
+    };
+
     window.addEventListener("cibilScoreUpdated", handleCibilScoreUpdated);
+
+    const savedScore = getCachedData("dashboard_cibil_score", null);
+    const savedLabel = getCachedData("dashboard_cibil_label", null);
+    const savedReport = getCachedData("dashboard_cibil_report", null);
+
+    if (savedScore !== null || savedReport !== null) {
+      applyCibilUpdate(savedScore, savedLabel, savedReport);
+    }
 
     return () => {
       window.removeEventListener("cibilScoreUpdated", handleCibilScoreUpdated);
@@ -679,16 +711,11 @@ export default function Dashboard() {
   // APPLICATION STATUS
   // ============================================================
 
-  const currentStatus = APPLICATION_STEPS.includes(
-    progress?.current_status,
-  )
+  const currentStatus = APPLICATION_STEPS.includes(progress?.current_status)
     ? progress.current_status
     : "Initiated";
 
-  const steps = normaliseApplicationSteps(
-    progress?.steps,
-    currentStatus,
-  );
+  const steps = normaliseApplicationSteps(progress?.steps, currentStatus);
 
   const expectedDays = progress?.expected_days;
 
@@ -741,9 +768,7 @@ export default function Dashboard() {
         <StatCard
           loading={loadingSummary}
           label="Total Loan Amount"
-          value={
-            summary ? fmtINR(summary.total_loan_amount) : null
-          }
+          value={summary ? fmtINR(summary.total_loan_amount) : null}
           sub={summary ? `● ${summary.total_loan_summary}` : ""}
           subColor="text-blue-400"
           icon={
@@ -839,17 +864,14 @@ export default function Dashboard() {
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-medium text-white">
-                Application Progress
-              </h2>
+              <h2 className="font-medium text-white">Application Progress</h2>
 
               {loadingProgress ? (
                 <Skeleton className="h-6 w-28" />
               ) : (
                 <span
                   className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs border ${
-                    STATUS_BADGE[currentStatus] ??
-                    STATUS_BADGE.Submitted
+                    STATUS_BADGE[currentStatus] ?? STATUS_BADGE.Submitted
                   }`}
                 >
                   {currentStatus}
@@ -864,12 +886,7 @@ export default function Dashboard() {
                   >
                     <circle cx="12" cy="12" r="10" />
                     <line x1="12" y1="8" x2="12" y2="12" />
-                    <line
-                      x1="12"
-                      y1="16"
-                      x2="12.01"
-                      y2="16"
-                    />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
                   </svg>
                 </span>
               )}
@@ -898,10 +915,7 @@ export default function Dashboard() {
                         : "bg-transparent border-white/20";
 
                   return (
-                    <div
-                      key={i}
-                      className="flex flex-col items-center flex-1"
-                    >
+                    <div key={i} className="flex flex-col items-center flex-1">
                       <div className="relative flex items-center w-full">
                         {i > 0 && (
                           <div
@@ -992,9 +1006,7 @@ export default function Dashboard() {
           ================================================== */}
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-6">
-            <h2 className="font-medium text-white mb-4">
-              Your Active Loans
-            </h2>
+            <h2 className="font-medium text-white mb-4">Your Active Loans</h2>
 
             {loadingLoans ? (
               <div className="rounded-xl border border-white/20 bg-white/[0.05] p-4 space-y-3">
@@ -1049,9 +1061,7 @@ export default function Dashboard() {
                         },
                         {
                           label: "Remaining Balance",
-                          value: fmtINR(
-                            loan.repayment?.remaining_balance ?? 0,
-                          ),
+                          value: fmtINR(loan.repayment?.remaining_balance ?? 0),
                         },
                       ].map((item) => (
                         <div key={item.label}>
@@ -1098,9 +1108,7 @@ export default function Dashboard() {
           ================================================== */}
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-6">
-            <h2 className="font-medium text-white mb-4">
-              Quick Actions
-            </h2>
+            <h2 className="font-medium text-white mb-4">Quick Actions</h2>
 
             <div className="grid grid-cols-4 gap-3">
               {[
@@ -1202,9 +1210,7 @@ export default function Dashboard() {
           ================================================== */}
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-6">
-            <h2 className="font-medium text-white mb-4">
-              Your Documents
-            </h2>
+            <h2 className="font-medium text-white mb-4">Your Documents</h2>
 
             <div className="flex flex-col gap-2 mb-4">
               {loadingDocs ? (
@@ -1222,12 +1228,9 @@ export default function Dashboard() {
                     className="flex items-center justify-between rounded-xl border border-white/20 bg-white/[0.06] backdrop-blur-xl px-4 py-3"
                   >
                     <div className="flex items-center gap-2.5 text-white/50">
-                      {DOC_ROW_ICON[doc.label] ??
-                        DOC_ROW_ICON["Income Proof"]}
+                      {DOC_ROW_ICON[doc.label] ?? DOC_ROW_ICON["Income Proof"]}
 
-                      <span className="text-sm text-white/70">
-                        {doc.label}
-                      </span>
+                      <span className="text-sm text-white/70">{doc.label}</span>
                     </div>
 
                     <span
@@ -1269,17 +1272,12 @@ export default function Dashboard() {
           ================================================== */}
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-6">
-            <h2 className="font-medium text-white mb-4">
-              Recent Updates
-            </h2>
+            <h2 className="font-medium text-white mb-4">Recent Updates</h2>
 
             {loadingNotifs ? (
               <div className="flex flex-col gap-4">
                 {[...Array(3)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex items-start gap-3"
-                  >
+                  <div key={i} className="flex items-start gap-3">
                     <Skeleton className="mt-1 w-2 h-2 rounded-full flex-shrink-0" />
 
                     <div className="flex-1 space-y-1.5">
@@ -1295,40 +1293,35 @@ export default function Dashboard() {
               </p>
             ) : (
               <div className="flex flex-col gap-4">
-                {(Array.isArray(notifications)
-                  ? notifications
-                  : []
-                ).map((item) => (
-                  <div
-                    key={item.id}
-                    className={`flex items-start gap-3 cursor-pointer ${
-                      !item.is_read ? "opacity-100" : "opacity-60"
-                    }`}
-                    onClick={() =>
-                      !item.is_read && markRead(item.id)
-                    }
-                  >
+                {(Array.isArray(notifications) ? notifications : []).map(
+                  (item) => (
                     <div
-                      className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
-                        NOTIF_DOT[item.color] ?? "bg-blue-500"
+                      key={item.id}
+                      className={`flex items-start gap-3 cursor-pointer ${
+                        !item.is_read ? "opacity-100" : "opacity-60"
                       }`}
-                    />
+                      onClick={() => !item.is_read && markRead(item.id)}
+                    >
+                      <div
+                        className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
+                          NOTIF_DOT[item.color] ?? "bg-blue-500"
+                        }`}
+                      />
 
-                    <div>
-                      <p className="text-sm font-medium text-white/80">
-                        {item.title}
-                      </p>
+                      <div>
+                        <p className="text-sm font-medium text-white/80">
+                          {item.title}
+                        </p>
 
-                      <p className="text-sm text-white/70">
-                        {item.message}
-                      </p>
+                        <p className="text-sm text-white/70">{item.message}</p>
 
-                      <p className="text-xs text-white/30 mt-0.5">
-                        {item.time_ago || fmtDate(item.created_at)}
-                      </p>
+                        <p className="text-xs text-white/30 mt-0.5">
+                          {item.time_ago || fmtDate(item.created_at)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ),
+                )}
               </div>
             )}
           </div>
@@ -1338,9 +1331,7 @@ export default function Dashboard() {
           ================================================== */}
 
           <div className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.45),inset_0_1px_0_rgba(255,255,255,0.14)] p-4 sm:p-5">
-            <p className="font-medium text-white text-sm mb-0.5">
-              Need help?
-            </p>
+            <p className="font-medium text-white text-sm mb-0.5">Need help?</p>
 
             <p className="text-xs text-white/30 mb-4">
               {loadingAdvisor
@@ -1374,13 +1365,9 @@ export default function Dashboard() {
                 )}
 
                 <div>
-                  <p className="text-sm text-white/80">
-                    {advisor.name}
-                  </p>
+                  <p className="text-sm text-white/80">{advisor.name}</p>
 
-                  <p className="text-xs text-white/30">
-                    {advisor.designation}
-                  </p>
+                  <p className="text-xs text-white/30">{advisor.designation}</p>
                 </div>
               </div>
             ) : (
@@ -1401,13 +1388,9 @@ export default function Dashboard() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-white/80">
-                    Support Team
-                  </p>
+                  <p className="text-sm text-white/80">Support Team</p>
 
-                  <p className="text-xs text-white/30">
-                    Available 9AM – 6PM
-                  </p>
+                  <p className="text-xs text-white/30">Available 9AM – 6PM</p>
                 </div>
               </div>
             )}
