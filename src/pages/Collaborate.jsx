@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import SEO from "../components/SEO";
 // Icons using SVG inline
 const BuildingIcon = () => (
@@ -57,6 +58,7 @@ const CollaboratePage = () => {
     partnerType: "",
     experience: "",
     message: "",
+    consent: false,
   });
 
   const handleChange = (e) => {
@@ -65,6 +67,11 @@ const CollaboratePage = () => {
 
   const handleSubmit = (e) => {
   e.preventDefault();
+
+  if (!form.consent) {
+    alert("Please agree to the Privacy Policy and Terms & Conditions before submitting.");
+    return;
+  }
 
   alert("Application submitted!");
 
@@ -75,6 +82,7 @@ const CollaboratePage = () => {
     partnerType: "",
     experience: "",
     message: "",
+    consent: false,
   });
 };
 
@@ -443,6 +451,20 @@ const CollaboratePage = () => {
             }}
           />
         </div>
+
+        <label className="flex items-start gap-3 text-xs leading-5 text-gray-400">
+          <input
+            required
+            type="checkbox"
+            name="consent"
+            checked={form.consent}
+            onChange={(event) => setForm((current) => ({ ...current, consent: event.target.checked }))}
+            className="mt-1 h-4 w-4 shrink-0 accent-blue-500"
+          />
+          <span>
+            I agree that T-Home may use these details to review my partnership enquiry under the <Link to="/privacy-policy" className="text-blue-300 underline hover:text-white">Privacy Policy</Link> and <Link to="/terms-and-conditions" className="text-blue-300 underline hover:text-white">Terms &amp; Conditions</Link>.
+          </span>
+        </label>
 
         {/* COMPANY */}
         <div>

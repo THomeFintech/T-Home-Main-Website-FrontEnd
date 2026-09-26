@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Mail, Phone, MessageCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 import SEO from "../components/SEO";
 
 export default function ContactPage() {
@@ -22,6 +23,7 @@ export default function ContactPage() {
     email: "",
     service: services[0],
     message: "",
+    consent: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -47,6 +49,11 @@ export default function ContactPage() {
 
     if (!formData.message.trim()) {
       setErrorMsg("Message is required.");
+      return;
+    }
+
+    if (!formData.consent) {
+      setErrorMsg("Please confirm that you agree to the Privacy Policy before submitting.");
       return;
     }
 
@@ -81,8 +88,8 @@ const payload = {
       }
 
       await res.json();
-      setSuccessMsg("Thank you! We'll get back to you shortly.");
-      setFormData({ name: "", phone: "", email: "", service: services[0], message: "" });
+      setSuccessMsg("Thank you. Your request has been submitted.");
+      setFormData({ name: "", phone: "", email: "", service: services[0], message: "", consent: false });
     } catch (err) {
       setErrorMsg(err.message || "Something went wrong. Please try again.");
     } finally {
@@ -141,8 +148,8 @@ const payload = {
                     <span className="text-blue-500">Just a Loan Away!</span>
                   </h2>
                   <p className="text-gray-400 text-sm leading-relaxed max-w-sm mx-auto lg:mx-0 font-light">
-                    Turn your dream of owning a home into reality with our hassle-free home loan solutions.
-                    Get quick approval and the best interest rates.
+                    Explore home-loan options with guidance on the information
+                    and next steps relevant to your request.
                   </p>
                 </div>
 
@@ -190,6 +197,19 @@ const payload = {
                     </div>
                   </div>
 
+                  <label className="flex items-start gap-3 text-xs leading-5 text-gray-400">
+                    <input
+                      type="checkbox"
+                      name="consent"
+                      checked={formData.consent}
+                      onChange={(event) => setFormData((current) => ({ ...current, consent: event.target.checked }))}
+                      className="mt-1 h-4 w-4 shrink-0 rounded border-white/20 bg-white/5 accent-blue-500"
+                    />
+                    <span>
+                      I agree that T-Home may use my details to respond to this request, in accordance with the <Link to="/privacy-policy" className="text-blue-400 underline hover:text-blue-300">Privacy Policy</Link>.
+                    </span>
+                  </label>
+
                   <div>
                     <label className="text-[10px] md:text-[11px] text-gray-400 mb-1.5 block font-semibold uppercase tracking-widest">Message</label>
                     <textarea
@@ -235,12 +255,12 @@ const payload = {
           {/* 3. TRUST & ICON SECTION */}
           <section className="relative z-10 pt-4 pb-12 border-t border-white/5">
             <p className="text-gray-300 text-center text-[10px] sm:text-xs md:text-sm mb-8 md:mb-12 font-bold uppercase tracking-[0.2em] px-4">
-              Trusted by startups and growing businesses worldwide
+              Contact options
             </p>
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row flex-wrap items-center md:items-start justify-center gap-10 md:gap-20 lg:gap-36 px-6">
               <ContactDetail icon={<Mail size={32} className="md:w-[42px] md:h-[42px]" />} title="Email Support" value="info@thome.co.in" />
               <ContactDetail icon={<Phone size={32} className="md:w-[42px] md:h-[42px]" />} title="Phone" value="+91 70321 83836" />
-              <ContactDetail icon={<MessageCircle size={32} className="md:w-[42px] md:h-[42px]" />} title="Live Chat" value="Available 24/7" />
+              <ContactDetail icon={<MessageCircle size={32} className="md:w-[42px] md:h-[42px]" />} title="Live Chat" value="Availability to be confirmed" />
             </div>
           </section>
         </div>

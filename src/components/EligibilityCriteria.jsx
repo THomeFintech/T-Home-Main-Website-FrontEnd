@@ -126,6 +126,12 @@ export default function EligibilityCriteria({
             );
           })}
         </div>
+
+        <p className="mt-6 border-t border-white/15 pt-4 text-center text-sm leading-6 text-gray-300">
+          Eligibility, required documents, fees, processing timelines, and final
+          terms vary by service and individual circumstances. Confirm the
+          applicable requirements with T-Home before proceeding.
+        </p>
       </div>
     </section>
   );

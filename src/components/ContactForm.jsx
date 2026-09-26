@@ -45,8 +45,8 @@ export default function ContactForm({
       .catch(() => {});
   }, [setContactData]);
 
-const [errors, setErrors] = useState({});
-const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
 
   const services = [
     "Home Loan",
@@ -73,6 +73,8 @@ const [submitting, setSubmitting] = useState(false);
         error = "Phone number is required";
       } else if (!/^[6-9]\d{9}$/.test(value)) {
         error = "Enter a valid 10-digit mobile number";
+      } else if (/^(\d)\1{9}$/.test(value)) {
+        error = "Enter a valid mobile number";
       }
     }
 
@@ -101,6 +103,7 @@ const [submitting, setSubmitting] = useState(false);
         error = "Please accept the privacy policy to continue";
       }
     }
+
     return error;
   };
 
@@ -201,7 +204,10 @@ const [submitting, setSubmitting] = useState(false);
       console.log("Contact API Response:", data);
 
       if (data.contact_group_id) {
-        localStorage.setItem("contact_group_id", String(data.contact_group_id));
+        localStorage.setItem(
+          "contact_group_id",
+          String(data.contact_group_id)
+        );
       }
 
       if (data.contact_id) {
@@ -222,6 +228,7 @@ const [submitting, setSubmitting] = useState(false);
     <section className="relative min-h-screen overflow-hidden bg-[#040814] px-4 pb-10 sm:px-6 md:px-8">
       {/* NAVBAR SAFE SPACE */}
       <div className="h-[70px] w-full sm:h-[115px] md:h-[120px] lg:h-[115px]" />
+
       {/* BACKGROUND EFFECTS */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(52,84,168,0.45),transparent_42%)]" />
@@ -262,6 +269,7 @@ const [submitting, setSubmitting] = useState(false);
               <label className="mb-1.5 block text-[12px] sm:text-[13px] font-normal text-white/85">
                 Name as per Aadhaar
               </label>
+
               <input
                 type="text"
                 name="name"
@@ -274,8 +282,11 @@ const [submitting, setSubmitting] = useState(false);
                     : "border-white/15 focus:border-[#4d8cff]"
                 }`}
               />
+
               {errors.name && (
-                <p className="mt-1 text-[11px] text-red-400">{errors.name}</p>
+                <p className="mt-1 text-[11px] text-red-400">
+                  {errors.name}
+                </p>
               )}
             </div>
 
@@ -284,6 +295,7 @@ const [submitting, setSubmitting] = useState(false);
               <label className="mb-1.5 block text-[12px] sm:text-[13px] font-normal text-white/85">
                 Phone
               </label>
+
               <div
                 className={`flex h-[44px] sm:h-[46px] w-full overflow-hidden rounded-[10px] border bg-[rgba(255,255,255,0.08)] ${
                   errors.phone
@@ -294,6 +306,7 @@ const [submitting, setSubmitting] = useState(false);
                 <div className="flex w-[40px] sm:w-[48px] items-center justify-center border-r border-white/20 text-[12px] sm:text-[16px] text-white/75">
                   +91
                 </div>
+
                 <input
                   type="tel"
                   name="phone"
@@ -303,8 +316,11 @@ const [submitting, setSubmitting] = useState(false);
                   className="h-full w-full bg-transparent px-3 sm:px-4 text-[12px] sm:text-[16px] text-white placeholder:text-white/50 outline-none"
                 />
               </div>
+
               {errors.phone && (
-                <p className="mt-1 text-[11px] text-red-400">{errors.phone}</p>
+                <p className="mt-1 text-[11px] text-red-400">
+                  {errors.phone}
+                </p>
               )}
             </div>
 
@@ -313,6 +329,7 @@ const [submitting, setSubmitting] = useState(false);
               <label className="mb-1.5 block text-[12px] sm:text-[13px] font-normal text-white/85">
                 Email
               </label>
+
               <input
                 type="email"
                 name="email"
@@ -325,8 +342,11 @@ const [submitting, setSubmitting] = useState(false);
                     : "border-white/15 focus:border-[#4d8cff]"
                 }`}
               />
+
               {errors.email && (
-                <p className="mt-1 text-[11px] text-red-400">{errors.email}</p>
+                <p className="mt-1 text-[11px] text-red-400">
+                  {errors.email}
+                </p>
               )}
             </div>
 
@@ -335,6 +355,7 @@ const [submitting, setSubmitting] = useState(false);
               <label className="mb-1.5 block text-[12px] sm:text-[13px] font-normal text-white/85">
                 Service
               </label>
+
               <div className="relative">
                 <select
                   name="service"
@@ -349,6 +370,7 @@ const [submitting, setSubmitting] = useState(false);
                   <option value="" className="text-black">
                     Select a service
                   </option>
+
                   {services.map((service) => (
                     <option
                       key={service}
@@ -365,6 +387,7 @@ const [submitting, setSubmitting] = useState(false);
                   className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/80"
                 />
               </div>
+
               {errors.service && (
                 <p className="mt-1 text-[11px] text-red-400">
                   {errors.service}
@@ -382,6 +405,7 @@ const [submitting, setSubmitting] = useState(false);
                   onChange={handleChange}
                   className="mt-1 h-4 w-4 rounded border border-white/30 bg-transparent accent-[#2f73ff]"
                 />
+
                 <span className="text-[11px] sm:text-[12px] leading-5 text-white/65">
                   I Solely agree the T&C and the predictions are Totally basing
                   on my Inputs given.
@@ -389,7 +413,9 @@ const [submitting, setSubmitting] = useState(false);
               </label>
 
               {errors.agree && (
-                <p className="mt-1 text-[11px] text-red-400">{errors.agree}</p>
+                <p className="mt-1 text-[11px] text-red-400">
+                  {errors.agree}
+                </p>
               )}
             </div>
 
@@ -403,6 +429,7 @@ const [submitting, setSubmitting] = useState(false);
                   onChange={handleChange}
                   className="mt-1 h-4 w-4 rounded border border-white/30 bg-transparent accent-[#2f73ff]"
                 />
+
                 <span className="text-[11px] sm:text-[12px] leading-5 text-white/65">
                   * I agree to the{" "}
                   <a
@@ -425,6 +452,7 @@ const [submitting, setSubmitting] = useState(false);
                   of T-Home Fintech.
                 </span>
               </label>
+
               {errors.policyAgree && (
                 <p className="mt-1 text-[11px] text-red-400">
                   {errors.policyAgree}

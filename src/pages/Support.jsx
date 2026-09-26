@@ -51,6 +51,7 @@ function FAQItem({ question }) {
 }
 export default function Support() {
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
   // For chatbot open
   const openChatbot = () => {
     // Try to find the chatbot widget and click its open button if available
@@ -68,6 +69,10 @@ export default function Support() {
     "What documents are required for address proof?",
     "How is my CIBIL score calculated?",
   ];
+
+  const filteredFaqs = faqs.filter((faq) =>
+    faq.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const tickets = [
     {
@@ -124,6 +129,8 @@ export default function Support() {
           <input
             type="text"
             placeholder="Search for articles, guides, or FAQs..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full bg-white/[0.08] border border-white/20 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder:text-white/35 focus:outline-none focus:border-[#9cc9ff]/60 backdrop-blur-xl transition"
           />
         </div>
@@ -136,6 +143,7 @@ export default function Support() {
           ].map((tag) => (
             <button
               key={tag}
+              onClick={() => setSearchTerm(tag)}
               className="rounded-full border border-white/20 bg-white/[0.08] backdrop-blur-xl px-4 py-1.5 text-xs text-white/70 hover:text-white hover:bg-white/[0.14] transition"
             >
               {tag}
@@ -294,9 +302,15 @@ export default function Support() {
             </button>
           </div>
           <div className="flex flex-col gap-2">
-            {faqs.map((faq, i) => (
-              <FAQItem key={i} question={faq} />
-            ))}
+            {filteredFaqs.length > 0 ? (
+              filteredFaqs.map((faq, i) => (
+                <FAQItem key={i} question={faq} />
+              ))
+            ) : (
+              <p className="text-sm text-white/40 py-4 text-center">
+                No matching FAQs found. Try a different search term.
+              </p>
+            )}
           </div>
         </div>
 

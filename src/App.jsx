@@ -7,7 +7,16 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
+import SuperAdminLayout from "./components/superadmin/SuperAdminLayout";
+import SuperAdminProtectedRoute from "./components/superadmin/SuperAdminProtectedRoute";
 
+import SuperAdminDashboard from "./pages/superadmin/SuperAdminDashboard";
+import SuperAdminDocuments from "./pages/superadmin/SuperAdminDocuments";
+import SuperAdminLogin from "./pages/superadmin/SuperAdminLogin";
+import SuperAdminSignup from "./pages/superadmin/SuperAdminSignup";
+import SuperAdminApplication from "./pages/superadmin/SuperAdminApplication";
+import SuperAdminVerifyOTP from "./pages/superadmin/SuperAdminVerifyOTP";
+import SuperAdminForgotPassword from "./pages/superadmin/SuperAdminForgotPassword";
 // =========================
 // Lazy Loaded Pages
 // =========================
@@ -405,11 +414,45 @@ function App() {
             <Route
               path="balance-transfer-contact"
               element={<BalanceTransferContact />}
-            />
-
+            />  
+             
             <Route path="*" element={<NotFound />} />
           </Route>
+           
+          <Route path="/super-admin" element={<SuperAdminLogin />} />
 
+<Route
+  path="/super-admin/signup"
+  element={<SuperAdminSignup />}
+/>
+<Route
+  path="/super-admin/verify-otp"
+  element={<SuperAdminVerifyOTP />}
+/>
+<Route
+  path="/super-admin/forgot-password"
+  element={<SuperAdminForgotPassword />}
+/>
+<Route element={<SuperAdminProtectedRoute />}>
+  <Route element={<SuperAdminLayout />}>
+
+    <Route
+      path="/super-admin/dashboard"
+      element={<SuperAdminDashboard />}
+    />
+
+    <Route
+      path="/super-admin/documents"
+      element={<SuperAdminDocuments />}
+    />
+
+    <Route
+      path="/super-admin/applications/:id"
+      element={<SuperAdminApplication />}
+    />
+
+  </Route>
+</Route>
           {/* =========================
               AUTH ROUTES
           ========================= */}

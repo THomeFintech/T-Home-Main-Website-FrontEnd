@@ -242,7 +242,9 @@ const StatCard = ({ title, value }) => (
 
 const PieBreakdown = ({ data, amount = 0, interest = 0 }) => {
   const total = amount + interest;
-  const principalPercent = total ? ((amount / total) * 100).toFixed(0) : 0;
+  const principalPercent = total
+    ? ((amount / total) * 100).toFixed(0)
+    : 0;
 
   return (
     <motion.div
@@ -250,7 +252,9 @@ const PieBreakdown = ({ data, amount = 0, interest = 0 }) => {
       className="relative w-full max-w-[360px] sm:max-w-[420px] md:max-w-none mx-auto md:mx-0 rounded-[22px] border border-white/10 bg-white/[0.06] p-5 backdrop-blur-xl"
     >
       <div className="relative z-10 flex flex-col">
-        <h3 className="text-sm text-white mb-3">Payment Breakdown</h3>
+        <h3 className="text-sm text-white mb-3">
+          Payment Breakdown
+        </h3>
 
         <div className="relative flex justify-center items-center">
           <ResponsiveContainer width="100%" height={200}>
@@ -273,19 +277,42 @@ const PieBreakdown = ({ data, amount = 0, interest = 0 }) => {
             <span className="text-xl font-semibold text-white">
               {principalPercent}%
             </span>
-            <span className="text-xs text-white/60">Principal</span>
+            <span className="text-xs text-white/60">
+              Principal
+            </span>
+          </div>
+        </div>
+
+        {/* BUG-007: Clear Chart Legend */}
+        <div className="mt-3 flex justify-center gap-6">
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full bg-[#3B82F6]" />
+            <span className="text-sm text-white/80">
+              Principal
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full bg-[#F59E0B]" />
+            <span className="text-sm text-white/80">
+              Interest
+            </span>
           </div>
         </div>
 
         <div className="mt-4 space-y-2">
           <div className="flex justify-between text-sm text-white/70">
             <span>Principal</span>
-            <span>₹{Math.round(amount).toLocaleString()}</span>
+            <span>
+              ₹{Math.round(amount).toLocaleString()}
+            </span>
           </div>
 
           <div className="flex justify-between text-sm text-white/70">
             <span>Interest</span>
-            <span>₹{Math.round(interest).toLocaleString()}</span>
+            <span>
+              ₹{Math.round(interest).toLocaleString()}
+            </span>
           </div>
         </div>
       </div>
@@ -327,6 +354,7 @@ const BalanceChart = ({ data }) => (
 
 const Table = ({ data, showAll, onToggle }) => (
   <motion.div
+    id="amortization-table"
     variants={fadeUp}
     className={`${colors.card} w-full max-w-[360px] sm:max-w-[420px] md:max-w-none mx-auto md:mx-0 p-3 sm:p-4 rounded-2xl max-h-[420px] overflow-auto`}
   >
@@ -406,9 +434,15 @@ export default function EMIPage() {
   const [years, setYears] = useState(initialThreshold.defaults.tenure);
   const [showAnalytics, setShowAnalytics] = useState(false);
 
-  const [monthlyIncome, setMonthlyIncome] = useState("");
-  const [existingEmis, setExistingEmis] = useState("");
-  const [showAllRows, setShowAllRows] = useState(false);
+const [monthlyIncome, setMonthlyIncome] = useState("");
+const [existingEmis, setExistingEmis] = useState("");
+
+// Values used for EMI Health Analysis
+const [analyzedIncome, setAnalyzedIncome] = useState(0);
+const [analyzedExistingEmis, setAnalyzedExistingEmis] = useState(0);
+const [analyzedEmi, setAnalyzedEmi] = useState(0);
+
+const [showAllRows, setShowAllRows] = useState(false);
 const handleReset = () => {
   const defaults = loanThresholds[loanType].defaults;
 
@@ -416,8 +450,14 @@ const handleReset = () => {
   setRate(defaults.interest);
   setYears(defaults.tenure);
   setFirstPaymentCustomDate("");
+
   setMonthlyIncome("");
   setExistingEmis("");
+
+  setAnalyzedIncome(0);
+  setAnalyzedExistingEmis(0);
+  setAnalyzedEmi(0);
+
   setShowAnalytics(false);
   setShowAllRows(false);
 };
@@ -474,13 +514,16 @@ const lastPaymentDate = formatDateDisplay(
   addMonthsSafe(safeDate, months - 1)
 );
 
-  const incomeNumber = Number(monthlyIncome) || 0;
-  const existingEmiNumber = Number(existingEmis) || 0;
+const emiBurdenPercentage = useMemo(() => {
+  if (analyzedIncome <= 0) return 0;
 
-  const emiBurdenPercentage = useMemo(() => {
-    if (incomeNumber <= 0) return 0;
-    return +((((existingEmiNumber + emi) / incomeNumber) * 100).toFixed(2));
-  }, [existingEmiNumber, emi, incomeNumber]);
+  return +(
+    (((analyzedExistingEmis + analyzedEmi) / analyzedIncome) * 100).toFixed(2)
+  );
+}, [analyzedIncome, analyzedExistingEmis, analyzedEmi]);
+
+const incomeNumber = analyzedIncome;
+const existingEmiNumber = analyzedExistingEmis;
 
   const stressInfo = useMemo(
     () => getStressLevel(emiBurdenPercentage),
@@ -863,13 +906,16 @@ const lastPaymentDate = formatDateDisplay(
           <button
             type="button"
             onClick={() => {
-              setAmount(0);
-              setRate(0);
-              setYears(0);
-              setMonthlyIncome("");
-              setExistingEmis("");
-              setShowAnalytics(false);
-            }}
+  setAmount(0);
+  setRate(0);
+  setYears(0);
+  setMonthlyIncome("");
+  setExistingEmis("");
+  setAnalyzedIncome(0);
+  setAnalyzedExistingEmis(0);
+  setAnalyzedEmi(0);
+  setShowAnalytics(false);
+}}
           >
             Reset / Clear
           </button>
@@ -1029,7 +1075,15 @@ const lastPaymentDate = formatDateDisplay(
 
                   <button
                     type="button"
-                    onClick={() => setShowAllRows(true)}
+                    onClick={() => {
+                      setShowAllRows(true);
+                      setTimeout(() => {
+                        document.getElementById("amortization-table")?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      }, 0);
+                    }}
                     className="w-full text-center text-xs text-blue-400 mt-2 cursor-pointer"
                   >
                     View All {months} Months
@@ -1072,11 +1126,16 @@ const lastPaymentDate = formatDateDisplay(
                     />
 
                     <button
-                      type="button"
-                      className="w-full bg-blue-600 py-2.5 rounded-[12px] text-sm font-medium hover:bg-blue-500"
-                    >
-                      Analyze Health
-                    </button>
+                          type="button"
+                  onClick={() => {
+                    setAnalyzedIncome(Number(monthlyIncome) || 0);
+                    setAnalyzedExistingEmis(Number(existingEmis) || 0);
+                    setAnalyzedEmi(emi);
+                  }}
+                  className="w-full bg-blue-600 py-2.5 rounded-[12px] text-sm font-medium hover:bg-blue-500"
+                  >
+          Analyze Health
+          </button>
                   </motion.div>
 
                   {/* STRESS METER */}
