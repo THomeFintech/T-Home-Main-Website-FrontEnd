@@ -263,6 +263,13 @@ if (token) {
               decisions with precision and clarity.
             </p>
 
+            <p className="mx-auto mt-4 max-w-3xl text-sm leading-6 text-gray-400">
+              Tool results are estimates for planning only. They are not a loan
+              approval, offer, financial advice, or a guarantee of eligibility.
+              Final terms depend on the information provided and the applicable
+              lender or service process.
+            </p>
+
             <div className="mt-16 grid gap-6 text-left lg:grid-cols-3">
               {toolCards.map((tool, i) => {
                 const Icon = tool.icon;

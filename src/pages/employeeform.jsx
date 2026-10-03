@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FileText, UploadCloud, Send } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function HiringForm() {
 
@@ -11,6 +12,7 @@ export default function HiringForm() {
     experience: "",
     cover_letter: "",
     resume: null,
+    consent: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -40,6 +42,11 @@ export default function HiringForm() {
 
     if (!formData.resume) {
       setMsg("❌ Please upload resume");
+      return;
+    }
+
+    if (!formData.consent) {
+      setMsg("Please agree to the Privacy Policy before submitting your application.");
       return;
     }
 
@@ -77,6 +84,7 @@ export default function HiringForm() {
           experience: "",
           cover_letter: "",
           resume: null,
+          consent: false,
         });
       } else {
         setMsg("❌ Failed to submit");
@@ -161,6 +169,19 @@ export default function HiringForm() {
           </div>
 
         </div>
+
+        <label className="flex items-start gap-3 text-sm leading-6 text-white/75">
+          <input
+            type="checkbox"
+            name="consent"
+            checked={formData.consent}
+            onChange={(event) => setFormData((current) => ({ ...current, consent: event.target.checked }))}
+            className="mt-1 h-4 w-4 shrink-0 accent-blue-500"
+          />
+          <span>
+            I agree that T-Home may process my application details for recruitment in accordance with the <Link to="/privacy-policy" className="text-blue-200 underline hover:text-white">Privacy Policy</Link>.
+          </span>
+        </label>
 
         {/* COVER LETTER */}
         <div>

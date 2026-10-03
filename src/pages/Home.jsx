@@ -43,23 +43,23 @@ function Home() {
     {
       title: "Loans",
       description:
-        "Find the right loan, check your eligibility, compare options, and get closer to the funds you need.",
-      button: "View All",
+        "Explore lending options with clear eligibility and repayment information.",
+      button: "Explore Products",
       path: "/services",
     },
     {
       title: "Tax & Compliance",
       description:
-        "Simplify tax filing and stay compliant with reliable solutions for your financial needs.",
-      button: "View All",
+        "Stay on top of tax filing and compliance tasks with guided support.",
+      button: "Explore Products",
       path: "/services",
     },
     {
       title: "Business Registrations",
       description:
-        "Start and grow your business with easy company, GST, UDYAM, and other registration services.",
-      button: "View All",
-      path: "/services",
+        "Set up and manage essential registrations for your business.",
+      button: "Explore Business Services",
+      path: "/company-registration",
     },
   ];
 
@@ -178,7 +178,7 @@ function Home() {
     url: "https://thomefintech.com",
     logo: "https://thomefintech.com/home/logo.png",
     description:
-      "T-Home Fintech provides home loans, personal loans, mortgage loans, business registration services and financial solutions across India.",
+      "T-Home Fintech provides financial services and tools for loans, compliance, business registration, and tax-related support.",
     email: "info@thome.co.in",
     telephone: "+91 70321 83836",
     sameAs: [
@@ -198,7 +198,7 @@ function Home() {
     <div style={{ fontFamily: "'Outfit', sans-serif" }}>
       <SEO
         title="Home"
-        description="T-Home Fintech provides Home Loans, Personal Loans, Mortgage Loans, Loan Against Property, Business Loans, MSME Registration, GST Registration, Food License, ITR Filing and financial consulting services across India."
+        description="Explore T-Home Fintech services and tools for loans, compliance, business registration, and tax-related support."
         path="/"
         keywords="home loans, personal loans, mortgage loans, loan against property, business loans, MSME registration, GST registration, food license, ITR filing, T-Home Fintech"
         structuredData={[
@@ -253,9 +253,9 @@ function Home() {
               Our Financial Services
             </h2>
             <p className="mx-auto max-w-2xl leading-7 text-white/80">
-              Expert solution to streamlines and optimize
+              Clear solutions to help you manage
               <br className="hidden md:block" />
-              your company's financial operations
+              your financial and compliance needs.
             </p>
           </div>
 
@@ -317,36 +317,36 @@ function Home() {
               {
                 number: "1",
                 icon: "/home/upload.png",
-                title: "Upload Documents",
-                desc: "Submit ID, income & property proofs.",
+                title: "Share Your Details",
+                desc: "Start with the information relevant to your request.",
                 active: false,
               },
               {
                 number: "2",
                 icon: "/home/check eligibility icon.png",
-                title: "Check Eligibility",
-                desc: "Submit ID, income & property proofs.",
+                title: "Understand Eligibility",
+                desc: "Review the information used to assess your options.",
                 active: false,
               },
               {
                 number: "3",
                 icon: "/home/get offer.png",
-                title: "Get Offer",
-                desc: "Know your loan options instantly.",
+                title: "Explore Options",
+                desc: "See options that align with your requirements.",
                 active: false,
               },
               {
                 number: "4",
                 icon: "/home/Quick Approval.png",
-                title: "Quick Approval",
-                desc: "Fast, hassle-free verification.",
+                title: "Complete Your Application",
+                desc: "Provide the required verification and documentation.",
                 active: false,
               },
               {
                 number: "5",
                 icon: "/home/money-disbursement.png",
-                title: "Money Disbursement",
-                desc: "Get funds directly in your account.",
+                title: "Guidance Through Disbursal",
+                desc: "Receive support through the final disbursal process.",
                 active: false,
               },
             ].map((step, index) => (
@@ -386,31 +386,31 @@ function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_45%,transparent_76%)]"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <h2 className="text-center text-2xl md:text-4xl font-semibold text-white">
-            Smart Financial Tools
+            Plan Before You Apply
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-center leading-7 text-white/90">
-            Use our powerful tools to plan and manage
+            Use simple tools to explore loan costs and
             <br className="hidden md:block" />
-            your finances better.
+            repayment choices.
           </p>
 
           <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
             {[
               {
                 title: "EMI Calculator",
-                desc: "Calculate your monthly EMI and understand your repayment plan.",
+                desc: "Estimate monthly instalments and plan your repayment.",
                 btn: "Calculate Now",
                 path: "/emi-calculator",
               },
               {
                 title: "Loan Prediction System",
-                desc: "Find out how much home loan you can get instantly.",
+                desc: "Explore an indicative home-loan eligibility estimate.",
                 btn: "Check Eligibility",
                 path: "/tools?tool=loan-prediction",
               },
               {
                 title: "Balance Transfer",
-                desc: "Estimate your savings quickly and plan your loan transfer better.",
+                desc: "Estimate potential savings before considering a balance transfer.",
                 btn: "Calculate Transfer",
                 path: "/balance-transfer",
               },
@@ -454,11 +454,11 @@ function Home() {
             className="text-3xl md:text-5xl font-semibold text-white mb-8"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
-            Why Choose T-Home
+            Clear Decisions, Thoughtful Support
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-white/70 leading-relaxed">
-            Everything you need to manage payments, compliance, and finances —
-            all powered by intelligent automation.
+            Technology and guidance that help make financial choices easier to
+            understand.
           </p>
 
           <div className="mt-16 grid gap-6 md:grid-cols-3">
@@ -469,8 +469,8 @@ function Home() {
                 iconColor: "text-blue-400",
                 hoverClass:
                   "hover:border-blue-500/40 hover:shadow-[0_20px_60px_rgba(37,99,235,0.25)]",
-                title: "Instant Loan Comparison",
-                desc: "Compare loan interest rates from multiple banks and choose the best option instantly.",
+                title: "Clear Comparisons",
+                desc: "Compare loan options using the details that matter to you.",
               },
               {
                 icon: "⚡",
@@ -478,8 +478,8 @@ function Home() {
                 iconColor: "text-purple-400",
                 hoverClass:
                   "hover:border-purple-500/40 hover:shadow-[0_20px_60px_rgba(168,85,247,0.25)]",
-                title: "Fast Approval Process",
-                desc: "Our digital process ensures faster approvals and minimal paperwork.",
+                title: "Guided Process",
+                desc: "Follow a structured path from enquiry to application.",
               },
               {
                 icon: "🛡️",
@@ -487,8 +487,8 @@ function Home() {
                 iconColor: "text-green-400",
                 hoverClass:
                   "hover:border-green-500/40 hover:shadow-[0_20px_60px_rgba(34,197,94,0.25)]",
-                title: "Secure Document Handling",
-                desc: "Your financial documents are protected with bank-level encryption and secure storage.",
+                title: "Purposeful Information Sharing",
+                desc: "Share the information needed to assess your request.",
               },
             ].map((card, i) => (
               <div
@@ -510,10 +510,10 @@ function Home() {
 
           <div className="mt-16 grid grid-cols-2 gap-6 md:grid-cols-4">
             {[
-              { value: "5k+", label: "Loans Approved" },
-              { value: "95%", label: "Approval Rate" },
-              { value: "10+", label: "Years Experience" },
-              { value: "100%", label: "Certified Experts" },
+              { value: "Clarity", label: "Understand your options" },
+              { value: "Choice", label: "Explore relevant services" },
+              { value: "Control", label: "Plan with confidence" },
+              { value: "Support", label: "Guidance when you need it" },
             ].map((item, i) => (
               <div
                 key={i}
@@ -545,11 +545,10 @@ function Home() {
             className="mt-6 text-center text-4xl md:text-5xl font-semibold text-white mb-8"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
-            What Our Client Says
+            Experiences Shared by Our Clients
           </h2>
           <p className="mx-auto mt-5 max-w-3xl text-center leading-7 text-white/75">
-            Our clients trust us for hassle-free home loans with quick approvals
-            and excellent service.
+            Feedback from clients who have worked with T-Home.
           </p>
 
           <div className="relative mx-auto mt-14 hidden max-w-7xl items-center justify-center md:flex">
@@ -619,28 +618,28 @@ function Home() {
             className="text-4xl md:text-5xl font-semibold text-white mb-8"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
-            Start Your Financial Journey Today
+            Build a Smarter Financial Future With T-Home
           </h2>
           <p
             className="mx-auto mt-4 max-w-2xl text-sm text-white/85 md:text-[34px]"
             style={{ fontSize: "clamp(18px, 1.05vw, 34px)" }}
           >
-            Join thousands of satisfied users who have transformed their
-            financial experience with T-Home.
+            Explore financial services and speak with our team when you are
+            ready.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <button
               onClick={() => navigate("/get-started")}
               className="rounded-lg border border-white/70 bg-white px-7 py-3 font-semibold text-[#1f4de2] shadow-[0_8px_20px_rgba(0,0,0,0.2)] transition hover:bg-[#f2f6ff]"
             >
-              Create Free Account
+              Get Started
             </button>
 
             <button
               onClick={() => navigate("/contact")}
               className="rounded-lg border border-[#7e96f0]/85 bg-[linear-gradient(180deg,#425ac9_0%,#344bb6_100%)] px-7 py-3 font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-[linear-gradient(180deg,#4d67db_0%,#3e57c7_100%)]"
             >
-              Speak to an Expert
+              Talk to Our Team
             </button>
           </div>
         </div>

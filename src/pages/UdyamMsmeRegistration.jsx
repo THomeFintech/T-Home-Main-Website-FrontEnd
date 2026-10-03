@@ -57,7 +57,10 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 >
   Apply Now
 </button>
-<button className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300">
+<button
+              onClick={() => navigate("/contact")}
+              className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300"
+            >
               Get Assistance
             </button>
           </div>
