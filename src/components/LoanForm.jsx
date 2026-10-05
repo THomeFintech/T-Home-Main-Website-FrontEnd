@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { FileText, ChevronDown, Zap } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { calculateAgeFromDob } from "../utils/dobUtils";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 const LPS_API_BASE = import.meta.env.VITE_LPS_API_URL;
@@ -2008,6 +2009,46 @@ export default function LoanForm({
       }));
     }
   }, [passedLoanType, setLoanData]);
+
+  // Auto-fill age from verified DigiLocker status or stored age
+  useEffect(() => {
+    if (!formData.age) {
+      const storedAge =
+        localStorage.getItem("digilocker_age") ||
+        sessionStorage.getItem("digilocker_age");
+      if (storedAge && setLoanData) {
+        setLoanData((prev) => ({
+          ...prev,
+          age: prev?.age || Number(storedAge),
+        }));
+        return;
+      }
+
+      const token =
+        sessionStorage.getItem("access_token") ||
+        localStorage.getItem("access_token");
+      if (token) {
+        fetch(`${API_BASE}/digilocker/status`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            const dob = data?.verified_identity?.dob;
+            if (dob) {
+              const age = calculateAgeFromDob(dob);
+              if (age && setLoanData) {
+                localStorage.setItem("digilocker_age", String(age));
+                setLoanData((prev) => ({
+                  ...prev,
+                  age: prev?.age || age,
+                }));
+              }
+            }
+          })
+          .catch(() => {});
+      }
+    }
+  }, [formData.age, setLoanData]);
   useEffect(() => {
     const count = Number(formData.activeLoans) || 0;
 

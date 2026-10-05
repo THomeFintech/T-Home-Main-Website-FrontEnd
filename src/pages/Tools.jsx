@@ -9,6 +9,8 @@ import Decision from "../components/Decision";
 import BankCards from "../components/BankCards";
 import Proceed from "../components/Proceed";
 import Amortization from "../components/Amortization";
+import DigiLockerVerificationStep from "../components/DigiLockerVerificationStep";
+import { calculateAgeFromDob } from "../utils/dobUtils";
 import EMIPage from "./Emi";
 
 export default function Tools() {
@@ -61,13 +63,19 @@ useEffect(() => {
 }, [location, navigate]);
 
 useEffect(() => {
-  if (step === 2) {
-    const savedLoan = localStorage.getItem("loanData");
-    if (savedLoan) {
-      setLoanData(JSON.parse(savedLoan));
-    }
+  if (step === 3) {
+    const savedLoan = JSON.parse(localStorage.getItem("loanData") || "{}");
+    const storedAge = localStorage.getItem("digilocker_age");
+    const ageFromDob = calculateAgeFromDob(contactData?.dob);
+    const resolvedAge = savedLoan.age || storedAge || ageFromDob || "";
+
+    setLoanData((prev) => ({
+      ...savedLoan,
+      ...prev,
+      age: prev?.age || savedLoan.age || resolvedAge,
+    }));
   }
-}, [step]);
+}, [step, contactData?.dob]);
   
 
 
@@ -170,7 +178,7 @@ const response = await fetch(`${API_BASE}/applications/select-bank`, {
       localStorage.setItem("bank_selection_id", String(bankSelectionId));
 
       setSelectedBank(bank);
-      setStep(3);
+      setStep(4);
     } catch (error) {
       console.error("Select bank API error:", error);
       alert(error.message || "Failed to select bank");
@@ -186,7 +194,7 @@ const response = await fetch(`${API_BASE}/applications/select-bank`, {
         "Calculate your monthly EMI and understand your complete repayment plan with our advanced algorithms.",
       buttonText: "Calculate Now",
       icon: Calculator,
-      onClick: () => setStep(5),
+      onClick: () => setStep(6),
       theme: {
         border: "border-amber-500/20",
         cardBorder: "border-amber-500/10",
@@ -334,6 +342,41 @@ if (token) {
 
       <div className="relative z-10">
         {step === 1 && (
+          <div className="pt-24 pb-12">
+            <DigiLockerVerificationStep
+              serviceName={selectedService || "Loan Application"}
+              onVerified={(verifiedIdentity) => {
+                const calculatedAge = calculateAgeFromDob(verifiedIdentity.dob);
+                if (calculatedAge) {
+                  localStorage.setItem("digilocker_age", String(calculatedAge));
+                }
+                setContactData((prev) => ({
+                  ...prev,
+                  name: verifiedIdentity.name || prev.name || "",
+                  phone: verifiedIdentity.phone || prev.phone || "",
+                  email: verifiedIdentity.email || prev.email || "",
+                  pan: verifiedIdentity.pan || prev.pan || "",
+                  aadhaar: verifiedIdentity.aadhaar || prev.aadhaar || "",
+                  dob: verifiedIdentity.dob || prev.dob || "",
+                }));
+                setLoanData((prev) => {
+                  const updated = {
+                    ...prev,
+                    age: prev?.age || calculatedAge || "",
+                    pan: prev?.pan || verifiedIdentity.pan || "",
+                  };
+                  const currentSaved = JSON.parse(localStorage.getItem("loanData") || "{}");
+                  localStorage.setItem("loanData", JSON.stringify({ ...currentSaved, ...updated }));
+                  return updated;
+                });
+                setStep(2);
+              }}
+              onBack={() => setStep(0)}
+            />
+          </div>
+        )}
+
+        {step === 2 && (
           <ContactForm
             contactData={contactData}
             setContactData={setContactData}
@@ -343,12 +386,12 @@ if (token) {
                 ...prev,
                 service,
               }));
-              nextStep();
+              setStep(3);
             }}
           />
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <section className="px-4 pb-20 pt-32">
             <div className="mx-auto max-w-[1400px]">
               <div
@@ -387,29 +430,29 @@ if (token) {
           </section>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <Proceed
             selectedBank={selectedBank}
             contactData={contactData}
             loanData={loanData}
             result={predictionResult}
-            onNext={nextStep}
-            onBack={() => setStep(2)}
+            onNext={() => setStep(5)}
+            onBack={() => setStep(3)}
           />
         )}
 
-        {step === 4 && (
+        {step === 5 && (
           <Amortization
             selectedBank={selectedBank}
             loanData={loanData}
             result={predictionResult}
-            onBack={prevStep}
+            onBack={() => setStep(4)}
           />
         )}
 
-        {step === 5 && <EMIPage onBack={() => setStep(0)} />}
+        {step === 6 && <EMIPage onBack={() => setStep(0)} />}
 
-        {step === 6 && (
+        {step === 7 && (
           <div className="px-4 pt-40 text-center text-white">
             <div className="mx-auto max-w-2xl rounded-[22px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))] px-8 py-12 shadow-[0_20px_45px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
               <h1 className="text-4xl font-bold">

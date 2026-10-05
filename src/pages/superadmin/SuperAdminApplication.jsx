@@ -609,10 +609,11 @@ export default function SuperAdminApplication() {
                     ) : document.source === "DigiLocker" ? (
 
                       <button
-                        disabled
-                        className="px-4 py-2 border border-slate-200 text-slate-400 rounded-lg text-sm"
+                        type="button"
+                        title={document.uri ? `Verified DigiLocker URI: ${document.uri}` : "Verified via DigiLocker"}
+                        className="px-3 py-1.5 border border-sky-300 bg-sky-50 text-sky-700 rounded-lg text-xs font-semibold"
                       >
-                        DigiLocker File
+                        🏛️ DigiLocker Verified
                       </button>
 
                     ) : (
