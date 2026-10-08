@@ -53,10 +53,16 @@ export const VALID_ROUTES = new Set([
   "/get-started",
   "/login",
   "/super-admin",
+ "/super-admin/signup",
+ "/super-admin/verify-otp",
+ "/super-admin/forgot-password",
+ "/super-admin/dashboard",
+ "/super-admin/documents",
 ]);
 
 const DYNAMIC_ROUTE_PATTERNS = [
   /^\/applications\/\d+$/,
+  /^\/super-admin\/applications\/\d+$/,
 ];
 
 export function isValidRoute(pathname) {
