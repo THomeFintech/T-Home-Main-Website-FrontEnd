@@ -52,6 +52,7 @@ export const VALID_ROUTES = new Set([
   "/balance-transfer-contact",
   "/get-started",
   "/login",
+  "/super-admin",
 ]);
 
 const DYNAMIC_ROUTE_PATTERNS = [
