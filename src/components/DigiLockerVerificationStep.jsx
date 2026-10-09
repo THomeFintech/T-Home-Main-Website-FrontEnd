@@ -82,6 +82,7 @@ export default function DigiLockerVerificationStep({
     const dlParam = params.get("digilocker");
     const msgParam = params.get("message");
     const importedCount = params.get("imported");
+    const isReturningSuccess = dlParam === "success";
 
     if (dlParam === "success") {
       setBannerMessage({
@@ -90,7 +91,7 @@ export default function DigiLockerVerificationStep({
           importedCount && Number(importedCount) > 0
             ? `${importedCount} official documents imported.`
             : "Official identity details verified."
-        }`,
+        } Loading your ${serviceName}...`,
       });
       // Clean up URL parameters cleanly without page refresh
       params.delete("digilocker");
@@ -118,8 +119,72 @@ export default function DigiLockerVerificationStep({
       );
     }
 
-    fetchStatus();
-  }, [location.search, fetchStatus]);
+    const checkAndAutoProceed = async () => {
+      const token =
+        sessionStorage.getItem("access_token") ||
+        localStorage.getItem("access_token");
+
+      if (!token) {
+        setError("Please log in to your T-HOME account to proceed.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError("");
+
+        const res = await fetch(`${API_BASE}/digilocker/status`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          if (res.status === 401) {
+            setError("Your session has expired. Please log in again.");
+            sessionStorage.removeItem("access_token");
+            return;
+          }
+          throw new Error(`Failed to check verification status (${res.status})`);
+        }
+
+        const data = await res.json();
+        setStatusData(data);
+
+        if (data.connected && data.verified_identity) {
+          try {
+            localStorage.setItem(
+              "digilocker_verified_identity",
+              JSON.stringify(data.verified_identity)
+            );
+            if (data.verified_identity.dob) {
+              const age = calculateAgeFromDob(data.verified_identity.dob);
+              if (age) {
+                localStorage.setItem("digilocker_age", String(age));
+              }
+            }
+          } catch {}
+
+          // If returning from successful OAuth or autoProceed is enabled:
+          if (isReturningSuccess && onVerified) {
+            setTimeout(() => {
+              onVerified(data.verified_identity, data);
+            }, 600);
+          }
+        }
+      } catch (err) {
+        console.error("DigiLocker status check error:", err);
+        setError(
+          err.message || "Failed to retrieve DigiLocker connection status.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAndAutoProceed();
+  }, [location.search, API_BASE, onVerified, serviceName]);
 
   const handleConnect = async () => {
     const token =
@@ -127,6 +192,12 @@ export default function DigiLockerVerificationStep({
       localStorage.getItem("access_token");
 
     if (!token) {
+      // Store current target before sending to login
+      try {
+        const currentPath = `${window.location.pathname}${window.location.search}`;
+        localStorage.setItem("digilocker_return_url", currentPath);
+        localStorage.setItem("digilocker_selected_service", serviceName);
+      } catch {}
       navigate("/login");
       return;
     }
@@ -136,9 +207,15 @@ export default function DigiLockerVerificationStep({
       setError("");
 
       const currentPath = `${window.location.pathname}${window.location.search}`;
+      try {
+        localStorage.setItem("digilocker_return_url", currentPath);
+        localStorage.setItem("digilocker_selected_service", serviceName);
+      } catch {}
+
       const params = new URLSearchParams({
         returnUrl: currentPath,
-        flow: "loan-application",
+        service: serviceName,
+        flow: "service-application",
       });
 
       const res = await fetch(`${API_BASE}/digilocker/authorize?${params}`, {
@@ -433,7 +510,7 @@ export default function DigiLockerVerificationStep({
                     onClick={handleProceed}
                     className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-sky-500/25 transition hover:brightness-110 sm:flex-initial"
                   >
-                    Continue to Loan Application
+                    Continue to {serviceName || "Application"}
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>

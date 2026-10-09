@@ -113,7 +113,7 @@ export default function ChatbotWidget() {
           className="w-16 h-16 md:w-20 md:h-20 rounded-full shadow-xl flex items-center justify-center bg-white border border-blue-200 hover:scale-105 transition"
         >
           <img
-            src="/home/bot (1).png"
+            src="/home/chatbot_icon.jpg"
             alt="Chatbot"
             className="w-12 h-12 object-contain"
           />
@@ -154,7 +154,7 @@ export default function ChatbotWidget() {
                 {!activeService && messages.length === 0 && (
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-full bg-[#e9eef6] flex items-center justify-center mt-1">
-                      <img src="/home/bot (1).png" alt="Bot" className="w-7 h-7" />
+                      <img src="/home/chatbot_icon.jpg" alt="Bot" className="w-7 h-7" />
                     </div>
                     <div className="bg-white px-5 py-3 rounded-2xl shadow text-gray-800 text-base max-w-[320px]">
                       Hi 👋 I'm your T-Home assistant.<br />How can I help you today?
@@ -178,7 +178,7 @@ export default function ChatbotWidget() {
                       {msg.type === "bot" && (
                         <div className="flex items-start gap-3">
                           <div className="w-10 h-10 rounded-full bg-[#e9eef6] flex items-center justify-center mt-1 shrink-0">
-                            <img src="/home/bot (1).png" className="w-7 h-7" />
+                            <img src="/home/chatbot_icon.jpg" className="w-7 h-7" />
                           </div>
 
                           <div className="flex-1">

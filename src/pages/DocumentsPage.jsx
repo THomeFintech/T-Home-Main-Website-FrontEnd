@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { createPortal } from "react-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // ── API base ─────────────────────────────────────────────────────────────────
 const API = import.meta.env.VITE_API_URL;
@@ -1469,6 +1470,26 @@ function SidebarSkeleton() {
 // Main Page
 // ─────────────────────────────────────────────────────────────────────────────
 export default function DocumentsPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // If returning from DigiLocker flow for a specific service, return to that service immediately
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const dlParam = params.get("digilocker");
+    const returnUrl = localStorage.getItem("digilocker_return_url");
+
+    if (dlParam && returnUrl && !returnUrl.startsWith("/documents")) {
+      localStorage.removeItem("digilocker_return_url");
+      const connector = returnUrl.includes("?") ? "&" : "?";
+      const imported = params.get("imported");
+      const forwardUrl = `${returnUrl}${connector}digilocker=${dlParam}${
+        imported ? `&imported=${imported}` : ""
+      }`;
+      navigate(forwardUrl, { replace: true });
+    }
+  }, [location.search, navigate]);
+
   const [applicationId, setApplicationId] = useState(() => {
     const stored = localStorage.getItem("application_id");
     return stored ? Number(stored) : null;

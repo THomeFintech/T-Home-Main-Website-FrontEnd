@@ -25,15 +25,15 @@
    OUTER BACKGROUND
 ═══════════════════════════════════════════ */
 .app-bg {
-  min-height: calc(100vh - 64px);
+  min-height: 100vh;
   width: 100%;
   background:
     radial-gradient(1200px 520px at 50% -12%, rgba(58, 120, 220, 0.24) 0%, rgba(58, 120, 220, 0) 70%),
     radial-gradient(ellipse at center, #0c1a30 0%, #060d1a 65%);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding: 6rem 1.5rem 1.8rem;
+  padding: 2.5rem 1.5rem;
   overflow-y: auto;
   /* font-family removed to enforce global Outfit font */
 }
@@ -97,6 +97,8 @@
   align-items: center;
   padding: 1.25rem 1.8rem;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(96, 163, 255, 0.3) transparent;
 }
 
 .panel-left-dark {
@@ -316,66 +318,87 @@
 
 .input-box {
   position: relative;
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.08);
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 0 14px !important;
+  background: rgba(13, 31, 60, 0.75) !important;
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 4px 12px rgba(0,0,0,0.10);
-  min-height: 38px;
+  border-radius: 9px !important;
+  border: 1px solid rgba(80, 140, 235, 0.38) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  height: 42px !important;
+  min-height: 42px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-box:focus-within {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
 }
 
 .input-glass {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(13, 31, 60, 0.75) !important;
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.20) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 8px 32px 0 rgba(0,0,0,0.15);
+  border: 1px solid rgba(80, 140, 235, 0.38) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 .ico {
-  position: absolute;
-  left: 14px;
-  width: 18px;
-  height: 18px;
-  color: rgba(255,255,255,0.65);
+  position: static !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  color: #60a5fa !important;
   pointer-events: none;
-  flex-shrink: 0;
+  flex-shrink: 0 !important;
+  display: block !important;
+  margin: 0 !important;
 }
 
-.ico-glass { color: rgba(255,255,255,0.65) !important; }
-
-
+.ico-glass { color: #60a5fa !important; }
 
 .inp {
-  width: 100%;
-  padding: 0.48rem 2.1rem 0.48rem 2.1rem;
-  background: transparent;
-  border: none;
-  outline: none;
-  font-size: 0.86rem;
-  color: #ffffff;
-  font-family: inherit;
+  flex: 1 1 0% !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  font-size: 0.88rem !important;
+  color: #ffffff !important;
+  font-family: inherit !important;
+  box-shadow: none !important;
+  line-height: normal !important;
 }
-.inp::placeholder { color: rgba(255,255,255,0.45); }
+.inp::placeholder { color: rgba(180, 205, 240, 0.55) !important; }
 
-.inp-glass { color: #ffffff !important; }
-.inp-glass::placeholder { color: rgba(255,255,255,0.45) !important; }
+.inp-glass { color: #ffffff !important; background: transparent !important; }
+.inp-glass::placeholder { color: rgba(180, 205, 240, 0.55) !important; }
 
 .eye-btn {
-  position: absolute;
-  right: 14px;
-  background: none;
-  border: none;
+  position: static !important;
+  background: none !important;
+  border: none !important;
   cursor: pointer;
-  color: rgba(255,255,255,0.6);
-  display: flex;
-  align-items: center;
-  padding: 0;
+  color: rgba(180, 205, 240, 0.6) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 0 0 auto !important;
+  flex-shrink: 0 !important;
+  width: 20px !important;
+  height: 20px !important;
+  transition: color 0.15s;
 }
-.eye-btn:hover { color: #fff; }
+.eye-btn:hover { color: #fff !important; }
 
 .agree-row {
   display: flex;

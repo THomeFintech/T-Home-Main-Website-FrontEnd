@@ -163,6 +163,7 @@ export default function LoanForm({
   onSubmit,
   loading,
   service,
+  contactData = {},
 }) {
   const mapServiceToLoanType = (service) => {
     if (!service) return "";
@@ -205,14 +206,186 @@ export default function LoanForm({
   const [cibilReport, setCibilReport] = useState(null);
   const [showCibilReport, setShowCibilReport] = useState(false);
 
-  const [cibilForm, setCibilForm] = useState({
-    firstName: "",
-    lastName: "",
-    pan: "",
-    phone: "",
-    gender: "",
-    consent: false,
+  const resolveAutofillData = useCallback(() => {
+    let savedContact = {};
+    try {
+      savedContact = JSON.parse(localStorage.getItem("contact_data") || "{}");
+    } catch {}
+
+    let savedDigilocker = {};
+    try {
+      savedDigilocker = JSON.parse(
+        localStorage.getItem("digilocker_verified_identity") || "{}"
+      );
+    } catch {}
+
+    let savedLoan = {};
+    try {
+      savedLoan = JSON.parse(localStorage.getItem("loanData") || "{}");
+    } catch {}
+
+    const fullName =
+      contactData?.name ||
+      formData?.name ||
+      savedContact?.name ||
+      savedDigilocker?.name ||
+      savedLoan?.name ||
+      "";
+
+    let derivedFirst = "";
+    let derivedLast = "";
+    if (fullName && fullName.trim()) {
+      const parts = fullName.trim().split(/\s+/);
+      derivedFirst = parts[0] || "";
+      derivedLast = parts.slice(1).join(" ") || "";
+    }
+
+    const rawPan =
+      formData?.pan ||
+      contactData?.pan ||
+      savedDigilocker?.pan ||
+      savedContact?.pan ||
+      savedLoan?.pan ||
+      "";
+    const pan = (rawPan || "").trim().toUpperCase();
+
+    const rawPhone =
+      contactData?.phone ||
+      savedContact?.phone ||
+      savedDigilocker?.phone ||
+      formData?.phone ||
+      "";
+    const phone = String(rawPhone || "").replace(/\D/g, "").slice(-10);
+
+    const rawGender =
+      contactData?.gender ||
+      savedDigilocker?.gender ||
+      formData?.gender ||
+      savedContact?.gender ||
+      "";
+    let gender = "";
+    const cleanGender = String(rawGender || "").trim().toLowerCase();
+    if (cleanGender === "m" || cleanGender === "male") {
+      gender = "male";
+    } else if (cleanGender === "f" || cleanGender === "female") {
+      gender = "female";
+    }
+
+    return {
+      firstName: derivedFirst,
+      lastName: derivedLast,
+      pan,
+      phone,
+      gender,
+    };
+  }, [
+    contactData?.name,
+    contactData?.phone,
+    contactData?.pan,
+    contactData?.gender,
+    formData?.name,
+    formData?.pan,
+    formData?.phone,
+    formData?.gender,
+  ]);
+
+  const [cibilForm, setCibilForm] = useState(() => {
+    let savedContact = {};
+    try {
+      savedContact = JSON.parse(localStorage.getItem("contact_data") || "{}");
+    } catch {}
+
+    let savedDigilocker = {};
+    try {
+      savedDigilocker = JSON.parse(
+        localStorage.getItem("digilocker_verified_identity") || "{}"
+      );
+    } catch {}
+
+    let savedLoan = {};
+    try {
+      savedLoan = JSON.parse(localStorage.getItem("loanData") || "{}");
+    } catch {}
+
+    const fullName =
+      contactData?.name ||
+      loanData?.name ||
+      savedContact?.name ||
+      savedDigilocker?.name ||
+      savedLoan?.name ||
+      "";
+
+    let derivedFirst = "";
+    let derivedLast = "";
+    if (fullName && fullName.trim()) {
+      const parts = fullName.trim().split(/\s+/);
+      derivedFirst = parts[0] || "";
+      derivedLast = parts.slice(1).join(" ") || "";
+    }
+
+    const rawPan =
+      loanData?.pan ||
+      contactData?.pan ||
+      savedDigilocker?.pan ||
+      savedContact?.pan ||
+      savedLoan?.pan ||
+      "";
+    const pan = (rawPan || "").trim().toUpperCase();
+
+    const rawPhone =
+      contactData?.phone ||
+      savedContact?.phone ||
+      savedDigilocker?.phone ||
+      loanData?.phone ||
+      "";
+    const phone = String(rawPhone || "").replace(/\D/g, "").slice(-10);
+
+    const rawGender =
+      contactData?.gender ||
+      savedDigilocker?.gender ||
+      loanData?.gender ||
+      savedContact?.gender ||
+      "";
+    let gender = "";
+    const cleanGender = String(rawGender || "").trim().toLowerCase();
+    if (cleanGender === "m" || cleanGender === "male") gender = "male";
+    else if (cleanGender === "f" || cleanGender === "female") gender = "female";
+
+    return {
+      firstName: derivedFirst,
+      lastName: derivedLast,
+      pan,
+      phone,
+      gender,
+      consent: false,
+    };
   });
+
+  useEffect(() => {
+    const autofill = resolveAutofillData();
+    setCibilForm((prev) => ({
+      ...prev,
+      firstName: prev.firstName || autofill.firstName,
+      lastName: prev.lastName || autofill.lastName,
+      pan: prev.pan || autofill.pan,
+      phone: prev.phone || autofill.phone,
+      gender: prev.gender || autofill.gender,
+    }));
+  }, [resolveAutofillData]);
+
+  const handleOpenCibilModal = () => {
+    const autofill = resolveAutofillData();
+    setCibilError("");
+    setCibilForm((prev) => ({
+      ...prev,
+      firstName: prev.firstName || autofill.firstName,
+      lastName: prev.lastName || autofill.lastName,
+      pan: prev.pan || autofill.pan,
+      phone: prev.phone || autofill.phone,
+      gender: prev.gender || autofill.gender,
+    }));
+    setShowCibilForm(true);
+  };
 
   useEffect(() => {
     if (passedLoanType && setLoanData) {
@@ -224,45 +397,102 @@ export default function LoanForm({
     }
   }, [passedLoanType, setLoanData]);
 
-  // Auto-fill age from verified DigiLocker status or stored age
+  // Auto-fill age & verified identity details from verified DigiLocker status or stored age
   useEffect(() => {
-    if (!formData.age) {
-      const storedAge =
-        localStorage.getItem("digilocker_age") ||
-        sessionStorage.getItem("digilocker_age");
-      if (storedAge && setLoanData) {
-        setLoanData((prev) => ({
-          ...prev,
-          age: prev?.age || Number(storedAge),
-        }));
-        return;
-      }
+    const storedAge =
+      localStorage.getItem("digilocker_age") ||
+      sessionStorage.getItem("digilocker_age");
+    if (storedAge && setLoanData && !formData.age) {
+      setLoanData((prev) => ({
+        ...prev,
+        age: prev?.age || Number(storedAge),
+      }));
+    }
 
-      const token =
-        sessionStorage.getItem("access_token") ||
-        localStorage.getItem("access_token");
-      if (token) {
-        fetch(`${API_BASE}/digilocker/status`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-          .then((res) => (res.ok ? res.json() : null))
-          .then((data) => {
-            const dob = data?.verified_identity?.dob;
-            if (dob) {
-              const age = calculateAgeFromDob(dob);
-              if (age && setLoanData) {
-                localStorage.setItem("digilocker_age", String(age));
-                setLoanData((prev) => ({
-                  ...prev,
-                  age: prev?.age || age,
-                }));
+    const token =
+      sessionStorage.getItem("access_token") ||
+      localStorage.getItem("access_token");
+    if (token) {
+      fetch(`${API_BASE}/digilocker/status`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          const verified = data?.verified_identity;
+          if (verified) {
+            try {
+              localStorage.setItem(
+                "digilocker_verified_identity",
+                JSON.stringify(verified)
+              );
+            } catch {}
+
+            if (verified.dob) {
+              const age = calculateAgeFromDob(verified.dob);
+              if (age) {
+                try {
+                  localStorage.setItem("digilocker_age", String(age));
+                } catch {}
+                if (setLoanData && !formData.age) {
+                  setLoanData((prev) => ({
+                    ...prev,
+                    age: prev?.age || age,
+                    pan: prev?.pan || (verified.pan ? verified.pan.toUpperCase() : ""),
+                  }));
+                }
               }
             }
-          })
-          .catch(() => {});
-      }
+
+            const fullName = verified.name || "";
+            const parts = fullName.trim().split(/\s+/);
+            const derivedFirst = parts[0] || "";
+            const derivedLast = parts.slice(1).join(" ") || "";
+            const pan = (verified.pan || "").trim().toUpperCase();
+            const phone = String(verified.phone || "")
+              .replace(/\D/g, "")
+              .slice(-10);
+            let gender = "";
+            const cleanGender = String(verified.gender || "")
+              .trim()
+              .toLowerCase();
+            if (cleanGender === "m" || cleanGender === "male") gender = "male";
+            else if (cleanGender === "f" || cleanGender === "female")
+              gender = "female";
+
+            setCibilForm((prev) => ({
+              ...prev,
+              firstName: prev.firstName || derivedFirst,
+              lastName: prev.lastName || derivedLast,
+              pan: prev.pan || pan,
+              phone: prev.phone || phone,
+              gender: prev.gender || gender,
+            }));
+          }
+        })
+        .catch(() => {});
+
+      fetch(`${API_BASE}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data?.user) {
+            const u = data.user;
+            const parts = (u.name || "").trim().split(/\s+/);
+            const phone = String(u.phone || "").replace(/\D/g, "").slice(-10);
+            const pan = (u.pan || "").trim().toUpperCase();
+            setCibilForm((prev) => ({
+              ...prev,
+              firstName: prev.firstName || parts[0] || "",
+              lastName: prev.lastName || parts.slice(1).join(" ") || "",
+              phone: prev.phone || phone,
+              pan: prev.pan || pan,
+            }));
+          }
+        })
+        .catch(() => {});
     }
-  }, [formData.age, setLoanData]);
+  }, [API_BASE, formData.age, setLoanData]);
   useEffect(() => {
     const count = Number(formData.activeLoans) || 0;
 
@@ -876,10 +1106,7 @@ export default function LoanForm({
 
               <button
                 type="button"
-                onClick={() => {
-                  setCibilError("");
-                  setShowCibilForm(true);
-                }}
+                onClick={handleOpenCibilModal}
                 className="self-start sm:self-auto text-sm font-semibold text-[#1d78ff] transition hover:text-[#57a3ff]"
               >
                 Click here

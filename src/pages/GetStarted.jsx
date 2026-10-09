@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../App.css";
 
 const GoogleAuthButton = lazy(() => import("../components/GoogleAuthButton"));
@@ -563,38 +563,53 @@ function OtpPage({ email, onVerify, onBack }) {
 ══════════════════════════════════════ */
 export default function GetStarted({ initialPage = "landing" }) {
   const navigate = useNavigate();
-  const [page, setPage] = useState(initialPage);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const initialMode = searchParams.get("mode") || initialPage;
+  const [page, setPage] = useState(
+    initialMode === "signup" ? "signup" : initialMode === "login" ? "login" : "landing"
+  );
   const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
-    setPage(initialPage);
-  }, [initialPage]);
+    const hideChatbot = () => {
+      const bot = document.getElementById("thome-chatbot-root");
+      if (bot) bot.style.setProperty("display", "none", "important");
+    };
+    hideChatbot();
+    const interval = setInterval(hideChatbot, 200);
+    return () => {
+      clearInterval(interval);
+      const bot = document.getElementById("thome-chatbot-root");
+      if (bot) bot.style.removeProperty("display");
+    };
+  }, []);
+
+  useEffect(() => {
+    const mode = new URLSearchParams(location.search).get("mode");
+    if (mode === "signup") {
+      setPage("signup");
+    } else if (mode === "login") {
+      setPage("login");
+    } else if (mode === "landing") {
+      setPage("landing");
+    }
+  }, [location.search]);
 
   const completeAuth = () => {
-    navigate("/login");
+    setPage("login");
   };
 
   if (page === "login") {
-    if (initialPage === "login") {
-      return (
-        <LoginPage
-          onBack={() => setPage("landing")}
-          onLogin={() => {
-           sessionStorage.setItem("isLoggedIn", "true");
-            window.dispatchEvent(new Event("authChange"));
-            navigate("/");
-          }}
-        />
-      );
-    }
     return (
       <LoginPage
-        onBack={() => setPage("landing")}
+        onBack={() => setPage("signup")}
         onLogin={() => {
           sessionStorage.setItem("isLoggedIn", "true");
           window.dispatchEvent(new Event("authChange"));
           navigate("/");
         }}
+        onForgotPassword={() => navigate("/forgot-password")}
       />
     );
   }
@@ -621,7 +636,7 @@ export default function GetStarted({ initialPage = "landing" }) {
   return (
     <LandingPage
       onGetStarted={() => setPage("signup")}
-       onSignIn={() => navigate("/login")} 
+      onSignIn={() => setPage("login")}
     />
   );
 }
