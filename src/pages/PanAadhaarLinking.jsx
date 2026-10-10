@@ -51,7 +51,7 @@ export default function PanAadhaarLinking() {
 
           <div className="flex gap-4 mb-6">
             <button
-  onClick={() => navigate("/contact")}
+  onClick={() => navigate("/contact?service=PAN+%26+Aadhaar+Linking")}
   className="bg-blue-600 px-6 py-2 rounded-full text-sm"
 >
   Link Now
@@ -214,7 +214,7 @@ export default function PanAadhaarLinking() {
 
           <div className="flex justify-center gap-4">
             <button
-  onClick={() => navigate("/contact")}
+  onClick={() => navigate("/contact?service=PAN+%26+Aadhaar+Linking")}
   className="bg-white text-black px-6 py-2 rounded-full text-sm"
 >
               Start Now

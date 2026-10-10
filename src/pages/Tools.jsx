@@ -9,42 +9,220 @@ import Decision from "../components/Decision";
 import BankCards from "../components/BankCards";
 import Proceed from "../components/Proceed";
 import Amortization from "../components/Amortization";
+import DigiLockerVerificationStep from "../components/DigiLockerVerificationStep";
+import { calculateAgeFromDob } from "../utils/dobUtils";
 import EMIPage from "./Emi";
 
 export default function Tools() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [step, setStep] = useState(0);
-  const [contactData, setContactData] = useState({});
-  const [loanData, setLoanData] = useState({});
+  const searchParams = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search]
+  );
+  const toolParam = searchParams.get("tool");
+  const serviceParam = searchParams.get("service");
+
+  const [selectedService, setSelectedService] = useState(
+    () => serviceParam || ""
+  );
+
+  const [step, setStep] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const tool = params.get("tool");
+      if (tool === "loan-prediction") {
+        const verified = JSON.parse(
+          localStorage.getItem("digilocker_verified_identity") || "null"
+        );
+        if (verified && (verified.name || verified.pan || verified.aadhaar)) {
+          return 2;
+        }
+        return 1;
+      }
+      if (tool === "emi") return 6;
+      if (tool === "balance-transfer") return 7;
+      return 0;
+    } catch {
+      return 0;
+    }
+  });
+
+  const [contactData, setContactData] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("contact_data") || "{}");
+      const verified = JSON.parse(
+        localStorage.getItem("digilocker_verified_identity") || "{}"
+      );
+      const params = new URLSearchParams(window.location.search);
+      const currentService = params.get("service") || "";
+      return {
+        ...saved,
+        name: saved.name || verified.name || "",
+        phone: saved.phone || verified.phone || "",
+        email: saved.email || verified.email || "",
+        pan: saved.pan || verified.pan || "",
+        aadhaar: saved.aadhaar || verified.aadhaar || "",
+        dob: saved.dob || verified.dob || "",
+        gender: saved.gender || verified.gender || "",
+        address: saved.address || verified.address || "",
+        driving_licence: saved.driving_licence || verified.driving_licence || "",
+        service: saved.service || currentService || "",
+      };
+    } catch {
+      return {};
+    }
+  });
+
+  const [loanData, setLoanData] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("loanData") || "{}");
+      const verified = JSON.parse(
+        localStorage.getItem("digilocker_verified_identity") || "{}"
+      );
+      const storedAge = localStorage.getItem("digilocker_age");
+      const calculatedAge = calculateAgeFromDob(verified?.dob);
+      return {
+        ...saved,
+        name: saved.name || verified.name || "",
+        phone: saved.phone || verified.phone || "",
+        pan: saved.pan || verified.pan || "",
+        gender: saved.gender || verified.gender || "",
+        age: saved.age || storedAge || calculatedAge || "",
+      };
+    } catch {
+      return {};
+    }
+  });
+
   const [predictionResult, setPredictionResult] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null);
   const [showBankCards, setShowBankCards] = useState(false);
   const [isSelectingBank, setIsSelectingBank] = useState(false);
-  const [selectedService, setSelectedService] = useState("");
   const API_BASE = import.meta.env.VITE_API_URL;
 
-useEffect(() => {
-  const params = new URLSearchParams(location.search);
-  const tool = params.get("tool");
-
-  if (tool === "loan-prediction") {
-   const token = sessionStorage.getItem("access_token");
-
-    if (token) {
-      setStep(1);
-    } else {
-      navigate("/login");
+  useEffect(() => {
+    if (serviceParam && serviceParam !== selectedService) {
+      setSelectedService(serviceParam);
     }
-  }
-}, [location.search, navigate]);
+
+    if (toolParam === "loan-prediction") {
+      const token =
+        sessionStorage.getItem("access_token") ||
+        localStorage.getItem("access_token");
+
+      if (!token) {
+        try {
+          const currentPath = `${location.pathname}${location.search}`;
+          localStorage.setItem("digilocker_return_url", currentPath);
+          if (serviceParam) {
+            localStorage.setItem("digilocker_selected_service", serviceParam);
+          }
+        } catch {}
+        navigate("/login");
+        return;
+      }
+
+      // Check DigiLocker status
+      const checkStatus = async () => {
+        try {
+          const res = await fetch(`${API_BASE}/digilocker/status`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.connected && data?.verified_identity) {
+              const verified = data.verified_identity;
+              const calculatedAge = calculateAgeFromDob(verified.dob);
+              if (calculatedAge) {
+                try {
+                  localStorage.setItem("digilocker_age", String(calculatedAge));
+                } catch {}
+              }
+              try {
+                localStorage.setItem(
+                  "digilocker_verified_identity",
+                  JSON.stringify(verified)
+                );
+              } catch {}
+
+              const updatedContact = {
+                name: verified.name || "",
+                phone: verified.phone || "",
+                email: verified.email || "",
+                pan: verified.pan || "",
+                aadhaar: verified.aadhaar || "",
+                dob: verified.dob || "",
+                gender: verified.gender || "",
+                address: verified.address || "",
+                driving_licence: verified.driving_licence || "",
+                service: serviceParam || selectedService || "",
+              };
+
+              setContactData((prev) => ({
+                ...prev,
+                ...updatedContact,
+              }));
+              try {
+                localStorage.setItem(
+                  "contact_data",
+                  JSON.stringify(updatedContact)
+                );
+              } catch {}
+
+              setLoanData((prev) => {
+                const updated = {
+                  ...prev,
+                  age: prev?.age || calculatedAge || "",
+                  pan: prev?.pan || verified.pan || "",
+                  name: prev?.name || verified.name || "",
+                  phone: prev?.phone || verified.phone || "",
+                  gender: prev?.gender || verified.gender || "",
+                };
+                try {
+                  const currentSaved = JSON.parse(
+                    localStorage.getItem("loanData") || "{}"
+                  );
+                  localStorage.setItem(
+                    "loanData",
+                    JSON.stringify({ ...currentSaved, ...updated })
+                  );
+                } catch {}
+                return updated;
+              });
+
+              // Already connected with DigiLocker: load the form directly!
+              setStep(2);
+              return;
+            } else {
+              setStep(1);
+            }
+          } else {
+            setStep(1);
+          }
+        } catch (err) {
+          console.error("Tools DigiLocker check error:", err);
+          setStep(1);
+        }
+      };
+
+      checkStatus();
+    } else if (toolParam === "emi") {
+      setStep(6);
+    } else if (toolParam === "balance-transfer") {
+      setStep(7);
+    } else if (!toolParam && location.pathname === "/tools") {
+      setStep(0);
+    }
+  }, [toolParam, serviceParam, location.pathname, location.search, navigate, API_BASE, selectedService]);
 
   useEffect(() => {
-      if (location.pathname === "/tools" && !location.search) {
-    setStep(0);
-  }
-}, [location.pathname, location.search]);
+    if (location.pathname === "/tools" && !location.search) {
+      setStep(0);
+    }
+  }, [location.pathname, location.search]);
 
 useEffect(() => {
   if (location.state?.resetTools) {
@@ -61,13 +239,19 @@ useEffect(() => {
 }, [location, navigate]);
 
 useEffect(() => {
-  if (step === 2) {
-    const savedLoan = localStorage.getItem("loanData");
-    if (savedLoan) {
-      setLoanData(JSON.parse(savedLoan));
-    }
+  if (step === 3) {
+    const savedLoan = JSON.parse(localStorage.getItem("loanData") || "{}");
+    const storedAge = localStorage.getItem("digilocker_age");
+    const ageFromDob = calculateAgeFromDob(contactData?.dob);
+    const resolvedAge = savedLoan.age || storedAge || ageFromDob || "";
+
+    setLoanData((prev) => ({
+      ...savedLoan,
+      ...prev,
+      age: prev?.age || savedLoan.age || resolvedAge,
+    }));
   }
-}, [step]);
+}, [step, contactData?.dob]);
   
 
 
@@ -170,7 +354,7 @@ const response = await fetch(`${API_BASE}/applications/select-bank`, {
       localStorage.setItem("bank_selection_id", String(bankSelectionId));
 
       setSelectedBank(bank);
-      setStep(3);
+      setStep(4);
     } catch (error) {
       console.error("Select bank API error:", error);
       alert(error.message || "Failed to select bank");
@@ -186,7 +370,7 @@ const response = await fetch(`${API_BASE}/applications/select-bank`, {
         "Calculate your monthly EMI and understand your complete repayment plan with our advanced algorithms.",
       buttonText: "Calculate Now",
       icon: Calculator,
-      onClick: () => setStep(5),
+      onClick: () => setStep(6),
       theme: {
         border: "border-amber-500/20",
         cardBorder: "border-amber-500/10",
@@ -251,7 +435,7 @@ if (token) {
       <div className="pointer-events-none absolute left-1/2 top-[-10%] h-[500px] w-[1000px] -translate-x-1/2 rounded-full bg-blue-500/16 blur-[120px]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(56,92,188,0.22)_0%,_transparent_72%)]" />
 
-      {step === 0 && (
+      {step === 0 && !toolParam && (
         <section className="relative z-10 px-6 pt-[180px] pb-24 md:pt-[144px]">
           <div className="mx-auto max-w-[1200px] text-center mt-16 md:mt-0">
             <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
@@ -334,21 +518,73 @@ if (token) {
 
       <div className="relative z-10">
         {step === 1 && (
+          <div className="pt-24 pb-12">
+            <DigiLockerVerificationStep
+              serviceName={selectedService || "Loan Application"}
+              onVerified={(verifiedIdentity) => {
+                const calculatedAge = calculateAgeFromDob(verifiedIdentity.dob);
+                if (calculatedAge) {
+                  localStorage.setItem("digilocker_age", String(calculatedAge));
+                }
+                if (verifiedIdentity) {
+                  localStorage.setItem(
+                    "digilocker_verified_identity",
+                    JSON.stringify(verifiedIdentity)
+                  );
+                }
+                setContactData((prev) => ({
+                  ...prev,
+                  name: verifiedIdentity.name || prev.name || "",
+                  phone: verifiedIdentity.phone || prev.phone || "",
+                  email: verifiedIdentity.email || prev.email || "",
+                  pan: verifiedIdentity.pan || prev.pan || "",
+                  aadhaar: verifiedIdentity.aadhaar || prev.aadhaar || "",
+                  dob: verifiedIdentity.dob || prev.dob || "",
+                  gender: verifiedIdentity.gender || prev.gender || "",
+                }));
+                setLoanData((prev) => {
+                  const updated = {
+                    ...prev,
+                    age: prev?.age || calculatedAge || "",
+                    pan: prev?.pan || verifiedIdentity.pan || "",
+                    name: prev?.name || verifiedIdentity.name || "",
+                    phone: prev?.phone || verifiedIdentity.phone || "",
+                    gender: prev?.gender || verifiedIdentity.gender || "",
+                  };
+                  const currentSaved = JSON.parse(localStorage.getItem("loanData") || "{}");
+                  localStorage.setItem("loanData", JSON.stringify({ ...currentSaved, ...updated }));
+                  return updated;
+                });
+                setStep(2);
+              }}
+              onBack={() => {
+                if (selectedService) {
+                  navigate(-1);
+                } else {
+                  setStep(0);
+                }
+              }}
+            />
+          </div>
+        )}
+
+        {step === 2 && (
           <ContactForm
             contactData={contactData}
             setContactData={setContactData}
+            defaultService={selectedService}
             onNext={(service) => {
               setSelectedService(service);
               setContactData((prev) => ({
                 ...prev,
                 service,
               }));
-              nextStep();
+              setStep(3);
             }}
           />
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <section className="px-4 pb-20 pt-32">
             <div className="mx-auto max-w-[1400px]">
               <div
@@ -363,6 +599,7 @@ if (token) {
                   setLoanData={setLoanData}
                   onSubmit={handleLoanResult}
                   service={selectedService}
+                  contactData={contactData}
                 />
 
                 {predictionResult && (
@@ -387,29 +624,29 @@ if (token) {
           </section>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <Proceed
             selectedBank={selectedBank}
             contactData={contactData}
             loanData={loanData}
             result={predictionResult}
-            onNext={nextStep}
-            onBack={() => setStep(2)}
+            onNext={() => setStep(5)}
+            onBack={() => setStep(3)}
           />
         )}
 
-        {step === 4 && (
+        {step === 5 && (
           <Amortization
             selectedBank={selectedBank}
             loanData={loanData}
             result={predictionResult}
-            onBack={prevStep}
+            onBack={() => setStep(4)}
           />
         )}
 
-        {step === 5 && <EMIPage onBack={() => setStep(0)} />}
+        {step === 6 && <EMIPage onBack={() => setStep(0)} />}
 
-        {step === 6 && (
+        {step === 7 && (
           <div className="px-4 pt-40 text-center text-white">
             <div className="mx-auto max-w-2xl rounded-[22px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))] px-8 py-12 shadow-[0_20px_45px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
               <h1 className="text-4xl font-bold">

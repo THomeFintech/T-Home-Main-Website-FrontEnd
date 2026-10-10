@@ -794,10 +794,15 @@ export default function Proceed({
 
     // Submit to backend in background
     try {
+      const token =
+        sessionStorage.getItem("access_token") ||
+        localStorage.getItem("access_token");
+
       const res = await fetch(`${API_BASE}/applications/submit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
           loan_id,
