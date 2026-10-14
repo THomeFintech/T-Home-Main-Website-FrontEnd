@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import Chatbot from "../components/Chatbot";
+// import Chatbot from "../components/Chatbot";
 
 function Layout() {
   return (
@@ -24,8 +24,8 @@ function Layout() {
       {/* FOOTER */}
       <Footer />
 
-      {/* CHATBOT */}
-      <Chatbot />
+      {/* CHATBOT (Temporarily disabled: backend not deployed) */}
+      {/* <Chatbot /> */}
     </div>
   );
 }
