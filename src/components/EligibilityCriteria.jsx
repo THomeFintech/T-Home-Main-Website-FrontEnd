@@ -16,7 +16,7 @@ const defaultEligibilityItems = [
   {
     icon: Calendar,
     heading: "Age Requirement",
-    description: "Applicant must be between 21 to 65 years old at the time of loan maturity."
+    description: "21 to 65 years at maturity. Criteria vary by lender, product and profile."
   },
   {
     icon: Briefcase,
@@ -26,12 +26,12 @@ const defaultEligibilityItems = [
   {
     icon: Wallet,
     heading: "Minimum Income",
-    description: "₹25,000 net monthly income (may vary by city)."
+    description: "Benchmark from ₹25,000 per month. Criteria vary by lender, product and profile."
   },
   {
     icon: CreditCard,
     heading: "Credit Score",
-    description: "CIBIL score of 750+ recommended."
+    description: "Credit score requirements differ by lender and product."
   }
 ];
 
@@ -49,8 +49,8 @@ const iconMap = {
 };
 
 export default function EligibilityCriteria({ 
-  title = "Eligibility Criteria",
-  subtitle = "Check if you meet our basic requirements for this loan product",
+  title = "Illustrative Eligibility Guidelines",
+  subtitle = "Criteria vary by lender, product and profile. Approval, rates and terms are determined solely by the lender.",
   customItems = null
 }) {
   // Use custom items if provided, otherwise use default
@@ -126,12 +126,6 @@ export default function EligibilityCriteria({
             );
           })}
         </div>
-
-        <p className="mt-6 border-t border-white/15 pt-4 text-center text-sm leading-6 text-gray-300">
-          Eligibility, required documents, fees, processing timelines, and final
-          terms vary by service and individual circumstances. Confirm the
-          applicable requirements with T-Home before proceeding.
-        </p>
       </div>
     </section>
   );

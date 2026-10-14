@@ -1,4 +1,4 @@
- import React from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import EligibilityCriteria from "../components/EligibilityCriteria";
 import UdyamImage from "../assets/UDYAM.png";
@@ -52,31 +52,28 @@ export default function UdyamMSMERegistration() {
 
           <div className="flex gap-4 mb-6">
            <button
-  onClick={() => navigate("/contact?service=UDYAM%2FMSME+Registration")}
+  onClick={() => navigate("/contact")}
 className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
 >
   Apply Now
 </button>
-<button
-              onClick={() => navigate("/contact")}
-              className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300"
-            >
+<button className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300">
               Get Assistance
             </button>
           </div>
 
           <div className="flex gap-10 text-sm text-gray-300">
             <div>
-              <p className="text-xl font-bold text-white">Fast</p>
-              <p>Approval</p>
+              <p className="text-xl font-bold text-white">Streamlined</p>
+              <p>Registration</p>
             </div>
             <div>
               <p className="text-xl font-bold text-white">Easy</p>
               <p>Process</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Zero</p>
-              <p>Hidden Fees</p>
+              <p className="text-xl font-bold text-white">Clear</p>
+              <p>Fee Disclosure</p>
             </div>
           </div>
         </div>
@@ -94,9 +91,9 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
         <div className="grid md:grid-cols-4 gap-4">
           {[
-            { title: "Lowest Pricing", desc: "Affordable MSME registration packages.", icon: "💼" },
-            { title: "Zero Hidden Fees", desc: "Transparent pricing with no surprises.", icon: "🧾" },
-            { title: "Quick Processing", desc: "Fast approvals with minimal delays.", icon: "⚡" },
+            { title: "Assisted Documentation", desc: "Help preparing and submitting your documents.", icon: "💼" },
+            { title: "Clear Fee Disclosure", desc: "Fees are explained before you proceed.", icon: "🧾" },
+            { title: "Streamlined Process", desc: "Processing time depends on the service type and applicable government or third-party procedures.", icon: "⚡" },
             { title: "Expert Support", desc: "Guidance from professionals.", icon: "👨‍💼" }
           ].map((item, i) => (
             <div key={i} className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-4 flex flex-col gap-2.5 hover:bg-white/[0.11] transition">
@@ -215,7 +212,7 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
           <div className="flex justify-center gap-4">
             <button
-  onClick={() => navigate("/contact?service=UDYAM%2FMSME+Registration")}
+  onClick={() => navigate("/contact")}
   className="bg-white text-black px-6 py-2 rounded-full text-sm"
 >
               Start Now

@@ -93,6 +93,9 @@ const Career = lazy(() => import("./pages/Career"));
 const Collaborate = lazy(() => import("./pages/Collaborate"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions"));
+const Grievance = lazy(() => import("./pages/Grievance"));
+const FinancialProfile = lazy(() => import("./pages/FinancialProfile"));
+const GigIncome = lazy(() => import("./pages/GigIncome"));
 const EmployeeForm = lazy(() => import("./pages/employeeform"));
 const GetStarted = lazy(() => import("./pages/GetStarted"));
 const Login = lazy(() => import("./pages/Login"));
@@ -366,6 +369,10 @@ function App() {
               path="terms-and-conditions"
               element={<TermsAndConditions />}
             />
+
+            <Route path="grievance" element={<Grievance />} />
+            <Route path="financial-profile" element={<FinancialProfile />} />
+            <Route path="gig-income" element={<GigIncome />} />
 
             <Route path="apply" element={<EmployeeForm />} />
 

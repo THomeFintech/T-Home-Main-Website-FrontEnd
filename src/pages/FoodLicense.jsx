@@ -25,7 +25,7 @@ export default function FoodLicense() {
     >
       <SEO
   title="FSSAI Food License"
-  description="Apply for your FSSAI Food License online with T-Home Fintech. Fast processing, expert support, and complete compliance for food businesses."
+  description="Apply for your FSSAI Food License online with T-Home Fintech. Expert support and compliance guidance for food businesses."
   path="/food-license"
   keywords="FSSAI registration, food license, FSSAI license online, food business license"
   structuredData={[
@@ -47,12 +47,12 @@ export default function FoodLicense() {
           </h1>
 
           <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-            Get your FSSAI Food License quickly and ensure compliance with food safety regulations. We simplify the process so you can focus on your business.
+            Get your FSSAI Food License and ensure compliance with food safety regulations. We simplify the process so you can focus on your business.
           </p>
 
           <div className="flex gap-4 mb-6">
             <button
-  onClick={() => navigate("/contact?service=Food+License")}
+  onClick={() => navigate("/contact")}
 className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
 >
   Apply Now
@@ -64,16 +64,16 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
           <div className="flex gap-6 text-sm text-gray-300">
             <div>
-              <p className="text-xl font-bold text-white">95%</p>
-              <p>Success Rate</p>
+              <p className="text-xl font-bold text-white">Streamlined</p>
+              <p>Process</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Fast</p>
-              <p>Processing</p>
+              <p className="text-xl font-bold text-white">Assisted</p>
+              <p>Documentation</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Zero</p>
-              <p>Hidden Fees</p>
+              <p className="text-xl font-bold text-white">Clear</p>
+              <p>Fee Disclosure</p>
             </div>
           </div>
         </div>
@@ -95,9 +95,9 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
         <div className="grid md:grid-cols-4 gap-4">
           {[
-            { title: "Affordable Pricing", desc: "Cost-effective FSSAI registration plans.", icon: "🍽️" },
-            { title: "Zero Hidden Fees", desc: "Transparent pricing structure.", icon: "🧾" },
-            { title: "Quick Processing", desc: "Fast approvals with minimal delay.", icon: "⚡" },
+            { title: "Assisted Documentation", desc: "Help preparing and submitting your documents.", icon: "🍽️" },
+            { title: "Clear Fee Disclosure", desc: "Fees are explained before you proceed.", icon: "🧾" },
+            { title: "Streamlined Process", desc: "Processing time depends on the service type and applicable government or third-party procedures.", icon: "⚡" },
             { title: "Expert Guidance", desc: "Support from compliance experts.", icon: "👨‍🍳" }
           ].map((item, i) => (
             <div key={i} className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-4 flex flex-col gap-2.5 hover:bg-white/[0.11] transition">
@@ -218,7 +218,7 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
           <div className="flex justify-center gap-4">
             <button
-  onClick={() => navigate("/contact?service=Food+License")}
+  onClick={() => navigate("/contact")}
   className="bg-white text-black px-6 py-2 rounded-full text-sm"
 >
   Start Now

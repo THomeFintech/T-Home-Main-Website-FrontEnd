@@ -72,7 +72,7 @@ function LandingPage({ onGetStarted, onSignIn }) {
           From <span className="hl">Dreams</span> to Real <span className="hl">Homes</span>
         </p>
         <p className="landing-sub">
-          Experience Fast, Secure, and Hassle-free Loan, Tax and Business related Services.
+          Explore loan, tax and business registration services with guided support.
         </p>
         <div className="landing-btns">
           <button className="btn-get-started" onClick={onGetStarted}>

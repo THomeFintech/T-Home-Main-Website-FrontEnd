@@ -1,599 +1,67 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import {
-  Briefcase,
-  CalendarClock,
-  CircleDollarSign,
-  HeartPulse,
-  Laptop,
-  Lightbulb,
-  MapPin,
-  Shield,
-  Sparkles,
-  TrendingUp,
-  User,
-  Users,
-  BookOpen,
-  Clock3,
-} from "lucide-react";
+import React from "react";
 import SEO from "../components/SEO";
 
-const cultureCards = [
-  {
-    title: "Innovation First",
-    description: "We challenge the status quo and build solutions that redefine the industry standard.",
-    icon: Lightbulb,
-  },
-  {
-    title: "Customer-Centric",
-    description: "Every feature we build and every decision we make starts with our users in mind.",
-    icon: Users,
-  },
-  {
-    title: "Ownership & Growth",
-    description: "Take charge of your work, learn continuously, and grow alongside the company.",
-    icon: TrendingUp,
-  },
-  {
-    title: "Transparency & Trust",
-    description: "Open communication and honest feedback are the foundation of our team dynamic.",
-    icon: Shield,
-  },
+/*
+  Careers page. Roles and the resume email come from the CEO's hiring poster
+  (Change Document 4.5: list only the roles you are actually hiring for).
+  To change the openings, edit OPEN_ROLES below.
+*/
+const OPEN_ROLES = [
+  "Full Stack Developer Intern",
+  "Backend Developer Intern",
+  "Graphic Designer Intern",
+  "Video Editor Intern",
+  "Database Intern",
+  "Content Intern",
+  "SEO Intern",
 ];
 
-const jobRoles = [
-  {
-    title: "UI/UX Designer",
-    category: "Design",
-    mode: "REMOTE",
-    type: "FULL-TIME",
-    exp: "1-2 YEARS",
-    description: "Lead the design of our core financial products and shape the future of digital banking experiences.",
-  },
-  {
-    title: "Frontend Engineer",
-    category: "Engineering",
-    mode: "REMOTE",
-    type: "FULL-TIME",
-    exp: "2-4 YEARS",
-    description: "Build fast, secure, and accessible user interfaces using modern web technologies.",
-  },
-  {
-    title: "Product Marketing Manager",
-    category: "Marketing",
-    mode: "REMOTE",
-    type: "FULL-TIME",
-    exp: "5+ YEARS",
-    description: "Drive go-to-market strategies and craft compelling narratives for our new feature rollouts.",
-  },
-];
+const RESUME_EMAIL = "info@thome.co.in";
 
-const joinBenefits = [
-  {
-    title: "Flexible Work Environment",
-    description: "Work from where you feel most productive. We support hybrid and fully remote setups.",
-    icon: Laptop,
-  },
-  {
-    title: "Competitive Salary",
-    description: "Top-of-market compensation packages reflecting your skills, experience, and impact.",
-    icon: CircleDollarSign,
-  },
-  {
-    title: "Learning & Growth",
-    description: "Annual stipends for courses, books, and conferences to keep your skills sharp.",
-    icon: BookOpen,
-  },
-  {
-    title: "Health & Wellness",
-    description: "Comprehensive health insurance covering you and your dependents fully.",
-    icon: HeartPulse,
-  },
-  {
-    title: "Startup Ownership",
-    description: "Equity options for all employees. When the company wins, we all win together.",
-    icon: Clock3,
-  },
-  {
-    title: "Work-Life Balance",
-    description: "Generous paid time off, mental health days, and flexible daily schedules.",
-    icon: Sparkles,
-  },
-];
-
-const testimonials = [
-  {
-    name: "Chittiboina Mohit",
-    role: "Backend Developer Intern",
-    image: "/testimonials/chittiboina-mohit.jpg",
-    text: "Working at T-Home has been a great learning opportunity. With constant mentor guidance and a friendly culture, I significantly improved my technical and problem-solving skills.",
-  },
-  {
-    name: "Sai Krishna Bathina",
-    role: "Backend Developer Intern",
-    image: "/testimonials/sai-krishna-bathina.png",
-    text: "Working on fast-paced fintech features alongside a supportive team has been transformative, offering invaluable industry exposure and continuous learning.",
-  },
-  {
-    name: "Gopireddy Sakshi",
-    role: "Research & Graphic Design Intern",
-    image: "/testimonials/gopireddy-sakshi.jpg",
-    text: "Working at T-Home has been a truly positive experience. The freedom to share ideas, try new things, and receive encouraging mentorship has helped me grow both personally and professionally.",
-  },
-  {
-    name: "Himavanth Molala",
-    role: "AI/ML Intern",
-    image: "/testimonials/himavanth-molala.png",
-    text: "My experience at T-Home has been a rewarding journey. Gaining practical AI experience with strong mentorship has helped me sharpen my technical and professional skills.",
-  },
-  {
-    name: "Siri Artham",
-    role: "Backend Development Intern",
-    image: "/testimonials/siri-artham.png",
-    text: "Gaining hands-on backend experience on real-world projects has been invaluable. Strong mentorship and a collaborative culture have boosted my technical skills and confidence.",
-  },
-  {
-    name: "Mary Angel M",
-    role: "Full Stack Developer Intern",
-    image: "/testimonials/mary-angel-m.png",
-    text: "Building real-world full-stack applications with constant guidance from a supportive team has helped me troubleshoot complex challenges and grow rapidly as a developer.",
-  },
-  {
-    name: "Sai Susritha Vemuri",
-    role: "Product Architect Intern",
-    image: null,
-    text: "Over the past few months at T-Home, my experience has been extremely positive and rewarding. The mentorship helped me gain valuable real-world insights into machine learning.",
-  },
-  {
-    name: "Akhil Kumar Rotta",
-    role: "Designer",
-    image: null,
-    text: "The last five months at T-Home have been a meaningful experience. With constant support and guidance, I’ve grown in confidence and creativity.",
-  },
-  {
-    name: "P. Siri Chandana",
-    role: "Machine Learning Intern",
-    image: null,
-    text: "My experience at T-Home has been enriching and rewarding. I gained hands-on exposure to real-time projects and bridged the gap between theory and practice.",
-  },
-];
-
-
-export default function CareerSection() {
-  const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState("All Roles");
-  const [testimonialStart, setTestimonialStart] = useState(0);
-  const openRolesRef = useRef(null);
-  const scrollToOpenRoles = () => {
-  openRolesRef.current?.scrollIntoView({ behavior: "smooth" });
-};
-  
-  const nextTestimonials = () => {
-    setTestimonialStart((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const prevTestimonials = () => {
-    setTestimonialStart((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
-  const testimonialTrack = [...testimonials, ...testimonials];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTestimonialStart((prev) => (prev + 1) % testimonials.length);
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [testimonials.length]);
-
-  const categories = ["All Roles", "Engineering", "Design", "Marketing", "Operations"];
-
-  const filteredJobs = useMemo(() => {
-    if (activeCategory === "All Roles") return jobRoles;
-    return jobRoles.filter((job) => job.category === activeCategory);
-  }, [activeCategory]);
-
+export default function Career() {
   return (
     <div
-      className="relative min-h-screen overflow-hidden text-white font-['Outfit',sans-serif]"
+      className="min-h-screen pt-24 font-sans text-slate-100"
       style={{
         background:
           "radial-gradient(1200px 680px at 20% -10%, rgba(90,140,255,0.18), transparent 62%), radial-gradient(980px 580px at 100% 0%, rgba(36,107,198,0.14), transparent 60%), linear-gradient(180deg, #071327 0%, #08162b 100%)",
       }}
     >
       <SEO
-  title="Careers"
-  description="Join the T-Home Fintech team. Explore career opportunities and become part of a growing fintech company focused on innovation and customer success."
-  path="/career"
-  keywords="careers, jobs, fintech jobs, work at T-Home Fintech"
-/>
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[440px] w-[980px] -translate-x-1/2 rounded-full bg-[#2f73ff]/20 blur-[140px]" />
-        <div className="absolute bottom-[18%] left-[8%] h-[300px] w-[300px] rounded-full bg-[#4f84ff]/14 blur-[120px]" />
-        <div className="absolute bottom-[22%] right-[8%] h-[280px] w-[280px] rounded-full bg-[#315cc9]/12 blur-[110px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_45%,transparent_76%)]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-[1200px] px-6 pb-14">
-        <section className="relative flex min-h-[60svh] items-center justify-center overflow-hidden px-6 pt-[180px] pb-20 text-center md:pt-[130px] md:pb-24">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="relative z-10 mx-auto max-w-4xl"
-          >
-          <div className="mx-auto mt-14 md:mt-0 inline-flex items-center gap-2 rounded-full border border-[#89b6ff]/35 bg-white/5 px-4 py-2 text-[12px] font-medium tracking-wide text-[#cfe0ff] backdrop-blur-xl">
-            <span className="h-2 w-2 rounded-full bg-[#4ea3ff]" />
-            Join Us
-          </div>
-
-          <h1 className="mt-6 text-[40px] leading-[1.15] font-bold sm:text-[52px] md:text-[60px]">
-            Build the <span className="text-[#2d8bff]">Future of Finance</span> with Us
-          </h1>
-          <p className="mx-auto mt-5 max-w-[780px] text-[15px] text-[#d7def3]">
-            Join a fast-growing team that&apos;s redefining financial services with innovation, trust, and bleeding-edge technology.
-          </p>
-<button
-  onClick={scrollToOpenRoles}
-  className="mt-8 rounded-full bg-[#2f73ff] px-6 py-2.5 text-[13px] font-semibold transition hover:bg-[#2b69eb]"
->
-  Explore Open Roles
-</button>
-          </motion.div>
-        </section>
-
-         <section className="mt-4">
-
-  <motion.div
-    initial={{ opacity: 0, y: 24 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.7 }}
-    viewport={{ once: true }}
-  >
-    <h2 className="text-center text-[40px] font-semibold">
-      Our Culture
-    </h2>
-
-    <p className="mt-2 text-center text-[14px] text-[#d7def3]">
-      We believe great products are built by empowered people.
-    </p>
-  </motion.div>
-
-          <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {cultureCards.map((card) => {
-              const Icon = card.icon;
-              return (
-                <motion.article
-  key={card.title}
-  initial={{ opacity: 0, y: 25 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{
-    duration: 0.5,
-    delay: 0.1,
-  }}
-  viewport={{ once: true }}
-  whileHover={{
-    y: -6,
-    transition: { duration: 0.2 },
-  }}
-  className="min-h-[162px] rounded-[10px] border border-white/10 bg-white/[0.04] px-5 py-5 backdrop-blur-[12px] shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
->
-                  <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-[7px] border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#76a9ff]">
-                    <Icon size={15} />
-                  </div>
-                  <h3 className="text-[17px] font-semibold leading-tight">{card.title}</h3>
-                  <p className="mt-2 text-[12px] leading-[1.45] text-[#c8d5ef]">{card.description}</p>
-                </motion.article>
-              );
-            })}
-          </div>
-        </section>
-
-         <section ref={openRolesRef} className="mt-12 text-center">
-
-  <motion.div
-    initial={{ opacity: 0, y: 24 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.7 }}
-    viewport={{ once: true }}
-  >
-    <h2 className="text-[40px] font-semibold">
-      Open Positions
-    </h2>
-   
-          <div className="mt-3 flex flex-wrap justify-center gap-2">
-            {categories.map((category) => (
-              <button
-                key={category}
-                type="button"
-                onClick={() => setActiveCategory(category)}
-                className={`rounded-[9px] border px-3 py-1 text-[11px] font-medium transition backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] ${
-                  activeCategory === category
-                    ? "border-[#89b6ff]/70 bg-[linear-gradient(180deg,rgba(74,130,255,0.52)_0%,rgba(48,100,220,0.42)_100%)] text-white"
-                    : "border-white/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.09)_100%)] text-[#e3ebff] hover:bg-white/25"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-            </div>
-          </motion.div>
-
-          <div className="mx-auto mt-6 max-w-[760px] space-y-2.5 text-left">
-            {filteredJobs.map((job) => (
-            
-                <motion.article
-  key={job.title}
-  initial={{ opacity: 0, y: 25 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
-  viewport={{ once: true }}
-  whileHover={{
-    y: -4,
-    transition: { duration: 0.2 },
-  }}
-                className="flex flex-col justify-between gap-2 rounded-[10px] border border-white/10 bg-white/[0.04] px-4 py-3 backdrop-blur-[12px] shadow-[0_4px_30px_rgba(0,0,0,0.3)] md:flex-row md:items-center"
-              >
-                <div>
-                  <h3 className="text-[16px] font-semibold leading-tight">{job.title}</h3>
-                  <p className="text-xs uppercase tracking-wide text-[#e2e8f7] mt-1">{job.category}</p>
-                  <p className="mt-1 text-[11px] leading-[1.45] text-[#d0dbf4]">{job.description}</p>
-                  <div className="flex flex-wrap gap-2 mt-2 text-xs">
-                    <span className="inline-flex items-center gap-1"><MapPin size={10} /> {job.mode}</span>
-                    <span className="inline-flex items-center gap-1"><Briefcase size={10} /> {job.type}</span>
-                    <span className="inline-flex items-center gap-1"><CalendarClock size={10} /> {job.exp}</span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    localStorage.setItem("selectedJob", JSON.stringify(job));
-                    navigate("/apply", { state: job });
-                  }}
-                  className="shrink-0 rounded-full bg-[#2f73ff] px-5 py-2 text-[12px] font-semibold transition hover:bg-[#2b69eb]"
-                >
-                  Apply
-                </button>
-              </motion.article>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-10">
-          <h2 className="text-center text-[48px] font-semibold">Why Join Us ?</h2>
-          <p className="mt-2 text-center text-[14px] text-[#d7def3]">
-            We take care of our team so they can focus on doing their best work.
-          </p>
-
-          <div className="mt-7 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {joinBenefits.map((benefit) => {
-              const Icon = benefit.icon;
-              return (
-                 <motion.article
-  key={benefit.title}
-  initial={{ opacity: 0, y: 25 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
-  viewport={{ once: true }}
-  whileHover={{
-    y: -4,
-    transition: { duration: 0.2 },
-  }}
-                  className="rounded-[12px] border border-white/10 bg-white/[0.04] px-5 py-6 text-center backdrop-blur-[12px] shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
-                >
-                  <div className="mx-auto mb-4 inline-flex h-9 w-9 items-center justify-center rounded-[8px] border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#76a9ff]">
-                    <Icon size={16} />
-                  </div>
-                  <h3 className="text-[22px] font-semibold">{benefit.title}</h3>
-                  <p className="mt-2 text-[13px] leading-[1.5] text-[#c8d5ef]">{benefit.description}</p>
-                </motion.article>
-              );
-            })}
-          </div>
-        </section>
- <section className="mt-12 text-center">
-
-  <motion.div
-    initial={{ opacity: 0, y: 24 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.7 }}
-    viewport={{ once: true }}
-  >
-
-    <span className="inline-flex rounded-full border bg-[#1f4fa3]/80 border-[#4f84ff]/35 bg-[#2459c8]/18 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#7badff]">
-      Employee Testimonials
-    </span>
-
-    <h2 className="mt-3 text-[46px] font-semibold">
-      Real Experiences. Real Growth.
-    </h2>
-
-    <p className="mt-2 text-[14px] text-[#d7def3]">
-      Our employees share how their careers have evolved and how they've found purpose here.
-    </p>
-
-  </motion.div>
-
-          <div className="relative mx-auto mt-14 hidden max-w-7xl items-center justify-center md:flex">
-            <button
-              onClick={prevTestimonials}
-              className="absolute left-0 z-20 flex h-14 w-14 items-center justify-center rounded-full border border-white/30 bg-[linear-gradient(180deg,rgba(34,41,66,0.98)_0%,rgba(18,22,37,0.98)_100%)] text-4xl text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_24px_rgba(5,9,28,0.42)] transition hover:border-[#4f72e0]/55 hover:bg-[linear-gradient(180deg,rgba(47,67,160,0.96)_0%,rgba(36,53,136,0.96)_100%)]"
-            >
-              ‹
-            </button>
-
-            <div className="mx-16 w-full overflow-hidden">
-               <div
-                 className="grid auto-cols-[calc((100%-48px)/3)] grid-flow-col gap-6 transition-transform duration-500 ease-in-out"
-                 style={{
-                   transform: `translateX(calc(-${testimonialStart} * ((100% - 48px) / 3 + 24px)))`,
-                 }}
-               >
-                 {testimonialTrack.map((t, i) => {
-                   const isCenter = i % testimonials.length === (testimonialStart + 1) % testimonials.length;
-                   return (
-                     <motion.article
-  key={`${i}-${t.name}`}
-  initial={{ opacity: 0, y: 30 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{
-    duration: 0.6,
-    delay: 0.1,
-  }}
-  viewport={{ once: true }}
-  className={`flex h-[390px] flex-col justify-between rounded-[16px] border px-6 py-7 text-center backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_34px_rgba(0,0,0,0.3)] transition-transform duration-700 ease-in-out ${
-    isCenter
-      ? "border-[#7ea7ff]/70 bg-[linear-gradient(180deg,rgba(58,95,218,0.96)_0%,rgba(39,68,184,0.96)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_18px_40px_rgba(8,20,60,0.42)]"
-      : "border-[#c9dcff]/52 bg-[linear-gradient(180deg,rgba(24,34,84,0.84)_0%,rgba(14,22,58,0.9)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_12px_34px_rgba(2,8,28,0.34)]"
-  }`}
->
-  {/* TOP CONTENT */}
-  <div>
-    <div
-      className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full text-[28px] font-semibold ${
-        isCenter ? "bg-[#3d59b6] text-[#cfe0ff]" : "bg-[#1b336f] text-[#4f7fd7]"
-      }`}
-    >
-      "
-    </div>
-
-    <p
-      className={`mx-auto mt-4 max-w-[320px] text-[14px] leading-6 sm:text-[15px] sm:leading-6 ${
-        isCenter ? "text-white/95" : "text-white/75"
-      }`}
-    >
-      {t.text}
-    </p>
-  </div>
-
-  {/* BOTTOM (ALWAYS SAME POSITION) */}
-  <div className="mt-4 flex shrink-0 items-center justify-center gap-3">
-    {t.image ? (
-      <img
-        src={t.image}
-        alt={t.name}
-        className="h-10 w-10 rounded-full border border-white/30 object-cover"
-        onError={(e) => {
-          e.currentTarget.style.display = "none";
-          if (e.currentTarget.nextElementSibling) {
-            e.currentTarget.nextElementSibling.style.display = "inline-flex";
-          }
-        }}
+        title="Careers"
+        description="Build the future of financial services with T-HOME Fintech. Current internship openings."
+        path="/career"
       />
-    ) : null}
-    <div
-      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#9fc1ff]"
-      style={{ display: t.image ? "none" : "inline-flex" }}
-    >
-      <User size={16} />
-    </div>
 
-    <div className="text-left">
-      <h4 className="text-[15px] font-semibold">{t.name}</h4>
-      <p className="text-[13px] text-[#b8c9eb]">{t.role}</p>
-    </div>
-  </div>
-</motion.article>
-                   );
-                 })}
-               </div>
-            </div>
+      <div className="mx-auto max-w-4xl px-6 py-16 text-center">
+        <p className="mb-3 text-xs tracking-wide text-blue-400">CAREERS</p>
+        <h1 className="mb-3 text-4xl font-bold leading-tight md:text-5xl">
+          Build the Future of Financial Services With T-HOME.
+        </h1>
+        <p className="mb-8 text-xl font-semibold text-yellow-300">We&apos;re Hiring Interns</p>
 
-            <button
-              onClick={nextTestimonials}
-              className="absolute right-0 z-20 flex h-14 w-14 items-center justify-center rounded-full border border-white/30 bg-[linear-gradient(180deg,rgba(34,41,66,0.98)_0%,rgba(18,22,37,0.98)_100%)] text-4xl text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_24px_rgba(5,9,28,0.42)] transition hover:border-[#4f72e0]/55 hover:bg-[linear-gradient(180deg,rgba(47,67,160,0.96)_0%,rgba(36,53,136,0.96)_100%)]"
+        <p className="mb-4 text-sm text-gray-400">We are looking for:</p>
+        <ul className="mx-auto grid max-w-xl gap-3 text-left">
+          {OPEN_ROLES.map((role) => (
+            <li
+              key={role}
+              className="rounded-[14px] border border-[#2f5fbe] bg-[#0b1d45]/70 px-5 py-4 text-base font-semibold text-white"
             >
-              ›
-            </button>
-          </div>
+              {role}
+            </li>
+          ))}
+        </ul>
 
-           <div className="mx-auto mt-10 w-full max-w-[360px] md:hidden">
-
-  <motion.div
-    key={testimonials[testimonialStart].name}
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-    className="rounded-[16px] border border-[#d6e6ff]/62 bg-[linear-gradient(180deg,rgba(44,66,132,0.74)_0%,rgba(25,42,102,0.68)_100%)] p-7 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_14px_38px_rgba(0,0,0,0.34)] backdrop-blur-md"
-  >
-
-    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#1b336f] text-[28px] font-semibold leading-none text-[#4f7fd7]">
-      <span className="block -translate-y-px leading-none">"</span>
-    </div>
-
-    <p className="mx-auto mt-6 max-w-[320px] text-[14px] leading-6 text-[#e3eeff]/90">
-      {testimonials[testimonialStart].text}
-    </p>
-
-    {testimonials[testimonialStart].image ? (
-      <img
-        src={testimonials[testimonialStart].image}
-        alt={testimonials[testimonialStart].name}
-        className="mx-auto mt-4 h-16 w-16 rounded-full border border-white/30 object-cover"
-        onError={(e) => {
-          e.currentTarget.style.display = "none";
-          if (e.currentTarget.nextElementSibling) {
-            e.currentTarget.nextElementSibling.style.display = "flex";
-          }
-        }}
-      />
-    ) : null}
-    <div
-      className="mx-auto mt-4 flex h-16 w-16 items-center justify-center rounded-full border border-[#4f84ff]/35 bg-[#2459c8]/18 text-[#9fc1ff]"
-      style={{ display: testimonials[testimonialStart].image ? "none" : "flex" }}
-    >
-      <User size={28} />
-    </div>
-
-    <h3 className="mt-4 text-lg font-semibold text-white">
-      {testimonials[testimonialStart].name}
-    </h3>
-
-    <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-[#4e95ff]">
-      {testimonials[testimonialStart].role}
-    </p>
-
-  </motion.div>
-
-  {/* Mobile controls */}
-  <div className="mt-6 flex items-center justify-center gap-4">
-    <button
-      type="button"
-      onClick={prevTestimonials}
-      aria-label="Previous testimonial"
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-[linear-gradient(180deg,rgba(34,41,66,0.98)_0%,rgba(18,22,37,0.98)_100%)] text-2xl text-white shadow transition hover:border-[#4f72e0]/55"
-    >
-      ‹
-    </button>
-    <span className="text-xs text-[#cfe0ff]">
-      {testimonialStart + 1} / {testimonials.length}
-    </span>
-    <button
-      type="button"
-      onClick={nextTestimonials}
-      aria-label="Next testimonial"
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-[linear-gradient(180deg,rgba(34,41,66,0.98)_0%,rgba(18,22,37,0.98)_100%)] text-2xl text-white shadow transition hover:border-[#4f72e0]/55"
-    >
-      ›
-    </button>
-  </div>
-
-</div>
-        </section>
-
-        <section className="mx-auto mt-10 max-w-[760px] rounded-[14px] border border-white/10 bg-white/[0.04] px-6 py-9 text-center backdrop-blur-[12px] shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
-          <h2 className="text-[48px] font-semibold">Ready to make an impact?</h2>
-          <p className="mx-auto mt-2 max-w-[620px] text-[15px] text-[#e0e9ff]">
-            Join T-Home and help us build financial infrastructure that empowers millions of users globally.
-          </p>
-<button
-  onClick={scrollToOpenRoles}
-  className="mt-6 rounded-full bg-[#2f73ff] px-7 py-2.5 text-[13px] font-semibold transition hover:bg-[#2b69eb]"
->
-  Join Us Now
-</button>
-        </section>
+        <p className="mt-10 text-base text-white">
+          Send Resume at:{" "}
+          <a href={`mailto:${RESUME_EMAIL}`} className="font-semibold text-blue-400 underline">
+            {RESUME_EMAIL}
+          </a>
+        </p>
+        <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-gray-400">
+          Build your future with T-Home Fintech! Be a part of our journey to build innovative
+          financial solutions for a better tomorrow.
+        </p>
       </div>
     </div>
   );

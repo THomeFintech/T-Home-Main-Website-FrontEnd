@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import Hero from "../components/Hero/Hero";
 import SEO from "../components/SEO";
 import financialServiceSchema from "../schema/financialServiceSchema";
@@ -10,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 function Home() {
   const navigate = useNavigate();
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [, setCurrentIndex] = useState(0);
   const [testimonialStart, setTestimonialStart] = useState(0);
 
   const circleItems = [
@@ -43,23 +42,23 @@ function Home() {
     {
       title: "Loans",
       description:
-        "Explore lending options with clear eligibility and repayment information.",
-      button: "Explore Products",
+        "Find the right loan, check your eligibility, compare options, and get closer to the funds you need.",
+      button: "View All",
       path: "/services",
     },
     {
       title: "Tax & Compliance",
       description:
-        "Stay on top of tax filing and compliance tasks with guided support.",
-      button: "Explore Products",
+        "Simplify tax filing and stay compliant with reliable solutions for your financial needs.",
+      button: "View All",
       path: "/services",
     },
     {
       title: "Business Registrations",
       description:
-        "Set up and manage essential registrations for your business.",
-      button: "Explore Business Services",
-      path: "/company-registration",
+        "Start and grow your business with easy company, GST, UDYAM, and other registration services.",
+      button: "View All",
+      path: "/services",
     },
   ];
 
@@ -74,19 +73,22 @@ function Home() {
       text: `"Dear Mr. Ravinder, Your assistance in applying for, processing, and disbursing my SVC Indraprastha Apartments housing loan is amazing. You gave the list at once to prevent document submission disturbances."`,
       img: "/home/Srinivasa Acharya2.png",
       name: "Srinivasa Acharya",
-      location: "Hyderabad",
+      service: "Home Loan",
+      year: "", // TODO: add the year of this experience (document 4.1: Name + Service + Year)
     },
     {
       text: `"Dear Mr. Ravinder, This is regarding my home loan for the flat purchased at svc indraprastha. The process of the house loan, ... you had done an outstanding performance to get the job done. Keep up the good work. Thank you."`,
       img: "/home/Murugan R2.png",
       name: "Murgan R",
-      location: "Hyderabad",
+      service: "Home Loan",
+      year: "", // TODO: add the year
     },
     {
       text: `"I had a wonderful and seamless experience with Ravinder. They have managed the entire documentation and Coordination with Bank without any hassle of multiple visit to the bank for home loan."`,
       img: "/home/Pankaj Agarwal2.png",
       name: "Pankaj Agarwal",
-      location: "Hyderabad",
+      service: "Home Loan",
+      year: "", // TODO: add the year
     },
   ];
 
@@ -150,7 +152,7 @@ function Home() {
             isCenter ? "text-[#69bbff]" : "text-[#4e95ff]"
           }`}
         >
-          {t.location}
+          {[t.service, t.year].filter(Boolean).join(" · ")}
         </p>
       </div>
     );
@@ -178,7 +180,7 @@ function Home() {
     url: "https://thomefintech.com",
     logo: "https://thomefintech.com/home/logo.png",
     description:
-      "T-Home Fintech provides financial services and tools for loans, compliance, business registration, and tax-related support.",
+      "T-Home Fintech provides home loans, personal loans, mortgage loans, business registration services and financial solutions across India.",
     email: "info@thome.co.in",
     telephone: "+91 70321 83836",
     sameAs: [
@@ -198,7 +200,7 @@ function Home() {
     <div style={{ fontFamily: "'Outfit', sans-serif" }}>
       <SEO
         title="Home"
-        description="Explore T-Home Fintech services and tools for loans, compliance, business registration, and tax-related support."
+        description="T-Home Fintech provides Home Loans, Personal Loans, Mortgage Loans, Loan Against Property, Business Loans, MSME Registration, GST Registration, Food License, ITR Filing and financial consulting services across India."
         path="/"
         keywords="home loans, personal loans, mortgage loans, loan against property, business loans, MSME registration, GST registration, food license, ITR filing, T-Home Fintech"
         structuredData={[
@@ -253,9 +255,9 @@ function Home() {
               Our Financial Services
             </h2>
             <p className="mx-auto max-w-2xl leading-7 text-white/80">
-              Clear solutions to help you manage
+              Expert solution to streamlines and optimize
               <br className="hidden md:block" />
-              your financial and compliance needs.
+              your company's financial operations
             </p>
           </div>
 
@@ -295,6 +297,40 @@ function Home() {
         </div>
       </section>
 
+      {/* ── WHO WE SERVE (Change Document 4.1) ── */}
+      <section
+        className="relative w-full overflow-hidden py-[100px]"
+        style={{ background: homeSectionBackground }}
+      >
+        <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
+          <h2
+            className="text-3xl font-semibold text-white md:text-5xl"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+          >
+            Financial Guidance for Every Income Profile
+          </h2>
+          <div className="mt-12 grid gap-6 text-left sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { title: "Salaried", text: "Understand borrowing limits and explore lender options." },
+              { title: "Self-Employed & MSMEs", text: "Turn business income into structured financial profiles." },
+              { title: "Gig Workers & Freelancers", text: "Organise platform earnings for lender review." },
+              { title: "Creators", text: "Present variable digital income clearly." },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="rounded-[18px] border border-[#c9dcff]/36 bg-[linear-gradient(180deg,rgba(30,45,95,0.5)_0%,rgba(20,31,76,0.44)_100%)] px-6 py-8"
+              >
+                <h3 className="text-xl font-semibold text-white">{item.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-white/75">{item.text}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 text-sm text-white/70">
+            Eligibility and terms depend on partner lender policies.
+          </p>
+        </div>
+      </section>
+
       {/* ── HOW T-HOME WORKS ── */}
       <section
         className="relative w-full py-[100px]"
@@ -309,46 +345,48 @@ function Home() {
             className="text-center text-4xl md:text-5xl font-semibold text-white mb-8"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
-            How T-Home Works
+            How It Works
           </h2>
 
           <div className="mt-14 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5">
             {[
-              {
-                number: "1",
-                icon: "/home/upload.png",
-                title: "Share Your Details",
-                desc: "Start with the information relevant to your request.",
-                active: false,
-              },
-              {
-                number: "2",
-                icon: "/home/check eligibility icon.png",
-                title: "Understand Eligibility",
-                desc: "Review the information used to assess your options.",
-                active: false,
-              },
-              {
-                number: "3",
-                icon: "/home/get offer.png",
-                title: "Explore Options",
-                desc: "See options that align with your requirements.",
-                active: false,
-              },
-              {
-                number: "4",
-                icon: "/home/Quick Approval.png",
-                title: "Complete Your Application",
-                desc: "Provide the required verification and documentation.",
-                active: false,
-              },
-              {
-                number: "5",
-                icon: "/home/money-disbursement.png",
-                title: "Guidance Through Disbursal",
-                desc: "Receive support through the final disbursal process.",
-                active: false,
-              },
+              
+  {
+    number: "1",
+    icon: "/home/upload.png",
+    title: "Share Details",
+    desc: "Provide your basic income and loan requirements.",
+    active: false,
+  },
+  {
+    number: "2",
+    icon: "/home/check eligibility icon.png",
+    title: "Review Indicative Eligibility",
+    desc: "Review an indicative eligibility estimate based on your profile.",
+    active: false,
+  },
+  {
+    number: "3",
+    icon: "/home/get offer.png",
+    title: "Compare Options",
+    desc: "Explore available options across partner lenders.",
+    active: false,
+  },
+  {
+    number: "4",
+    icon: "/home/Quick Approval.png",
+    title: "Submit Documents",
+    desc: "Provide the required documents for lender review.",
+    active: false,
+  },
+  {
+    number: "5",
+    icon: "/home/money-disbursement.png",
+    title: "Lender Decision",
+    desc: "The partner lender makes the final decision on your application.",
+    active: false,
+  },
+
             ].map((step, index) => (
               <div
                 key={index}
@@ -386,31 +424,35 @@ function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_45%,transparent_76%)]"></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <h2 className="text-center text-2xl md:text-4xl font-semibold text-white">
-            Plan Before You Apply
+            Smart Tools to Help You Plan Before Applying
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-center leading-7 text-white/90">
-            Use simple tools to explore loan costs and
+           Organise your income details, estimate monthly affordability and compare options across partner lenders before submitting a request.
             <br className="hidden md:block" />
-            repayment choices.
+    
           </p>
 
-          <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
+          <h3 className="mt-12 text-center text-2xl font-semibold text-white">
+            Financial Planning Calculators
+          </h3>
+
+          <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-3">
             {[
               {
                 title: "EMI Calculator",
-                desc: "Estimate monthly instalments and plan your repayment.",
+                desc: "Calculate your monthly EMI and understand your repayment plan.",
                 btn: "Calculate Now",
                 path: "/emi-calculator",
               },
               {
-                title: "Loan Prediction System",
-                desc: "Explore an indicative home-loan eligibility estimate.",
+                title: "AI-Powered Loan Eligibility & Prediction System",
+                desc: "Estimate your potential borrowing range from net income, current EMIs, age and tenure.",
                 btn: "Check Eligibility",
                 path: "/tools?tool=loan-prediction",
               },
               {
-                title: "Balance Transfer",
-                desc: "Estimate potential savings before considering a balance transfer.",
+                title: "AI-Powered Balance Transfer System",
+                desc: "Estimate prospective interest savings. Actual savings depend on new lender terms, processing fees and prepayment charges.",
                 btn: "Calculate Transfer",
                 path: "/balance-transfer",
               },
@@ -454,11 +496,10 @@ function Home() {
             className="text-3xl md:text-5xl font-semibold text-white mb-8"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
-            Clear Decisions, Thoughtful Support
+            Why Choose T-Home
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-white/70 leading-relaxed">
-            Technology and guidance that help make financial choices easier to
-            understand.
+            Everything you need to plan your loans, filings and registrations in one place.
           </p>
 
           <div className="mt-16 grid gap-6 md:grid-cols-3">
@@ -469,8 +510,8 @@ function Home() {
                 iconColor: "text-blue-400",
                 hoverClass:
                   "hover:border-blue-500/40 hover:shadow-[0_20px_60px_rgba(37,99,235,0.25)]",
-                title: "Clear Comparisons",
-                desc: "Compare loan options using the details that matter to you.",
+                title: "Multiple Lender Options",
+                desc: "Compare options across partner lenders before you decide.",
               },
               {
                 icon: "⚡",
@@ -478,8 +519,8 @@ function Home() {
                 iconColor: "text-purple-400",
                 hoverClass:
                   "hover:border-purple-500/40 hover:shadow-[0_20px_60px_rgba(168,85,247,0.25)]",
-                title: "Guided Process",
-                desc: "Follow a structured path from enquiry to application.",
+                title: "Assisted Documentation",
+                desc: "Guidance on preparing and submitting the documents lenders ask for.",
               },
               {
                 icon: "🛡️",
@@ -487,8 +528,8 @@ function Home() {
                 iconColor: "text-green-400",
                 hoverClass:
                   "hover:border-green-500/40 hover:shadow-[0_20px_60px_rgba(34,197,94,0.25)]",
-                title: "Purposeful Information Sharing",
-                desc: "Share the information needed to assess your request.",
+                title: "Consent-Based Data Handling",
+                desc: "Your information is shared only with your consent.",
               },
             ].map((card, i) => (
               <div
@@ -510,10 +551,10 @@ function Home() {
 
           <div className="mt-16 grid grid-cols-2 gap-6 md:grid-cols-4">
             {[
-              { value: "Clarity", label: "Understand your options" },
-              { value: "Choice", label: "Explore relevant services" },
-              { value: "Control", label: "Plan with confidence" },
-              { value: "Support", label: "Guidance when you need it" },
+              { value: "Customer-Focused", label: "Advisory" },
+              { value: "Multi-Lender", label: "Access" },
+              { value: "Clear Fee", label: "Disclosure" },
+              { value: "Smart Planning", label: "Tools" },
             ].map((item, i) => (
               <div
                 key={i}
@@ -526,6 +567,31 @@ function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── FOUNDER (Change Document, Section 5: short version) ── */}
+      <section
+        className="relative w-full overflow-hidden py-[80px]"
+        style={{ background: homeSectionBackground }}
+      >
+        <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
+          <h2
+            className="text-3xl font-semibold text-white md:text-4xl"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+          >
+            Ravinder Reddy Attapuram
+          </h2>
+          <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-[#4e95ff]">
+            Founder &amp; CEO, T-HOME Fintech
+          </p>
+          <p className="mx-auto mt-6 max-w-3xl leading-7 text-white/80">
+            Combining financial services experience with AI and technology to make financial
+            decisions simpler, smarter and more accessible.
+          </p>
+          <p className="mt-6 text-lg italic text-white">
+            &ldquo;Building the Financial Intelligence Layer for a Smarter India.&rdquo;
+          </p>
         </div>
       </section>
 
@@ -545,10 +611,10 @@ function Home() {
             className="mt-6 text-center text-4xl md:text-5xl font-semibold text-white mb-8"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
-            Experiences Shared by Our Clients
+            Client Experiences
           </h2>
           <p className="mx-auto mt-5 max-w-3xl text-center leading-7 text-white/75">
-            Feedback from clients who have worked with T-Home.
+            Experiences shared by T-HOME clients.
           </p>
 
           <div className="relative mx-auto mt-14 hidden max-w-7xl items-center justify-center md:flex">
@@ -601,7 +667,7 @@ function Home() {
                 {activeTestimonial.name}
               </h3>
               <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-[#4e95ff]">
-                📍 {activeTestimonial.location}
+                {[activeTestimonial.service, activeTestimonial.year].filter(Boolean).join(" · ")}
               </p>
             </div>
           </div>
@@ -618,28 +684,27 @@ function Home() {
             className="text-4xl md:text-5xl font-semibold text-white mb-8"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
-            Build a Smarter Financial Future With T-Home
+            Start Your Financial Journey Today
           </h2>
           <p
             className="mx-auto mt-4 max-w-2xl text-sm text-white/85 md:text-[34px]"
             style={{ fontSize: "clamp(18px, 1.05vw, 34px)" }}
           >
-            Explore financial services and speak with our team when you are
-            ready.
+            Explore lender options, plan with simple tools and get guidance for your filings and registrations.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <button
               onClick={() => navigate("/get-started")}
               className="rounded-lg border border-white/70 bg-white px-7 py-3 font-semibold text-[#1f4de2] shadow-[0_8px_20px_rgba(0,0,0,0.2)] transition hover:bg-[#f2f6ff]"
             >
-              Get Started
+              Create Free Account
             </button>
 
             <button
               onClick={() => navigate("/contact")}
               className="rounded-lg border border-[#7e96f0]/85 bg-[linear-gradient(180deg,#425ac9_0%,#344bb6_100%)] px-7 py-3 font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-[linear-gradient(180deg,#4d67db_0%,#3e57c7_100%)]"
             >
-              Talk to Our Team
+              Speak to an Expert
             </button>
           </div>
         </div>

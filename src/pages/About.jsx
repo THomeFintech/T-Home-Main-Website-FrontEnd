@@ -1,5 +1,6 @@
 import React from "react";
 import ceoImage from "../assets/ceo.png";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { Flag, Eye } from "lucide-react";
 import { FaLinkedin, FaEnvelope } from "react-icons/fa";
@@ -41,21 +42,24 @@ const About = () => {
             </div>
 
             <h1 className="mt-6 text-[42px] leading-[1.15] font-bold md:text-6xl">
-              Empowering Your{" "}
-              <span className="text-[#2d8bff]">Financial Future</span>
+              Simplifying{" "}
+              <span className="text-[#2d8bff]">Financial &amp; Compliance</span>{" "}
+              Services
             </h1>
 
             <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-[#d7def3] md:text-lg">
-              We simplify financial services by combining trust, speed, and
-              intelligent automation so home ownership, business growth, and
-              compliance services feel straightforward instead of overwhelming.
+              T-HOME Fintech is an AI-Powered Financial Technology Platform that
+              simplifies financial services across India, with a focus on
+              AI-powered financial intelligence, loan eligibility assessment,
+              balance transfer solutions and accessible digital financial
+              services.
             </p>
 
             <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-3">
               {[
                 { value: "2025", label: "Founded" },
-                { value: "5k+", label: "Happy Clients" },
-                { value: "24/7", label: "Fast Support" },
+                { value: "Customer-Focused", label: "Advisory" },
+                { value: "Multi-Lender", label: "Access" },
               ].map((item) => (
                 <div
                   key={item.label}
@@ -111,7 +115,7 @@ const About = () => {
                   How We Work
                 </h3>
                 <p className="mt-4 text-[15px] leading-7 text-[#e3eeff]/88">
-                  Clear guidance, responsive support, and smart automation built
+                  Clear guidance, responsive support, and smart planning tools built
                   around trust so every interaction feels consistent across the
                   website.
                 </p>
@@ -136,9 +140,9 @@ const About = () => {
                   Our Mission
                 </h3>
                 <p className="text-[15px] leading-7 text-[#d7def3]">
-                  To simplify financial services and make home loans, taxation,
-                  and business registration accessible, transparent, and
-                  hassle-free.
+                  To streamline access to lending assistance, tax compliance and
+                  business formation through practical technology and
+                  transparent guidance.
                 </p>
               </motion.div>
 
@@ -148,7 +152,7 @@ const About = () => {
                   Our Vision
                 </h3>
                 <p className="text-[15px] leading-7 text-[#d7def3]">
-                  To be the nation’s most trusted financial platform.
+                  To build a dependable financial platform that simplifies complex financial decisions for individuals and businesses across India.
                 </p>
               </motion.div>
             </div>
@@ -170,11 +174,13 @@ const About = () => {
                 {
                   image: ceoImage,
                   name: "Ravinder Reddy Attapuram",
-                  role: "Founder & CEO",
+                  role: "Founder & CEO · T-HOME Fintech",
                   linkedin:
                     "https://www.linkedin.com/in/ravinder-reddy-attapuram-a2676491/",
-                  email: "ravinder.reddy@thome.co.in",
-                  text: "Entrepreneur, strategist, and changemaker leading T-Home toward a future where finance is transparent, easy, and empowering.",
+                  email: "info@thome.co.in",
+                  paragraphs: [
+                    "Combining financial services experience with AI and technology to make financial decisions simpler, smarter and more accessible.",
+                  ],
                 },
               ].map((leader) => (
                 <motion.div
@@ -267,14 +273,16 @@ const About = () => {
                   {/* SUBTITLE */}
 
                   <p className="mt-2 text-sm text-[#bdd1f7]">
-                    Entrepreneur • Strategist • Changemaker
+                    Building the Financial Intelligence Layer for a Smarter India.
                   </p>
 
                   {/* DESCRIPTION */}
 
-                  <p className="mx-auto mt-4 max-w-sm text-[14px] leading-7 text-[#d2def9]">
-                    {leader.text}
-                  </p>
+                  <div className="mx-auto mt-4 max-w-md space-y-3 text-[14px] leading-7 text-[#d2def9]">
+                    {leader.paragraphs.map((paragraph) => (
+                      <p key={paragraph}>{paragraph}</p>
+                    ))}
+                  </div>
 
                   {/* FEATURE BOXES */}
 
@@ -289,14 +297,14 @@ const About = () => {
                     <div className="rounded-xl border border-[#2e4d86] bg-[#14254a] p-3">
                       <p className="text-lg">🚀</p>
                       <p className="text-[11px] text-[#9bb8ea]">
-                        Visionary Leadership
+                        AI-Driven Innovation
                       </p>
                     </div>
 
                     <div className="rounded-xl border border-[#2e4d86] bg-[#14254a] p-3">
                       <p className="text-lg">❤</p>
                       <p className="text-[11px] text-[#9bb8ea]">
-                        Customer First
+                        Customer-First Vision
                       </p>
                     </div>
                   </div>
@@ -328,10 +336,10 @@ const About = () => {
 
             <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-6">
               {[
-                { value: "5k+", label: "Loans Approved" },
-                { value: "95%", label: "Approval Rate" },
-                { value: "10+", label: "Years Experience" },
-                { value: "100%", label: "Certified Experts" },
+                { value: "Customer-Focused", label: "Advisory" },
+                { value: "Multi-Lender", label: "Access" },
+                { value: "Clear Fee", label: "Disclosure" },
+                { value: "Smart Planning", label: "Tools" },
               ].map((item) => (
                 <motion.div
                   key={item.label}

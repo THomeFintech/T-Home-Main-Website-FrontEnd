@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SEO from "../components/SEO";
 
@@ -175,7 +175,7 @@ export default function Support() {
           <div>
             <p className="text-sm font-medium text-white">24/7 Chatbot</p>
             <p className="text-xs text-white/35 mt-0.5">
-              Get instant answers to general queries
+              Get answers to general queries
             </p>
           </div>
           <button
@@ -265,11 +265,11 @@ export default function Support() {
           <div>
             <p className="text-sm font-medium text-white">Email Support</p>
             <p className="text-xs text-white/35 mt-0.5">
-              Drop us an email. We reply within 2 hours.
+              Drop us an email and we will get back to you.
             </p>
           </div>
           <a
-            href="mailto:support@thome.com"
+            href="mailto:info@thome.co.in"
             className="mt-auto w-full flex items-center justify-center gap-1.5 rounded-lg border border-white/20 bg-[#4f72e0] py-2 text-xs text-white hover:bg-[#3451a1] transition backdrop-blur-xl font-medium"
             style={{ textDecoration: "none" }}
           >

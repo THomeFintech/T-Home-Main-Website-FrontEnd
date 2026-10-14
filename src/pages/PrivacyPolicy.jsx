@@ -1,5 +1,6 @@
 import React from "react";
 import { Mail, MapPin, ShieldCheck } from "lucide-react";
+const DPO_EMAIL = "info@thome.co.in";
 
 const dataCards = [
   {
@@ -195,23 +196,27 @@ export default function PrivacyPolicy() {
                 <div className="mt-5 space-y-2 text-[13px] text-[#e8f0ff] sm:text-[14px]">
                   <div className="flex items-center gap-2">
                     <Mail size={15} />
-                    privacy@thome.com
+                    <a href={`mailto:${DPO_EMAIL}`}>{DPO_EMAIL}</a>
                   </div>
                   <div className="flex items-center gap-2">
                     <MapPin size={15} />
-                    privacy@thome.com
+                    Hyderabad, Telangana
                   </div>
                 </div>
               </div>
 
               <div className="shrink-0">
                 <button
-                  type="button"
-                  className="w-full rounded-[10px] border border-white/40 bg-white/15 px-7 py-3 text-[13px] font-semibold text-white backdrop-blur-md transition hover:bg-white/20 md:w-auto"
-                >
+  type="button"
+  onClick={() =>
+  window.open(
+    `https://mail.google.com/mail/?view=cm&to=${DPO_EMAIL}&su=Data%20privacy%20query`,
+    "_blank"
+  )
+}
+>
                   Contact DPO
                 </button>
-                <p className="mt-2 text-center text-[11px] text-[#d4e3ff]">Response Time: Usually within 24 hours</p>
               </div>
             </div>
           </section>

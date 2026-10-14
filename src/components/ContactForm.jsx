@@ -7,7 +7,7 @@ export default function ContactForm({
   contactData = {},
   setContactData = () => {},
   onNext = () => {},
-  title = "Loan Prediction System",
+  title = "Indicative Loan Eligibility Check",
   submitText = "Submit Form",
   defaultService = "",
 }) {
