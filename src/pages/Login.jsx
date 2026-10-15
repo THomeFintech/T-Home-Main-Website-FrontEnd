@@ -68,10 +68,17 @@ export default function Login() {
 
   const navigate = useNavigate();
     useEffect(() => {
-    console.log("🔴 LOGIN MOUNTED");
+    const hideChatbot = () => {
+      const bot = document.getElementById("thome-chatbot-root");
+      if (bot) bot.style.setProperty("display", "none", "important");
+    };
+    hideChatbot();
+    const interval = setInterval(hideChatbot, 200);
 
     return () => {
-      console.log("🔵 LOGIN UNMOUNTED");
+      clearInterval(interval);
+      const bot = document.getElementById("thome-chatbot-root");
+      if (bot) bot.style.removeProperty("display");
     };
   }, []);
   
@@ -124,7 +131,13 @@ sessionStorage.setItem("isLoggedIn", "true");
     window.dispatchEvent(new Event("authChange"));
 
     // Redirect
-    navigate("/");
+    const returnUrl = localStorage.getItem("digilocker_return_url");
+    if (returnUrl) {
+      localStorage.removeItem("digilocker_return_url");
+      navigate(returnUrl);
+    } else {
+      navigate("/");
+    }
 
   } catch (error) {
     console.error(error);
@@ -242,7 +255,7 @@ sessionStorage.setItem("isLoggedIn", "true");
   />
 </div>
             <p className="login-signup-text">
-              Don&apos;t have an account? <Link to="/get-started" className="login-signup-link">Register</Link>
+              Don&apos;t have an account? <Link to="/get-started?mode=signup" className="login-signup-link">Register</Link>
             </p>
           </div>
         </div>

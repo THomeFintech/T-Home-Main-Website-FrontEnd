@@ -9,15 +9,72 @@ export default function ContactForm({
   onNext = () => {},
   title = "Loan Prediction System",
   submitText = "Submit Form",
+  defaultService = "",
 }) {
-  const [formData, setFormData] = useState({
-    name: contactData.name || "",
-    phone: contactData.phone || "",
-    email: contactData.email || "",
-    service: contactData.service || "",
-    agree: contactData.agree || false,
-    policyAgree: contactData.policyAgree || false,
+  const [formData, setFormData] = useState(() => {
+    let savedDigilocker = {};
+    try {
+      savedDigilocker = JSON.parse(
+        localStorage.getItem("digilocker_verified_identity") || "{}"
+      );
+    } catch {}
+
+    return {
+      name: contactData.name || savedDigilocker.name || "",
+      phone: contactData.phone || savedDigilocker.phone || "",
+      email: contactData.email || savedDigilocker.email || "",
+      service: contactData.service || defaultService || "",
+      agree: contactData.agree || false,
+      policyAgree: contactData.policyAgree || false,
+    };
   });
+
+  const services = [
+    "Home Loan",
+    "Personal Loan",
+    "Mortgage Loan",
+    "Loan Against Property",
+    "Balance Transfer",
+    "Business Loan",
+  ];
+
+  useEffect(() => {
+    let savedDigilocker = {};
+    try {
+      savedDigilocker = JSON.parse(
+        localStorage.getItem("digilocker_verified_identity") || "{}"
+      );
+    } catch {}
+
+    setFormData((prev) => {
+      const resolvedName = prev.name || contactData.name || savedDigilocker.name || "";
+      const resolvedPhone = prev.phone || contactData.phone || savedDigilocker.phone || "";
+      const resolvedEmail = prev.email || contactData.email || savedDigilocker.email || "";
+      const resolvedService = prev.service || contactData.service || defaultService || "";
+
+      if (
+        resolvedName !== prev.name ||
+        resolvedPhone !== prev.phone ||
+        resolvedEmail !== prev.email ||
+        resolvedService !== prev.service
+      ) {
+        const nextState = {
+          ...prev,
+          name: resolvedName,
+          phone: resolvedPhone,
+          email: resolvedEmail,
+          service: resolvedService,
+        };
+        setContactData({
+          ...contactData,
+          ...savedDigilocker,
+          ...nextState,
+        });
+        return nextState;
+      }
+      return prev;
+    });
+  }, [contactData, defaultService, setContactData]);
 
   useEffect(() => {
     const token =
@@ -47,13 +104,6 @@ export default function ContactForm({
 
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
-
-  const services = [
-    "Home Loan",
-    "Personal Loan",
-    "Business Loan",
-    "Loan Against Property",
-  ];
 
   const validateField = (name, value) => {
     let error = "";
@@ -167,10 +217,14 @@ export default function ContactForm({
       service_type: currentFormData.service,
     };
 
-    // Save form data immediately
-    localStorage.setItem("contact_data", JSON.stringify(currentFormData));
+    // Save form data immediately while preserving DigiLocker fields (pan, gender, dob, etc.)
+    const updatedContact = {
+      ...contactData,
+      ...currentFormData,
+    };
+    localStorage.setItem("contact_data", JSON.stringify(updatedContact));
 
-    setContactData(currentFormData);
+    setContactData(updatedContact);
 
     // Move to next page immediately
     onNext(currentFormData.service);

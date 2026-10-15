@@ -53,7 +53,7 @@ export default function ITRFiling() {
           <h1 className="text-5xl font-bold mb-4 leading-tight">ITR Filing</h1>
           <p className="text-gray-400 mb-6 text-sm leading-relaxed">File your Income Tax Returns easily with expert assistance. Ensure compliance, maximize deductions, and avoid penalties with our seamless filing process.</p>
           <div className="flex gap-4 mb-6">
-            <button onClick={() => navigate("/contact")} className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">File Now</button>
+            <button onClick={() => navigate("/contact?service=ITR+Tax+Filing")} className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">File Now</button>
             <button className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300">Get Assistance</button>
           </div>
           <div className="flex gap-6 text-sm text-gray-300">
@@ -142,7 +142,7 @@ export default function ITRFiling() {
           <h2 className="text-2xl font-bold mb-2">Ready to file your taxes?</h2>
           <p className="text-white/80 mb-6 text-sm">Get expert help and file your ITR quickly and accurately.</p>
           <div className="flex justify-center gap-4">
-            <button onClick={() => navigate("/contact")} className="bg-white text-black px-6 py-2 rounded-full text-sm">Start Filing</button>
+            <button onClick={() => navigate("/contact?service=ITR+Tax+Filing")} className="bg-white text-black px-6 py-2 rounded-full text-sm">Start Filing</button>
             <button onClick={() => navigate("/contact")} className="border border-white px-6 py-2 rounded-full text-sm">Talk to Expert</button>
           </div>
         </div>

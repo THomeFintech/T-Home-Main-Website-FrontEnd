@@ -29,7 +29,7 @@ export default function Chatbot({ onClick }) {
         className="w-16 h-16 md:w-20 md:h-20 rounded-full shadow-xl flex items-center justify-center"
       >
         <img
-          src="/home/bot (1).png"
+          src="/home/chatbot_icon.jpg"
           alt="Chatbot"
           className="w-full h-full object-contain"
         />

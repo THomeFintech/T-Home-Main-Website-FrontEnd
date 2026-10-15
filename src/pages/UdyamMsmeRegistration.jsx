@@ -52,7 +52,7 @@ export default function UdyamMSMERegistration() {
 
           <div className="flex gap-4 mb-6">
            <button
-  onClick={() => navigate("/contact")}
+  onClick={() => navigate("/contact?service=UDYAM%2FMSME+Registration")}
 className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
 >
   Apply Now
@@ -215,7 +215,7 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
           <div className="flex justify-center gap-4">
             <button
-  onClick={() => navigate("/contact")}
+  onClick={() => navigate("/contact?service=UDYAM%2FMSME+Registration")}
   className="bg-white text-black px-6 py-2 rounded-full text-sm"
 >
               Start Now

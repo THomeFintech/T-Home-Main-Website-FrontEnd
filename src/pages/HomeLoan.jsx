@@ -54,7 +54,7 @@ export default function HomeLoan() {
 
           <div className="flex gap-4 mb-6">
             <button
-              onClick={() => navigate("/tools?tool=loan-prediction")}
+              onClick={() => navigate("/tools?tool=loan-prediction&service=Home+Loan")}
               className="bg-blue-600 px-6 py-2 rounded-full text-sm"
             >
               Apply Now
@@ -270,7 +270,7 @@ export default function HomeLoan() {
 
           <div className="flex justify-center gap-4">
             <button
-              onClick={() => navigate("/contact")}
+              onClick={() => navigate("/tools?tool=loan-prediction&service=Home+Loan")}
               className="bg-white text-black px-6 py-2 rounded-full text-sm"
             >
               Check Eligibility

@@ -17,6 +17,12 @@ import SuperAdminSignup from "./pages/superadmin/SuperAdminSignup";
 import SuperAdminApplication from "./pages/superadmin/SuperAdminApplication";
 import SuperAdminVerifyOTP from "./pages/superadmin/SuperAdminVerifyOTP";
 import SuperAdminForgotPassword from "./pages/superadmin/SuperAdminForgotPassword";
+import SuperAdminLeads from "./pages/superadmin/SuperAdminLeads";
+import SuperAdminBtLps from "./pages/superadmin/SuperAdminBtLps";
+import SuperAdminBankForwarding from "./pages/superadmin/SuperAdminBankForwarding";
+import SuperAdminUsers from "./pages/superadmin/SuperAdminUsers";
+import SuperAdminReports from "./pages/superadmin/SuperAdminReports";
+import SuperAdminSettings from "./pages/superadmin/SuperAdminSettings";
 // =========================
 // Lazy Loaded Pages
 // =========================
@@ -435,22 +441,15 @@ function App() {
 />
 <Route element={<SuperAdminProtectedRoute />}>
   <Route element={<SuperAdminLayout />}>
-
-    <Route
-      path="/super-admin/dashboard"
-      element={<SuperAdminDashboard />}
-    />
-
-    <Route
-      path="/super-admin/documents"
-      element={<SuperAdminDocuments />}
-    />
-
-    <Route
-      path="/super-admin/applications/:id"
-      element={<SuperAdminApplication />}
-    />
-
+    <Route path="/super-admin/dashboard" element={<SuperAdminDashboard />} />
+    <Route path="/super-admin/leads" element={<SuperAdminLeads />} />
+    <Route path="/super-admin/bt-lps" element={<SuperAdminBtLps />} />
+    <Route path="/super-admin/documents" element={<SuperAdminDocuments />} />
+    <Route path="/super-admin/bank-forwarding" element={<SuperAdminBankForwarding />} />
+    <Route path="/super-admin/users" element={<SuperAdminUsers />} />
+    <Route path="/super-admin/reports" element={<SuperAdminReports />} />
+    <Route path="/super-admin/settings" element={<SuperAdminSettings />} />
+    <Route path="/super-admin/applications/:id" element={<SuperAdminApplication />} />
   </Route>
 </Route>
           {/* =========================

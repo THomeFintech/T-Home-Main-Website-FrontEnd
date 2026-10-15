@@ -302,7 +302,7 @@ export default function BalanceTransfer() {
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button
-              onClick={() => navigate("/balance-transfer/details")}
+              onClick={() => navigate("/balance-transfer-contact")}
               className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300"
             >
               Apply Now

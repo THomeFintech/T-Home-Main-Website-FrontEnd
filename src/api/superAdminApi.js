@@ -149,3 +149,163 @@ export async function getDocumentPreviewUrl(documentId) {
     documentId
   )}/view?token=${encodeURIComponent(token)}`;
 }
+
+
+/* =========================================================
+   LEADS MANAGEMENT
+========================================================= */
+
+export async function getLeads(params = {}) {
+  const query = new URLSearchParams();
+  if (params.service && params.service !== "All") query.append("service", params.service);
+  if (params.status && params.status !== "All") query.append("status", params.status);
+  if (params.search) query.append("search", params.search);
+
+  const url = `${API_URL}/super-admin/leads${query.toString() ? `?${query.toString()}` : ""}`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  return handleResponse(response);
+}
+
+export async function updateLead(id, data) {
+  const response = await fetch(`${API_URL}/super-admin/leads/${id}`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+
+  return handleResponse(response);
+}
+
+
+/* =========================================================
+   BALANCE TRANSFER & LPS
+========================================================= */
+
+export async function getBtAndLps() {
+  const response = await fetch(`${API_URL}/super-admin/bt-lps`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  return handleResponse(response);
+}
+
+
+/* =========================================================
+   BANK FORWARDING TRACKER
+========================================================= */
+
+export async function getBankForwarding() {
+  const response = await fetch(`${API_URL}/super-admin/bank-forwarding`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  return handleResponse(response);
+}
+
+export async function updateBankForwarding(id, data) {
+  const response = await fetch(`${API_URL}/super-admin/bank-forwarding/${id}`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+
+  return handleResponse(response);
+}
+
+
+/* =========================================================
+   CUSTOMER DIRECTORY (USERS)
+========================================================= */
+
+export async function getUsersList(params = {}) {
+  const query = new URLSearchParams();
+  if (params.status && params.status !== "All") query.append("status", params.status);
+  if (params.search) query.append("search", params.search);
+
+  const url = `${API_URL}/super-admin/users${query.toString() ? `?${query.toString()}` : ""}`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  return handleResponse(response);
+}
+
+export async function updateUserStatus(id, isActive) {
+  const response = await fetch(`${API_URL}/super-admin/users/${id}/status`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ isActive }),
+  });
+
+  return handleResponse(response);
+}
+
+
+/* =========================================================
+   REPORTS & ANALYTICS
+========================================================= */
+
+export async function getReportsData() {
+  const response = await fetch(`${API_URL}/super-admin/reports`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  return handleResponse(response);
+}
+
+
+/* =========================================================
+   SETTINGS & SUPER ADMINS
+========================================================= */
+
+export async function getSettingsData() {
+  const response = await fetch(`${API_URL}/super-admin/settings`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  return handleResponse(response);
+}
+
+export async function updateAdminActiveStatus(id, isActive) {
+  const response = await fetch(`${API_URL}/super-admin/settings/admin/${id}/status`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ isActive }),
+  });
+
+  return handleResponse(response);
+}
+
+
+/* =========================================================
+   AUDIT LOGS
+========================================================= */
+
+export async function getAuditLogs(params = {}) {
+  const query = new URLSearchParams();
+  if (params.limit) query.append("limit", params.limit);
+  if (params.entityType) query.append("entityType", params.entityType);
+  if (params.action) query.append("action", params.action);
+
+  const url = `${API_URL}/super-admin/audit-logs${
+    query.toString() ? `?${query.toString()}` : ""
+  }`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  return handleResponse(response);
+}

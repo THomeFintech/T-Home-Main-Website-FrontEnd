@@ -50,15 +50,42 @@ export default function BalanceTransferApplicationPortal() {
       localStorage.getItem("btApplicationDraft") || "{}"
     );
 
+    const contactData = JSON.parse(localStorage.getItem("contact_data") || "{}");
+    const verifiedIdentity = JSON.parse(
+      localStorage.getItem("digilocker_verified_identity") || "{}"
+    );
+
     setFormData((prev) => ({
       ...prev,
-      fullName: existingDraft.full_name || existingDraft.fullName || "",
-      mobile: existingDraft.mobile_number || existingDraft.mobile || "",
-      email: existingDraft.email || "",
+      fullName:
+        existingDraft.full_name ||
+        existingDraft.fullName ||
+        verifiedIdentity.name ||
+        contactData.name ||
+        "",
+      mobile:
+        existingDraft.mobile_number ||
+        existingDraft.mobile ||
+        verifiedIdentity.phone ||
+        contactData.phone ||
+        "",
+      email:
+        existingDraft.email ||
+        verifiedIdentity.email ||
+        contactData.email ||
+        "",
       employmentType:
         existingDraft.employment_type || existingDraft.employmentType || "",
-      aadhaar: existingDraft.aadhaar_number || existingDraft.aadhaar || "",
-      pan: existingDraft.pan_number || existingDraft.pan || "",
+      aadhaar:
+        existingDraft.aadhaar_number ||
+        existingDraft.aadhaar ||
+        verifiedIdentity.aadhaar ||
+        "",
+      pan:
+        existingDraft.pan_number ||
+        existingDraft.pan ||
+        verifiedIdentity.pan ||
+        "",
       aadhaarFile: existingDraft.aadhaarFile || "",
       panFile: existingDraft.panFile || "",
       passportPhoto: existingDraft.passportPhoto || "",
