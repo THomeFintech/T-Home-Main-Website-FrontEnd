@@ -7,7 +7,7 @@ const sections = [
     title: "User Agreement",
     paragraphs: [
       "By creating an account or using the T-Home platform (\"Platform\"), you confirm that you are at least 18 years old or have obtained consent from a legal parent or guardian. You also confirm that you are fully capable of entering into financial agreements, including all terms, conditions, representations, and obligations outlined on the platform.",
-      "T-Home acts as a digital financial services platform that connects users (\"Users\") with banks, NBFCs, and financial institutions (\"Partners\") for loan and financial product services. T-Home does not directly provide loans but facilitates the application, verification, and approval process through its trusted partners.",
+      "T-HOME Fintech is a technology-enabled financial services platform. It offers AI-powered tools, such as loan eligibility assessment and balance transfer analysis, and helps users (\"Users\") explore loan, tax and business registration services. Loan products, interest rates, eligibility, sanction and disbursement are provided and decided by the partner financial institutions (\"Partners\") involved. T-HOME's role is to provide technology, information and assistance with the application process.",
     ],
   },
   {
@@ -24,9 +24,9 @@ const sections = [
   },
   {
     number: 3,
-    title: "Ordering & Payments",
+    title: "Fees & Payments",
     paragraphs: [
-      "Interest rates, processing fees, and other charges displayed on the T-Home platform are determined by our partner banks, NBFCs, or financial institutions. These charges are subject to change without prior notice.",
+      "Interest rates, processing fees, and other charges displayed on the T-Home platform are determined by the relevant partner financial institutions. These charges are subject to change without prior notice.",
     ],
     callout: {
       title: "Payment Security",
@@ -56,7 +56,7 @@ const sections = [
     number: 6,
     title: "Governing Law",
     paragraphs: [
-      "These Terms shall be governed by and construed in accordance with the laws of India. Any disputes arising out of or relating to these Terms shall be subject to the jurisdiction of the courts in [Your City/State].",
+      "These Terms shall be governed by and construed in accordance with the laws of India. Any disputes arising out of or relating to these Terms shall be subject to the jurisdiction of the courts in Hyderabad, Telangana.",
       "Our failure to enforce any right or provision of these Terms shall not be considered a waiver of those rights.",
     ],
   },
@@ -84,8 +84,8 @@ export default function TermsAndConditions() {
           <p className="mt-4 text-[14px] text-[#99a6cf]">Last Updated: February 15, 2026</p>
 
           <p className="mx-auto mt-7 max-w-[1080px] text-[14px] leading-[1.6] text-[#d6ddf6] sm:text-[15px]">
-            Welcome to T-Home. Your privacy is important to us. This Privacy Policy explains how we collect, use, and
-            protect your personal information when you use our website, mobile app, or financial services.
+            Welcome to T-Home. These Terms & Conditions govern your use of our website, mobile app, and financial
+services. Please read them carefully before using the platform.
           </p>
         </header>
 

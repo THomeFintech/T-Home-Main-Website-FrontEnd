@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import CalculatorDisclaimer from "../components/CalculatorDisclaimer";
 import { useNavigate } from "react-router-dom";
 import {
   CheckCircle2,
@@ -423,6 +424,8 @@ localStorage.setItem("btFinalReport", JSON.stringify(result));
             <Send size={16} /> View Amortization
           </button>
         </div>
+
+        <CalculatorDisclaimer className="mt-6" />
       </div>
     </section>
   );

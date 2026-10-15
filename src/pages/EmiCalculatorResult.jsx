@@ -38,7 +38,7 @@ export default function EmiCalculatorResult({ amount, rate, years, onBack }) {
             <div className="rounded-[12px] bg-[rgba(255,255,255,0.10)] p-4 text-center">
               <div className="text-[13px] text-white/70 mb-1">Monthly EMI</div>
               <div className="text-[24px] font-bold text-white">₹2,015.65</div>
-              <div className="text-[11px] text-white/40 mt-1">BEST RATE AVAILABLE</div>
+              <div className="text-[11px] text-white/40 mt-1">INDICATIVE RESULT</div>
             </div>
             <div className="rounded-[12px] bg-[rgba(255,255,255,0.10)] p-4 text-center">
               <div className="text-[13px] text-white/70 mb-1">Total Interest</div>

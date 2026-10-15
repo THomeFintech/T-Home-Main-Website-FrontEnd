@@ -45,16 +45,16 @@ export default function BalanceTransferStart() {
 
           <div className="flex gap-10 text-sm text-gray-300">
             <div>
-              <p className="text-xl font-bold text-white">95%</p>
-              <p>Success Rate</p>
+              <p className="text-xl font-bold text-white">Multiple</p>
+              <p>Lender Options</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">24 Hours</p>
-              <p>Offers</p>
+              <p className="text-xl font-bold text-white">Assisted</p>
+              <p>Documentation</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Zero</p>
-              <p>Fees</p>
+              <p className="text-xl font-bold text-white">Clear</p>
+              <p>Fee Disclosure</p>
             </div>
           </div>
         </div>
@@ -74,10 +74,10 @@ export default function BalanceTransferStart() {
 
         <div className="grid md:grid-cols-4 gap-6">
           {[
-            { title: "Massive Savings", desc: "Reduce interest by 2-4% and save ₹2-5 lakhs over loan tenure.", icon: "💰" },
-            { title: "Zero Processing Fee", desc: "Transfer without any hidden charges or prepayment penalties.", icon: "🆓" },
-            { title: "Multiple Offers", desc: "Compare 10+ bank offers instantly and pick the best.", icon: "🏦" },
-            { title: "Seamless Process", desc: "Online application with doorstep document collection.", icon: "📱" }
+            { title: "Estimate Your Savings", desc: "Estimate prospective interest savings. Actual savings depend on new lender terms, processing fees and prepayment charges.", icon: "💰" },
+            { title: "Clear Fee Disclosure", desc: "Processing fees and prepayment charges are explained before you proceed.", icon: "🆓" },
+            { title: "Multiple Lender Options", desc: "Compare options across partner lenders.", icon: "🏦" },
+            { title: "Streamlined Process", desc: "Online application with assisted documentation.", icon: "📱" }
           ].map((item, i) => (
             <div
               key={i}
@@ -105,7 +105,7 @@ export default function BalanceTransferStart() {
 
           {[
             { title: "Enter Details", desc: "Share current loan info (amount, rate, tenure)." },
-            { title: "Get Offers", desc: "Receive personalized offers from top banks." },
+            { title: "Get Offers", desc: "Review options from partner lenders." },
             { title: "Compare &amp; Pick", desc: "See savings and select the best option." },
             { title: "Documents", desc: "Upload existing loan docs and KYC." },
             { title: "Transfer Complete", desc: "New loan disbursed, old closed automatically." }

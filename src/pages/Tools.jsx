@@ -365,9 +365,9 @@ const response = await fetch(`${API_BASE}/applications/select-bank`, {
 
   const toolCards = [
     {
-      title: "EMI Intelligence System",
+      title: "EMI & Repayment Modeller",
       description:
-        "Calculate your monthly EMI and understand your complete repayment plan with our advanced algorithms.",
+        "Calculate estimated monthly instalments, principal/interest split and total payable across custom tenures.",
       buttonText: "Calculate Now",
       icon: Calculator,
       onClick: () => setStep(6),
@@ -381,9 +381,9 @@ const response = await fetch(`${API_BASE}/applications/select-bank`, {
       },
     },
     {
-      title: "Loan Prediction System",
+      title: "AI-Powered Loan Eligibility & Prediction System",
       description:
-        "Understand your chances of getting a loan with smart predictions powered by your financial details.",
+        "Estimate your potential borrowing range from net income, current EMIs, age and tenure.",
       buttonText: "Check Eligibility",
       icon: Shield,
      onClick: () => {
@@ -405,9 +405,9 @@ const response = await fetch(`${API_BASE}/applications/select-bank`, {
       },
     },
     {
-      title: "Balance Transfer Calculator",
+      title: "AI-Powered Balance Transfer System",
       description:
-        "See how much you can save by switching to a lower interest loan over the remaining loan tenure.",
+        "Estimate prospective interest savings. Actual savings depend on new lender terms, processing fees and prepayment charges.",
       buttonText: "Calculate Now",
       icon: TrendingUp,
      onClick: () => {
@@ -439,12 +439,11 @@ if (token) {
         <section className="relative z-10 px-6 pt-[180px] pb-24 md:pt-[144px]">
           <div className="mx-auto max-w-[1200px] text-center mt-16 md:mt-0">
             <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
-              Financial Tools
+              Financial Planning Calculators
             </h1>
 
             <p className="mx-auto max-w-2xl text-base font-normal leading-relaxed text-gray-400 md:text-lg">
-              Smart calculators and tools to help you make informed financial
-              decisions with precision and clarity.
+              Estimate borrowing costs, evaluate monthly budgets and check potential refinancing savings before you apply.
             </p>
 
             <p className="mx-auto mt-4 max-w-3xl text-sm leading-6 text-gray-400">

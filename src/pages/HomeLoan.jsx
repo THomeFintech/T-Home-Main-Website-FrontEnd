@@ -33,7 +33,7 @@ export default function HomeLoan() {
     >
       <SEO
   title="Home Loans"
-  description="Apply for affordable Home Loans with T-Home Fintech. Get competitive interest rates, quick approvals, flexible repayment options, and expert guidance throughout your home buying journey."
+  description="Explore Home Loan options with T-Home Fintech. Multiple lender options, assisted documentation and guidance throughout your home buying journey. Approval, rates and terms are determined solely by the lender."
   path="/home-loan"
   keywords="home loan, housing loan, affordable home loan, mortgage, home finance, T-Home Fintech"
   structuredData={[
@@ -46,15 +46,15 @@ export default function HomeLoan() {
         <div>
           <p className="text-blue-400 text-xs mb-3">TRUSTED FINANCIAL SERVICES</p>
 
-          <h1 className="text-5xl font-bold mb-4 leading-tight">Home Loans</h1>
+          <h1 className="text-5xl font-bold mb-4 leading-tight">Find the Right Home Loan for Your Profile</h1>
 
           <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-            Turn your dream of owning a home into reality with affordable home loan options. Enjoy competitive interest rates, flexible repayment plans, and quick approvals through a simple and transparent process.
+            Assistance for purchase, construction, extension and balance transfer. Multiple lender options, assisted documentation, guidance for salaried, self-employed and variable earners. Approval, rates and terms are determined solely by the lender. Eligibility depends on partner lender policies.
           </p>
 
           <div className="flex gap-4 mb-6">
             <button
-              onClick={() => navigate("/tools?tool=loan-prediction&service=Home+Loan")}
+              onClick={() => navigate("/tools?tool=loan-prediction")}
               className="bg-blue-600 px-6 py-2 rounded-full text-sm"
             >
               Apply Now
@@ -70,16 +70,16 @@ export default function HomeLoan() {
 
           <div className="flex gap-6 text-sm text-gray-300">
             <div>
-              <p className="text-xl font-bold text-white">98%</p>
-              <p>Approvals</p>
+              <p className="text-xl font-bold text-white">Multiple</p>
+              <p>Lender Options</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Fast</p>
-              <p>Processing</p>
+              <p className="text-xl font-bold text-white">Assisted</p>
+              <p>Documentation</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Zero</p>
-              <p>Hidden Fees</p>
+              <p className="text-xl font-bold text-white">Clear</p>
+              <p>Fee Disclosure</p>
             </div>
           </div>
         </div>
@@ -102,13 +102,13 @@ export default function HomeLoan() {
         <div className="grid md:grid-cols-4 gap-6">
           {[
             {
-              title: "Lowest Rates",
-              desc: "Competitive interest rates starting from just 8.5% p.a.",
+              title: "Multiple Lender Options",
+              desc: "Rates vary by lender, profile and property title.",
               icon: "💰",
             },
             {
-              title: "Zero Hidden Fees",
-              desc: "Absolute transparency with every penny. No surprise costs.",
+              title: "Clear Fee Disclosure",
+              desc: "Fees are explained before you proceed.",
               icon: "🧾",
             },
             {
@@ -270,7 +270,7 @@ export default function HomeLoan() {
 
           <div className="flex justify-center gap-4">
             <button
-              onClick={() => navigate("/tools?tool=loan-prediction&service=Home+Loan")}
+              onClick={() => navigate("/contact")}
               className="bg-white text-black px-6 py-2 rounded-full text-sm"
             >
               Check Eligibility
