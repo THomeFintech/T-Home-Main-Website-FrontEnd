@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import SEO from "../components/SEO";
+// Testimonials stay hidden until real, provable client experiences exist (Change Document 4.1)
+const SHOW_TESTIMONIALS = false;
 // Icons using SVG inline
 const BuildingIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -58,7 +60,6 @@ const CollaboratePage = () => {
     partnerType: "",
     experience: "",
     message: "",
-    consent: false,
   });
 
   const handleChange = (e) => {
@@ -67,11 +68,6 @@ const CollaboratePage = () => {
 
   const handleSubmit = (e) => {
   e.preventDefault();
-
-  if (!form.consent) {
-    alert("Please agree to the Privacy Policy and Terms & Conditions before submitting.");
-    return;
-  }
 
   alert("Application submitted!");
 
@@ -82,7 +78,6 @@ const CollaboratePage = () => {
     partnerType: "",
     experience: "",
     message: "",
-    consent: false,
   });
 };
 
@@ -129,10 +124,10 @@ const CollaboratePage = () => {
             Grow Together
        </div>
           <h1 className="relative mt-6 mb-4 text-[40px] leading-[1.15] font-bold sm:text-[52px] md:text-6xl">
-            Partner with <span className="text-blue-400">T-Home</span> to Grow Together
+           Partner With the <span className="text-blue-400">T-HOME</span> Ecosystem
           </h1>
           <p className="mx-auto mt-5 mb-8 max-w-3xl text-base leading-8 text-[#d7def3] md:text-lg">
-            Join our network of financial experts, institutions, and partners to deliver smarter, faster, and more accessible financial solutions.
+            Channel partners: real estate consultants, brokers, CAs and financial advisors. Institutional partners: banks, NBFCs and fintechs. All onboarding is subject to KYC verification and referral terms.
           </p>
           <div className="relative flex flex-wrap justify-center gap-4">
             <button
@@ -169,22 +164,22 @@ const CollaboratePage = () => {
               {
                 icon: <BuildingIcon />,
                 title: "Financial Institutions",
-                desc: "Banks and credit unions looking to expand their reach and digitize lending.",
+                desc: "Banks, NBFCs and fintechs looking to expand their reach and digitize lending.",
               },
               {
                 icon: <BriefcaseIcon />,
                 title: "Loan Agents & Brokers-(DSA's)",
-                desc: "Professionals seeking access to better rates, fast approvals, and verified leads.",
+                desc: "Professionals seeking access to multiple lender options and verified leads.",
               },
               {
                 icon: <UserIcon />,
                 title: "Freelancers",
-                desc: "Independent advisors referring clients and earning top-tier commissions.",
+                desc: "Independent advisors referring clients and earning commissions.",
               },
               {
                 icon: <RocketIcon />,
                 title: "Startups",
-                desc: "Fintech innovators looking to integrate our embedded finance API solutions.",
+                desc: "Fintech teams interested in partnering with T-HOME.",
               },
             ].map((card, i) => (
                <motion.div
@@ -245,23 +240,23 @@ const CollaboratePage = () => {
             {[
               {
                 icon: <TrendingUpIcon />,
-                title: "High Commission",
-                desc: "Earn industry-leading payouts for every successful referral or closed deal.",
+                title: "Referral Commissions",
+                desc: "Earn commissions for every successful referral, as per referral terms.",
               },
               {
                 icon: <TargetIcon />,
                 title: "Verified Leads",
-                desc: "Access a steady stream of pre-qualified, high-intent customer leads.",
+                desc: "Access customer leads through our digital portal.",
               },
               {
                 icon: <BoltIcon />,
-                title: "Fast Onboarding",
-                desc: "Get verified and start collaborating within 24 hours through our digital portal.",
+                title: "Simple Onboarding",
+                desc: "Get verified and start collaborating through our digital portal.",
               },
               {
                 icon: <HeadsetIcon />,
                 title: "Dedicated Support",
-                desc: "Your own account manager to ensure smooth operations and fast payouts.",
+                desc: "Support from our partnership team to help with your operations.",
               },
             ].map((item, i) => (
               <motion.div
@@ -297,7 +292,7 @@ const CollaboratePage = () => {
         <section className="px-6 py-20 text-center">
           <h2 className="mb-2 text-3xl font-bold md:text-4xl">How It Works</h2>
           <p className="mb-14 text-sm text-gray-400">
-            A simple, transparent process to get you up and running quickly.
+            A simple, transparent process to get you started.
           </p>
           <div className="relative mx-auto flex max-w-3xl flex-col items-center justify-center gap-10 md:flex-row md:items-start md:gap-0">
             <div
@@ -336,6 +331,7 @@ const CollaboratePage = () => {
         </section>
 
         {/* ─── TESTIMONIALS ─── */}
+{SHOW_TESTIMONIALS && (<>
         <section className="px-6 py-20 text-center" style={{ background: "rgba(255,255,255,0.02)" }}>
           <h2 className="mb-2 text-3xl font-bold md:text-4xl">Trusted by Partners</h2>
           <p className="mb-12 text-sm text-gray-400">
@@ -395,8 +391,8 @@ const CollaboratePage = () => {
             ))}
           </div>
         </section>
-
-       {/* ─── APPLICATION FORM ─── */}
+</>)}
+{/* ─── APPLICATION FORM ─── */}
 <section ref={formRef} className="px-6 py-20">
   <div className="mx-auto flex max-w-5xl flex-col items-start gap-12 md:flex-row">
     
@@ -404,12 +400,11 @@ const CollaboratePage = () => {
     <div className="flex-1">
       <h2 className="mb-4 text-3xl font-bold">Ready to take next step?</h2>
       <p className="mb-8 text-sm leading-relaxed text-gray-400">
-        Fill out the application form to express your interest. Our partnership team will review your details and reach out within 24 hours.
+        Fill out the application form to express your interest. Our partnership team will review your details and reach out to you.
       </p>
 
       <ul className="space-y-3">
         {[
-          "No upfront fees or commitments",
           "Customized commission structures",
           "Full access to marketing resources",
         ].map((item, i) => (
@@ -451,20 +446,6 @@ const CollaboratePage = () => {
             }}
           />
         </div>
-
-        <label className="flex items-start gap-3 text-xs leading-5 text-gray-400">
-          <input
-            required
-            type="checkbox"
-            name="consent"
-            checked={form.consent}
-            onChange={(event) => setForm((current) => ({ ...current, consent: event.target.checked }))}
-            className="mt-1 h-4 w-4 shrink-0 accent-blue-500"
-          />
-          <span>
-            I agree that T-Home may use these details to review my partnership enquiry under the <Link to="/privacy-policy" className="text-blue-300 underline hover:text-white">Privacy Policy</Link> and <Link to="/terms-and-conditions" className="text-blue-300 underline hover:text-white">Terms &amp; Conditions</Link>.
-          </span>
-        </label>
 
         {/* COMPANY */}
         <div>
@@ -571,7 +552,7 @@ const CollaboratePage = () => {
           >
             <h2 className="mb-3 text-3xl font-bold">Let's Build Financial Growth Together</h2>
             <p className="mb-8 text-sm text-gray-400">
-              Join the fastest growing network of financial professionals today.
+              Join our network of financial professionals today.
             </p>
             <button
               onClick={scrollToForm}

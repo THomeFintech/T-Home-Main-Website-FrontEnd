@@ -34,9 +34,9 @@ export default function PersonalLoan() {
 
 <SEO
   title="Personal Loans"
-  description="Get instant Personal Loans with competitive interest rates, minimal documentation, quick approvals, and flexible repayment options from T-Home Fintech."
+  description="Explore Personal Loan options with T-Home Fintech. Multiple lender options and assisted documentation. Approval, rates and terms are determined solely by the lender."
   path="/personal-loan"
-  keywords="personal loan, instant personal loan, quick loan, unsecured loan, salary loan, T-Home Fintech"
+  keywords="personal loan, unsecured loan, salary loan, T-Home Fintech"
   structuredData={[
     financialServiceSchema,
     breadcrumbSchema,
@@ -47,7 +47,7 @@ export default function PersonalLoan() {
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
         <div>
           <p className="text-blue-400 text-xs mb-3 tracking-wide">
-            FAST APPROVAL LOANS
+            PERSONAL LOANS
           </p>
 
           <h1 className="text-5xl font-bold mb-4 leading-tight">
@@ -55,12 +55,12 @@ export default function PersonalLoan() {
           </h1>
 
           <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-            Get instant personal loans with minimal paperwork. Enjoy quick approvals, flexible repayment options, and fast disbursal.
+            Explore personal loan options across partner lenders with assisted documentation. Approval, rates and terms are determined solely by the lender. Eligibility depends on partner lender policies.
           </p>
 
           <div className="flex gap-4 mb-6">
             <button
-              onClick={() => navigate("/tools?tool=loan-prediction&service=Personal+Loan")}
+              onClick={() => navigate("/tools?tool=loan-prediction")}
               className="bg-blue-600 px-6 py-2 rounded-full text-sm"
             >
               Apply Now
@@ -76,16 +76,16 @@ export default function PersonalLoan() {
 
           <div className="flex gap-6 text-sm text-gray-300">
             <div>
-              <p className="text-xl font-bold text-white">10%</p>
-              <p>Interest</p>
+              <p className="text-xl font-bold text-white">Multiple</p>
+              <p>Lender Options</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Fast</p>
-              <p>Approval</p>
+              <p className="text-xl font-bold text-white">Assisted</p>
+              <p>Documentation</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Zero</p>
-              <p>Hidden Charges</p>
+              <p className="text-xl font-bold text-white">Clear</p>
+              <p>Fee Disclosure</p>
             </div>
           </div>
         </div>
@@ -107,8 +107,8 @@ export default function PersonalLoan() {
 
         <div className="grid md:grid-cols-4 gap-6">
           {[
-            { title: "Lowest Rates", desc: "Affordable interest rates tailored for you.", icon: "💰" },
-            { title: "Zero Hidden Fees", desc: "Transparent pricing with no hidden costs.", icon: "🧾" },
+            { title: "Multiple Lender Options", desc: "Rates vary by lender and profile.", icon: "💰" },
+            { title: "Clear Fee Disclosure", desc: "Fees are explained before you proceed.", icon: "🧾" },
             { title: "Doorstep Pickup", desc: "We collect documents from your location.", icon: "🚚" },
             { title: "Legal Assistance", desc: "Complete support for documentation.", icon: "⚖️" }
           ].map((item, i) => (
@@ -209,7 +209,7 @@ export default function PersonalLoan() {
         a: "Personal loans are generally unsecured and do not need property pledging. Approval mainly depends on financial background and credit score.",
       },
       {
-        q: "How quickly is a personal loan disbursed?",
+        q: "When is a personal loan disbursed?",
         a: "Many lenders process approved applications within a few working days. Timing varies according to verification and bank procedures.",
       },
       {
@@ -227,12 +227,12 @@ export default function PersonalLoan() {
           </h2>
 
           <p className="text-white/80 mb-6 text-sm">
-            Get funds with fast approval and minimal paperwork.
+            Explore personal loan options with assisted documentation.
           </p>
 
           <div className="flex justify-center gap-4">
             <button
-  onClick={() => navigate("/tools?tool=loan-prediction&service=Personal+Loan")}
+  onClick={() => navigate("/tools?tool=loan-prediction")}
   className="bg-white text-black px-6 py-2 rounded-full text-sm"
 >
   Start Application

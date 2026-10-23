@@ -24,7 +24,7 @@ export default function PanAadhaarLinking() {
     >
       <SEO
   title="PAN Aadhaar Linking"
-  description="Link your PAN with Aadhaar quickly and securely with expert assistance from T-Home Fintech to stay compliant with government regulations."
+  description="Link your PAN with Aadhaar with expert assistance from T-Home Fintech to stay compliant with government regulations."
   path="/pan-aadhaar-linking"
   keywords="PAN Aadhaar linking, link PAN to Aadhaar, Aadhaar PAN update"
   structuredData={[
@@ -46,12 +46,12 @@ export default function PanAadhaarLinking() {
           </h1>
 
           <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-            Link your PAN with Aadhaar easily to stay compliant with income tax regulations. Avoid penalties and ensure seamless financial transactions.
+            Link your PAN with Aadhaar to stay compliant with income tax regulations and avoid penalties, with guided support.
           </p>
 
           <div className="flex gap-4 mb-6">
             <button
-  onClick={() => navigate("/contact?service=PAN+%26+Aadhaar+Linking")}
+  onClick={() => navigate("/contact")}
   className="bg-blue-600 px-6 py-2 rounded-full text-sm"
 >
   Link Now
@@ -63,16 +63,16 @@ export default function PanAadhaarLinking() {
 
           <div className="flex gap-6 text-sm text-gray-300">
             <div>
-              <p className="text-xl font-bold text-white">99%</p>
-              <p>Success</p>
+              <p className="text-xl font-bold text-white">Streamlined</p>
+              <p>Process</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Fast</p>
-              <p>Processing</p>
+              <p className="text-xl font-bold text-white">Assisted</p>
+              <p>Documentation</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Zero</p>
-              <p>Errors</p>
+              <p className="text-xl font-bold text-white">Clear</p>
+              <p>Fee Disclosure</p>
             </div>
           </div>
         </div>
@@ -94,9 +94,9 @@ export default function PanAadhaarLinking() {
 
         <div className="grid md:grid-cols-4 gap-4">
           {[
-            { title: "Secure Process", desc: "Your data is protected with encryption.", icon: "🔐" },
-            { title: "Zero Hidden Fees", desc: "Transparent pricing always.", icon: "🧾" },
-            { title: "Quick Linking", desc: "Instant processing and updates.", icon: "⚡" },
+            { title: "Consent-Based Data Handling", desc: "Your information is shared only with your consent.", icon: "🔐" },
+            { title: "Clear Fee Disclosure", desc: "Fees are explained before you proceed.", icon: "🧾" },
+            { title: "Streamlined Process", desc: "Guided steps for linking your PAN with Aadhaar.", icon: "⚡" },
             { title: "Expert Support", desc: "Assistance whenever you need.", icon: "👨‍💼" }
           ].map((item, i) => (
             <div key={i} className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-4 flex flex-col gap-2.5 hover:bg-white/[0.11] transition">
@@ -214,7 +214,7 @@ export default function PanAadhaarLinking() {
 
           <div className="flex justify-center gap-4">
             <button
-  onClick={() => navigate("/contact?service=PAN+%26+Aadhaar+Linking")}
+  onClick={() => navigate("/contact")}
   className="bg-white text-black px-6 py-2 rounded-full text-sm"
 >
               Start Now

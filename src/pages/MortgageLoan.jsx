@@ -31,7 +31,7 @@ export default function MortgageLoan() {
 
 <SEO
   title="Mortgage Loans"
-  description="Secure Mortgage Loans from T-Home Fintech with competitive interest rates, flexible repayment options, and fast approvals for your financial needs."
+  description="Explore Mortgage Loan options with T-Home Fintech. Multiple lender options and assisted documentation. Approval, rates and terms are determined solely by the lender."
   path="/mortgage-loan"
   keywords="mortgage loan, property mortgage loan, loan against mortgage, mortgage finance, T-Home Fintech"
   structuredData={[
@@ -54,13 +54,12 @@ export default function MortgageLoan() {
     </h1>
 
     <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-      Leverage your property to access funds easily with Mortgage Loans.
-      Enjoy competitive interest rates, flexible repayment terms, and quick approvals.
+      Leverage your property to access funds with Mortgage Loans. Rates vary by lender, profile and property title. Approval, rates and terms are determined solely by the lender. Eligibility depends on partner lender policies.
     </p>
 
     <div className="flex gap-4 mb-6">
       <button
-        onClick={() => navigate("/tools?tool=loan-prediction&service=Mortgage+Loan")}
+        onClick={() => navigate("/tools?tool=loan-prediction")}
 className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
       >
         Apply Now
@@ -75,19 +74,19 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
     </div>
 
     <div className="flex gap-6 text-sm text-gray-300">
-      <div>
-        <p className="text-xl font-bold text-white">9%</p>
-        <p>Interest</p>
-      </div>
-      <div>
-        <p className="text-xl font-bold text-white">Fast</p>
-        <p>Processing</p>
-      </div>
-      <div>
-        <p className="text-xl font-bold text-white">Zero</p>
-        <p>Hidden Charges</p>
-      </div>
-    </div>
+            <div>
+              <p className="text-xl font-bold text-white">Multiple</p>
+              <p>Lender Options</p>
+            </div>
+            <div>
+              <p className="text-xl font-bold text-white">Assisted</p>
+              <p>Documentation</p>
+            </div>
+            <div>
+              <p className="text-xl font-bold text-white">Clear</p>
+              <p>Fee Disclosure</p>
+            </div>
+          </div>
   </div>
 
   {/* RIGHT IMAGE */}
@@ -110,13 +109,13 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
   <div className="grid md:grid-cols-4 gap-6">
     {[
       {
-        title: "Lowest Rates",
-        desc: "Affordable rates backed by your property.",
+        title: "Multiple Lender Options",
+        desc: "Rates vary by lender, profile and property title.",
         icon: "💰",
       },
       {
-        title: "Zero Hidden Fees",
-        desc: "Transparent pricing with no hidden costs.",
+        title: "Clear Fee Disclosure",
+        desc: "Fees are explained before you proceed.",
         icon: "🧾",
       },
       {
@@ -251,7 +250,7 @@ className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 roun
 
           <div className="flex justify-center gap-4">
             <button
-  onClick={() => navigate("/tools?tool=loan-prediction&service=Mortgage+Loan")}
+  onClick={() => navigate("/tools?tool=loan-prediction")}
   className="bg-white text-black px-6 py-2 rounded-full text-sm"
 >
   Start Application

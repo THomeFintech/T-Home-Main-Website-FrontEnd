@@ -66,7 +66,7 @@ export default function BalanceTransfer() {
           <p className="text-gray-400 mb-6 text-sm leading-relaxed">
             Reduce your current loan interest rates and save thousands. Transfer
             your existing loan to better banks with lower rates, flexible terms,
-            and zero processing fees.
+            and a guided process.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -86,16 +86,16 @@ export default function BalanceTransfer() {
 
           <div className="flex flex-wrap gap-6 text-sm text-gray-300 justify-center sm:justify-start">
             <div>
-              <p className="text-xl font-bold text-white">95%</p>
-              <p className="text-xs">Success Rate</p>
+              <p className="text-xl font-bold text-white">Multiple</p>
+              <p>Lender Options</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">24 Hours</p>
-              <p className="text-xs">Offers</p>
+              <p className="text-xl font-bold text-white">Assisted</p>
+              <p>Documentation</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Zero</p>
-              <p className="text-xs">Fees</p>
+              <p className="text-xl font-bold text-white">Clear</p>
+              <p>Fee Disclosure</p>
             </div>
           </div>
         </div>
@@ -118,23 +118,23 @@ export default function BalanceTransfer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
             {
-              title: "Massive Savings",
-              desc: "Reduce interest by 2-4% and save ₹2-5 lakhs over loan tenure.",
+              title: "Estimate Your Savings",
+              desc: "Estimate prospective interest savings. Actual savings depend on new lender terms, processing fees and prepayment charges.",
               icon: "💰",
             },
             {
-              title: "Zero Processing Fee",
-              desc: "Transfer without any hidden charges or prepayment penalties.",
+              title: "Clear Fee Disclosure",
+              desc: "Processing fees and prepayment charges are explained before you proceed.",
               icon: "🆓",
             },
             {
-              title: "Multiple Offers",
-              desc: "Compare 10+ bank offers instantly and pick the best.",
+              title: "Multiple Lender Options",
+              desc: "Compare options across partner lenders.",
               icon: "🏦",
             },
             {
-              title: "Seamless Process",
-              desc: "Online application with doorstep document collection.",
+              title: "Streamlined Process",
+              desc: "Online application with assisted documentation.",
               icon: "📱",
             },
           ].map((item, i) => (
@@ -283,7 +283,7 @@ export default function BalanceTransfer() {
             },
             {
               q: "What is the processing time?",
-              a: "Processing time varies by bank and document readiness, but many applications move quickly after verification and required documents are submitted.",
+              a: "Processing time varies by bank and document readiness, but timelines depend on the lender and document verification.",
             },
           ]}
         />
@@ -302,7 +302,7 @@ export default function BalanceTransfer() {
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button
-              onClick={() => navigate("/balance-transfer-contact")}
+              onClick={() => navigate("/balance-transfer/details")}
               className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300"
             >
               Apply Now
@@ -334,7 +334,7 @@ export default function BalanceTransfer() {
             title: "Personal Loan",
             path: "/personal-loan",
             description:
-              "Meet your financial goals with hassle-free personal loans.",
+              "Explore personal loan options across partner lenders.",
           },
         ]}
       />

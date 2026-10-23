@@ -23,23 +23,23 @@ export default function HeroMobile() {
 
         <BadgePercent size={18} />
 
-        Your Trusted Financial Partner
+        Financial Guidance
 
       </div>
 
       <h1 className="mobile-title">
 
-        One Platform for
+        Smarter Loans, Tax &amp; Business Services for Every Income
 
         <br />
 
-        <span>All Your Financial Needs</span>
+        <span>Profile</span>
 
       </h1>
 
       <p className="mobile-subtitle">
 
-        Loans, Tax Solutions, Business Registration and many more services from one trusted platform.
+        Explore lender options, check indicative eligibility, and complete filings with expert guidance and simple planning tools.
 
       </p>
 
@@ -61,15 +61,13 @@ export default function HeroMobile() {
 
           <p>
 
-            Low interest rates, quick approvals,
-
-            and zero hidden charges.
+            Transparent Guidance • Multiple Lender Options
 
           </p>
 
           <span>
 
-            Apply online in just 5 minutes.
+            Assisted Documentation • Consent-Based Data Handling
 
           </span>
 
@@ -83,7 +81,7 @@ export default function HeroMobile() {
 
           <ShieldCheck size={20}/>
 
-          <span>100% Secure</span>
+          <span>Consent-Based Data Handling</span>
 
         </div>
 
@@ -91,7 +89,7 @@ export default function HeroMobile() {
 
           <Zap size={20}/>
 
-          <span>Quick Process</span>
+          <span>Assisted Documentation</span>
 
         </div>
 
@@ -99,7 +97,7 @@ export default function HeroMobile() {
 
           <Headphones size={20}/>
 
-          <span>Expert Support</span>
+          <span>Transparent Guidance</span>
 
         </div>
 
@@ -107,12 +105,12 @@ export default function HeroMobile() {
 
       <button
         className="mobile-primary"
-        onClick={() => navigate("/services")}
+        onClick={() => navigate("/tools?tool=loan-prediction")}
       >
 
         <Grid2x2 size={18}/>
 
-        Explore Services
+        Check Indicative Eligibility
 
         <ArrowRight size={16}/>
 
@@ -120,12 +118,12 @@ export default function HeroMobile() {
 
       <button
         className="mobile-secondary"
-        onClick={() => navigate("/emi-calculator")}
+        onClick={() => navigate("/services")}
       >
 
         <Calculator size={18}/>
 
-        Calculate EMI
+        Explore Services
 
       </button>
 

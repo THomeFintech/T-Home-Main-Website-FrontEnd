@@ -1,9 +1,17 @@
 import { useEffect, useState, useRef } from "react";
 import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import {
+  Home,
+  Landmark,
+  Building2,
+  Banknote,
+  FileText,
   BadgePercent,
   Building,
+  Link as LucideLink,
   Utensils,
+  Briefcase,
+  Repeat,
   Bell,
 } from "lucide-react";
 import { notificationApi } from "../api";
@@ -32,15 +40,53 @@ function Navbar() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationRefresh, setNotificationRefresh] = useState(0);
 
-  const businessLinks = [
-    { label: "Company Registration", to: "/company-registration", icon: Building },
+  const serviceLinks = [
+    { label: "Home Loan", to: "/home-loans", icon: Home },
     {
-      label: "UDYAM/MSME",
+      label: "Company Registration",
+      to: "/company-registration",
+      icon: Building,
+    },
+    { label: "Mortgage Loan", to: "/mortgage-loan", icon: Building2 },
+    { label: "GST Registration", to: "/gst-registration", icon: Banknote },
+    {
+      label: "Loan Against Property",
+      to: "/loan-against-property",
+      icon: Landmark,
+    },
+    {
+      label: "UDYAM/MSME Registration",
       to: "/udyam-msme-registration",
       icon: BadgePercent,
     },
+    { label: "Personal Loan", to: "/personal-loans", icon: Briefcase },
+    { label: "ITR Tax Filing", to: "/itr-filing", icon: FileText },
+    { label: "Balance Transfer", to: "/balance-transfer", icon: Repeat },
     { label: "Food License", to: "/food-license", icon: Utensils },
+    {
+      label: "PAN & Aadhaar Linking",
+      to: "/pan-aadhaar-linking",
+      icon: LucideLink,
+    },
   ];
+
+  const mobileServiceOrder = [
+    "Home Loan",
+    "Mortgage Loan",
+    "Loan Against Property",
+    "Personal Loan",
+    "Balance Transfer",
+    "Company Registration",
+    "PAN & Aadhaar Linking",
+    "GST Registration",
+    "UDYAM/MSME Registration",
+    "ITR Tax Filing",
+    "Food License",
+  ];
+
+  const orderedMobileServices = mobileServiceOrder.map((label) =>
+    serviceLinks.find((item) => item.label === label)
+  );
 
   // Update auth state when route changes
   useEffect(() => {
@@ -332,10 +378,6 @@ function Navbar() {
                 Home
               </NavLink>
 
-              <NavLink to="/services" className={navLinkClass} onClick={handleNavLink}>
-                Products
-              </NavLink>
-
               <div
                 className="relative"
                 ref={dropdownRef}
@@ -343,27 +385,32 @@ function Navbar() {
                 onMouseLeave={handleServicesMouseLeave}
               >
                 <div className="flex items-center gap-1">
+                  <NavLink
+                    to="/services"
+                    className={navLinkClass}
+                    onClick={handleNavLink}
+                  >
+                    Services
+                  </NavLink>
+
                   <button
                     type="button"
-                    onClick={() => setServicesOpen((open) => !open)}
-                    className="text-white/80 transition hover:text-[#4f72e0]"
+                    className="cursor-default p-1 text-[10px] text-white/60 transition hover:text-[#4f72e0]"
                     aria-expanded={servicesOpen}
+                    tabIndex={-1}
                   >
-                    Business
-                  </button>
-                  <span className="p-1 text-[10px] text-white/60" aria-hidden="true">
                     {servicesOpen ? "▲" : "▼"}
-                  </span>
+                  </button>
                 </div>
 
                 {servicesOpen && (
-                  <div className="absolute left-1/2 top-full z-50 mt-3 w-[280px] -translate-x-1/2 rounded-2xl border border-white/20 bg-[rgba(8,20,45,0.94)] p-4 backdrop-blur-3xl backdrop-saturate-150 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
-                    {businessLinks.map((item) => {
+                  <div className="absolute left-1/2 top-full z-50 mt-3 grid w-[640px] -translate-x-1/2 grid-cols-2 gap-x-5 gap-y-2 rounded-2xl border border-white/20 bg-[rgba(8,20,45,0.94)] p-4 backdrop-blur-3xl backdrop-saturate-150 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+                    {serviceLinks.map((item) => {
                       const Icon = item.icon;
 
                       return (
                         <Link
-                            key={`business-${item.to}`}
+                          key={item.to}
                           to={item.to}
                           onClick={() => setServicesOpen(false)}
                           className="group flex min-w-[200px] items-center gap-3 rounded-lg px-3 py-2 text-[14px] font-medium text-white/90 transition-all duration-200 hover:bg-white/10 hover:text-[#4f8fff]"
@@ -417,6 +464,7 @@ function Navbar() {
                 Collaborate
               </NavLink>
 
+
               <NavLink
                 to="/contact"
                 className={navLinkClass}
@@ -427,12 +475,12 @@ function Navbar() {
             </div>
 
             {/* DESKTOP AUTH */}
-            <div className="hidden items-center gap-3 md:flex lg:gap-4">
+            <div className="hidden items-center gap-3 lg:flex lg:gap-4">
               <AuthButtons />
             </div>
 
             {/* MOBILE HEADER */}
-            <div className="flex items-center gap-2 md:hidden">
+              <div className="flex items-center gap-2 lg:hidden">
               {isLoggedIn && <NotificationButton />}
 
               <button
@@ -449,7 +497,7 @@ function Navbar() {
           </div>
 
           {/* TABLET NAV */}
-          <div className="mt-4 hidden flex-wrap items-center justify-between gap-y-3 border-t border-white/10 pt-4 md:flex lg:hidden">
+          <div className="mt-4 hidden flex-wrap items-center justify-between gap-y-3 border-t border-white/10 pt-4 ">
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
               <NavLink
                 to="/"
@@ -460,19 +508,14 @@ function Navbar() {
                 Home
               </NavLink>
 
-              <NavLink to="/services" className={navLinkClass} onClick={handleNavLink}>
-                Products
-              </NavLink>
-
               <div className="relative flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => setServicesOpen((open) => !open)}
-                  className="text-white/80 transition hover:text-[#4f72e0]"
-                  aria-expanded={servicesOpen}
+                <NavLink
+                  to="/services"
+                  className={navLinkClass}
+                  onClick={() => setServicesOpen((p) => !p)}
                 >
-                  Business
-                </button>
+                  Services
+                </NavLink>
 
                 <button
                   type="button"
@@ -485,12 +528,12 @@ function Navbar() {
                 {servicesOpen && (
                   <div className="absolute left-0 top-full z-50 mt-3 w-[280px] rounded-2xl border border-white/20 bg-[rgba(10,22,48,0.82)] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
                     <div className="flex flex-col gap-1 text-left">
-                      {businessLinks.map((item) => {
+                      {serviceLinks.map((item) => {
                         const Icon = item.icon;
 
                         return (
                           <Link
-                            key={`tablet-business-${item.to}`}
+                            key={`tablet-${item.to}`}
                             to={item.to}
                             onClick={() => setServicesOpen(false)}
                             className="group flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/85 transition-all duration-200 hover:bg-white/10 hover:text-[#4f8fff]"
@@ -538,6 +581,7 @@ function Navbar() {
                 Collaborate
               </NavLink>
 
+
               <NavLink
                 to="/contact"
                 className={navLinkClass}
@@ -555,7 +599,7 @@ function Navbar() {
 
           {/* MOBILE MENU */}
           {menuOpen && (
-            <div className="mt-4 space-y-4 border-t border-white/10 pt-4 text-left md:hidden">
+            <div className="mt-4 space-y-4 border-t border-white/10 pt-4 text-left lg:hidden">
               <div className="flex flex-col gap-3">
                 <NavLink
                   to="/"
@@ -566,20 +610,15 @@ function Navbar() {
                   Home
                 </NavLink>
 
-                <NavLink to="/services" className={navLinkClass} onClick={() => setMenuOpen(false)}>
-                  Products
-                </NavLink>
-
                 <div>
                   <div className="flex items-center justify-between">
-                    <button
-                      type="button"
-                      onClick={() => setMobileServicesOpen((open) => !open)}
-                      className="text-left text-white/80 transition hover:text-[#4f72e0]"
-                      aria-expanded={mobileServicesOpen}
+                    <NavLink
+                      to="/services"
+                      className={navLinkClass}
+                      onClick={() => setMenuOpen(false)}
                     >
-                      Business
-                    </button>
+                      Services
+                    </NavLink>
 
                     <button
                       type="button"
@@ -592,12 +631,12 @@ function Navbar() {
 
                   {mobileServicesOpen && (
                     <div className="ml-3 mt-2 flex flex-col gap-1 rounded-lg border border-white/10 bg-white/5 p-2">
-                      {businessLinks.map((item) => {
+                      {orderedMobileServices.filter(Boolean).map((item) => {
                         const Icon = item.icon;
 
                         return (
                           <Link
-                            key={`mobile-business-${item.to}`}
+                            key={`mobile-${item.to}`}
                             to={item.to}
                             onClick={() => {
                               setMenuOpen(false);
@@ -648,6 +687,7 @@ function Navbar() {
                 >
                   Collaborate
                 </NavLink>
+
 
                 <NavLink
                   to="/contact"

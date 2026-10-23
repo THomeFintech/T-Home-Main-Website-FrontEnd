@@ -36,7 +36,7 @@ export default function ComingSoon() {
           {/* Subtitle */}
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/70 sm:text-base md:text-lg">
             We’re working on something exciting for you. This page will be available
-            soon with the same seamless T-Home experience.
+            soon.
           </p>
 
           {/* Info cards */}

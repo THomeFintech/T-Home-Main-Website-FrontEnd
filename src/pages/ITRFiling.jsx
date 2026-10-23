@@ -50,16 +50,25 @@ export default function ITRFiling() {
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-center">
         <div>
           <p className="text-blue-400 text-xs mb-3 tracking-wide">TAX SERVICES</p>
-          <h1 className="text-5xl font-bold mb-4 leading-tight">ITR Filing</h1>
-          <p className="text-gray-400 mb-6 text-sm leading-relaxed">File your Income Tax Returns easily with expert assistance. Ensure compliance, maximize deductions, and avoid penalties with our seamless filing process.</p>
+          <h1 className="text-5xl font-bold mb-4 leading-tight">Accurate &amp; Guided Income Tax Filing</h1>
+          <p className="text-gray-400 mb-6 text-sm leading-relaxed">Maximise eligible deductions and file on time.</p>
           <div className="flex gap-4 mb-6">
-            <button onClick={() => navigate("/contact?service=ITR+Tax+Filing")} className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">File Now</button>
+            <button onClick={() => navigate("/contact")} className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">File Now</button>
             <button className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300">Get Assistance</button>
           </div>
           <div className="flex gap-6 text-sm text-gray-300">
-            <div><p className="text-xl font-bold text-white">₹499</p><p>Starting</p></div>
-            <div><p className="text-xl font-bold text-white">Fast</p><p>Processing</p></div>
-            <div><p className="text-xl font-bold text-white">100%</p><p>Compliance</p></div>
+            <div>
+              <p className="text-xl font-bold text-white">Guided</p>
+              <p>Filing</p>
+            </div>
+            <div>
+              <p className="text-xl font-bold text-white">Assisted</p>
+              <p>Documentation</p>
+            </div>
+            <div>
+              <p className="text-xl font-bold text-white">Clear</p>
+              <p>Fee Disclosure</p>
+            </div>
           </div>
         </div>
 
@@ -70,9 +79,9 @@ export default function ITRFiling() {
         <h1 className="text-center text-3xl font-bold mb-10 text-white">Why Choose T-Home?</h1>
         <div className="grid md:grid-cols-4 gap-4">
           {[
-            { title: "Lowest Fees", desc: "Affordable pricing starting at ₹499.", icon: "💰" },
-            { title: "Zero Hidden Charges", desc: "Transparent pricing with no surprises.", icon: "🧾" },
-            { title: "Quick Processing", desc: "File your ITR within minutes.", icon: "⚡" },
+            { title: "Assisted Documentation", desc: "Help preparing and submitting your documents.", icon: "💰" },
+            { title: "Clear Fee Disclosure", desc: "Fees are explained before you proceed.", icon: "🧾" },
+            { title: "Streamlined Process", desc: "Guided steps to help you file on time.", icon: "⚡" },
             { title: "Expert Guidance", desc: "Get help from tax professionals.", icon: "👨‍💼" },
           ].map((item, i) => (
             <div key={i} className="rounded-2xl border border-white/20 bg-white/[0.07] backdrop-blur-2xl shadow-[0_12px_32px_rgba(5,16,38,0.35),inset_0_1px_0_rgba(255,255,255,0.12)] p-4 flex flex-col gap-2.5 hover:bg-white/[0.11] transition">
@@ -140,9 +149,9 @@ export default function ITRFiling() {
       <div className="max-w-5xl mx-auto px-6 pb-12">
         <div className="rounded-[28px] border border-white/20 bg-[linear-gradient(135deg,rgba(63,117,203,0.40),rgba(40,80,180,0.30))] backdrop-blur-2xl p-7 text-center shadow-[0_14px_40px_rgba(4,18,52,0.38),inset_0_1px_0_rgba(255,255,255,0.18)]">
           <h2 className="text-2xl font-bold mb-2">Ready to file your taxes?</h2>
-          <p className="text-white/80 mb-6 text-sm">Get expert help and file your ITR quickly and accurately.</p>
+          <p className="text-white/80 mb-6 text-sm">Get expert help and file your ITR on time.</p>
           <div className="flex justify-center gap-4">
-            <button onClick={() => navigate("/contact?service=ITR+Tax+Filing")} className="bg-white text-black px-6 py-2 rounded-full text-sm">Start Filing</button>
+            <button onClick={() => navigate("/contact")} className="bg-white text-black px-6 py-2 rounded-full text-sm">Start Filing</button>
             <button onClick={() => navigate("/contact")} className="border border-white px-6 py-2 rounded-full text-sm">Talk to Expert</button>
           </div>
         </div>

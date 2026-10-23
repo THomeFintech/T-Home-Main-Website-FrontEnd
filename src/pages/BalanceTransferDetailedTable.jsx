@@ -1,4 +1,5 @@
 import React from "react";
+import CalculatorDisclaimer from "../components/CalculatorDisclaimer";
 import { useNavigate } from "react-router-dom";
 import { Lock, Brain, BarChart3 } from "lucide-react";
 
@@ -96,7 +97,7 @@ export default function BalanceTransferDetailedTable() {
           <div className="rounded-[10px] border border-slate-200/70 bg-[#f8fafc] p-4 text-[#1f2937]">
             <h3 className="text-[30px] font-semibold">Financial Insights</h3>
             <ul className="mt-3 space-y-2 text-[13px] text-slate-700">
-              <li>Indian Bank offers the lowest interest rate at 7.16%.</li>
+              <li>Indian Bank shows an indicative rate of 7.16% in this comparison. Rates vary by lender and profile.</li>
               <li>EMI is reduced compared to your current loan projection.</li>
               <li>Total loan cost is minimized over the remaining tenure.</li>
               <li>Balance transfer will save you approximately ₹ 4,966.</li>
@@ -143,6 +144,8 @@ export default function BalanceTransferDetailedTable() {
             View Amortization Schedule
           </button>
         </div>
+
+        <CalculatorDisclaimer className="mt-6" />
       </div>
     </section>
   );

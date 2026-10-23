@@ -49,16 +49,16 @@ export default function LoanAgainstProperty() {
           </p>
 
           <h1 className="text-5xl font-bold mb-4 leading-tight">
-            Loan Against Property
+            Use Your Property to Access High-Value Funding
           </h1>
 
           <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-            Unlock the value of your property with secured loans at attractive interest rates. Flexible repayment options and quick approvals.
+            Rates vary by lender, profile and property title. Clear explanation of fees and documents. Property title and legal verification support. Approval, rates and terms are determined solely by the lender. Eligibility depends on partner lender policies.
           </p>
 
           <div className="flex gap-4 mb-6">
            <button
-              onClick={() => navigate("/tools?tool=loan-prediction&service=Loan+Against+Property")}
+              onClick={() => navigate("/tools?tool=loan-prediction")}
 className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               Apply Now
@@ -74,16 +74,16 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
           <div className="flex gap-6 text-sm text-gray-300">
             <div>
-              <p className="text-xl font-bold text-white">9%</p>
-              <p>Interest</p>
+              <p className="text-xl font-bold text-white">Multiple</p>
+              <p>Lender Options</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Fast</p>
-              <p>Processing</p>
+              <p className="text-xl font-bold text-white">Assisted</p>
+              <p>Documentation</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-white">Zero</p>
-              <p>Hidden Charges</p>
+              <p className="text-xl font-bold text-white">Clear</p>
+              <p>Fee Disclosure</p>
             </div>
           </div>
         </div>
@@ -105,8 +105,8 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
         <div className="grid md:grid-cols-4 gap-6">
           {[
-            { title: "Lowest Rates", desc: "Best-in-class rates backed by your property.", icon: "💰" },
-            { title: "Zero Hidden Fees", desc: "Transparent pricing with no hidden costs.", icon: "🧾" },
+            { title: "Multiple Lender Options", desc: "Rates vary by lender, profile and property title.", icon: "💰" },
+            { title: "Clear Fee Disclosure", desc: "Fees are explained before you proceed.", icon: "🧾" },
             { title: "Doorstep Pickup", desc: "We collect documents from your location.", icon: "🚚" },
             { title: "Legal Assistance", desc: "Expert help for property verification.", icon: "⚖️" }
           ].map((item, i) => (
@@ -230,7 +230,7 @@ className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-sm font-s
 
           <div className="flex justify-center gap-4">
            <button
-  onClick={() => navigate("/tools?tool=loan-prediction&service=Loan+Against+Property")}
+  onClick={() => navigate("/tools?tool=loan-prediction")}
   className="bg-white text-black px-6 py-2 rounded-full text-sm"
 >
   Start Application
