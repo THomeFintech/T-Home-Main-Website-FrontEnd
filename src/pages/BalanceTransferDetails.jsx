@@ -164,7 +164,6 @@ export default function BalanceTransferDetails() {
       setLoading(true);
       setError("");
 
-
       const tenure = Number(formData.remainingTenure);
       if (tenure < 1 || tenure > 360) {
         setError("Remaining tenure must be between 1 and 360 months.");
@@ -179,7 +178,7 @@ export default function BalanceTransferDetails() {
         setLoading(false);
         return;
       }
-      
+
       const payload = {
         loan_type: formData.loanType,
         current_bank_name: formData.bankName,
@@ -346,17 +345,18 @@ export default function BalanceTransferDetails() {
                   className={inputClass}
                 />
                 <p className="mt-1 text-[11px] text-white/60">
-    Enter the number of months remaining to fully repay your current loan.
-  </p>
+                  Enter the number of months remaining to fully repay your
+                  current loan.
+                </p>
               </Field>
               <Field label="New Loan Tenure (Months) *">
                 <input
-                 type="number"
-                 name="newLoanTenure"
-                 value={formData.newLoanTenure}
-                 onChange={handleChange}
-                 placeholder="Enter new loan tenure"
-                 className={inputClass}
+                  type="number"
+                  name="newLoanTenure"
+                  value={formData.newLoanTenure}
+                  onChange={handleChange}
+                  placeholder="Enter new loan tenure"
+                  className={inputClass}
                 />
               </Field>
 
@@ -372,7 +372,7 @@ export default function BalanceTransferDetails() {
                 />
               </Field>
               <Field label="Proposed Interest Rate (%) *">
-               <input
+                <input
                   type="number"
                   step="0.01"
                   name="proposedInterestRate"
@@ -380,7 +380,7 @@ export default function BalanceTransferDetails() {
                   onChange={handleChange}
                   placeholder="Enter proposed interest rate"
                   className={inputClass}
-                 />
+                />
               </Field>
 
               <Field label="Net Monthly Income (₹) *">
@@ -422,40 +422,47 @@ export default function BalanceTransferDetails() {
                   onClick={() => setShowCibilInfo((prev) => !prev)}
                   className="text-[#3f8bff] hover:underline"
                 >
-                 Click here
+                  Click here
                 </button>
               </div>
               {showCibilInfo && (
-               <div className="mt-2 rounded-[8px] border border-white/15 bg-white/[0.05] px-3 py-2 text-[11px] leading-relaxed text-white/70">
-                 <p>
-                   <span className="font-semibold text-white">What is CIBIL Score?</span>{" "}
-                   A CIBIL Score is a 3-digit number, usually between 300 and 900, that
-                   indicates your creditworthiness based on your credit history.
-                 </p>
-                 <p className="mt-1">
-                   <span className="font-semibold text-white">Where can you get it?</span>{" "}
-                     You can usually check your CIBIL Score through the official CIBIL
-                     website or through eligible financial services that provide credit-score
-                     access.
+                <div className="mt-2 rounded-[8px] border border-white/15 bg-white/[0.05] px-3 py-2 text-[11px] leading-relaxed text-white/70">
+                  <p>
+                    <span className="font-semibold text-white">
+                      What is CIBIL Score?
+                    </span>{" "}
+                    A CIBIL Score is a 3-digit number, usually between 300 and
+                    900, that indicates your creditworthiness based on your
+                    credit history.
                   </p>
-                 <p className="mt-1">
-                   <span className="font-semibold text-white">For example:</span>{" "}
-                     If your CIBIL Score is 780, it generally indicates a good credit profile
-                     and may improve your chances of getting better loan terms.
+                  <p className="mt-1">
+                    <span className="font-semibold text-white">
+                      Where can you get it?
+                    </span>{" "}
+                    You can usually check your CIBIL Score through the official
+                    CIBIL website or through eligible financial services that
+                    provide credit-score access.
+                  </p>
+                  <p className="mt-1">
+                    <span className="font-semibold text-white">
+                      For example:
+                    </span>{" "}
+                    If your CIBIL Score is 780, it generally indicates a good
+                    credit profile and may improve your chances of getting
+                    better loan terms.
                   </p>
 
                   <p className="mt-1">
                     <span className="font-semibold text-white">
                       Why does it matter for Balance Transfer?
                     </span>{" "}
-                    Banks may consider your CIBIL Score when evaluating a balance-transfer
-                    application. A stronger credit profile can help you qualify for better
-                    interest rates and loan terms.
+                    Banks may consider your CIBIL Score when evaluating a
+                    balance-transfer application. A stronger credit profile can
+                    help you qualify for better interest rates and loan terms.
                   </p>
-               </div>
+                </div>
               )}
             </Field>
-               
 
             <div className="pt-2 text-center">
               <h3 className="text-[19px] font-medium text-white">
