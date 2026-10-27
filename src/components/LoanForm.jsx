@@ -2725,6 +2725,11 @@ export default function LoanForm({
                 required
                 className={inputClass}
               />
+              {formData.annualIncome > 0 && (
+                <p className="mt-1.5 text-xs text-blue-400/80 font-medium">
+                  ₹ {numberToWords(formData.annualIncome)}
+                </p>
+              )}
             </div>
 
             <div>
@@ -2820,7 +2825,19 @@ export default function LoanForm({
             <label htmlFor="cibilScore" className={labelClass}>
               CIBIL Score
             </label>
-           
+
+            <input
+              type="number"
+              id="cibilScore"
+              name="cibilScore"
+              placeholder="Click 'Click here' to get CIBIL score"
+              value={formData.cibilScore ?? ""}
+              onChange={handleChange}
+              required
+              min="300"
+              max="900"
+              className={`${inputClass} cursor-not-allowed opacity-90`}
+            />
 
             <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
               <small className="text-xs sm:text-sm text-white/65">
