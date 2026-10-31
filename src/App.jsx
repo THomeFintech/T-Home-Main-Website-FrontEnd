@@ -5,6 +5,7 @@ import {
   Outlet,
   useParams,
   useLocation,
+  Navigate,
 } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 import SuperAdminLayout from "./components/superadmin/SuperAdminLayout";
@@ -436,7 +437,7 @@ function App() {
 
 <Route
   path="/super-admin/signup"
-  element={<SuperAdminSignup />}
+  element={<Navigate to="/super-admin" replace />}
 />
 <Route
   path="/super-admin/verify-otp"

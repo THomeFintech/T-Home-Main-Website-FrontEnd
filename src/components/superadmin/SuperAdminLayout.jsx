@@ -66,9 +66,16 @@ export default function SuperAdminLayout() {
           />
           <div className="relative z-10 w-[260px] bg-white h-full shadow-xl flex flex-col">
             <div className="p-4 flex items-center justify-between border-b border-slate-200">
-              <span className="font-bold text-slate-800 text-sm">
-                T-Home Admin
-              </span>
+              <div className="flex items-center gap-2">
+                <img
+                  src="/home/logo.png"
+                  alt="T-Home Logo"
+                  className="w-7 h-7 rounded-full object-contain shrink-0"
+                />
+                <span className="font-bold text-slate-800 text-sm">
+                  T-Home Admin
+                </span>
+              </div>
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}

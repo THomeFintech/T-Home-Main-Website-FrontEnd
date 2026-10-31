@@ -223,21 +223,6 @@ export default function SuperAdminLogin() {
 
           </form>
 
-          {/* SIGNUP */}
-          <p className="text-center text-sm text-slate-500 mt-5">
-
-            Don't have an account?{" "}
-
-            <button
-              type="button"
-              onClick={() => navigate("/super-admin/signup")}
-              className="text-blue-600 font-medium hover:text-blue-700 hover:underline"
-            >
-              Sign Up
-            </button>
-
-          </p>
-
         </div>
 
       </div>
