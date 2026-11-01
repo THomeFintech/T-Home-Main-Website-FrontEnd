@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { BT_API_BASE } from "../config";
+import GetCibilScore from "../components/GetCibilScore";
 
 const initialState = {
   loanType: "",
@@ -14,7 +15,6 @@ const initialState = {
   proposedInterestRate: "",
   monthlyIncome: "",
   foreclosureFee: "",
-  cibilScore: "",
 };
 
 const bankOptions = [
@@ -122,29 +122,29 @@ export default function BalanceTransferDetails() {
   const location = useLocation();
 
   const selectedService = location.state?.service || "";
-   const [formData, setFormData] = useState(() => {
-     const savedData = localStorage.getItem("btLoanDetailsDraft");
+  const [formData, setFormData] = useState(() => {
+    const savedData = localStorage.getItem("btLoanDetailsDraft");
 
     if (savedData) {
-     try {
-       return {
-         ...initialState,
-         ...JSON.parse(savedData),
-         loanType: JSON.parse(savedData).loanType || selectedService,
+      try {
+        return {
+          ...initialState,
+          ...JSON.parse(savedData),
+          loanType: JSON.parse(savedData).loanType || selectedService,
         };
       } catch {
-      // Use initial values if saved data is invalid
-     }
+        // Use initial values if saved data is invalid
+      }
     }
 
     return {
-     ...initialState,
-     loanType: selectedService,
+      ...initialState,
+      loanType: selectedService,
     };
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showCibilInfo, setShowCibilInfo] = useState(false);
+  const [showCibilScore, setShowCibilScore] = useState(false);
 
   const numbers = useMemo(() => {
     const principal = Number(formData.originalPrincipal) || 0;
@@ -165,32 +165,28 @@ export default function BalanceTransferDetails() {
   }, [formData]);
 
   const handleChange = (e) => {
-   const { name, value } = e.target;
+    const { name, value } = e.target;
 
-   // Don't allow negative numbers
-   if (value !== "" && Number(value) < 0) {
-     return;
+    // Don't allow negative numbers
+    if (value !== "" && Number(value) < 0) {
+      return;
     }
 
     setFormData((prev) => {
-     const updatedData = {
-       ...prev,
-       [name]: value,
+      const updatedData = {
+        ...prev,
+        [name]: value,
       };
 
-       localStorage.setItem(
-         "btLoanDetailsDraft",
-         JSON.stringify(updatedData)
-        );
+      localStorage.setItem("btLoanDetailsDraft", JSON.stringify(updatedData));
 
-        return updatedData;
+      return updatedData;
     });
   };
   const handleAnalyzeLoan = async () => {
     try {
       setLoading(true);
       setError("");
-
 
       const tenure = Number(formData.remainingTenure);
       if (tenure < 1 || tenure > 360) {
@@ -206,13 +202,13 @@ export default function BalanceTransferDetails() {
         setLoading(false);
         return;
       }
-      
+
       const payload = {
         loan_type: formData.loanType,
         current_bank_name:
-         formData.bankName === "Others"
-           ? formData.customBankName.trim()
-           : formData.bankName,
+          formData.bankName === "Others"
+            ? formData.customBankName.trim()
+            : formData.bankName,
         original_principal: Number(formData.originalPrincipal),
         amount_paid: Number(formData.amountPaid),
         remaining_tenure_months: Number(formData.remainingTenure),
@@ -221,7 +217,7 @@ export default function BalanceTransferDetails() {
         proposed_interest_rate: Number(formData.proposedInterestRate || 0),
         net_monthly_income: Number(formData.monthlyIncome),
         foreclosure_fee: Number(formData.foreclosureFee || 0),
-        cibil_score: Number(formData.cibilScore),
+        cibil_score: Number(localStorage.getItem("dashboard_cibil_score") || 0),
       };
 
       if (
@@ -231,8 +227,7 @@ export default function BalanceTransferDetails() {
         (!payload.amount_paid && payload.amount_paid !== 0) ||
         !payload.remaining_tenure_months ||
         !payload.current_interest_rate ||
-        !payload.net_monthly_income ||
-        !payload.cibil_score
+        !payload.net_monthly_income
       ) {
         setError("Please fill all required fields.");
         return;
@@ -263,7 +258,7 @@ export default function BalanceTransferDetails() {
       localStorage.setItem("btLoanForm", JSON.stringify(payload));
 
       localStorage.setItem("btLoanResult", JSON.stringify(result));
-      localStorage.setItem("currentBankName",payload.current_bank_name);
+      localStorage.setItem("currentBankName", payload.current_bank_name);
 
       navigate("/balance-transfer/offers");
     } catch (err) {
@@ -279,6 +274,16 @@ export default function BalanceTransferDetails() {
 
   const inputClass =
     "h-[44px] w-full rounded-[9px] border border-white/20 bg-[rgba(255,255,255,0.08)] px-3 text-[13px] text-white placeholder:text-white/50 outline-none transition focus:border-[#4e8fff]";
+
+  if (showCibilScore) {
+    return (
+      <div className="min-h-screen bg-[#030a1a] px-4 py-6">
+        <div className="mx-auto max-w-[1300px]">
+          <GetCibilScore />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section className="relative min-h-screen overflow-hidden px-4 pb-12 pt-[190px] sm:px-6 md:pt-[190px] lg:px-8 lg:pt-36">
@@ -335,15 +340,15 @@ export default function BalanceTransferDetails() {
                   ))}
                 </select>
                 {formData.bankName === "Others" && (
-                 <input
-                   type="text"
-                   name="customBankName"
-                   value={formData.customBankName}
-                   onChange={handleChange}
-                   placeholder="Enter your bank name"
-                   className={`${inputClass} mt-2`}
-                   required
-                 />
+                  <input
+                    type="text"
+                    name="customBankName"
+                    value={formData.customBankName}
+                    onChange={handleChange}
+                    placeholder="Enter your bank name"
+                    className={`${inputClass} mt-2`}
+                    required
+                  />
                 )}
               </Field>
 
@@ -387,8 +392,19 @@ export default function BalanceTransferDetails() {
                   className={inputClass}
                 />
                 <p className="mt-1 text-[11px] text-white/60">
-    Enter the number of months remaining to fully repay your current loan.
-  </p>
+                  Enter the number of months remaining to fully repay your
+                  current loan.
+                </p>
+              </Field>
+              <Field label="New Loan Tenure (Months) *">
+                <input
+                  type="number"
+                  name="newLoanTenure"
+                  value={formData.newLoanTenure}
+                  onChange={handleChange}
+                  placeholder="Enter new loan tenure"
+                  className={inputClass}
+                />
               </Field>
 
               <Field label="Current Interest Rate (%) *">
@@ -399,6 +415,17 @@ export default function BalanceTransferDetails() {
                   value={formData.currentInterestRate}
                   onChange={handleChange}
                   placeholder="Enter current interest rate"
+                  className={inputClass}
+                />
+              </Field>
+              <Field label="Proposed Interest Rate (%) *">
+                <input
+                  type="number"
+                  step="0.01"
+                  name="proposedInterestRate"
+                  value={formData.proposedInterestRate}
+                  onChange={handleChange}
+                  placeholder="Enter proposed interest rate"
                   className={inputClass}
                 />
               </Field>
@@ -413,10 +440,10 @@ export default function BalanceTransferDetails() {
                   className={inputClass}
                 />
                 {formData.monthlyIncome > 0 && (
-                 <p className="mt-1 text-[11px] text-white/55">
-                   ₹ {numberToWords(formData.monthlyIncome)}
-                 </p>
-               )}
+                  <p className="mt-1 text-[11px] text-white/55">
+                    ₹ {numberToWords(formData.monthlyIncome)}
+                  </p>
+                )}
               </Field>
 
               <Field label="Foreclosure Fee (₹) ">
@@ -430,63 +457,24 @@ export default function BalanceTransferDetails() {
                 />
                 {formData.foreclosureFee > 0 && (
                   <p className="mt-1 text-[11px] text-white/55">
-                   ₹ {numberToWords(formData.foreclosureFee)}
-                 </p>
-               )} 
+                    ₹ {numberToWords(formData.foreclosureFee)}
+                  </p>
+                )}
               </Field>
-
             </div>
 
-            <Field label="CIBIL Score * ">
-              <input
-                type="number"
-                name="cibilScore"
-                value={formData.cibilScore}
-                onChange={handleChange}
-                placeholder="Enter CIBIL score"
-                className={inputClass}
-              />
-              <div className="mt-1 flex items-center justify-between text-[10px] text-white/45">
-                <span>Don&apos;t know your CIBIL Score ?</span>
+            <div className="text-center">
+              <div className="mt-1 flex items-center justify-center gap-2 text-[15px] text-white/45">
+                <span>To know your CIBIL Score</span>
                 <button
                   type="button"
-                  onClick={() => setShowCibilInfo((prev) => !prev)}
+                  onClick={() => setShowCibilScore(true)}
                   className="text-[#3f8bff] hover:underline"
                 >
-                 Click here
+                  Click here
                 </button>
               </div>
-              {showCibilInfo && (
-               <div className="mt-2 rounded-[8px] border border-white/15 bg-white/[0.05] px-3 py-2 text-[11px] leading-relaxed text-white/70">
-                 <p>
-                   <span className="font-semibold text-white">What is CIBIL Score?</span>{" "}
-                   A CIBIL Score is a 3-digit number, usually between 300 and 900, that
-                   indicates your creditworthiness based on your credit history.
-                 </p>
-                 <p className="mt-1">
-                   <span className="font-semibold text-white">Where can you get it?</span>{" "}
-                     You can usually check your CIBIL Score through the official CIBIL
-                     website or through eligible financial services that provide credit-score
-                     access.
-                  </p>
-                 <p className="mt-1">
-                   <span className="font-semibold text-white">For example:</span>{" "}
-                     If your CIBIL Score is 780, it generally indicates a good credit profile
-                     and may improve your chances of getting better loan terms.
-                  </p>
-
-                  <p className="mt-1">
-                    <span className="font-semibold text-white">
-                      Why does it matter for Balance Transfer?
-                    </span>{" "}
-                    Banks may consider your CIBIL Score when evaluating a balance-transfer
-                    application. A stronger credit profile can help you qualify for better
-                    interest rates and loan terms.
-                  </p>
-               </div>
-              )}
-            </Field>
-               
+            </div>
 
             <div className="pt-2 text-center">
               <h3 className="text-[19px] font-medium text-white">
@@ -511,14 +499,19 @@ export default function BalanceTransferDetails() {
             </div>
 
             <div className="rounded-[8px] border border-white/20 bg-white/[0.03] px-4 py-3 text-[11px] text-white/80">
-             <h3 className="mb-3 text-[19px] font-medium text-white">
-                  Your Loan, Optimised for Savings
+              <h3 className="mb-3 text-[19px] font-medium text-white">
+                Your Loan, Optimised for Savings
               </h3>
-              <p>• Outstanding loan balance : {formatINR(numbers.outstanding)}.</p>
-              <p className="mt-1">• Estimated remaining repayments: {" "}
-                {formatINR(numbers.remainingOutflow)}.</p>
+              <p>
+                • Outstanding loan balance : {formatINR(numbers.outstanding)}.
+              </p>
               <p className="mt-1">
-                • Potential savings: {formatINR(numbers.estimatedSaving)} with a suitable lower interest rate.
+                • Estimated remaining repayments:{" "}
+                {formatINR(numbers.remainingOutflow)}.
+              </p>
+              <p className="mt-1">
+                • Potential savings: {formatINR(numbers.estimatedSaving)} with a
+                suitable lower interest rate.
               </p>
             </div>
 

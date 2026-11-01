@@ -138,14 +138,13 @@ const PanAadhaarLinking = lazy(() => import("./pages/PanAadhaarLinking"));
 
 const Proceed = lazy(() => import("./components/Proceed"));
 const LoanForm = lazy(() => import("./components/LoanForm"));
+const GetCibilScore = lazy(() => import("./components/GetCibilScore"));
 const ContactForm = lazy(() => import("./components/ContactForm"));
 
 // =========================
 // Keep Main Layout Components
 // Loaded Normally
 // =========================
-
-
 
 /* =========================
    SCROLL FIX
@@ -391,14 +390,13 @@ function App() {
 
             <Route path="loan-form" element={<LoanForm />} />
 
+            <Route path="get-cibil-score" element={<GetCibilScore />} />
+
             <Route path="coming-soon" element={<ComingSoon />} />
 
             <Route path="itr-filing" element={<ITRFiling />} />
 
-            <Route
-              path="pan-aadhaar-linking"
-              element={<PanAadhaarLinking />}
-            />
+            <Route path="pan-aadhaar-linking" element={<PanAadhaarLinking />} />
 
             <Route path="gst-registration" element={<GstRegistration />} />
 
@@ -428,38 +426,53 @@ function App() {
             <Route
               path="balance-transfer-contact"
               element={<BalanceTransferContact />}
-            />  
-             
+            />
+
             <Route path="*" element={<NotFound />} />
           </Route>
-           
+
           <Route path="/super-admin" element={<SuperAdminLogin />} />
 
-<Route
-  path="/super-admin/signup"
-  element={<Navigate to="/super-admin" replace />}
-/>
-<Route
-  path="/super-admin/verify-otp"
-  element={<SuperAdminVerifyOTP />}
-/>
-<Route
-  path="/super-admin/forgot-password"
-  element={<SuperAdminForgotPassword />}
-/>
-<Route element={<SuperAdminProtectedRoute />}>
-  <Route element={<SuperAdminLayout />}>
-    <Route path="/super-admin/dashboard" element={<SuperAdminDashboard />} />
-    <Route path="/super-admin/leads" element={<SuperAdminLeads />} />
-    <Route path="/super-admin/bt-lps" element={<SuperAdminBtLps />} />
-    <Route path="/super-admin/documents" element={<SuperAdminDocuments />} />
-    <Route path="/super-admin/bank-forwarding" element={<SuperAdminBankForwarding />} />
-    <Route path="/super-admin/users" element={<SuperAdminUsers />} />
-    <Route path="/super-admin/reports" element={<SuperAdminReports />} />
-    <Route path="/super-admin/settings" element={<SuperAdminSettings />} />
-    <Route path="/super-admin/applications/:id" element={<SuperAdminApplication />} />
-  </Route>
-</Route>
+          <Route path="/super-admin/signup" element={<SuperAdminSignup />} />
+          <Route
+            path="/super-admin/verify-otp"
+            element={<SuperAdminVerifyOTP />}
+          />
+          <Route
+            path="/super-admin/forgot-password"
+            element={<SuperAdminForgotPassword />}
+          />
+          <Route element={<SuperAdminProtectedRoute />}>
+            <Route element={<SuperAdminLayout />}>
+              <Route
+                path="/super-admin/dashboard"
+                element={<SuperAdminDashboard />}
+              />
+              <Route path="/super-admin/leads" element={<SuperAdminLeads />} />
+              <Route path="/super-admin/bt-lps" element={<SuperAdminBtLps />} />
+              <Route
+                path="/super-admin/documents"
+                element={<SuperAdminDocuments />}
+              />
+              <Route
+                path="/super-admin/bank-forwarding"
+                element={<SuperAdminBankForwarding />}
+              />
+              <Route path="/super-admin/users" element={<SuperAdminUsers />} />
+              <Route
+                path="/super-admin/reports"
+                element={<SuperAdminReports />}
+              />
+              <Route
+                path="/super-admin/settings"
+                element={<SuperAdminSettings />}
+              />
+              <Route
+                path="/super-admin/applications/:id"
+                element={<SuperAdminApplication />}
+              />
+            </Route>
+          </Route>
           {/* =========================
               AUTH ROUTES
           ========================= */}
