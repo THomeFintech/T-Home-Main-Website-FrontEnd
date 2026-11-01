@@ -195,7 +195,7 @@ export default function SuperAdminBtLps() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[850px] text-left text-sm">
+              <table className="w-full min-w-[980px] text-left text-sm">
                 <thead className="bg-slate-50/80 border-b border-slate-200 text-xs text-slate-500 uppercase tracking-wider font-semibold">
                   <tr>
                     <th className="px-5 py-3.5">Applicant</th>
@@ -204,6 +204,7 @@ export default function SuperAdminBtLps() {
                     <th className="px-5 py-3.5">Selected Bank</th>
                     <th className="px-5 py-3.5">Interest Rate / EMI</th>
                     <th className="px-5 py-3.5">Decision</th>
+                    <th className="px-5 py-3.5">Submitted Date</th>
                     <th className="px-5 py-3.5 text-right">Action</th>
                   </tr>
                 </thead>
@@ -259,6 +260,15 @@ export default function SuperAdminBtLps() {
                           {item.decision}
                         </span>
                       </td>
+                      <td className="px-5 py-3.5 text-xs text-slate-500 whitespace-nowrap">
+                        {item.createdAt
+                          ? new Date(item.createdAt).toLocaleDateString("en-IN", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            })
+                          : "N/A"}
+                      </td>
                       <td className="px-5 py-3.5 text-right">
                         <Link
                           to={`/super-admin/applications/${item.id}`}
@@ -284,7 +294,7 @@ export default function SuperAdminBtLps() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[850px] text-left text-sm">
+              <table className="w-full min-w-[980px] text-left text-sm">
                 <thead className="bg-slate-50/80 border-b border-slate-200 text-xs text-slate-500 uppercase tracking-wider font-semibold">
                   <tr>
                     <th className="px-5 py-3.5">Applicant</th>
@@ -293,6 +303,7 @@ export default function SuperAdminBtLps() {
                     <th className="px-5 py-3.5">CIBIL Score</th>
                     <th className="px-5 py-3.5">Approval Probability</th>
                     <th className="px-5 py-3.5">Risk Rating</th>
+                    <th className="px-5 py-3.5">Submitted Date</th>
                     <th className="px-5 py-3.5 text-right">Action</th>
                   </tr>
                 </thead>
@@ -354,6 +365,15 @@ export default function SuperAdminBtLps() {
                           >
                             {risk.label}
                           </span>
+                        </td>
+                        <td className="px-5 py-3.5 text-xs text-slate-500 whitespace-nowrap">
+                          {item.createdAt
+                            ? new Date(item.createdAt).toLocaleDateString("en-IN", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              })
+                            : "N/A"}
                         </td>
                         <td className="px-5 py-3.5 text-right">
                           <Link

@@ -81,8 +81,10 @@
 
   function startController() {
     (function(){
-  const LOGO_URL = "/home/chatbot_icon.jpg";
-  const API_BASE_URL = "http://localhost:8000";   // <-- change this to your deployed backend URL on your real site
+  const rawApiUrl = (typeof window !== 'undefined' && window.__CHATBOT_API_URL__ && !window.__CHATBOT_API_URL__.startsWith('%'))
+    ? window.__CHATBOT_API_URL__
+    : "http://localhost:8000";
+  const API_BASE_URL = rawApiUrl.replace(/\/+$/, '');
   const CHAT_ENDPOINT = API_BASE_URL + "/api/chat";
   // (auto-open removed — the widget opens only when the launcher is clicked)
 

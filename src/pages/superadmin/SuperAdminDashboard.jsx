@@ -398,6 +398,15 @@ export default function SuperAdminDashboard() {
                       </p>
                       <p className="text-[11px] text-slate-400 truncate">
                         {app.loanType} · {app.loanAmount ? `₹${Number(app.loanAmount).toLocaleString("en-IN")}` : "Unspecified"}
+                        {app.createdAt && (
+                          <span className="text-slate-400">
+                            {" "}· {new Date(app.createdAt).toLocaleDateString("en-IN", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </span>
+                        )}
                       </p>
                     </div>
                   </div>

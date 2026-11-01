@@ -6,6 +6,7 @@ import GetCibilScore from "../components/GetCibilScore";
 const initialState = {
   loanType: "",
   bankName: "",
+  customBankName: "",
   originalPrincipal: "",
   amountPaid: "",
   remainingTenure: "",
@@ -36,6 +37,7 @@ const bankOptions = [
   "Bandhan Bank",
   "Kotak Mahindra Bank",
   "Punjab National Bank",
+  "Others",
 ];
 
 function numberToWords(num) {
@@ -120,9 +122,25 @@ export default function BalanceTransferDetails() {
   const location = useLocation();
 
   const selectedService = location.state?.service || "";
-  const [formData, setFormData] = useState({
-    ...initialState,
-    loanType: selectedService,
+  const [formData, setFormData] = useState(() => {
+    const savedData = localStorage.getItem("btLoanDetailsDraft");
+
+    if (savedData) {
+      try {
+        return {
+          ...initialState,
+          ...JSON.parse(savedData),
+          loanType: JSON.parse(savedData).loanType || selectedService,
+        };
+      } catch {
+        // Use initial values if saved data is invalid
+      }
+    }
+
+    return {
+      ...initialState,
+      loanType: selectedService,
+    };
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -154,10 +172,16 @@ export default function BalanceTransferDetails() {
       return;
     }
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => {
+      const updatedData = {
+        ...prev,
+        [name]: value,
+      };
+
+      localStorage.setItem("btLoanDetailsDraft", JSON.stringify(updatedData));
+
+      return updatedData;
+    });
   };
   const handleAnalyzeLoan = async () => {
     try {
@@ -181,7 +205,10 @@ export default function BalanceTransferDetails() {
 
       const payload = {
         loan_type: formData.loanType,
-        current_bank_name: formData.bankName,
+        current_bank_name:
+          formData.bankName === "Others"
+            ? formData.customBankName.trim()
+            : formData.bankName,
         original_principal: Number(formData.originalPrincipal),
         amount_paid: Number(formData.amountPaid),
         remaining_tenure_months: Number(formData.remainingTenure),
@@ -231,7 +258,7 @@ export default function BalanceTransferDetails() {
       localStorage.setItem("btLoanForm", JSON.stringify(payload));
 
       localStorage.setItem("btLoanResult", JSON.stringify(result));
-      localStorage.setItem("currentBankName", formData.bankName);
+      localStorage.setItem("currentBankName", payload.current_bank_name);
 
       navigate("/balance-transfer/offers");
     } catch (err) {
@@ -312,6 +339,17 @@ export default function BalanceTransferDetails() {
                     </option>
                   ))}
                 </select>
+                {formData.bankName === "Others" && (
+                  <input
+                    type="text"
+                    name="customBankName"
+                    value={formData.customBankName}
+                    onChange={handleChange}
+                    placeholder="Enter your bank name"
+                    className={`${inputClass} mt-2`}
+                    required
+                  />
+                )}
               </Field>
 
               <Field label="Original Principal (₹) *">
@@ -401,6 +439,11 @@ export default function BalanceTransferDetails() {
                   placeholder="Enter monthly income"
                   className={inputClass}
                 />
+                {formData.monthlyIncome > 0 && (
+                  <p className="mt-1 text-[11px] text-white/55">
+                    ₹ {numberToWords(formData.monthlyIncome)}
+                  </p>
+                )}
               </Field>
 
               <Field label="Foreclosure Fee (₹) ">
@@ -412,6 +455,11 @@ export default function BalanceTransferDetails() {
                   placeholder="Enter foreclosure fee"
                   className={inputClass}
                 />
+                {formData.foreclosureFee > 0 && (
+                  <p className="mt-1 text-[11px] text-white/55">
+                    ₹ {numberToWords(formData.foreclosureFee)}
+                  </p>
+                )}
               </Field>
             </div>
 
@@ -451,11 +499,19 @@ export default function BalanceTransferDetails() {
             </div>
 
             <div className="rounded-[8px] border border-white/20 bg-white/[0.03] px-4 py-3 text-[11px] text-white/80">
-              <p>• You are eligible for a higher loan</p>
-              <p className="mt-1">• Consider balance transfer to reduce EMI</p>
+              <h3 className="mb-3 text-[19px] font-medium text-white">
+                Your Loan, Optimised for Savings
+              </h3>
+              <p>
+                • Outstanding loan balance : {formatINR(numbers.outstanding)}.
+              </p>
               <p className="mt-1">
-                • You can save {formatINR(numbers.estimatedSaving)} with a lower
-                interest rate
+                • Estimated remaining repayments:{" "}
+                {formatINR(numbers.remainingOutflow)}.
+              </p>
+              <p className="mt-1">
+                • Potential savings: {formatINR(numbers.estimatedSaving)} with a
+                suitable lower interest rate.
               </p>
             </div>
 
@@ -470,7 +526,7 @@ export default function BalanceTransferDetails() {
                 disabled={loading}
                 className="rounded-[9px] bg-[#1f6bff] px-7 py-2.5 text-[14px] font-medium text-white transition hover:bg-[#1c5ee0] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {loading ? "Analyzing..." : "Add Bank Offers"}
+                {loading ? "Analyzing..." : "Explore Bank Offers"}
               </button>
             </div>
           </form>

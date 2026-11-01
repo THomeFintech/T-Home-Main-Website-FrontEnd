@@ -76,19 +76,19 @@ export default function HeroDesktop() {
       <div className="hero-left">
 
         <div className="hero-badge">
-          <span>NEW</span>
-          Latest integration just arrived
+          <BadgePercent size={18} />
+          Financial Guidance
         </div>
 
         <h1 className="hero-title">
-          One Platform for
+          Smarter Loans, Tax &amp; Business Services for Every Income
           <br />
-          <span>All Your Financial Needs</span>
+          <span>Profile</span>
         </h1>
 
         <p className="hero-subtitle">
-          Loans, Tax Solutions, Business Registration
-          and many more services from one trusted platform.
+          Explore lender options, check indicative eligibility, and complete
+          filings with expert guidance and simple planning tools.
         </p>
 
         {/* Offer */}
@@ -102,19 +102,19 @@ export default function HeroDesktop() {
           <div>
 
             <small className="offer-label">
-              Special Offer
+              Trust & Support
             </small>
 
             <h3>
-              Low Interest Rates
+              Transparent Guidance
             </h3>
 
             <p>
-              Quick approvals • Zero hidden charges
+              Multiple Lender Options • Assisted Documentation
             </p>
 
             <span>
-              Apply Online in JUST 5 MINUTES
+              Consent-Based Data Handling
             </span>
 
           </div>
@@ -131,7 +131,7 @@ export default function HeroDesktop() {
               <ShieldCheck size={20}/>
             </div>
 
-            <span>100% Secure</span>
+            <span>Transparent Guidance</span>
 
           </div>
 
@@ -141,7 +141,7 @@ export default function HeroDesktop() {
               <Zap size={20}/>
             </div>
 
-            <span>Quick Process</span>
+            <span>Multiple Lender Options</span>
 
           </div>
 
@@ -151,7 +151,7 @@ export default function HeroDesktop() {
               <Headphones size={20}/>
             </div>
 
-            <span>Expert Support</span>
+            <span>Assisted Documentation</span>
 
           </div>
 
@@ -163,12 +163,12 @@ export default function HeroDesktop() {
 
           <button
             className="primary-btn"
-            onClick={() => navigate("/services")}
+            onClick={() => navigate("/tools?tool=loan-prediction")}
           >
 
             <Grid2x2 size={20}/>
 
-            Explore Services
+            Check Indicative Eligibility
 
             <ArrowRight size={18}/>
 
@@ -176,12 +176,12 @@ export default function HeroDesktop() {
 
           <button
             className="secondary-btn"
-            onClick={() => navigate("/emi-calculator")}
+            onClick={() => navigate("/services")}
           >
 
             <Calculator size={20}/>
 
-            Calculate EMI
+            Explore Services
 
           </button>
 

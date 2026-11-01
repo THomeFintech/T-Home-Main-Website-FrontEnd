@@ -5,6 +5,7 @@ import {
   Outlet,
   useParams,
   useLocation,
+  Navigate,
 } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 import SuperAdminLayout from "./components/superadmin/SuperAdminLayout";

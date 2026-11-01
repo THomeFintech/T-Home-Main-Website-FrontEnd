@@ -300,6 +300,17 @@ export default function SuperAdminApplication() {
               )}
               {isApproved ? "Approved" : isRejected ? "Rejected" : "Pending Review"}
             </span>
+
+            {application.createdAt && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                Submitted: {new Date(application.createdAt).toLocaleDateString("en-IN", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </span>
+            )}
           </div>
         </div>
 
@@ -368,6 +379,20 @@ export default function SuperAdminApplication() {
               <p className="text-xs text-slate-400">Tenure</p>
               <p className="text-sm font-semibold text-slate-700">
                 {application.tenure ? `${application.tenure} Years` : "Not specified"}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-slate-400">Application Submitted</p>
+              <p className="text-sm font-semibold text-slate-700">
+                {application.createdAt
+                  ? new Date(application.createdAt).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "Not recorded"}
               </p>
             </div>
           </div>

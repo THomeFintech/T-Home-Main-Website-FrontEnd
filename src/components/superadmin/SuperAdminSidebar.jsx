@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -75,18 +75,26 @@ export default function SuperAdminSidebar() {
     >
       {/* BRAND */}
       <div className="h-16 px-4 flex items-center border-b border-slate-200 gap-2.5">
-        <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm shadow-blue-500/20">
-          TH
-        </div>
+        <Link
+          to="/super-admin/dashboard"
+          className="flex items-center gap-2.5 min-w-0 shrink-0 group"
+          title="T-Home Operations Dashboard"
+        >
+          <img
+            src="/home/logo.png"
+            alt="T-Home Logo"
+            className="w-8 h-8 rounded-full object-contain shrink-0"
+          />
 
-        {!collapsed && (
-          <div className="min-w-0">
-            <span className="text-sm font-bold tracking-tight text-slate-800">
-              T-Home{" "}
-              <span className="font-normal text-slate-500">Fintech</span>
-            </span>
-          </div>
-        )}
+          {!collapsed && (
+            <div className="min-w-0">
+              <span className="text-sm font-bold tracking-tight text-slate-800 group-hover:text-blue-600 transition-colors">
+                T-Home{" "}
+                <span className="font-normal text-slate-500">Fintech</span>
+              </span>
+            </div>
+          )}
+        </Link>
 
         <button
           type="button"

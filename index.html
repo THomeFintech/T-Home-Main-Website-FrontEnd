@@ -19,10 +19,12 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
-  <!-- T-Home AI Assistant Chatbot (Temporarily disabled: backend not deployed)
+  <!-- T-Home AI Assistant Chatbot -->
+  <script>
+    window.__CHATBOT_API_URL__ = "%VITE_CHATBOT_API_URL%";
+  </script>
   <link rel="stylesheet" href="/chatbot/widget.css?v=3" />
   <script src="/chatbot/widget.js?v=3" defer></script>
-  -->
 </body>
 
 </html>

@@ -37,6 +37,10 @@ export default function Tools() {
           localStorage.getItem("digilocker_verified_identity") || "null"
         );
         if (verified && (verified.name || verified.pan || verified.aadhaar)) {
+          const savedStep = Number(localStorage.getItem("loan_prediction_step"));
+          if (savedStep && savedStep >= 2 && savedStep <= 5) {
+            return savedStep;
+          }
           return 2;
         }
         return 1;
@@ -103,9 +107,23 @@ export default function Tools() {
   const API_BASE = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    if (serviceParam && serviceParam !== selectedService) {
-      setSelectedService(serviceParam);
+    if (serviceParam) {
+      setSelectedService((prev) => (prev !== serviceParam ? serviceParam : prev));
     }
+  }, [serviceParam]);
+
+  useEffect(() => {
+    if (toolParam === "loan-prediction" && step >= 1 && step <= 5) {
+      try {
+        localStorage.setItem("loan_prediction_step", String(step));
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [step, toolParam]);
+
+  useEffect(() => {
+    let isMounted = true;
 
     if (toolParam === "loan-prediction") {
       const token =
@@ -114,12 +132,14 @@ export default function Tools() {
 
       if (!token) {
         try {
-          const currentPath = `${location.pathname}${location.search}`;
+          const currentPath = `${window.location.pathname}${window.location.search}`;
           localStorage.setItem("digilocker_return_url", currentPath);
           if (serviceParam) {
             localStorage.setItem("digilocker_selected_service", serviceParam);
           }
-        } catch {}
+        } catch {
+          /* ignore */
+        }
         navigate("/login");
         return;
       }
@@ -131,112 +151,184 @@ export default function Tools() {
             headers: { Authorization: `Bearer ${token}` },
           });
 
+          if (!isMounted) return;
+
           if (res.ok) {
             const data = await res.json();
+            if (!isMounted) return;
+
             if (data?.connected && data?.verified_identity) {
               const verified = data.verified_identity;
               const calculatedAge = calculateAgeFromDob(verified.dob);
               if (calculatedAge) {
                 try {
                   localStorage.setItem("digilocker_age", String(calculatedAge));
-                } catch {}
+                } catch {
+                  /* ignore */
+                }
               }
               try {
                 localStorage.setItem(
                   "digilocker_verified_identity",
                   JSON.stringify(verified)
                 );
-              } catch {}
+              } catch {
+                /* ignore */
+              }
 
-              const updatedContact = {
-                name: verified.name || "",
-                phone: verified.phone || "",
-                email: verified.email || "",
-                pan: verified.pan || "",
-                aadhaar: verified.aadhaar || "",
-                dob: verified.dob || "",
-                gender: verified.gender || "",
-                address: verified.address || "",
-                driving_licence: verified.driving_licence || "",
-                service: serviceParam || selectedService || "",
-              };
+              const currentService =
+                serviceParam ||
+                localStorage.getItem("digilocker_selected_service") ||
+                "";
 
-              setContactData((prev) => ({
-                ...prev,
-                ...updatedContact,
-              }));
-              try {
-                localStorage.setItem(
-                  "contact_data",
-                  JSON.stringify(updatedContact)
+              setContactData((prev) => {
+                const currentSaved = JSON.parse(
+                  localStorage.getItem("contact_data") || "{}"
                 );
-              } catch {}
-
-              setLoanData((prev) => {
                 const updated = {
                   ...prev,
-                  age: prev?.age || calculatedAge || "",
-                  pan: prev?.pan || verified.pan || "",
-                  name: prev?.name || verified.name || "",
-                  phone: prev?.phone || verified.phone || "",
-                  gender: prev?.gender || verified.gender || "",
+                  ...currentSaved,
+                  name: prev.name || currentSaved.name || verified.name || "",
+                  phone: prev.phone || currentSaved.phone || verified.phone || "",
+                  email: prev.email || currentSaved.email || verified.email || "",
+                  pan: prev.pan || currentSaved.pan || verified.pan || "",
+                  aadhaar:
+                    prev.aadhaar || currentSaved.aadhaar || verified.aadhaar || "",
+                  dob: prev.dob || currentSaved.dob || verified.dob || "",
+                  gender:
+                    prev.gender || currentSaved.gender || verified.gender || "",
+                  address:
+                    prev.address || currentSaved.address || verified.address || "",
+                  driving_licence:
+                    prev.driving_licence ||
+                    currentSaved.driving_licence ||
+                    verified.driving_licence ||
+                    "",
+                  service:
+                    prev.service ||
+                    currentSaved.service ||
+                    currentService ||
+                    "",
                 };
                 try {
-                  const currentSaved = JSON.parse(
-                    localStorage.getItem("loanData") || "{}"
-                  );
-                  localStorage.setItem(
-                    "loanData",
-                    JSON.stringify({ ...currentSaved, ...updated })
-                  );
-                } catch {}
+                  localStorage.setItem("contact_data", JSON.stringify(updated));
+                } catch {
+                  /* ignore */
+                }
                 return updated;
               });
 
-              // Already connected with DigiLocker: load the form directly!
-              setStep(2);
+              setLoanData((prev) => {
+                const currentSaved = JSON.parse(
+                  localStorage.getItem("loanData") || "{}"
+                );
+                const updated = {
+                  ...currentSaved,
+                  ...prev,
+                  age: prev?.age || currentSaved?.age || calculatedAge || "",
+                  pan: prev?.pan || currentSaved?.pan || verified.pan || "",
+                  name: prev?.name || currentSaved?.name || verified.name || "",
+                  phone: prev?.phone || currentSaved?.phone || verified.phone || "",
+                  gender:
+                    prev?.gender || currentSaved?.gender || verified.gender || "",
+                };
+                try {
+                  localStorage.setItem(
+                    "loanData",
+                    JSON.stringify(updated)
+                  );
+                } catch {
+                  /* ignore */
+                }
+                return updated;
+              });
+
+              // Already connected with DigiLocker: advance only if currently uninitialized or on verification step
+              setStep((currentStep) => {
+                if (currentStep <= 1) {
+                  const savedStep = Number(
+                    localStorage.getItem("loan_prediction_step")
+                  );
+                  if (savedStep && savedStep >= 2 && savedStep <= 5) {
+                    return savedStep;
+                  }
+                  return 2;
+                }
+                return currentStep;
+              });
               return;
             } else {
-              setStep(1);
+              setStep((currentStep) => (currentStep <= 1 ? 1 : currentStep));
             }
           } else {
-            setStep(1);
+            setStep((currentStep) => (currentStep <= 1 ? 1 : currentStep));
           }
         } catch (err) {
           console.error("Tools DigiLocker check error:", err);
-          setStep(1);
+          if (isMounted) {
+            setStep((currentStep) => (currentStep <= 1 ? 1 : currentStep));
+          }
         }
       };
 
       checkStatus();
     } else if (toolParam === "emi") {
+      try {
+        localStorage.removeItem("loan_prediction_step");
+      } catch {
+        /* ignore */
+      }
       setStep(6);
     } else if (toolParam === "balance-transfer") {
+      try {
+        localStorage.removeItem("loan_prediction_step");
+      } catch {
+        /* ignore */
+      }
       setStep(7);
     } else if (!toolParam && location.pathname === "/tools") {
+      try {
+        localStorage.removeItem("loan_prediction_step");
+      } catch {
+        /* ignore */
+      }
       setStep(0);
     }
-  }, [toolParam, serviceParam, location.pathname, location.search, navigate, API_BASE, selectedService]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [toolParam, serviceParam, location.pathname, navigate, API_BASE]);
 
   useEffect(() => {
     if (location.pathname === "/tools" && !location.search) {
+      try {
+        localStorage.removeItem("loan_prediction_step");
+      } catch {
+        /* ignore */
+      }
       setStep(0);
     }
   }, [location.pathname, location.search]);
 
-useEffect(() => {
-  if (location.state?.resetTools) {
-    setStep(0);
-    setContactData({});
-    setLoanData({});
-    setPredictionResult(null);
-    setSelectedBank(null);
-    setShowBankCards(false);
-    setIsSelectingBank(false);
+  useEffect(() => {
+    if (location.state?.resetTools) {
+      try {
+        localStorage.removeItem("loan_prediction_step");
+      } catch {
+        /* ignore */
+      }
+      setStep(0);
+      setContactData({});
+      setLoanData({});
+      setPredictionResult(null);
+      setSelectedBank(null);
+      setShowBankCards(false);
+      setIsSelectingBank(false);
 
-    navigate("/tools", { replace: true });
-  }
-}, [location, navigate]);
+      navigate("/tools", { replace: true });
+    }
+  }, [location, navigate]);
 
 useEffect(() => {
   if (step === 3) {
@@ -557,6 +649,11 @@ if (token) {
                 setStep(2);
               }}
               onBack={() => {
+                try {
+                  localStorage.removeItem("loan_prediction_step");
+                } catch {
+                  /* ignore */
+                }
                 if (selectedService) {
                   navigate(-1);
                 } else {
@@ -578,6 +675,11 @@ if (token) {
                 ...prev,
                 service,
               }));
+              try {
+                localStorage.setItem("loan_prediction_step", "3");
+              } catch {
+                /* ignore */
+              }
               setStep(3);
             }}
           />

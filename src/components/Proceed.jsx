@@ -338,24 +338,35 @@ function UploadZone({
               : "border-[#63A4FF] bg-[#f8f8f8] hover:border-[#246BFF] hover:bg-[#dceaff]/10"
           }`}
         >
+          
           <div className="flex items-start gap-3 sm:gap-4">
-            <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#dceaff] sm:h-10 sm:w-10">
-              <Upload className="h-4 w-4 text-[#246BFF] sm:h-5 sm:w-5" />
-            </div>
-            <div className="min-w-0">
-              <h4 className="text-sm font-medium uppercase tracking-[-0.01em] text-[#222834] sm:text-[15px]">
-                {label}
-                {required && <span className="ml-1 text-red-500">*</span>}
+           <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#dceaff] sm:h-10 sm:w-10">
+             <Upload className="h-4 w-4 text-[#246BFF] sm:h-5 sm:w-5" />
+           </div>
+
+           <div className="min-w-0">
+             <h4 className="text-sm font-medium uppercase tracking-[-0.01em] text-[#222834] sm:text-[15px]">
+               {label}
+               {required && <span className="ml-1 text-red-500">*</span>}
               </h4>
+
               <p className="mt-1 text-sm text-[#2a3140]">
                 {dragging ? "Drop to upload" : "Drag & Drop or Click to Upload"}
               </p>
+
+              {label === "Bank Statement" && (
+               <p className="mt-1 text-xs text-[#667085]">
+                 Please upload your latest 1 year bank statement.
+                </p>
+              )}
+
               <p className="mt-1 text-xs text-[#8a94a6] sm:text-[13px]">
                 PDF · JPG · PNG · max 5 MB
               </p>
             </div>
           </div>
-        </div>
+          </div>
+
       ) : (
         <div className="rounded-[14px] border border-[#08B981]/40 bg-[#08B981]/5 px-4 py-4 sm:rounded-[16px] sm:px-5 sm:py-4">
           <div className="mb-2 flex items-center justify-between">
@@ -709,7 +720,7 @@ export default function Proceed({
     } else if (docGroup === "self_employed") {
       required = [files.itr1, files.itr2];
     } else if (docGroup === "professional") {
-      required = [files.itr1, files.degree, files.professionalReg];
+      required = [files.itr1,files.professionalReg];
     } else if (docGroup === "freelancer") {
       required = [files.itr1, files.bankStatement];
     } else {
@@ -1251,13 +1262,7 @@ export default function Proceed({
               required
             />
             <UploadZone
-              label="Degree Certificate"
-              file={files.degree}
-              onUpload={setFile("degree")}
-              required
-            />
-            <UploadZone
-              label="Professional Registration"
+              label="Professional Registration Certificate"
               file={files.professionalReg}
               onUpload={setFile("professionalReg")}
               required
@@ -1484,9 +1489,7 @@ export default function Proceed({
           Why add a co-applicant?
         </h3>
         <p className="mt-4 text-sm leading-7 text-[#667085] sm:text-[16px] sm:leading-8">
-          Adding a co-applicant combines incomes for eligibility. A ₹40k/month
-          income may qualify for ₹24L — adding a spouse earning ₹35k/month
-          raises that to ₹45L+.
+          Adding a co-applicant can improve your loan eligibility by combining both applicants’ incomes. Your final eligibility depends on factors such as income, credit score, existing EMIs, and the lender’s eligibility criteria.
         </p>
       </div>
 

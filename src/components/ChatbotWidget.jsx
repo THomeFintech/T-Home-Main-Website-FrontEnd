@@ -78,7 +78,8 @@ export default function ChatbotWidget() {
     setMessages((prev) => [...prev, { type: "user", text: msg }]);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/chatbot/", {
+      const chatbotApi = (import.meta.env.VITE_CHATBOT_API_URL || "http://127.0.0.1:8000").replace(/\/+$/, '');
+      const res = await fetch(`${chatbotApi}/chatbot/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

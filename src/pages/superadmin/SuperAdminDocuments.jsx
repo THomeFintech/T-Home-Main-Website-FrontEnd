@@ -145,11 +145,12 @@ export default function SuperAdminDocuments() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px] text-left text-sm">
+            <table className="w-full min-w-[850px] text-left text-sm">
               <thead className="bg-slate-50/80 border-b border-slate-200 text-xs text-slate-500 uppercase tracking-wider font-semibold">
                 <tr>
                   <th className="px-5 py-3.5">Applicant Details</th>
                   <th className="px-5 py-3.5">Loan Type & Amount</th>
+                  <th className="px-5 py-3.5">Submitted Date</th>
                   <th className="px-5 py-3.5">Attached Files</th>
                   <th className="px-5 py-3.5">Application Status</th>
                   <th className="px-5 py-3.5 text-right">Action</th>
@@ -194,6 +195,16 @@ export default function SuperAdminDocuments() {
                             ? `₹${Number(application.loanAmount).toLocaleString("en-IN")}`
                             : "N/A"}
                         </p>
+                      </td>
+
+                      <td className="px-5 py-3.5 text-xs text-slate-500 whitespace-nowrap">
+                        {application.createdAt
+                          ? new Date(application.createdAt).toLocaleDateString("en-IN", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            })
+                          : "N/A"}
                       </td>
 
                       <td className="px-5 py-3.5">
