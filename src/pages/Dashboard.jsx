@@ -109,7 +109,51 @@ function fmtINR(val) {
 
   return "₹ " + Number(val).toLocaleString("en-IN");
 }
+function getCibilLabel(score, label) {
+  const existingLabel = String(label ?? "").trim();
 
+  if (existingLabel && existingLabel.toLowerCase() !== "n/a") {
+    return existingLabel;
+  }
+
+  const numericScore = Number(score);
+
+  if (
+    score === null ||
+    score === undefined ||
+    score === "" ||
+    !Number.isFinite(numericScore) ||
+    numericScore < 300 ||
+    numericScore > 900
+  ) {
+    return "N/A";
+  }
+
+  if (numericScore >= 750) return "Excellent";
+  if (numericScore >= 700) return "Good";
+  if (numericScore >= 650) return "Fair";
+  if (numericScore >= 550) return "Poor";
+
+  return "Very Poor";
+}
+
+function getCibilLabelColor(label) {
+  const normalizedLabel = String(label ?? "").toLowerCase();
+
+  if (["excellent", "good"].includes(normalizedLabel)) {
+    return "text-green-400";
+  }
+
+  if (normalizedLabel === "fair") {
+    return "text-orange-400";
+  }
+
+  if (["poor", "very poor", "bad"].includes(normalizedLabel)) {
+    return "text-red-400";
+  }
+
+  return "text-white/40";
+}
 // ============================================================
 // STAT CARD
 // ============================================================
@@ -821,16 +865,10 @@ export default function Dashboard() {
           loading={loadingSummary}
           label="CIBIL Score"
           value={summary?.cibil_score ?? "—"}
-          sub={summary ? `● ${summary.cibil_label}` : ""}
-          subColor={
-            summary?.cibil_label === "Excellent"
-              ? "text-green-400"
-              : summary?.cibil_label === "Good"
-                ? "text-blue-400"
-                : summary?.cibil_label === "Fair"
-                  ? "text-orange-400"
-                  : "text-red-400"
-          }
+          sub={`● ${getCibilLabel(summary?.cibil_score, summary?.cibil_label)}`}
+          subColor={getCibilLabelColor(
+            getCibilLabel(summary?.cibil_score, summary?.cibil_label),
+          )}
           icon={
             <svg
               width="18"
