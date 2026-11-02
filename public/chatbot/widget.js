@@ -86,6 +86,7 @@
     : "http://localhost:8000";
   const API_BASE_URL = rawApiUrl.replace(/\/+$/, '');
   const CHAT_ENDPOINT = API_BASE_URL + "/api/chat";
+  const LOGO_URL = "/home/chatbot_icon.jpg";
   // (auto-open removed — the widget opens only when the launcher is clicked)
 
   // Same contact details the backend's own Streamlit UI shows on escalation.
