@@ -58,10 +58,7 @@ function numberToWords(num) {
     if (n < 20) return ones[n];
 
     if (n < 100) {
-      return (
-        tens[Math.floor(n / 10)] +
-        (n % 10 ? " " + ones[n % 10] : "")
-      );
+      return tens[Math.floor(n / 10)] + (n % 10 ? " " + ones[n % 10] : "");
     }
 
     if (n < 1000) {
@@ -335,7 +332,7 @@ export default function BalanceTransferOffers() {
       setLoading(false);
     }
   };
-  
+
   const handleCompare = async () => {
     try {
       setCompareLoading(true);
@@ -426,42 +423,46 @@ export default function BalanceTransferOffers() {
         <div className="mx-auto max-w-[1160px]">
           <div className="text-center pt-16 sm:pt-16 md:pt-20 lg:pt-0">
             <h1 className="text-[40px] font-semibold leading-tight text-white sm:text-[58px]">
-              Find Better <span className="text-[#2572ff]">Loan Offers </span>with AI
+              Find Better <span className="text-[#2572ff]">Loan Offers </span>
+              with AI
             </h1>
 
             <p className="mt-2 text-[15px] text-white/70 sm:text-[15px]">
-              Discover personalized bank recommendations to help you find better interest rates and save on your balance transfer.
+              Discover personalized bank recommendations to help you find better
+              interest rates and save on your balance transfer.
             </p>
           </div>
           {!showSuggestions ? (
-           <div className="mt-6 min-h-[200px] rounded-[12px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.09)_0%,rgba(255,255,255,0.04)_100%)] px-6 py-10 text-center flex flex-col items-center justify-center">
-             <h2 className="text-[29px] font-semibold text-white">
-                Get AI-powered bank recommendations tailored to your loan details
+            <div className="mt-6 min-h-[200px] rounded-[12px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.09)_0%,rgba(255,255,255,0.04)_100%)] px-6 py-10 text-center flex flex-col items-center justify-center">
+              <h2 className="text-[29px] font-semibold text-white">
+                Get AI-powered bank recommendations tailored to your loan
+                details
               </h2>
 
-             <p className="mt-2 text-[15px] text-white/70">
-               Find suitable offers and explore potential savings on your balance transfer.
+              <p className="mt-2 text-[15px] text-white/70">
+                Find suitable offers and explore potential savings on your
+                balance transfer.
               </p>
 
               <div className="mt-4 flex items-center justify-center gap-3">
-               <button
-                 type="button"
-                 onClick={() => navigate("/balance-transfer/details")}
+                <button
+                  type="button"
+                  onClick={() => navigate("/balance-transfer/details")}
                   className="rounded-[8px] bg-[#1f6bff] px-6 py-3 text-[14px] font-semibold text-white transition hover:bg-[#1c5ee0] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                 ← Back
+                  ← Back
                 </button>
 
-               <button
-                 type="button"
-                 onClick={handleSuggestBanks}
-                 disabled={loading}
-                 className="rounded-[8px] bg-[#1f6bff] px-6 py-3 text-[14px] font-semibold text-white transition hover:bg-[#1c5ee0] disabled:cursor-not-allowed disabled:opacity-60"
+                <button
+                  type="button"
+                  onClick={handleSuggestBanks}
+                  disabled={loading}
+                  className="rounded-[8px] bg-[#1f6bff] px-6 py-3 text-[14px] font-semibold text-white transition hover:bg-[#1c5ee0] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                 {loading ? "Loading..." : "Suggest Banks"}
+                  {loading ? "Loading..." : "Suggest Banks"}
                 </button>
-             </div>
-           </div>
+              </div>
+            </div>
           ) : null}
 
           <div className="mt-8 rounded-[12px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 shadow-[0_16px_40px_rgba(0,0,0,0.28)] sm:p-6">
@@ -470,7 +471,7 @@ export default function BalanceTransferOffers() {
                 <h2 className="text-[30px] font-semibold text-white">
                   Add Bank Offer
                   <span className="text-[14px] font-normal text-white/60">
-                   (Optional)
+                    (Optional)
                   </span>
                 </h2>
 
@@ -523,22 +524,21 @@ export default function BalanceTransferOffers() {
                 placeholder="Enter rate"
                 inputClass={inputClass}
               />
-            <div>
-            
-              <Input
-                label="Loan Amount Offered"
-                name="amount"
-                value={offer.amount}
-                onChange={handleChange}
-                placeholder="Enter amount"
-                inputClass={inputClass}
-              />
-              {offer.amount > 0 && (
-               <p className="mt-1.5 text-xs text-blue-400/80 font-medium">
-                 ₹ {numberToWords(offer.amount)}
-               </p>
-              )}
-            </div>
+              <div>
+                <Input
+                  label="Loan Amount Offered"
+                  name="amount"
+                  value={offer.amount}
+                  onChange={handleChange}
+                  placeholder="Enter amount"
+                  inputClass={inputClass}
+                />
+                {offer.amount > 0 && (
+                  <p className="mt-1.5 text-xs text-blue-400/80 font-medium">
+                    ₹ {numberToWords(offer.amount)}
+                  </p>
+                )}
+              </div>
 
               <Input
                 label="Tenure (Months) *"
@@ -574,8 +574,6 @@ export default function BalanceTransferOffers() {
           {error ? (
             <p className="mt-4 text-center text-sm text-red-400">{error}</p>
           ) : null}
-
-          
 
           {showSuggestions ? (
             <>
