@@ -1,5 +1,13 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import {
+  ShieldCheck,
+  Gauge,
+  FileText,
+  IndianRupee,
+  Lock,
+  ArrowRight,
+} from "lucide-react";
 import { BT_API_BASE } from "../config";
 import GetCibilScore from "../components/GetCibilScore";
 
@@ -279,7 +287,7 @@ export default function BalanceTransferDetails() {
     return (
       <div className="min-h-screen bg-[#030a1a] px-4 py-6">
         <div className="mx-auto max-w-[1300px]">
-          <GetCibilScore />
+          <GetCibilScore onBack={() => setShowCibilScore(false)} />
         </div>
       </div>
     );
@@ -463,18 +471,83 @@ export default function BalanceTransferDetails() {
               </Field>
             </div>
 
-            <div className="text-center">
-              <div className="mt-1 flex items-center justify-center gap-2 text-[15px] text-white/45">
-                <span>To know your CIBIL Score</span>
-                <button
-                  type="button"
-                  onClick={() => setShowCibilScore(true)}
-                  className="text-[#3f8bff] hover:underline"
-                >
-                  Click here
-                </button>
+            {/* ===================== CREDIT PROFILE CARD ===================== */}
+            <div className="rounded-2xl border border-[#2563ff] bg-[#0b1a4a]/40 p-4 text-left sm:p-5 shadow-[0_0_0_1px_rgba(37,99,255,0.25)]">
+              {/* Header */}
+              <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2">
+                <div className="row-start-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#1b2d6b] sm:row-span-2 sm:h-12 sm:w-12">
+                  <ShieldCheck className="h-5 w-5 text-[#4ea1ff] sm:h-6 sm:w-6" />
+                </div>
+
+                <h3 className="col-start-2 row-start-1 self-center text-lg font-semibold text-white sm:text-xl">
+                  Credit Profile
+                </h3>
+
+                <span className="col-start-3 row-start-1 shrink-0 self-start rounded-full bg-[#1b3a8a] px-3 py-1.5 text-xs font-semibold text-[#3ea0ff] sm:px-4 sm:text-sm">
+                  Recommended
+                </span>
+
+                <p className="col-span-3 row-start-2 mt-0 text-[13px] leading-5 text-white/75 sm:col-start-2 sm:col-span-1 sm:mt-1 sm:text-[15px] sm:leading-snug">
+                  Connect your credit report to automatically retrieve your
+                  CIBIL score and existing loan information.
+                </p>
+              </div>
+
+              {/* Features strip */}
+              <div className="mt-4 grid grid-cols-1 rounded-xl border border-white/10 bg-white/[0.03] lg:grid-cols-3">
+                <div className="flex items-center gap-3 px-4 py-3 lg:min-w-0 lg:justify-center lg:border-r lg:border-white/10 lg:px-5 lg:py-5">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1b2d6b]">
+                    <Gauge className="h-5 w-5 text-[#3ea0ff]" />
+                  </div>
+                  <p className="text-sm text-white/80 leading-snug">
+                    Get your actual
+                    <br />
+                    CIBIL score
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 px-4 py-3 lg:min-w-0 lg:justify-center lg:border-r lg:border-white/10 lg:px-5 lg:py-5">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1b2d6b]">
+                    <FileText className="h-5 w-5 text-[#3ea0ff]" />
+                  </div>
+                  <p className="text-sm text-white/80 leading-snug">
+                    Identify active loans
+                    <br />& credit accounts
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 px-4 py-3 lg:min-w-0 lg:justify-center lg:border-r-0 lg:px-5 lg:py-5">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1b2d6b]">
+                    <IndianRupee className="h-5 w-5 text-[#3ea0ff]" />
+                  </div>
+                  <p className="text-sm text-white/80 leading-snug">
+                    Auto-fill available
+                    <br />
+                    EMI information
+                  </p>
+                </div>
+              </div>
+
+              {/* Fetch button (same behavior as the old "Click here") */}
+              <button
+                type="button"
+                onClick={() => setShowCibilScore(true)}
+                className="mt-4 flex w-full items-center justify-center gap-3 rounded-xl bg-[#2563ff] px-4 py-3 text-base sm:text-lg font-semibold text-white transition hover:bg-[#1f57e5]"
+              >
+                <ShieldCheck className="h-5 w-5" />
+                Fetch Credit Report
+                <ArrowRight className="h-5 w-5" />
+              </button>
+
+              {/* Secure note */}
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm text-white/70">
+                <Lock className="h-4 w-4" />
+                <span>Secure connection</span>
+                <span>•</span>
+                <span>Your permission is required</span>
               </div>
             </div>
+            {/* =================== END CREDIT PROFILE CARD =================== */}
 
             <div className="pt-2 text-center">
               <h3 className="text-[19px] font-medium text-white">

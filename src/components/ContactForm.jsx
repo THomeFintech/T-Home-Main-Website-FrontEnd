@@ -15,7 +15,7 @@ export default function ContactForm({
     let savedDigilocker = {};
     try {
       savedDigilocker = JSON.parse(
-        localStorage.getItem("digilocker_verified_identity") || "{}"
+        localStorage.getItem("digilocker_verified_identity") || "{}",
       );
     } catch {}
 
@@ -42,15 +42,19 @@ export default function ContactForm({
     let savedDigilocker = {};
     try {
       savedDigilocker = JSON.parse(
-        localStorage.getItem("digilocker_verified_identity") || "{}"
+        localStorage.getItem("digilocker_verified_identity") || "{}",
       );
     } catch {}
 
     setFormData((prev) => {
-      const resolvedName = prev.name || contactData.name || savedDigilocker.name || "";
-      const resolvedPhone = prev.phone || contactData.phone || savedDigilocker.phone || "";
-      const resolvedEmail = prev.email || contactData.email || savedDigilocker.email || "";
-      const resolvedService = prev.service || contactData.service || defaultService || "";
+      const resolvedName =
+        prev.name || contactData.name || savedDigilocker.name || "";
+      const resolvedPhone =
+        prev.phone || contactData.phone || savedDigilocker.phone || "";
+      const resolvedEmail =
+        prev.email || contactData.email || savedDigilocker.email || "";
+      const resolvedService =
+        prev.service || contactData.service || defaultService || "";
 
       if (
         resolvedName !== prev.name ||
@@ -199,7 +203,7 @@ export default function ContactForm({
     return !Object.values(newErrors).some((error) => error);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (submitting) return;
@@ -217,65 +221,54 @@ export default function ContactForm({
       service_type: currentFormData.service,
     };
 
-    // Save form data immediately while preserving DigiLocker fields (pan, gender, dob, etc.)
     const updatedContact = {
       ...contactData,
       ...currentFormData,
     };
+
     localStorage.setItem("contact_data", JSON.stringify(updatedContact));
 
     setContactData(updatedContact);
 
-    // Move to next page immediately
+    // Redirect immediately without waiting for the API
     onNext(currentFormData.service);
 
-    // Create contact in background
-    try {
-      const response = await fetch(`${API_BASE}/applications/contact/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+    // Run API request in the background
+    fetch(`${API_BASE}/applications/contact/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data?.message || "Contact creation failed");
+        }
+
+        if (data.contact_group_id) {
+          localStorage.setItem(
+            "contact_group_id",
+            String(data.contact_group_id),
+          );
+        }
+
+        if (data.contact_id) {
+          localStorage.setItem("contact_id", String(data.contact_id));
+        }
+
+        if (data.loan_id) {
+          localStorage.setItem("loan_id", String(data.loan_id));
+        }
+      })
+      .catch((error) => {
+        console.error("Background contact creation failed:", error);
+      })
+      .finally(() => {
+        setSubmitting(false);
       });
-
-      const text = await response.text();
-
-      let data = {};
-
-      try {
-        data = text ? JSON.parse(text) : {};
-      } catch {
-        console.error("Contact API returned invalid JSON:", text);
-        return;
-      }
-
-      if (!response.ok) {
-        console.error("Contact API Error:", response.status, data);
-        return;
-      }
-
-      console.log("Contact API Response:", data);
-
-      if (data.contact_group_id) {
-        localStorage.setItem(
-          "contact_group_id",
-          String(data.contact_group_id)
-        );
-      }
-
-      if (data.contact_id) {
-        localStorage.setItem("contact_id", String(data.contact_id));
-      }
-
-      if (data.loan_id) {
-        localStorage.setItem("loan_id", String(data.loan_id));
-      }
-    } catch (error) {
-      console.error("Background contact creation failed:", error);
-    } finally {
-      setSubmitting(false);
-    }
   };
 
   return (
@@ -338,9 +331,7 @@ export default function ContactForm({
               />
 
               {errors.name && (
-                <p className="mt-1 text-[11px] text-red-400">
-                  {errors.name}
-                </p>
+                <p className="mt-1 text-[11px] text-red-400">{errors.name}</p>
               )}
             </div>
 
@@ -372,9 +363,7 @@ export default function ContactForm({
               </div>
 
               {errors.phone && (
-                <p className="mt-1 text-[11px] text-red-400">
-                  {errors.phone}
-                </p>
+                <p className="mt-1 text-[11px] text-red-400">{errors.phone}</p>
               )}
             </div>
 
@@ -398,9 +387,7 @@ export default function ContactForm({
               />
 
               {errors.email && (
-                <p className="mt-1 text-[11px] text-red-400">
-                  {errors.email}
-                </p>
+                <p className="mt-1 text-[11px] text-red-400">{errors.email}</p>
               )}
             </div>
 
@@ -467,9 +454,7 @@ export default function ContactForm({
               </label>
 
               {errors.agree && (
-                <p className="mt-1 text-[11px] text-red-400">
-                  {errors.agree}
-                </p>
+                <p className="mt-1 text-[11px] text-red-400">{errors.agree}</p>
               )}
             </div>
 

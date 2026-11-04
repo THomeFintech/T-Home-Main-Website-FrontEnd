@@ -1,6 +1,15 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { FileText, ChevronDown, Zap } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  FileText,
+  ChevronDown,
+  Zap,
+  ShieldCheck,
+  Gauge,
+  IndianRupee,
+  Lock,
+  ArrowRight,
+} from "lucide-react";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 const LPS_API_BASE = import.meta.env.VITE_LPS_API_URL;
@@ -95,6 +104,8 @@ function ReportField({ label, value }) {
   );
 }
 
+const hasValue = (v) => v !== "" && v !== null && v !== undefined;
+
 export default function LoanForm({
   loanData,
   setLoanData,
@@ -103,6 +114,7 @@ export default function LoanForm({
   service,
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const mapServiceToLoanType = (service) => {
     if (!service) return "";
@@ -134,7 +146,9 @@ export default function LoanForm({
   console.log("passedLoanType =", passedLoanType);
   const formData = loanData || {};
 
-  const [activeLoanDetails, setActiveLoanDetails] = useState([]);
+  const [activeLoanDetails, setActiveLoanDetails] = useState(
+    Array.isArray(formData.activeLoanDetails) ? formData.activeLoanDetails : [],
+  );
   const [currentLoanIndex, setCurrentLoanIndex] = useState(0);
   const [isCalculating, setIsCalculating] = useState(false);
 
@@ -147,19 +161,18 @@ export default function LoanForm({
       }));
     }
   }, [passedLoanType, setLoanData]);
+
+  // Active loan details come from the latest CIBIL report and are stored
+  // in the parent loanData so they survive navigation/remounts.
   useEffect(() => {
     const count = Number(formData.activeLoans) || 0;
+    const bureauLoans = Array.isArray(formData.activeLoanDetails)
+      ? formData.activeLoanDetails
+      : [];
 
-    setActiveLoanDetails(
-      Array.from({ length: count }, () => ({
-        emi: "",
-        outstandingAmount: "",
-        tenureLeft: "",
-      })),
-    );
-
+    setActiveLoanDetails(bureauLoans.slice(0, count));
     setCurrentLoanIndex(0);
-  }, [formData.activeLoans]);
+  }, [formData.activeLoans, formData.activeLoanDetails]);
 
   const handleChange = useCallback(
     (e) => {
@@ -192,11 +205,63 @@ export default function LoanForm({
     },
     [setLoanData],
   );
+
+  // ---- Active loan detail helpers (were missing in the original) ----
+  const handleLoanDetailChange = (field, value) => {
+    setActiveLoanDetails((prev) =>
+      prev.map((loan, idx) =>
+        idx === currentLoanIndex ? { ...loan, [field]: value } : loan,
+      ),
+    );
+  };
+
+  const nextLoan = () => {
+    setCurrentLoanIndex((i) => Math.min(i + 1, activeLoanDetails.length - 1));
+  };
+
+  const prevLoan = () => {
+    setCurrentLoanIndex((i) => Math.max(i - 1, 0));
+  };
+
+  // ---- Form completeness check (controls Calculate button state) ----
+  const isFormComplete = (() => {
+    const age = Number(formData.age);
+    const loanTypeValue = passedLoanType || formData.loanType;
+
+    const baseFilled =
+      hasValue(formData.age) &&
+      age >= 18 &&
+      age <= 75 &&
+      hasValue(formData.employmentType) &&
+      hasValue(formData.annualIncome) &&
+      Number(formData.annualIncome) > 0 &&
+      hasValue(loanTypeValue) &&
+      hasValue(formData.loanAmount) &&
+      Number(formData.loanAmount) > 0 &&
+      hasValue(formData.tenure) &&
+      Number(formData.tenure) > 0 &&
+      hasValue(formData.activeLoans);
+
+    if (!baseFilled) return false;
+
+    const count = Number(formData.activeLoans) || 0;
+    if (count === 0) return true;
+
+    if (activeLoanDetails.length !== count) return false;
+
+    return activeLoanDetails.every(
+      (loan) =>
+        hasValue(loan.emi) &&
+        hasValue(loan.outstandingAmount) &&
+        hasValue(loan.tenureLeft),
+    );
+  })();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prevent duplicate clicks
-    if (isCalculating || loading) {
+    // Prevent duplicate clicks / incomplete form
+    if (isCalculating || loading || !isFormComplete) {
       return;
     }
 
@@ -397,6 +462,7 @@ export default function LoanForm({
       alert(err.message || "Unable to calculate eligibility.");
     }
   };
+
   const currentLoan = activeLoanDetails[currentLoanIndex];
 
   const inputClass =
@@ -404,6 +470,8 @@ export default function LoanForm({
 
   const labelClass =
     "mb-2 block text-sm sm:text-[16px] font-medium text-white/90";
+
+  const isButtonDisabled = loading || isCalculating || !isFormComplete;
 
   return (
     <div className="w-full pt-[45px] sm:pt-[55px] md:pt-[60px] lg:pt-0">
@@ -595,26 +663,98 @@ export default function LoanForm({
             </div>
           </div>
 
-          <div>
-            <label htmlFor="cibilScore" className={labelClass}>
-              CIBIL Score
-            </label>
-           
+          {/* ===================== CREDIT PROFILE CARD ===================== */}
+          <div className="w-full min-w-0 rounded-2xl border border-[#2563ff] bg-[#0b1a4a]/40 p-3 sm:p-4 lg:p-5 shadow-[0_0_0_1px_rgba(37,99,255,0.25)]">
+            {/* Header */}
+            <div className="flex min-w-0 items-start justify-between gap-2 sm:gap-3">
+              <div className="flex min-w-0 items-start gap-2 sm:gap-4">
+                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-[#1b2d6b]">
+                  <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6 text-[#4ea1ff]" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="break-words text-base sm:text-lg lg:text-xl font-semibold text-white">
+                    Credit Profile
+                  </h3>
+                  {/* Tablet and desktop description */}
+                  <p className="mt-1 hidden max-w-md text-xs sm:block sm:text-sm lg:text-[15px] leading-snug text-white/75">
+                    Connect your credit report to automatically retrieve your
+                    CIBIL score and existing loan information.
+                  </p>
+                </div>
+              </div>
 
-            <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-              <small className="text-xs sm:text-sm text-white/65">
-                To know your CIBIL Score
-              </small>
+              <span className="shrink-0 whitespace-nowrap rounded-full bg-[#1b3a8a] px-2.5 sm:px-3 lg:px-4 py-1.5 text-[10px] sm:text-xs lg:text-sm font-semibold text-[#3ea0ff]">
+                Recommended
+              </span>
+            </div>
 
-              <button
-                type="button"
-                onClick={() => navigate("/get-cibil-score")}
-                className="self-start sm:self-auto text-sm font-semibold text-[#1d78ff] transition hover:text-[#57a3ff]"
-              >
-                Click here
-              </button>
+            {/* Mobile description: full card width for a compact two-line layout */}
+            <p className="mt-2 w-full text-xs leading-snug text-white/75 sm:hidden">
+              Connect your credit report to automatically retrieve your CIBIL
+              score and existing loan information.
+            </p>
+
+            {/* Features strip */}
+            <div className="mt-4 grid grid-cols-1 divide-y divide-white/10 rounded-xl border border-white/10 bg-white/[0.03] lg:grid-cols-3 lg:divide-y-0 lg:divide-x">
+              <div className="flex min-w-0 items-center gap-3 px-3 sm:px-4 py-3 sm:py-3.5 lg:py-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1b2d6b]">
+                  <Gauge className="h-5 w-5 text-[#3ea0ff]" />
+                </div>
+                <p className="min-w-0 text-sm sm:text-[15px] text-white/80 leading-snug">
+                  Get your actual
+                  <br />
+                  CIBIL score
+                </p>
+              </div>
+
+              <div className="flex min-w-0 items-center gap-3 px-3 sm:px-4 py-3 sm:py-3.5 lg:py-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1b2d6b]">
+                  <FileText className="h-5 w-5 text-[#3ea0ff]" />
+                </div>
+                <p className="min-w-0 text-sm sm:text-[15px] text-white/80 leading-snug">
+                  Identify active loans
+                  <br />& credit accounts
+                </p>
+              </div>
+
+              <div className="flex min-w-0 items-center gap-3 px-3 sm:px-4 py-3 sm:py-3.5 lg:py-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1b2d6b]">
+                  <IndianRupee className="h-5 w-5 text-[#3ea0ff]" />
+                </div>
+                <p className="min-w-0 text-sm sm:text-[15px] text-white/80 leading-snug">
+                  Auto-fill available
+                  <br />
+                  EMI information
+                </p>
+              </div>
+            </div>
+
+            {/* Fetch button */}
+            <button
+              type="button"
+              onClick={() =>
+                navigate("/get-cibil-score", {
+                  // LoanForm is rendered inside Tools at step 3.
+                  // Preserve the internal Loan Application Form view on return.
+                  state: { from: `${location.pathname}?tool=loan-prediction` },
+                })
+              }
+              className="mt-4 flex min-h-14 w-full items-center justify-center gap-2 sm:gap-3 rounded-xl bg-[#2563ff] px-3 sm:px-4 py-3 text-sm sm:text-base lg:text-lg font-semibold text-white transition hover:bg-[#1f57e5]"
+            >
+              <ShieldCheck className="h-5 w-5" />
+              Fetch Credit Report
+              <ArrowRight className="h-5 w-5" />
+            </button>
+
+            {/* Secure note */}
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs lg:text-sm text-white/70">
+              <Lock className="h-4 w-4" />
+              <span>Secure connection</span>
+              <span>•</span>
+              <span>Your permission is required</span>
             </div>
           </div>
+          {/* =================== END CREDIT PROFILE CARD =================== */}
 
           <div>
             <label htmlFor="activeLoans" className={labelClass}>
@@ -624,103 +764,27 @@ export default function LoanForm({
               type="number"
               id="activeLoans"
               name="activeLoans"
-              placeholder="Number of active loans"
-              value={formData.activeLoans}
-              onChange={handleChange}
-              required
-              min="0"
-              max="50"
-              className={inputClass}
+              value={hasValue(formData.activeLoans) ? formData.activeLoans : ""}
+              readOnly
+              aria-readonly="true"
+              placeholder="Fetch CIBIL report to retrieve active loans"
+              className={`${inputClass} cursor-not-allowed opacity-80`}
             />
+            <p className="mt-2 text-xs sm:text-sm text-[#4ea1ff]/90">
+              Automatically populated from your CIBIL report. Manual entry is
+              disabled.
+            </p>
           </div>
 
-          {activeLoanDetails.length > 0 && (
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 md:p-6">
-              <div className="mb-5 text-center">
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
-                  Active Loan Details
-                </h3>
-                <p className="mt-1 text-sm sm:text-base md:text-lg text-white/80">
-                  Loan {currentLoanIndex + 1} of {activeLoanDetails.length}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div>
-                  <label className={labelClass}>Monthly EMI (₹)</label>
-                  <input
-                    type="number"
-                    value={currentLoan.emi}
-                    onChange={(e) =>
-                      handleLoanDetailChange("emi", Number(e.target.value))
-                    }
-                    min="0"
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <label className={labelClass}>Outstanding Amount (₹)</label>
-                  <input
-                    type="number"
-                    value={currentLoan.outstandingAmount}
-                    onChange={(e) =>
-                      handleLoanDetailChange(
-                        "outstandingAmount",
-                        Number(e.target.value),
-                      )
-                    }
-                    min="0"
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <label className={labelClass}>Tenure Left (Years)</label>
-                  <input
-                    type="number"
-                    value={currentLoan.tenureLeft}
-                    onChange={(e) =>
-                      handleLoanDetailChange(
-                        "tenureLeft",
-                        Number(e.target.value),
-                      )
-                    }
-                    min="0"
-                    max="30"
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-
-              <div className="mt-6 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3">
-                {currentLoanIndex > 0 && (
-                  <button
-                    type="button"
-                    onClick={prevLoan}
-                    className="w-full sm:w-auto rounded-2xl bg-[#53a8ff] px-5 sm:px-7 py-3 text-sm sm:text-base font-semibold text-[#07152f] shadow-lg transition hover:scale-[1.02]"
-                  >
-                    ← Previous Loan
-                  </button>
-                )}
-
-                {currentLoanIndex < activeLoanDetails.length - 1 && (
-                  <button
-                    type="button"
-                    onClick={nextLoan}
-                    className="w-full sm:w-auto rounded-2xl bg-[#53a8ff] px-5 sm:px-7 py-3 text-sm sm:text-base font-semibold text-[#07152f] shadow-lg transition hover:scale-[1.02]"
-                  >
-                    Next Loan →
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-
+          {/* Calculate Eligibility: dull until all fields are filled */}
           <button
             type="submit"
-            disabled={loading || isCalculating}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#2563ff] px-4 sm:px-6 py-3.5 sm:py-4 text-base sm:text-lg font-semibold text-white shadow-[0_12px_30px_rgba(37,99,255,0.35)] transition hover:bg-[#1f57e5] disabled:cursor-not-allowed disabled:opacity-70"
+            disabled={isButtonDisabled}
+            className={`flex w-full items-center justify-center gap-2 rounded-2xl px-4 sm:px-6 py-3.5 sm:py-4 text-base sm:text-lg font-semibold transition ${
+              isButtonDisabled
+                ? "cursor-not-allowed bg-[#2563ff]/30 text-white/40 shadow-none"
+                : "bg-[#2563ff] text-white shadow-[0_12px_30px_rgba(37,99,255,0.35)] hover:bg-[#1f57e5]"
+            }`}
           >
             {loading || isCalculating ? (
               <>

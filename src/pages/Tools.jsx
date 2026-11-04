@@ -19,13 +19,13 @@ export default function Tools() {
 
   const searchParams = useMemo(
     () => new URLSearchParams(location.search),
-    [location.search]
+    [location.search],
   );
   const toolParam = searchParams.get("tool");
   const serviceParam = searchParams.get("service");
 
   const [selectedService, setSelectedService] = useState(
-    () => serviceParam || ""
+    () => serviceParam || "",
   );
 
   const [step, setStep] = useState(() => {
@@ -34,10 +34,12 @@ export default function Tools() {
       const tool = params.get("tool");
       if (tool === "loan-prediction") {
         const verified = JSON.parse(
-          localStorage.getItem("digilocker_verified_identity") || "null"
+          localStorage.getItem("digilocker_verified_identity") || "null",
         );
         if (verified && (verified.name || verified.pan || verified.aadhaar)) {
-          const savedStep = Number(localStorage.getItem("loan_prediction_step"));
+          const savedStep = Number(
+            localStorage.getItem("loan_prediction_step"),
+          );
           if (savedStep && savedStep >= 2 && savedStep <= 5) {
             return savedStep;
           }
@@ -57,7 +59,7 @@ export default function Tools() {
     try {
       const saved = JSON.parse(localStorage.getItem("contact_data") || "{}");
       const verified = JSON.parse(
-        localStorage.getItem("digilocker_verified_identity") || "{}"
+        localStorage.getItem("digilocker_verified_identity") || "{}",
       );
       const params = new URLSearchParams(window.location.search);
       const currentService = params.get("service") || "";
@@ -71,7 +73,8 @@ export default function Tools() {
         dob: saved.dob || verified.dob || "",
         gender: saved.gender || verified.gender || "",
         address: saved.address || verified.address || "",
-        driving_licence: saved.driving_licence || verified.driving_licence || "",
+        driving_licence:
+          saved.driving_licence || verified.driving_licence || "",
         service: saved.service || currentService || "",
       };
     } catch {
@@ -83,7 +86,7 @@ export default function Tools() {
     try {
       const saved = JSON.parse(localStorage.getItem("loanData") || "{}");
       const verified = JSON.parse(
-        localStorage.getItem("digilocker_verified_identity") || "{}"
+        localStorage.getItem("digilocker_verified_identity") || "{}",
       );
       const storedAge = localStorage.getItem("digilocker_age");
       const calculatedAge = calculateAgeFromDob(verified?.dob);
@@ -108,7 +111,9 @@ export default function Tools() {
 
   useEffect(() => {
     if (serviceParam) {
-      setSelectedService((prev) => (prev !== serviceParam ? serviceParam : prev));
+      setSelectedService((prev) =>
+        prev !== serviceParam ? serviceParam : prev,
+      );
     }
   }, [serviceParam]);
 
@@ -170,7 +175,7 @@ export default function Tools() {
               try {
                 localStorage.setItem(
                   "digilocker_verified_identity",
-                  JSON.stringify(verified)
+                  JSON.stringify(verified),
                 );
               } catch {
                 /* ignore */
@@ -183,22 +188,30 @@ export default function Tools() {
 
               setContactData((prev) => {
                 const currentSaved = JSON.parse(
-                  localStorage.getItem("contact_data") || "{}"
+                  localStorage.getItem("contact_data") || "{}",
                 );
                 const updated = {
                   ...prev,
                   ...currentSaved,
                   name: prev.name || currentSaved.name || verified.name || "",
-                  phone: prev.phone || currentSaved.phone || verified.phone || "",
-                  email: prev.email || currentSaved.email || verified.email || "",
+                  phone:
+                    prev.phone || currentSaved.phone || verified.phone || "",
+                  email:
+                    prev.email || currentSaved.email || verified.email || "",
                   pan: prev.pan || currentSaved.pan || verified.pan || "",
                   aadhaar:
-                    prev.aadhaar || currentSaved.aadhaar || verified.aadhaar || "",
+                    prev.aadhaar ||
+                    currentSaved.aadhaar ||
+                    verified.aadhaar ||
+                    "",
                   dob: prev.dob || currentSaved.dob || verified.dob || "",
                   gender:
                     prev.gender || currentSaved.gender || verified.gender || "",
                   address:
-                    prev.address || currentSaved.address || verified.address || "",
+                    prev.address ||
+                    currentSaved.address ||
+                    verified.address ||
+                    "",
                   driving_licence:
                     prev.driving_licence ||
                     currentSaved.driving_licence ||
@@ -220,7 +233,7 @@ export default function Tools() {
 
               setLoanData((prev) => {
                 const currentSaved = JSON.parse(
-                  localStorage.getItem("loanData") || "{}"
+                  localStorage.getItem("loanData") || "{}",
                 );
                 const updated = {
                   ...currentSaved,
@@ -228,15 +241,16 @@ export default function Tools() {
                   age: prev?.age || currentSaved?.age || calculatedAge || "",
                   pan: prev?.pan || currentSaved?.pan || verified.pan || "",
                   name: prev?.name || currentSaved?.name || verified.name || "",
-                  phone: prev?.phone || currentSaved?.phone || verified.phone || "",
+                  phone:
+                    prev?.phone || currentSaved?.phone || verified.phone || "",
                   gender:
-                    prev?.gender || currentSaved?.gender || verified.gender || "",
+                    prev?.gender ||
+                    currentSaved?.gender ||
+                    verified.gender ||
+                    "",
                 };
                 try {
-                  localStorage.setItem(
-                    "loanData",
-                    JSON.stringify(updated)
-                  );
+                  localStorage.setItem("loanData", JSON.stringify(updated));
                 } catch {
                   /* ignore */
                 }
@@ -247,7 +261,7 @@ export default function Tools() {
               setStep((currentStep) => {
                 if (currentStep <= 1) {
                   const savedStep = Number(
-                    localStorage.getItem("loan_prediction_step")
+                    localStorage.getItem("loan_prediction_step"),
                   );
                   if (savedStep && savedStep >= 2 && savedStep <= 5) {
                     return savedStep;
@@ -330,22 +344,20 @@ export default function Tools() {
     }
   }, [location, navigate]);
 
-useEffect(() => {
-  if (step === 3) {
-    const savedLoan = JSON.parse(localStorage.getItem("loanData") || "{}");
-    const storedAge = localStorage.getItem("digilocker_age");
-    const ageFromDob = calculateAgeFromDob(contactData?.dob);
-    const resolvedAge = savedLoan.age || storedAge || ageFromDob || "";
+  useEffect(() => {
+    if (step === 3) {
+      const savedLoan = JSON.parse(localStorage.getItem("loanData") || "{}");
+      const storedAge = localStorage.getItem("digilocker_age");
+      const ageFromDob = calculateAgeFromDob(contactData?.dob);
+      const resolvedAge = savedLoan.age || storedAge || ageFromDob || "";
 
-    setLoanData((prev) => ({
-      ...savedLoan,
-      ...prev,
-      age: prev?.age || savedLoan.age || resolvedAge,
-    }));
-  }
-}, [step, contactData?.dob]);
-  
-
+      setLoanData((prev) => ({
+        ...savedLoan,
+        ...prev,
+        age: prev?.age || savedLoan.age || resolvedAge,
+      }));
+    }
+  }, [step, contactData?.dob]);
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
@@ -418,16 +430,16 @@ useEffect(() => {
       }
 
       console.log("Calling /applications/select-bank with payload:", payload);
-const token = sessionStorage.getItem("access_token");// Your login stores the token as "token"
+      const token = sessionStorage.getItem("access_token"); // Your login stores the token as "token"
 
-const response = await fetch(`${API_BASE}/applications/select-bank`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    ...(token && { Authorization: `Bearer ${token}` }),
-  },
-  body: JSON.stringify(payload),
-});
+      const response = await fetch(`${API_BASE}/applications/select-bank`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify(payload),
+      });
 
       const data = await response.json();
       console.log("Select bank API response:", data);
@@ -478,15 +490,15 @@ const response = await fetch(`${API_BASE}/applications/select-bank`, {
         "Estimate your potential borrowing range from net income, current EMIs, age and tenure.",
       buttonText: "Check Eligibility",
       icon: Shield,
-     onClick: () => {
-  const token = sessionStorage.getItem("access_token");
+      onClick: () => {
+        const token = sessionStorage.getItem("access_token");
 
-  if (token) {
-    setStep(1);
-  } else {
-    navigate("/login");
-  }
-},
+        if (token) {
+          setStep(1);
+        } else {
+          navigate("/login");
+        }
+      },
       theme: {
         border: "border-blue-500/20",
         cardBorder: "border-blue-500/10",
@@ -502,15 +514,15 @@ const response = await fetch(`${API_BASE}/applications/select-bank`, {
         "Estimate prospective interest savings. Actual savings depend on new lender terms, processing fees and prepayment charges.",
       buttonText: "Calculate Now",
       icon: TrendingUp,
-     onClick: () => {
-const token = sessionStorage.getItem("access_token");
+      onClick: () => {
+        const token = sessionStorage.getItem("access_token");
 
-if (token) {
-  navigate("/balance-transfer-contact");
-} else {
-  navigate("/login");
-}
-},
+        if (token) {
+          navigate("/balance-transfer-contact");
+        } else {
+          navigate("/login");
+        }
+      },
       theme: {
         border: "border-emerald-500/20",
         cardBorder: "border-emerald-500/10",
@@ -535,7 +547,8 @@ if (token) {
             </h1>
 
             <p className="mx-auto max-w-2xl text-base font-normal leading-relaxed text-gray-400 md:text-lg">
-              Estimate borrowing costs, evaluate monthly budgets and check potential refinancing savings before you apply.
+              Estimate borrowing costs, evaluate monthly budgets and check
+              potential refinancing savings before you apply.
             </p>
 
             <p className="mx-auto mt-4 max-w-3xl text-sm leading-6 text-gray-400">
@@ -620,7 +633,7 @@ if (token) {
                 if (verifiedIdentity) {
                   localStorage.setItem(
                     "digilocker_verified_identity",
-                    JSON.stringify(verifiedIdentity)
+                    JSON.stringify(verifiedIdentity),
                   );
                 }
                 setContactData((prev) => ({
@@ -642,8 +655,13 @@ if (token) {
                     phone: prev?.phone || verifiedIdentity.phone || "",
                     gender: prev?.gender || verifiedIdentity.gender || "",
                   };
-                  const currentSaved = JSON.parse(localStorage.getItem("loanData") || "{}");
-                  localStorage.setItem("loanData", JSON.stringify({ ...currentSaved, ...updated }));
+                  const currentSaved = JSON.parse(
+                    localStorage.getItem("loanData") || "{}",
+                  );
+                  localStorage.setItem(
+                    "loanData",
+                    JSON.stringify({ ...currentSaved, ...updated }),
+                  );
                   return updated;
                 });
                 setStep(2);

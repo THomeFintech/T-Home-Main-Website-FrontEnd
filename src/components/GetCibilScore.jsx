@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FileText } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -2039,8 +2040,34 @@ function CibilReportModal({
                     loanData.cibilScore exactly like LoanForm does
    ===================================================================== */
 
-export default function GetCibilScore({ loanData, setLoanData }) {
+export default function GetCibilScore({ loanData, setLoanData, onBack }) {
   const formData = loanData || {};
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleBack = () => {
+    // Inline usage from BalanceTransferDetails: restore the same form
+    // without navigating away or losing its component state.
+    if (typeof onBack === "function") {
+      onBack();
+      return;
+    }
+
+    // Standalone route usage: return to the exact page that opened CIBIL.
+    // This supports Loan Application Form, Tools, Balance Transfer, and
+    // any other page that passes its pathname in navigation state.
+    const returnTo = location.state?.from;
+
+    if (returnTo) {
+      // Return to the preserved Tools sub-view (Loan Application Form),
+      // not the default Tools landing/cards screen.
+      navigate(returnTo, { replace: true });
+      return;
+    }
+
+    // If CIBIL was opened without navigation state, use browser history.
+    navigate(-1);
+  };
 
   const [showCibilForm, setShowCibilForm] = useState(true);
   const [cibilLoading, setCibilLoading] = useState(false);
@@ -2173,12 +2200,110 @@ export default function GetCibilScore({ loanData, setLoanData }) {
       setCibilReport(report);
       setCibilScore(score);
 
-      // Update CIBIL score in parent form (if provided)
+      // Convert bureau tradelines into the fields used by the loan prediction
+      // API. Only open/active accounts are counted; closed accounts are ignored.
+      const getAccountValue = (account, ...keys) => {
+        for (const key of keys) {
+          const value = account?.[key];
+          if (value !== null && value !== undefined && value !== "")
+            return value;
+        }
+        return "";
+      };
+
+      const hasReportAccounts =
+        Array.isArray(report?.accounts) ||
+        Array.isArray(data.cibilReport?.accounts);
+      const reportAccounts = Array.isArray(report?.accounts)
+        ? report.accounts
+        : Array.isArray(data.cibilReport?.accounts)
+          ? data.cibilReport.accounts
+          : [];
+
+      const activeAccounts = reportAccounts.filter((account) => {
+        const status = String(
+          getAccountValue(
+            account,
+            "accountStatus",
+            "ACTIVE/INACTIVE",
+            "status",
+          ) ||
+            account?.["ACCOUNT INFORMATION"]?.["ACTIVE/INACTIVE"] ||
+            "",
+        )
+          .trim()
+          .toUpperCase();
+        const closedDate =
+          getAccountValue(account, "dateClosed", "DATE CLOSED") ||
+          account?.["ACCOUNT INFORMATION"]?.["DATE CLOSED"];
+
+        if (/CLOSED|INACTIVE|^C$/.test(status)) return false;
+        if (/OPEN|ACTIVE|^O$/.test(status)) return true;
+        return !closedDate;
+      });
+
+      const bureauActiveLoanDetails = activeAccounts.map((account) => {
+        const emi =
+          getAccountValue(account, "emiAmount", "EMI") ||
+          account?.AMOUNTS?.EMI ||
+          "0";
+        const outstandingAmount =
+          getAccountValue(account, "currentBalance", "CURRENT BALANCE") ||
+          account?.AMOUNTS?.["CURRENT BALANCE"] ||
+          "0";
+        const remainingTenureYears = getAccountValue(
+          account,
+          "remainingTenureYears",
+          "tenureLeft",
+        );
+        const remainingTenureMonths = getAccountValue(
+          account,
+          "remainingTenureMonths",
+          "remainingTenure",
+        );
+
+        return {
+          emi: Number(emi) || 0,
+          outstandingAmount: Number(outstandingAmount) || 0,
+          // Do not mistake the original loan term for the remaining term.
+          // Populate tenure only when the bureau explicitly supplies it.
+          tenureLeft: Number(remainingTenureYears)
+            ? Number(remainingTenureYears)
+            : Number(remainingTenureMonths)
+              ? Number((Number(remainingTenureMonths) / 12).toFixed(2))
+              : 0,
+        };
+      });
+
+      const updateLoanData = (previous = {}) => ({
+        ...previous,
+        cibilScore: score,
+        ...(hasReportAccounts
+          ? {
+              activeLoans: activeAccounts.length,
+              activeLoanDetails: bureauActiveLoanDetails,
+            }
+          : {}),
+      });
+
+      // Update React state when this component is rendered with the parent
+      // setter, and also persist it because the CIBIL page may be a separate route.
       if (typeof setLoanData === "function") {
-        setLoanData((prev) => ({
-          ...prev,
-          cibilScore: score,
-        }));
+        setLoanData((prev) => updateLoanData(prev));
+      }
+      try {
+        const savedLoanData = JSON.parse(
+          localStorage.getItem("loanData") || "{}",
+        );
+        localStorage.setItem(
+          "loanData",
+          JSON.stringify(updateLoanData(savedLoanData)),
+        );
+      } catch (storageError) {
+        console.warn(
+          "Unable to save CIBIL loan details locally:",
+          storageError,
+        );
       }
 
       // Save application ID if returned by backend
@@ -2639,21 +2764,31 @@ export default function GetCibilScore({ loanData, setLoanData }) {
               </div>
             )}
 
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={cibilLoading}
-              className="w-full rounded-xl bg-[#2563ff] px-5 py-3.5 font-semibold text-white transition hover:bg-[#1f57e5] disabled:cursor-not-allowed disabled:opacity-70"
-            >
-              {cibilLoading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Fetching CIBIL Score...
-                </span>
-              ) : (
-                "Get CIBIL Score"
-              )}
-            </button>
+            {/* Back + Get CIBIL Score: equal-width side-by-side buttons */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={handleBack}
+                className="w-full rounded-xl border border-white/20 bg-[#111827] px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+              >
+                ← Back
+              </button>
+
+              <button
+                type="submit"
+                disabled={cibilLoading}
+                className="w-full rounded-xl bg-[#2563ff] px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-[#1f57e5] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {cibilLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Fetching...
+                  </span>
+                ) : (
+                  "Get CIBIL Score"
+                )}
+              </button>
+            </div>
           </form>
         </div>
       </div>

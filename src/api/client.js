@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 20000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -20,7 +20,7 @@ apiClient.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 export const getApiErrorMessage = (error) => {
@@ -34,6 +34,10 @@ export const getApiErrorMessage = (error) => {
     }
 
     return JSON.stringify(error.response.data.detail);
+  }
+
+  if (error?.code === "ECONNABORTED") {
+    return "Server is taking too long to respond. Please try again.";
   }
 
   return error?.message || "Something went wrong";
