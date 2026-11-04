@@ -819,6 +819,7 @@ export default function LoanForm({
               disabled.
             </p>
           </div>
+          {/* =================== END CREDIT PROFILE CARD =================== */}
 
           <div>
             <label htmlFor="activeLoans" className={labelClass}>

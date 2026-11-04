@@ -28,7 +28,59 @@ const validatePAN = (pan) => {
    After DigiLocker authentication the backend redirects back to this
    page. The identity saved by the backend (/digilocker/identity) is then
    used to pre-fill First Name, Last Name, PAN, Mobile, Gender and DOB.
+
+   SPEED: the mapped values are cached in sessionStorage for a few minutes,
+   so the form is filled INSTANTLY on open (no waiting for the network).
+   A background request refreshes the cache; it is skipped completely when
+   the cache already has every field.
    --------------------------------------------------------------------- */
+
+const AUTOFILL_FIELDS = [
+  "firstName",
+  "lastName",
+  "pan",
+  "phone",
+  "gender",
+  "dob",
+];
+
+const AUTOFILL_CACHE_KEY = "cibil_form_autofill_cache";
+const AUTOFILL_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+
+const readAutofillCache = () => {
+  try {
+    const raw = sessionStorage.getItem(AUTOFILL_CACHE_KEY);
+
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw);
+
+    if (
+      !parsed ||
+      typeof parsed !== "object" ||
+      Date.now() - Number(parsed.savedAt || 0) > AUTOFILL_CACHE_TTL_MS
+    ) {
+      return null;
+    }
+
+    return parsed.values && typeof parsed.values === "object"
+      ? parsed.values
+      : null;
+  } catch {
+    return null;
+  }
+};
+
+const writeAutofillCache = (values) => {
+  try {
+    sessionStorage.setItem(
+      AUTOFILL_CACHE_KEY,
+      JSON.stringify({ savedAt: Date.now(), values }),
+    );
+  } catch {
+    // Storage may be unavailable; autofill still works without the cache.
+  }
+};
 
 // Accepts YYYY-MM-DD(...), DD/MM/YYYY, DD-MM-YYYY, DDMMYYYY and returns the
 // YYYY-MM-DD value required by <input type="date">. Returns "" if unknown.
@@ -2136,6 +2188,10 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Cached autofill values (read once, synchronously) so the form is already
+  // filled on the very first render - no waiting for the network.
+  const [initialAutofill] = useState(() => readAutofillCache());
+
   const handleBack = () => {
     // Inline usage from BalanceTransferDetails: restore the same form
     // without navigating away or losing its component state.
@@ -2163,8 +2219,12 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
   const [showCibilForm, setShowCibilForm] = useState(true);
   const [cibilLoading, setCibilLoading] = useState(false);
   const [cibilError, setCibilError] = useState("");
-  const [panError, setPanError] = useState("");
-  const [panTouched, setPanTouched] = useState(false);
+  const [panError, setPanError] = useState(() =>
+    initialAutofill?.pan ? validatePAN(initialAutofill.pan) : "",
+  );
+  const [panTouched, setPanTouched] = useState(() =>
+    Boolean(initialAutofill?.pan),
+  );
 
   const [cibilReport, setCibilReport] = useState(null);
   const [showCibilReport, setShowCibilReport] = useState(false);
@@ -2175,13 +2235,23 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
     return saved ? Number(saved) : null;
   });
 
-  const [cibilForm, setCibilForm] = useState({
-    firstName: "",
-    lastName: "",
-    pan: "",
-    phone: "",
-    gender: "",
-    dob: "",
+  const [cibilForm, setCibilForm] = useState(() => {
+    const base = {
+      firstName: "",
+      lastName: "",
+      pan: "",
+      phone: "",
+      gender: "",
+      dob: "",
+    };
+
+    if (initialAutofill) {
+      for (const key of AUTOFILL_FIELDS) {
+        if (initialAutofill[key]) base[key] = initialAutofill[key];
+      }
+    }
+
+    return base;
   });
 
   // "Close Report": hide the report and go straight back to the page that
@@ -2194,11 +2264,17 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
 
   /* ---------------------------------------------------------------
      DIGILOCKER AUTOFILL
-     Runs when the form opens (including right after the DigiLocker
-     redirect). Reads the verified identity saved by the backend and
-     fills only the fields the user has not typed yet.
+     1) The cached values (if any) were already applied above, instantly.
+     2) If the cache already holds every field, no request is made.
+     3) Otherwise ONE request fetches the identity and fills only the
+        fields the user has not typed yet, then refreshes the cache.
   ---------------------------------------------------------------- */
   useEffect(() => {
+    const cacheIsComplete =
+      initialAutofill && AUTOFILL_FIELDS.every((key) => initialAutofill[key]);
+
+    if (cacheIsComplete) return undefined;
+
     const token =
       localStorage.getItem("access_token") ||
       localStorage.getItem("token") ||
@@ -2207,34 +2283,39 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
 
     if (!token) return undefined;
 
-    let cancelled = false;
+    const controller = new AbortController();
 
     const autofillFromDigiLocker = async () => {
       try {
         const response = await fetch(`${API_BASE}/digilocker/identity`, {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
+          signal: controller.signal,
         });
 
         if (!response.ok) return;
 
         const identity = await response.json();
 
-        if (cancelled) return;
+        if (controller.signal.aborted) return;
 
         const filled = mapDigiLockerIdentityToCibilForm(identity);
+
+        // Remember the values so the next open is instant.
+        const cacheValues = {};
+
+        for (const key of AUTOFILL_FIELDS) {
+          if (filled[key]) cacheValues[key] = filled[key];
+        }
+
+        if (Object.keys(cacheValues).length > 0) {
+          writeAutofillCache({ ...(initialAutofill || {}), ...cacheValues });
+        }
 
         setCibilForm((previous) => {
           const next = { ...previous };
 
-          for (const key of [
-            "firstName",
-            "lastName",
-            "pan",
-            "phone",
-            "gender",
-            "dob",
-          ]) {
+          for (const key of AUTOFILL_FIELDS) {
             if (!previous[key] && filled[key]) {
               next[key] = filled[key];
             }
@@ -2248,15 +2329,18 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
           setPanError(validatePAN(filled.pan));
         }
       } catch (error) {
-        console.warn("DigiLocker autofill skipped:", error);
+        if (error?.name !== "AbortError") {
+          console.warn("DigiLocker autofill skipped:", error);
+        }
       }
     };
 
     autofillFromDigiLocker();
 
     return () => {
-      cancelled = true;
+      controller.abort();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCibilChange = (e) => {

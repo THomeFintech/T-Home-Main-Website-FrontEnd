@@ -637,6 +637,7 @@ export default function BalanceTransferDetails() {
                 </p>
               </Field>
             </div>
+            {/* =================== END CREDIT PROFILE CARD =================== */}
 
             <div className="pt-2 text-center">
               <h3 className="text-[19px] font-medium text-white">
