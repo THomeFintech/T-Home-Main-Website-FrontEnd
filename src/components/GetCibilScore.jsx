@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FileText } from "lucide-react";
 import jsPDF from "jspdf";
@@ -21,6 +21,85 @@ const validatePAN = (pan) => {
   }
 
   return "";
+};
+
+/* ---------------------------------------------------------------------
+   DIGILOCKER -> CIBIL FORM AUTOFILL HELPERS
+   After DigiLocker authentication the backend redirects back to this
+   page. The identity saved by the backend (/digilocker/identity) is then
+   used to pre-fill First Name, Last Name, PAN, Mobile, Gender and DOB.
+   --------------------------------------------------------------------- */
+
+// Accepts YYYY-MM-DD(...), DD/MM/YYYY, DD-MM-YYYY, DDMMYYYY and returns the
+// YYYY-MM-DD value required by <input type="date">. Returns "" if unknown.
+const dobToDateInput = (value) => {
+  if (value === null || value === undefined || value === "") return "";
+
+  const text = String(value).trim();
+
+  let match = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) return `${match[1]}-${match[2]}-${match[3]}`;
+
+  match = text.match(/^(\d{2})[/-](\d{2})[/-](\d{4})$/);
+  if (match) return `${match[3]}-${match[2]}-${match[1]}`;
+
+  match = text.match(/^(\d{2})(\d{2})(\d{4})$/);
+  if (match) return `${match[3]}-${match[2]}-${match[1]}`;
+
+  return "";
+};
+
+// Splits a full name into first / last name (last word = last name).
+const splitFullName = (fullName) => {
+  const parts = String(fullName || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (parts.length === 0) return { firstName: "", lastName: "" };
+  if (parts.length === 1) return { firstName: parts[0], lastName: "" };
+
+  return {
+    firstName: parts.slice(0, -1).join(" "),
+    lastName: parts[parts.length - 1],
+  };
+};
+
+// The form's gender dropdown only has "Male" / "Female".
+const normalizeGenderForForm = (value) => {
+  const text = String(value || "")
+    .trim()
+    .toUpperCase();
+
+  if (text.startsWith("M")) return "Male";
+  if (text.startsWith("F")) return "Female";
+
+  return "";
+};
+
+const normalizePhoneForForm = (value) => {
+  const digits = String(value || "").replace(/\D/g, "");
+
+  return digits.length >= 10 ? digits.slice(-10) : "";
+};
+
+const mapDigiLockerIdentityToCibilForm = (identity) => {
+  if (!identity || typeof identity !== "object") return {};
+
+  const { firstName, lastName } = splitFullName(identity.name);
+  const pan = String(identity.pan || "")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "")
+    .slice(0, 10);
+
+  return {
+    firstName,
+    lastName,
+    pan,
+    phone: normalizePhoneForForm(identity.phone),
+    gender: normalizeGenderForForm(identity.gender),
+    dob: dobToDateInput(identity.dob),
+  };
 };
 
 /* =====================================================================
@@ -1088,6 +1167,7 @@ function CibilReportModal({
   consumer,
   onClose,
   onDownload,
+  downloading = false,
 }) {
   const cir = report?.["CONSUMER CIR"];
   const details = report?.["CONSUMER DETAILS"];
@@ -2010,7 +2090,8 @@ function CibilReportModal({
           <button
             type="button"
             onClick={onClose}
-            className="w-full rounded-lg border border-[#b8bec5] bg-white px-5 py-2.5 text-sm font-semibold text-[#333] hover:bg-[#f5f6f7] sm:w-auto"
+            disabled={downloading}
+            className="w-full rounded-lg border border-[#b8bec5] bg-white px-5 py-2.5 text-sm font-semibold text-[#333] hover:bg-[#f5f6f7] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
           >
             Close Report
           </button>
@@ -2018,9 +2099,10 @@ function CibilReportModal({
           <button
             type="button"
             onClick={onDownload}
-            className="w-full rounded-lg bg-[#00a1de] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#0090c8] sm:w-auto"
+            disabled={downloading}
+            className="w-full rounded-lg bg-[#00a1de] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#0090c8] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
           >
-            Download CIBIL Report
+            {downloading ? "Preparing PDF..." : "Download CIBIL Report"}
           </button>
         </div>
       </div>
@@ -2033,6 +2115,9 @@ function CibilReportModal({
    ---------------------------------------------------------------------
    Same "Get Your CIBIL Score" form, same API call, same report modal and
    same PDF download as LoanForm.jsx.
+
+   After DigiLocker authentication the user lands back on this form and
+   the fields are auto-filled from the verified DigiLocker identity.
 
    Optional props (all safe to omit):
      loanData     – used only as fallback score for the report
@@ -2077,6 +2162,7 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
 
   const [cibilReport, setCibilReport] = useState(null);
   const [showCibilReport, setShowCibilReport] = useState(false);
+  const [downloadingReport, setDownloadingReport] = useState(false);
 
   const [cibilScore, setCibilScore] = useState(() => {
     const saved = localStorage.getItem("dashboard_cibil_score");
@@ -2091,6 +2177,73 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
     gender: "",
     dob: "",
   });
+
+  /* ---------------------------------------------------------------
+     DIGILOCKER AUTOFILL
+     Runs when the form opens (including right after the DigiLocker
+     redirect). Reads the verified identity saved by the backend and
+     fills only the fields the user has not typed yet.
+  ---------------------------------------------------------------- */
+  useEffect(() => {
+    const token =
+      localStorage.getItem("access_token") ||
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("access_token") ||
+      sessionStorage.getItem("token");
+
+    if (!token) return undefined;
+
+    let cancelled = false;
+
+    const autofillFromDigiLocker = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/digilocker/identity`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) return;
+
+        const identity = await response.json();
+
+        if (cancelled) return;
+
+        const filled = mapDigiLockerIdentityToCibilForm(identity);
+
+        setCibilForm((previous) => {
+          const next = { ...previous };
+
+          for (const key of [
+            "firstName",
+            "lastName",
+            "pan",
+            "phone",
+            "gender",
+            "dob",
+          ]) {
+            if (!previous[key] && filled[key]) {
+              next[key] = filled[key];
+            }
+          }
+
+          return next;
+        });
+
+        if (filled.pan) {
+          setPanTouched(true);
+          setPanError(validatePAN(filled.pan));
+        }
+      } catch (error) {
+        console.warn("DigiLocker autofill skipped:", error);
+      }
+    };
+
+    autofillFromDigiLocker();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleCibilChange = (e) => {
     const { name } = e.target;
@@ -2348,34 +2501,47 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
     }
   };
 
+  /* ---------------------------------------------------------------
+     FAST PDF DOWNLOAD
+     Speed-ups compared with the old version:
+       1. Render scale capped at 2 (was 3) - ~55% fewer pixels.
+       2. Pages are encoded as JPEG (was PNG) - several times faster to
+          encode and a much smaller file.
+       3. Page-break search uses merged, sorted intervals + binary
+          search (was a linear scan repeated up to 5000 times).
+       4. The button shows "Preparing PDF..." and the UI gets a repaint
+          before the heavy work starts, so it never looks frozen.
+  ---------------------------------------------------------------- */
   const handleDownloadCibilReport = async () => {
-    if (!cibilReport) return;
+    if (!cibilReport || downloadingReport) return;
 
     const reportElement = document.querySelector("[data-cibil-report-content]");
 
     if (!reportElement) return;
+
+    setDownloadingReport(true);
+
+    // Let React paint the "Preparing PDF..." state first.
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     try {
       /* -------------------------------------------------------------
          PDF SETTINGS
          captureWidth  : smaller = bigger letters in the PDF (A3 width).
                          820 matches the TransUnion text proportions.
-         captureScale  : sharpness only.
+         captureScale  : sharpness vs. speed (2 = ~140 dpi on A3).
          capturePaddingX : left/right page margin inside the PDF (px).
       -------------------------------------------------------------- */
       const captureWidth = 820;
-      // Sharpness: 3 = ~210 dpi on A3 (crisp text). It is lowered
-      // automatically for very long reports so the browser canvas limit
-      // is never exceeded.
       const estimatedHeight =
         reportElement.scrollHeight *
         (Math.max(reportElement.offsetWidth, 1) / captureWidth);
       const MAX_CANVAS_AREA = 64000000;
       const MAX_CANVAS_SIDE = 30000;
       const captureScale = Math.max(
-        1.5,
+        1.25,
         Math.min(
-          3,
+          2,
           Math.sqrt(MAX_CANVAS_AREA / (captureWidth * estimatedHeight * 1.1)),
           MAX_CANVAS_SIDE / (estimatedHeight * 1.1),
         ),
@@ -2393,6 +2559,8 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
         allowTaint: false,
         backgroundColor: "#ffffff",
         logging: false,
+        imageTimeout: 0,
+        removeContainer: true,
         width: captureWidth,
         windowWidth: captureWidth,
         scrollX: 0,
@@ -2486,7 +2654,7 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
               if (rect.height > 0) collected.push(toBlocker(rect, 70));
             });
 
-          blockers = collected
+          const sorted = collected
             .filter(
               (item) =>
                 Number.isFinite(item.top) &&
@@ -2494,39 +2662,73 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
                 item.bottom > item.top,
             )
             .sort((a, b) => a.top - b.top);
+
+          // Merge overlapping / touching intervals into disjoint, sorted
+          // blocks so the page-break search below can use binary search.
+          const merged = [];
+
+          for (const item of sorted) {
+            const last = merged[merged.length - 1];
+
+            if (last && item.top <= last.bottom) {
+              if (item.bottom > last.bottom) last.bottom = item.bottom;
+            } else {
+              merged.push({ top: item.top, bottom: item.bottom });
+            }
+          }
+
+          blockers = merged;
         },
       });
 
-      // Finds the latest empty horizontal line (between two text lines) that
+      // Finds the latest empty horizontal line (between two blocks) that
       // is at or above `target`, so each page is filled almost completely.
       const findSafeCut = (start, target) => {
         const minCut = start + (target - start) * 0.5;
-        let y = target;
-        let settled = false;
 
-        for (let guard = 0; guard < 5000; guard++) {
-          const hit = blockers.find((item) => item.top < y && item.bottom > y);
+        // Last block whose top is strictly above y (binary search).
+        const lastBlockAbove = (y) => {
+          let low = 0;
+          let high = blockers.length - 1;
+          let found = -1;
 
-          if (!hit) {
-            settled = true;
-            break;
+          while (low <= high) {
+            const mid = (low + high) >> 1;
+
+            if (blockers[mid].top < y) {
+              found = mid;
+              low = mid + 1;
+            } else {
+              high = mid - 1;
+            }
           }
 
-          y = hit.top;
+          return found;
+        };
+
+        let y = target;
+        const index = lastBlockAbove(y);
+
+        if (index >= 0 && blockers[index].bottom > y) {
+          // target falls inside a block: cut just above that block
+          y = blockers[index].top;
 
           if (y < minCut) return target;
         }
-
-        if (!settled) return target;
 
         // put the cut in the middle of the empty gap
         let above = start;
         let below = Infinity;
 
-        for (const item of blockers) {
-          if (item.bottom <= y && item.bottom > above) above = item.bottom;
-          if (item.top >= y && item.top < below) below = item.top;
+        const prevIndex = lastBlockAbove(y);
+
+        if (prevIndex >= 0 && blockers[prevIndex].bottom <= y) {
+          above = Math.max(start, blockers[prevIndex].bottom);
         }
+
+        const nextBlock = blockers.find((item) => item.top >= y);
+
+        if (nextBlock) below = nextBlock.top;
 
         if (Number.isFinite(below)) {
           y = Math.max((above + below) / 2, minCut);
@@ -2598,13 +2800,14 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
           pdf.addPage();
         }
 
-        const imageData = pageCanvas.toDataURL("image/png");
+        // JPEG encodes far faster than PNG and keeps the file small.
+        const imageData = pageCanvas.toDataURL("image/jpeg", 0.92);
 
         const pagePdfHeight = (currentHeight / canvas.width) * pdfWidth;
 
         pdf.addImage(
           imageData,
-          "PNG",
+          "JPEG",
           0,
           0,
           pdfWidth,
@@ -2613,13 +2816,22 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
           "FAST",
         );
 
+        // Free the page canvas memory right away.
+        pageCanvas.width = 0;
+        pageCanvas.height = 0;
+
         sourceY += currentHeight;
         pageIndex++;
+
+        // Let the browser breathe between pages so the tab stays responsive.
+        await new Promise((resolve) => setTimeout(resolve, 0));
       }
 
       pdf.save("CIBIL-Credit-Report.pdf");
     } catch (error) {
       console.error("CIBIL report download error:", error);
+    } finally {
+      setDownloadingReport(false);
     }
   };
 
@@ -2803,6 +3015,7 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
           consumer={cibilForm}
           onClose={() => setShowCibilReport(false)}
           onDownload={handleDownloadCibilReport}
+          downloading={downloadingReport}
         />
       )}
     </div>
