@@ -2169,13 +2169,56 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
     return saved ? Number(saved) : null;
   });
 
-  const [cibilForm, setCibilForm] = useState({
-    firstName: "",
-    lastName: "",
-    pan: "",
-    phone: "",
-    gender: "",
-    dob: "",
+  const [cibilForm, setCibilForm] = useState(() => {
+    let firstName = "";
+    let lastName = "";
+    let pan = "";
+    let phone = "";
+    let gender = "";
+    let dob = "";
+
+    try {
+      const digi = JSON.parse(localStorage.getItem("digilocker_verified_identity") || "{}");
+      if (digi.name) {
+        const parts = digi.name.trim().split(/\s+/);
+        firstName = parts[0] || "";
+        lastName = parts.slice(1).join(" ") || "";
+      }
+      if (digi.pan) pan = digi.pan;
+      if (digi.phone) phone = digi.phone;
+      if (digi.gender) gender = digi.gender;
+      if (digi.dob) dob = digi.dob;
+    } catch {}
+
+    try {
+      const user = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}");
+      if (!firstName && user.name) {
+        const parts = user.name.trim().split(/\s+/);
+        firstName = parts[0] || "";
+        lastName = parts.slice(1).join(" ") || "";
+      }
+      if (!phone && (user.phone || user.mobile)) phone = user.phone || user.mobile;
+    } catch {}
+
+    try {
+      const contact = JSON.parse(localStorage.getItem("contact_data") || "{}");
+      if (!firstName && contact.name) {
+        const parts = contact.name.trim().split(/\s+/);
+        firstName = parts[0] || "";
+        lastName = parts.slice(1).join(" ") || "";
+      }
+      if (!phone && contact.phone) phone = contact.phone;
+      if (!pan && contact.pan) pan = contact.pan;
+    } catch {}
+
+    return {
+      firstName,
+      lastName,
+      pan,
+      phone,
+      gender,
+      dob,
+    };
   });
 
   /* ---------------------------------------------------------------

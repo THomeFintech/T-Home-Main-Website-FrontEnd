@@ -14,6 +14,7 @@ import {
   Repeat,
   Bell,
 } from "lucide-react";
+import NavbarSearchBar from "./NavbarSearchBar";
 import { notificationApi } from "../api";
 
 function Navbar() {
@@ -368,7 +369,7 @@ function Navbar() {
             </Link>
 
             {/* DESKTOP NAV */}
-            <div className="hidden items-center gap-6 lg:flex xl:gap-8">
+            <div className="hidden items-center gap-4 xl:gap-6 2xl:gap-8 lg:flex text-sm xl:text-base">
               <NavLink
                 to="/"
                 end
@@ -474,13 +475,15 @@ function Navbar() {
               </NavLink>
             </div>
 
-            {/* DESKTOP AUTH */}
-            <div className="hidden items-center gap-3 lg:flex lg:gap-4">
+            {/* DESKTOP SEARCH + AUTH */}
+            <div className="hidden items-center gap-2.5 lg:flex lg:gap-3">
+              <NavbarSearchBar />
               <AuthButtons />
             </div>
 
             {/* MOBILE HEADER */}
-              <div className="flex items-center gap-2 lg:hidden">
+            <div className="flex items-center gap-2 lg:hidden">
+              <NavbarSearchBar isMobile={true} />
               {isLoggedIn && <NotificationButton />}
 
               <button
@@ -593,6 +596,7 @@ function Navbar() {
 
             {/* TABLET AUTH + BELL */}
             <div className="flex items-center gap-3">
+              <NavbarSearchBar />
               <AuthButtons />
             </div>
           </div>

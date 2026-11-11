@@ -13,19 +13,48 @@ export default function ContactForm({
 }) {
   const [formData, setFormData] = useState(() => {
     let savedDigilocker = {};
+    let savedUser = {};
+    let savedContact = {};
     try {
       savedDigilocker = JSON.parse(
         localStorage.getItem("digilocker_verified_identity") || "{}",
       );
     } catch {}
+    try {
+      savedUser = JSON.parse(
+        localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
+      );
+    } catch {}
+    try {
+      savedContact = JSON.parse(
+        localStorage.getItem("contact_data") || "{}",
+      );
+    } catch {}
 
     return {
-      name: contactData.name || savedDigilocker.name || "",
-      phone: contactData.phone || savedDigilocker.phone || "",
-      email: contactData.email || savedDigilocker.email || "",
+      name:
+        contactData.name ||
+        savedContact.name ||
+        savedDigilocker.name ||
+        savedUser.name ||
+        savedUser.full_name ||
+        "",
+      phone:
+        contactData.phone ||
+        savedContact.phone ||
+        savedDigilocker.phone ||
+        savedUser.phone ||
+        savedUser.mobile ||
+        "",
+      email:
+        contactData.email ||
+        savedContact.email ||
+        savedDigilocker.email ||
+        savedUser.email ||
+        "",
       service: contactData.service || defaultService || "",
-      agree: contactData.agree || false,
-      policyAgree: contactData.policyAgree || false,
+      agree: contactData.agree || true,
+      policyAgree: contactData.policyAgree || true,
     };
   });
 
@@ -203,7 +232,7 @@ export default function ContactForm({
     return !Object.values(newErrors).some((error) => error);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (submitting) return;
@@ -229,9 +258,6 @@ export default function ContactForm({
     localStorage.setItem("contact_data", JSON.stringify(updatedContact));
 
     setContactData(updatedContact);
-
-    // Redirect immediately without waiting for the API
-    onNext(currentFormData.service);
 
     // Run API request in the background
     fetch(`${API_BASE}/applications/contact/create`, {
@@ -265,10 +291,16 @@ export default function ContactForm({
       })
       .catch((error) => {
         console.error("Background contact creation failed:", error);
-      })
-      .finally(() => {
-        setSubmitting(false);
       });
+
+    try {
+      // Await onNext so that submitting state stays active until navigation
+      await Promise.resolve(onNext(currentFormData.service));
+    } catch (err) {
+      console.error("onNext error:", err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
