@@ -308,4 +308,76 @@ export async function getAuditLogs(params = {}) {
   });
 
   return handleResponse(response);
-}
+}
+
+/* =========================================================
+   CAREER OPENINGS
+========================================================= */
+
+export async function getCareerOpenings(params = {}) {
+  const query = new URLSearchParams();
+  if (params.search) query.append("search", params.search);
+  if (params.department) query.append("department", params.department);
+  if (params.employmentType) query.append("employmentType", params.employmentType);
+  if (params.status) query.append("status", params.status);
+
+  const url = `${API_URL}/super-admin/careers${
+    query.toString() ? `?${query.toString()}` : ""
+  }`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  return handleResponse(response);
+}
+
+export async function getCareerOpening(id) {
+  const response = await fetch(`${API_URL}/super-admin/careers/${id}`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  return handleResponse(response);
+}
+
+export async function createCareerOpening(data) {
+  const response = await fetch(`${API_URL}/super-admin/careers`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+
+  return handleResponse(response);
+}
+
+export async function updateCareerOpening(id, data) {
+  const response = await fetch(`${API_URL}/super-admin/careers/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+
+  return handleResponse(response);
+}
+
+export async function toggleCareerOpeningStatus(id, isActive) {
+  const response = await fetch(`${API_URL}/super-admin/careers/${id}/status`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ is_active: isActive }),
+  });
+
+  return handleResponse(response);
+}
+
+export async function deleteCareerOpening(id) {
+  const response = await fetch(`${API_URL}/super-admin/careers/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  return handleResponse(response);
+}
+

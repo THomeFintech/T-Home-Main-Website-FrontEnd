@@ -10,6 +10,7 @@ import {
   Settings,
   LogOut,
   ChevronLeft,
+  Briefcase,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -59,6 +60,11 @@ export default function SuperAdminSidebar() {
       to: "/super-admin/reports",
       icon: BarChart3,
       label: "Reports & Analytics",
+    },
+    {
+      to: "/super-admin/careers",
+      icon: Briefcase,
+      label: "Career Openings",
     },
     {
       to: "/super-admin/settings",
