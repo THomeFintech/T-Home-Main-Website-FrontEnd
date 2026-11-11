@@ -24,6 +24,7 @@ import SuperAdminBankForwarding from "./pages/superadmin/SuperAdminBankForwardin
 import SuperAdminUsers from "./pages/superadmin/SuperAdminUsers";
 import SuperAdminReports from "./pages/superadmin/SuperAdminReports";
 import SuperAdminSettings from "./pages/superadmin/SuperAdminSettings";
+import SuperAdminCareers from "./pages/superadmin/SuperAdminCareers";
 // =========================
 // Lazy Loaded Pages
 // =========================
@@ -462,6 +463,10 @@ function App() {
               <Route
                 path="/super-admin/reports"
                 element={<SuperAdminReports />}
+              />
+              <Route
+                path="/super-admin/careers"
+                element={<SuperAdminCareers />}
               />
               <Route
                 path="/super-admin/settings"
