@@ -534,12 +534,51 @@ export default function Proceed({
   const [agreed, setAgreed] = useState(true);
   const [submitted, setSubmitted] = useState(false);
 
-  const [editableContact, setEditableContact] = useState({
-    name: contactDataFinal?.name || contactDataFinal?.fullName || "",
-    phone: contactDataFinal?.phone || contactDataFinal?.mobile || "",
-    email: contactDataFinal?.email || contactDataFinal?.mail || "",
-    aadhaar: contactDataFinal?.aadhaar || contactDataFinal?.aadhaarNumber || "",
-    pan: contactDataFinal?.pan || contactDataFinal?.panNumber || "",
+  const [editableContact, setEditableContact] = useState(() => {
+    let savedContact = {};
+    let savedDigi = {};
+    let savedUser = {};
+    try { savedContact = JSON.parse(localStorage.getItem("contact_data") || "{}"); } catch {}
+    try { savedDigi = JSON.parse(localStorage.getItem("digilocker_verified_identity") || "{}"); } catch {}
+    try { savedUser = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}"); } catch {}
+
+    return {
+      name:
+        contactDataFinal?.name ||
+        contactDataFinal?.fullName ||
+        savedContact.name ||
+        savedDigi.name ||
+        savedUser.name ||
+        savedUser.full_name ||
+        "",
+      phone:
+        contactDataFinal?.phone ||
+        contactDataFinal?.mobile ||
+        savedContact.phone ||
+        savedDigi.phone ||
+        savedUser.phone ||
+        savedUser.mobile ||
+        "",
+      email:
+        contactDataFinal?.email ||
+        contactDataFinal?.mail ||
+        savedContact.email ||
+        savedDigi.email ||
+        savedUser.email ||
+        "",
+      aadhaar:
+        contactDataFinal?.aadhaar ||
+        contactDataFinal?.aadhaarNumber ||
+        savedContact.aadhaar ||
+        savedDigi.aadhaar ||
+        "",
+      pan:
+        contactDataFinal?.pan ||
+        contactDataFinal?.panNumber ||
+        savedContact.pan ||
+        savedDigi.pan ||
+        "",
+    };
   });
 
   const [digilockerKycDocs, setDigilockerKycDocs] = useState({
