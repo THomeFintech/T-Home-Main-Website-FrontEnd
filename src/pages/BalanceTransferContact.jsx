@@ -21,6 +21,11 @@ export default function BalanceTransferContact() {
 
   const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+  // Pre-warm the Balance Transfer backend on Render to eliminate cold-start latency
+  useEffect(() => {
+    fetch(`${BT_API_BASE}/`, { method: "GET", mode: "no-cors" }).catch(() => {});
+  }, []);
+
   // Check login and DigiLocker status on mount
   useEffect(() => {
     const token =
@@ -153,31 +158,43 @@ export default function BalanceTransferContact() {
       accepted_terms: true,
     };
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
+
     try {
       const res = await fetch(`${BT_API_BASE}/contact-form/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!res.ok) {
         const error = await res.json().catch(() => ({}));
         console.error("Validation errors:", error);
-        throw new Error("Failed to submit");
+        throw new Error(error?.detail || "Failed to submit");
       }
 
       const data = await res.json();
 
-      if (data.loan_reference) {
-        localStorage.setItem("bt_loan_reference", data.loan_reference);
+      const refId = data.reference_id || data.loan_reference;
+      if (refId) {
+        localStorage.setItem("bt_loan_reference", refId);
       }
 
       navigate("/balance-transfer/details", {
         state: { service: service || "Balance Transfer" },
       });
     } catch (err) {
+      clearTimeout(timeoutId);
       console.error("BT contact error:", err);
-      alert("Something went wrong. Please try again.");
+      if (err.name === "AbortError") {
+        alert("The Balance Transfer service took too long to respond. The server is now warming up, please click Continue again.");
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
     }
   };
 

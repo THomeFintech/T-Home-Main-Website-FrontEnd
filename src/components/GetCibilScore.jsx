@@ -2245,10 +2245,69 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
       dob: "",
     };
 
+    // Prefer the recently fetched session cache. It already contains values
+    // normalized for the CIBIL form and avoids waiting for the API.
     if (initialAutofill) {
       for (const key of AUTOFILL_FIELDS) {
         if (initialAutofill[key]) base[key] = initialAutofill[key];
       }
+    }
+
+    // Preserve support for identity/contact data saved by earlier versions
+    // of the DigiLocker and user flows. These are fallback values only.
+    try {
+      const digi = JSON.parse(
+        localStorage.getItem("digilocker_verified_identity") || "{}",
+      );
+      const mappedDigi = mapDigiLockerIdentityToCibilForm(digi);
+
+      for (const key of AUTOFILL_FIELDS) {
+        if (!base[key] && mappedDigi[key]) base[key] = mappedDigi[key];
+      }
+    } catch {
+      // Ignore malformed legacy identity data; the form remains editable.
+    }
+
+    try {
+      const user = JSON.parse(
+        localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
+      );
+      const userName = splitFullName(user.name || "");
+
+      if (!base.firstName && userName.firstName) {
+        base.firstName = userName.firstName;
+      }
+      if (!base.lastName && userName.lastName) {
+        base.lastName = userName.lastName;
+      }
+      if (!base.phone && (user.phone || user.mobile)) {
+        base.phone = normalizePhoneForForm(user.phone || user.mobile);
+      }
+    } catch {
+      // Ignore malformed user data; the form remains editable.
+    }
+
+    try {
+      const contact = JSON.parse(localStorage.getItem("contact_data") || "{}");
+      const contactName = splitFullName(contact.name || "");
+
+      if (!base.firstName && contactName.firstName) {
+        base.firstName = contactName.firstName;
+      }
+      if (!base.lastName && contactName.lastName) {
+        base.lastName = contactName.lastName;
+      }
+      if (!base.phone && contact.phone) {
+        base.phone = normalizePhoneForForm(contact.phone);
+      }
+      if (!base.pan && contact.pan) {
+        base.pan = String(contact.pan)
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, "")
+          .slice(0, 10);
+      }
+    } catch {
+      // Ignore malformed contact data; the form remains editable.
     }
 
     return base;

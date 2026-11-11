@@ -5,14 +5,28 @@ import { Link } from "react-router-dom";
 export default function HiringForm() {
 
   /* ================= STATE ================= */
-  const [formData, setFormData] = useState({
-    full_name: "",
-    phone: "",
-    qualification: "",
-    experience: "",
-    cover_letter: "",
-    resume: null,
-    consent: false,
+  const [formData, setFormData] = useState(() => {
+    let full_name = "";
+    let phone = "";
+    try {
+      const u = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}");
+      if (u.name || u.full_name) full_name = u.name || u.full_name;
+      if (u.phone || u.mobile) phone = u.phone || u.mobile;
+    } catch {}
+    try {
+      const c = JSON.parse(localStorage.getItem("contact_data") || "{}");
+      if (!full_name && c.name) full_name = c.name;
+      if (!phone && c.phone) phone = c.phone;
+    } catch {}
+    return {
+      full_name,
+      phone,
+      qualification: "",
+      experience: "",
+      cover_letter: "",
+      resume: null,
+      consent: true,
+    };
   });
 
   const [loading, setLoading] = useState(false);

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Mail, Phone, MessageCircle } from "lucide-react";
 import SEO from "../components/SEO";
 
@@ -17,14 +17,66 @@ export default function ContactPage() {
     "ITR Tax Filing",
     "Food License",
   ];
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    service: services[0],
-    message: "",
-    consent: false,
+  const location = useLocation();
+
+  const [formData, setFormData] = useState(() => {
+    let name = "";
+    let phone = "";
+    let email = "";
+
+    try {
+      const u = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}");
+      if (u.name || u.full_name) name = u.name || u.full_name;
+      if (u.phone || u.mobile) phone = u.phone || u.mobile;
+      if (u.email) email = u.email;
+    } catch {}
+
+    try {
+      const d = JSON.parse(localStorage.getItem("digilocker_verified_identity") || "{}");
+      if (!name && d.name) name = d.name;
+      if (!phone && d.phone) phone = d.phone;
+      if (!email && d.email) email = d.email;
+    } catch {}
+
+    try {
+      const c = JSON.parse(localStorage.getItem("contact_data") || "{}");
+      if (!name && c.name) name = c.name;
+      if (!phone && c.phone) phone = c.phone;
+      if (!email && c.email) email = c.email;
+    } catch {}
+
+    // Parse URL service parameter if present
+    let initialService = services[0];
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const sParam = params.get("service") || location?.state?.service;
+      if (sParam) {
+        const found = services.find((s) => s.toLowerCase() === sParam.toLowerCase());
+        if (found) initialService = found;
+      }
+    } catch {}
+
+    return {
+      name,
+      phone,
+      email,
+      service: initialService,
+      message: "",
+      consent: true,
+    };
   });
+
+  // Re-sync service when navigation params change
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const sParam = params.get("service") || location.state?.service;
+    if (sParam) {
+      const found = services.find((s) => s.toLowerCase() === sParam.toLowerCase());
+      if (found) {
+        setFormData((prev) => ({ ...prev, service: found }));
+      }
+    }
+  }, [location.search, location.state]);
 
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
@@ -74,12 +126,16 @@ export default function ContactPage() {
       message: formData.message.trim(),
     };
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (!res.ok) {
         const errData = await res.json().catch(() => null);
