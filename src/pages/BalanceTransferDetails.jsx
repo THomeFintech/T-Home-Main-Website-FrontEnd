@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   ShieldCheck,
@@ -125,6 +125,35 @@ function formatINR(value) {
   return `₹${Math.round(value || 0).toLocaleString("en-IN")}`;
 }
 
+const hasValue = (v) => v !== "" && v !== null && v !== undefined;
+
+// Reads the latest fetched credit-report values saved by GetCibilScore.
+// Returns "" for anything that has not been fetched yet.
+function readCreditProfile() {
+  let savedLoanData = {};
+
+  try {
+    savedLoanData = JSON.parse(localStorage.getItem("loanData") || "{}") || {};
+  } catch {
+    savedLoanData = {};
+  }
+
+  const rawScore =
+    localStorage.getItem("dashboard_cibil_score") ?? savedLoanData.cibilScore;
+  const score = Number(rawScore);
+
+  const rawActiveLoans = savedLoanData.activeLoans;
+  const activeLoans =
+    hasValue(rawActiveLoans) && Number.isFinite(Number(rawActiveLoans))
+      ? Number(rawActiveLoans)
+      : "";
+
+  return {
+    cibilScore: Number.isFinite(score) && score > 0 ? score : "",
+    activeLoans,
+  };
+}
+
 export default function BalanceTransferDetails() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -153,6 +182,23 @@ export default function BalanceTransferDetails() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showCibilScore, setShowCibilScore] = useState(false);
+
+  // Read-only credit profile values (filled from the fetched CIBIL report).
+  const [creditProfile, setCreditProfile] = useState(() => readCreditProfile());
+
+  // Refresh when the page opens, when the user returns from the CIBIL form,
+  // and immediately when a new score is fetched.
+  useEffect(() => {
+    setCreditProfile(readCreditProfile());
+
+    const handleScoreUpdated = () => setCreditProfile(readCreditProfile());
+
+    window.addEventListener("cibilScoreUpdated", handleScoreUpdated);
+
+    return () => {
+      window.removeEventListener("cibilScoreUpdated", handleScoreUpdated);
+    };
+  }, [showCibilScore]);
 
   const numbers = useMemo(() => {
     const principal = Number(formData.originalPrincipal) || 0;
@@ -548,6 +594,49 @@ export default function BalanceTransferDetails() {
               </div>
             </div>
             {/* =================== END CREDIT PROFILE CARD =================== */}
+
+            {/* CIBIL Score + Active Loans: read-only, filled from the fetched credit report */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <Field label="CIBIL Score">
+                <input
+                  type="number"
+                  name="cibilScore"
+                  value={
+                    hasValue(creditProfile.cibilScore)
+                      ? creditProfile.cibilScore
+                      : ""
+                  }
+                  readOnly
+                  aria-readonly="true"
+                  placeholder="Fetch CIBIL report to retrieve your score"
+                  className={`${inputClass} cursor-not-allowed opacity-80`}
+                />
+                <p className="mt-1 text-[11px] text-[#4ea1ff]/90">
+                  Automatically populated from your CIBIL report. Manual entry
+                  is disabled.
+                </p>
+              </Field>
+
+              <Field label="Active Loans">
+                <input
+                  type="number"
+                  name="activeLoans"
+                  value={
+                    hasValue(creditProfile.activeLoans)
+                      ? creditProfile.activeLoans
+                      : ""
+                  }
+                  readOnly
+                  aria-readonly="true"
+                  placeholder="Fetch CIBIL report to retrieve active loans"
+                  className={`${inputClass} cursor-not-allowed opacity-80`}
+                />
+                <p className="mt-1 text-[11px] text-[#4ea1ff]/90">
+                  Automatically populated from your CIBIL report. Manual entry
+                  is disabled.
+                </p>
+              </Field>
+            </div>
 
             <div className="pt-2 text-center">
               <h3 className="text-[19px] font-medium text-white">

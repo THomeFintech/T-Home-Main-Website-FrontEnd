@@ -174,6 +174,49 @@ export default function LoanForm({
     setCurrentLoanIndex(0);
   }, [formData.activeLoans, formData.activeLoanDetails]);
 
+  // The CIBIL score comes from the latest fetched credit report (read-only).
+  // GetCibilScore saves it in loanData / localStorage and fires a
+  // "cibilScoreUpdated" event, so it is picked up here when the form opens
+  // again, or immediately if the score is fetched while this form is mounted.
+  useEffect(() => {
+    if (!setLoanData) return undefined;
+
+    const syncScore = (rawScore) => {
+      const score = Number(rawScore);
+
+      if (!Number.isFinite(score) || score <= 0) return;
+
+      setLoanData((prev) =>
+        Number(prev?.cibilScore) === score
+          ? prev
+          : { ...prev, cibilScore: score },
+      );
+    };
+
+    if (!hasValue(formData.cibilScore)) {
+      let savedScore = null;
+
+      try {
+        savedScore = JSON.parse(
+          localStorage.getItem("loanData") || "{}",
+        )?.cibilScore;
+      } catch {
+        savedScore = null;
+      }
+
+      syncScore(savedScore || localStorage.getItem("dashboard_cibil_score"));
+    }
+
+    const handleScoreUpdated = (event) => syncScore(event?.detail?.score);
+
+    window.addEventListener("cibilScoreUpdated", handleScoreUpdated);
+
+    return () => {
+      window.removeEventListener("cibilScoreUpdated", handleScoreUpdated);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setLoanData]);
+
   const handleChange = useCallback(
     (e) => {
       const { name, value } = e.target;
@@ -755,6 +798,27 @@ export default function LoanForm({
             </div>
           </div>
           {/* =================== END CREDIT PROFILE CARD =================== */}
+
+          {/* CIBIL Score: read-only, filled from the fetched credit report */}
+          <div>
+            <label htmlFor="cibilScore" className={labelClass}>
+              CIBIL Score
+            </label>
+            <input
+              type="number"
+              id="cibilScore"
+              name="cibilScore"
+              value={hasValue(formData.cibilScore) ? formData.cibilScore : ""}
+              readOnly
+              aria-readonly="true"
+              placeholder="Fetch CIBIL report to retrieve your score"
+              className={`${inputClass} cursor-not-allowed opacity-80`}
+            />
+            <p className="mt-2 text-xs sm:text-sm text-[#4ea1ff]/90">
+              Automatically populated from your CIBIL report. Manual entry is
+              disabled.
+            </p>
+          </div>
 
           <div>
             <label htmlFor="activeLoans" className={labelClass}>
