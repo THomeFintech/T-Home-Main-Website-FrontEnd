@@ -2193,26 +2193,38 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
   const [initialAutofill] = useState(() => readAutofillCache());
 
   const handleBack = () => {
-    // Inline usage from BalanceTransferDetails: restore the same form
-    // without navigating away or losing its component state.
+    // Preserve existing inline navigation behaviour.
     if (typeof onBack === "function") {
       onBack();
       return;
     }
 
-    // Standalone route usage: return to the exact page that opened CIBIL.
-    // This supports Loan Application Form, Tools, Balance Transfer, and
-    // any other page that passes its pathname in navigation state.
     const returnTo = location.state?.from;
 
+    // Return to the Loan Application Form at Step 3.
+    if (typeof returnTo === "string" && returnTo.startsWith("/tools")) {
+      try {
+        localStorage.setItem("loan_prediction_step", "3");
+      } catch {
+        // Ignore storage errors.
+      }
+
+      const separator = returnTo.includes("?") ? "&" : "?";
+
+      const loanApplicationUrl = returnTo.includes("tool=loan-prediction")
+        ? returnTo
+        : `${returnTo}${separator}tool=loan-prediction`;
+
+      navigate(loanApplicationUrl, { replace: true });
+      return;
+    }
+
+    // Preserve navigation for other pages.
     if (returnTo) {
-      // Return to the preserved Tools sub-view (Loan Application Form),
-      // not the default Tools landing/cards screen.
       navigate(returnTo, { replace: true });
       return;
     }
 
-    // If CIBIL was opened without navigation state, use browser history.
     navigate(-1);
   };
 
