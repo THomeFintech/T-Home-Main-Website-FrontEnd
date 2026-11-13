@@ -14,6 +14,18 @@ import {
 const API_BASE = import.meta.env.VITE_API_URL;
 const LPS_API_BASE = import.meta.env.VITE_LPS_API_URL;
 
+// Draft storage: keeps the entered values while the user visits the
+// CIBIL page (a different route) and comes back.
+const DRAFT_KEY = "loanFormDraft";
+const DRAFT_FIELDS = [
+  "age",
+  "employmentType",
+  "annualIncome",
+  "loanType",
+  "loanAmount",
+  "tenure",
+];
+
 function numberToWords(num) {
   const ones = [
     "",
@@ -151,6 +163,108 @@ export default function LoanForm({
   );
   const [currentLoanIndex, setCurrentLoanIndex] = useState(0);
   const [isCalculating, setIsCalculating] = useState(false);
+
+  // Wake the prediction server (cold start) as soon as the form opens and
+  // keep it warm while the form is open, so /predict answers quickly when
+  // the user clicks Calculate Eligibility.
+  useEffect(() => {
+    if (!LPS_API_BASE) return undefined;
+
+    const base = String(LPS_API_BASE).replace(/\/+$/, "");
+
+    const warmUp = () => {
+      // no-cors: only the wake-up matters, the response is not needed
+      fetch(`${base}/`, { method: "GET", mode: "no-cors" }).catch(() => {});
+    };
+
+    warmUp();
+    const timer = setInterval(warmUp, 4 * 60 * 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Restore the saved draft when the form opens again (for example after
+  // returning from the CIBIL report page). Runs before the other effects.
+  useEffect(() => {
+    if (!setLoanData) return;
+
+    let draft = null;
+
+    try {
+      draft = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "null");
+    } catch {
+      draft = null;
+    }
+
+    if (!draft || typeof draft !== "object") return;
+
+    setLoanData((prev) => {
+      const next = { ...prev };
+
+      // Fields typed by the user: the draft wins.
+      DRAFT_FIELDS.forEach((field) => {
+        if (hasValue(draft[field])) next[field] = draft[field];
+      });
+
+      // activeLoans / activeLoanDetails come from the CIBIL report.
+      // Use the draft only when the parent has nothing newer.
+      if (!hasValue(prev?.activeLoans) && hasValue(draft.activeLoans)) {
+        next.activeLoans = draft.activeLoans;
+      }
+
+      if (
+        !(
+          Array.isArray(prev?.activeLoanDetails) &&
+          prev.activeLoanDetails.length
+        ) &&
+        Array.isArray(draft.activeLoanDetails)
+      ) {
+        next.activeLoanDetails = draft.activeLoanDetails;
+      }
+
+      // cibilScore is intentionally NOT restored: it always comes from the
+      // latest fetched report (see the sync effect below).
+      return next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Save the draft on every change. Nothing is saved until the user has
+  // entered something, so an empty first render never wipes a saved draft.
+  useEffect(() => {
+    const hasUserInput = DRAFT_FIELDS.some(
+      (field) =>
+        field !== "tenure" && field !== "loanType" && hasValue(formData[field]),
+    );
+
+    if (!hasUserInput) return;
+
+    const draft = {};
+
+    DRAFT_FIELDS.forEach((field) => {
+      draft[field] = formData[field];
+    });
+
+    draft.activeLoans = formData.activeLoans;
+    draft.activeLoanDetails = Array.isArray(formData.activeLoanDetails)
+      ? formData.activeLoanDetails
+      : [];
+
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch {
+      // Ignore storage errors (private mode / quota)
+    }
+  }, [
+    formData.age,
+    formData.employmentType,
+    formData.annualIncome,
+    formData.loanType,
+    formData.loanAmount,
+    formData.tenure,
+    formData.activeLoans,
+    formData.activeLoanDetails,
+  ]);
 
   useEffect(() => {
     if (passedLoanType && setLoanData) {
@@ -342,6 +456,8 @@ export default function LoanForm({
       // STEP 1: CALCULATE ELIGIBILITY
       // =====================================================
 
+      const predictStartedAt = performance.now();
+
       const predictRes = await fetch(`${LPS_API_BASE}/predict`, {
         method: "POST",
         headers: {
@@ -360,6 +476,10 @@ export default function LoanForm({
 
       const predictionData = await predictRes.json();
 
+      console.log(
+        "predict took (ms):",
+        Math.round(performance.now() - predictStartedAt),
+      );
       console.log("Prediction Response:", predictionData);
 
       const decision = predictionData.decision || predictionData.status || "";
@@ -477,6 +597,13 @@ export default function LoanForm({
 
       // Clear previous bank selection
       localStorage.removeItem("bank_selection_id");
+
+      // Application submitted: the saved draft is no longer needed
+      try {
+        sessionStorage.removeItem(DRAFT_KEY);
+      } catch {
+        // ignore
+      }
 
       // =====================================================
       // STEP 5: STOP CALCULATING STATE IMMEDIATELY
@@ -819,7 +946,6 @@ export default function LoanForm({
               disabled.
             </p>
           </div>
-          {/* =================== END CREDIT PROFILE CARD =================== */}
 
           <div>
             <label htmlFor="activeLoans" className={labelClass}>
