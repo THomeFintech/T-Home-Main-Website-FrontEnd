@@ -458,13 +458,43 @@ export default function LoanForm({
 
       const predictStartedAt = performance.now();
 
-      const predictRes = await fetch(`${LPS_API_BASE}/predict`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(processedData),
-      });
+      let predictRes;
+      try {
+        predictRes = await fetch(`${LPS_API_BASE}/predict`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(processedData),
+        });
+      } catch (directErr) {
+        console.warn("Direct LPS call failed (e.g. CORS on dev domain), falling back to backend proxy:", directErr.message);
+        predictRes = await fetch(`${API_BASE}/applications/predict`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(processedData),
+        });
+      }
+
+      if (!predictRes.ok && (predictRes.status === 400 || predictRes.status >= 500)) {
+        try {
+          console.warn("Direct LPS responded with error, attempting backend proxy fallback...");
+          const fallbackRes = await fetch(`${API_BASE}/applications/predict`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(processedData),
+          });
+          if (fallbackRes.ok) {
+            predictRes = fallbackRes;
+          }
+        } catch (fallbackErr) {
+          console.error("LPS fallback proxy error:", fallbackErr.message);
+        }
+      }
 
       if (!predictRes.ok) {
         const errorText = await predictRes.text();

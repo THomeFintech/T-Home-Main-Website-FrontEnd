@@ -110,10 +110,7 @@ export default function BalanceTransferReady() {
               title="Talk to a Loan Expert"
               subtitle="Get advice and discuss your options with our loan advisor."
               buttonText="Talk to an Expert"
-              onClick={() =>
-  window.location.href =
-    "https://t-home-main-website-front-end.vercel.app/contact"
-}
+              onClick={() => navigate("/contact")}
             />
           </div>
 
