@@ -468,7 +468,10 @@ export default function LoanForm({
           body: JSON.stringify(processedData),
         });
       } catch (directErr) {
-        console.warn("Direct LPS call failed (e.g. CORS on dev domain), falling back to backend proxy:", directErr.message);
+        console.warn(
+          "Direct LPS call failed (e.g. CORS on dev domain), falling back to backend proxy:",
+          directErr.message,
+        );
         predictRes = await fetch(`${API_BASE}/applications/predict`, {
           method: "POST",
           headers: {
@@ -478,9 +481,14 @@ export default function LoanForm({
         });
       }
 
-      if (!predictRes.ok && (predictRes.status === 400 || predictRes.status >= 500)) {
+      if (
+        !predictRes.ok &&
+        (predictRes.status === 400 || predictRes.status >= 500)
+      ) {
         try {
-          console.warn("Direct LPS responded with error, attempting backend proxy fallback...");
+          console.warn(
+            "Direct LPS responded with error, attempting backend proxy fallback...",
+          );
           const fallbackRes = await fetch(`${API_BASE}/applications/predict`, {
             method: "POST",
             headers: {
