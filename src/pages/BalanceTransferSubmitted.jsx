@@ -105,14 +105,11 @@ export default function BalanceTransferSubmitted() {
         </div>
 
         <button
-  onClick={() =>
-    window.location.href =
-      "https://t-home-main-website-front-end.vercel.app/dashboard"
-  }
-  className="mt-10 rounded-[8px] bg-[#1f6bff] px-8 py-3 text-[16px] font-medium text-white hover:bg-[#1c5ee0]"
->
-  Go To Dashboard →
-</button>
+          onClick={() => navigate("/dashboard")}
+          className="mt-10 rounded-[8px] bg-[#1f6bff] px-8 py-3 text-[16px] font-medium text-white hover:bg-[#1c5ee0]"
+        >
+          Go To Dashboard →
+        </button>
       </div>
     </section>
   );

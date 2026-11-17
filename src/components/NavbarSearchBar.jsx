@@ -213,13 +213,10 @@ export default function NavbarSearchBar({ isMobile = false }) {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [mobileModalOpen, setMobileModalOpen] = useState(false);
 
   const containerRef = useRef(null);
   const inputRef = useRef(null);
-  const mobileInputRef = useRef(null);
   const resultsListRef = useRef(null);
 
   // Global Ctrl+K / Cmd+K keyboard shortcut
@@ -227,42 +224,29 @@ export default function NavbarSearchBar({ isMobile = false }) {
     const handleGlobalKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        if (isMobile) {
-          setMobileModalOpen(true);
-        } else {
-          setIsOpen(true);
-          inputRef.current?.focus();
-        }
+        setIsOpen((prev) => !prev);
       }
     };
 
     window.addEventListener("keydown", handleGlobalKeyDown);
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
-  }, [isMobile]);
+  }, []);
 
-  // Click outside listener to close desktop dropdown
+  // Focus input and lock body scroll when modal opens
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
-        setIsOpen(false);
-      }
-    };
-
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
-
-  // Focus mobile input when mobile modal opens
-  useEffect(() => {
-    if (mobileModalOpen) {
+      document.body.style.overflow = "hidden";
       const timer = setTimeout(() => {
-        mobileInputRef.current?.focus();
-      }, 120);
-      return () => clearTimeout(timer);
+        inputRef.current?.focus();
+      }, 60);
+      return () => {
+        clearTimeout(timer);
+        document.body.style.overflow = "";
+      };
+    } else {
+      document.body.style.overflow = "";
     }
-  }, [mobileModalOpen]);
+  }, [isOpen]);
 
   // Filtered search results
   const filteredResults = useMemo(() => {
@@ -330,10 +314,13 @@ export default function NavbarSearchBar({ isMobile = false }) {
     }
   }, [selectedIndex]);
 
-  const handleSelect = (item) => {
+  const handleClose = () => {
     setIsOpen(false);
-    setMobileModalOpen(false);
     setQuery("");
+  };
+
+  const handleSelect = (item) => {
+    handleClose();
     navigate(item.to);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -358,9 +345,7 @@ export default function NavbarSearchBar({ isMobile = false }) {
       }
     } else if (e.key === "Escape") {
       e.preventDefault();
-      setIsOpen(false);
-      setMobileModalOpen(false);
-      inputRef.current?.blur();
+      handleClose();
     }
   };
 
@@ -375,68 +360,80 @@ export default function NavbarSearchBar({ isMobile = false }) {
     }
   };
 
-  // ----------------------------------------------------
-  // MOBILE SEARCH BUTTON & MODAL
-  // ----------------------------------------------------
-  if (isMobile) {
-    return (
-      <>
-        <button
-          type="button"
-          onClick={() => setMobileModalOpen(true)}
-          className="relative flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/80 transition hover:bg-white/20 hover:text-white"
-          title="Search services and tools"
-          aria-label="Search"
-        >
-          <Search className="h-[18px] w-[18px]" />
-        </button>
+  return (
+    <>
+      {/* Search Icon Button in Navbar */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/80 transition hover:bg-white/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#4f8fff]/40"
+        title="Search services & tools (Ctrl + K)"
+        aria-label="Search"
+      >
+        <Search className="h-[18px] w-[18px]" />
+      </button>
 
-        {mobileModalOpen && (
-          <div className="fixed inset-0 z-[10000] flex flex-col bg-[#071328]/95 px-4 pt-6 pb-8 backdrop-blur-2xl">
-            {/* Modal Header */}
-            <div className="flex items-center gap-3">
-              <div className="relative flex flex-1 items-center">
-                <Search className="pointer-events-none absolute left-3.5 h-5 w-5 text-white/50" />
-                <input
-                  ref={mobileInputRef}
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Search loans, tax, tools..."
-                  className="h-11 w-full rounded-xl border border-white/20 bg-white/10 pl-11 pr-10 text-sm text-white placeholder-white/50 outline-none focus:border-[#4f8fff] focus:ring-2 focus:ring-[#4f8fff]/30"
-                />
-                {query && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setQuery("");
-                      mobileInputRef.current?.focus();
-                    }}
-                    className="absolute right-3 flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-white/70 hover:bg-white/30"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                )}
-              </div>
+      {/* Global Command Palette / Search Modal */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-[10000] flex items-start justify-center bg-black/70 p-3 pt-14 sm:p-4 sm:pt-20 backdrop-blur-md transition-opacity"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) handleClose();
+          }}
+        >
+          <div
+            ref={containerRef}
+            className="relative flex w-full max-w-2xl flex-col rounded-2xl border border-white/20 bg-[rgba(8,20,45,0.96)] shadow-[0_25px_70px_rgba(0,0,0,0.7)] backdrop-blur-3xl overflow-hidden"
+          >
+            {/* Modal Search Bar Header */}
+            <div className="relative flex items-center border-b border-white/10 px-4 py-3 sm:px-5 sm:py-3.5">
+              <Search className="pointer-events-none h-5 w-5 shrink-0 text-white/50" />
+              <input
+                ref={inputRef}
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Search loans, tax filing, financial tools, services..."
+                className="ml-3 w-full bg-transparent text-sm sm:text-base text-white placeholder-white/40 outline-none"
+              />
+
+              {query ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    inputRef.current?.focus();
+                  }}
+                  className="ml-2 flex h-6 w-6 items-center justify-center rounded-full bg-white/15 text-white/70 hover:bg-white/25 hover:text-white"
+                  title="Clear"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              ) : (
+                <kbd className="ml-2 hidden rounded border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-white/50 sm:inline-block">
+                  ESC
+                </kbd>
+              )}
 
               <button
                 type="button"
-                onClick={() => {
-                  setMobileModalOpen(false);
-                  setQuery("");
-                }}
-                className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/20 bg-white/10 text-white/80 hover:bg-white/20"
+                onClick={handleClose}
+                className="ml-2 flex h-8 w-8 items-center justify-center rounded-lg text-white/60 hover:bg-white/10 hover:text-white"
                 aria-label="Close search"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Results / Suggestions */}
-            <div className="mt-4 flex-1 overflow-y-auto pr-1">
-              <div className="mb-2 flex items-center justify-between text-xs font-medium text-white/50 px-1">
-                <span>{query ? `Results (${filteredResults.length})` : "Popular Searches"}</span>
+            {/* Results / Suggestions Container */}
+            <div className="flex max-h-[60vh] flex-col overflow-y-auto p-2 sm:p-3 scrollbar-thin scrollbar-thumb-white/20">
+              <div className="mb-2 flex items-center justify-between px-2 pt-1 text-xs font-medium text-white/50">
+                <span>
+                  {query
+                    ? `Found ${filteredResults.length} result${filteredResults.length === 1 ? "" : "s"}`
+                    : "Popular Searches & Quick Links"}
+                </span>
                 {!query && (
                   <span className="flex items-center gap-1 text-[#60a5fa]">
                     <Sparkles className="h-3 w-3" /> Quick Access
@@ -445,212 +442,109 @@ export default function NavbarSearchBar({ isMobile = false }) {
               </div>
 
               {filteredResults.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
                   <Search className="mb-2 h-8 w-8 text-white/30" />
-                  <p className="text-sm font-medium text-white/80">No results found for &ldquo;{query}&rdquo;</p>
-                  <p className="mt-1 text-xs text-white/50">Try searching for &quot;home loan&quot;, &quot;emi&quot;, &quot;fssai&quot;, or &quot;gst&quot;</p>
+                  <p className="text-sm font-medium text-white/80">
+                    No results found for &ldquo;{query}&rdquo;
+                  </p>
+                  <p className="mt-1 text-xs text-white/50">
+                    Try searching for &quot;home loan&quot;, &quot;emi&quot;, &quot;fssai&quot;, or &quot;gst&quot;
+                  </p>
                   <button
                     type="button"
                     onClick={() => handleSelect({ to: "/services" })}
-                    className="mt-4 rounded-full bg-[#4f72e0] px-5 py-2 text-xs font-medium text-white"
+                    className="mt-4 rounded-full bg-[#4f72e0] px-5 py-2 text-xs font-medium text-white transition hover:bg-[#3d62d6]"
                   >
                     Browse All Services →
                   </button>
                 </div>
               ) : (
-                <div className="space-y-1.5">
+                <div ref={resultsListRef} className="space-y-1">
                   {filteredResults.map((item, idx) => {
                     const Icon = item.icon;
+                    const isSelected = idx === selectedIndex;
+
                     return (
-                      <button
-                        key={`m-${item.id}`}
-                        type="button"
-                        onClick={() => handleSelect(item)}
-                        className={`flex w-full items-center gap-3 rounded-xl p-3 text-left transition ${
-                          idx === selectedIndex ? "bg-[#4f72e0]/20 border border-[#4f72e0]/40" : "bg-white/5 hover:bg-white/10"
+                      <div
+                        key={item.id}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          handleSelect(item);
+                        }}
+                        onMouseEnter={() => setSelectedIndex(idx)}
+                        className={`group flex cursor-pointer items-center gap-3 rounded-xl p-2.5 sm:p-3 transition-all duration-150 ${
+                          isSelected
+                            ? "bg-[#4f72e0]/25 border border-[#4f72e0]/50 shadow-sm"
+                            : "hover:bg-white/10 border border-transparent"
                         }`}
                       >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-white">
-                          <Icon className="h-4 w-4" />
+                        <div
+                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                            isSelected
+                              ? "bg-[#4f8fff] text-white"
+                              : "bg-white/10 text-white/80 group-hover:bg-[#4f8fff]/20 group-hover:text-[#4f8fff]"
+                          }`}
+                        >
+                          <Icon className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
                         </div>
+
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="truncate text-sm font-semibold text-white">{item.title}</span>
-                            <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-medium ${getCategoryBadgeClass(item.category)}`}>
+                            <span
+                              className={`truncate text-sm font-medium transition-colors ${
+                                isSelected ? "text-white" : "text-white/90 group-hover:text-white"
+                              }`}
+                            >
+                              {item.title}
+                            </span>
+
+                            <span
+                              className={`shrink-0 rounded-full border px-1.5 py-0.2 text-[9px] font-medium ${getCategoryBadgeClass(
+                                item.category
+                              )}`}
+                            >
                               {item.category}
                             </span>
                           </div>
-                          <p className="truncate text-xs text-white/60">{item.description}</p>
+
+                          <p className="truncate text-xs text-white/60 group-hover:text-white/75">
+                            {item.description}
+                          </p>
                         </div>
-                        <ArrowRight className="h-4 w-4 shrink-0 text-white/40" />
-                      </button>
+
+                        <ArrowRight
+                          className={`h-4 w-4 shrink-0 transition-all ${
+                            isSelected
+                              ? "translate-x-0 text-white opacity-100"
+                              : "-translate-x-1 text-white/30 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                          }`}
+                        />
+                      </div>
                     );
                   })}
                 </div>
               )}
             </div>
-          </div>
-        )}
-      </>
-    );
-  }
 
-  // ----------------------------------------------------
-  // DESKTOP SEARCH BAR (Inline beside notification bell)
-  // ----------------------------------------------------
-  return (
-    <div ref={containerRef} className="relative">
-      {/* Search Input Container */}
-      <div
-        className={`relative flex items-center transition-all duration-300 ${
-          isOpen || isFocused
-            ? "w-52 lg:w-60 xl:w-72"
-            : "w-40 lg:w-48 xl:w-60"
-        }`}
-      >
-        <Search className="pointer-events-none absolute left-3 h-4 w-4 text-white/50" />
-
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setIsOpen(true);
-          }}
-          onFocus={() => {
-            setIsFocused(true);
-            setIsOpen(true);
-          }}
-          onBlur={() => setIsFocused(false)}
-          onKeyDown={handleKeyDown}
-          placeholder={isFocused ? "Search services, tools..." : "Search..."}
-          className="h-9 w-full rounded-full border border-white/20 bg-white/10 pl-9 pr-14 text-xs text-white placeholder-white/50 backdrop-blur-md transition-all duration-200 hover:border-white/30 hover:bg-white/15 focus:border-[#4f8fff] focus:bg-[rgba(9,22,52,0.96)] focus:outline-none focus:ring-2 focus:ring-[#4f8fff]/30 sm:text-sm"
-          aria-label="Search services and tools"
-          aria-expanded={isOpen}
-        />
-
-        {query ? (
-          <button
-            type="button"
-            onClick={() => {
-              setQuery("");
-              inputRef.current?.focus();
-            }}
-            className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-white/70 hover:bg-white/30 hover:text-white"
-            title="Clear search"
-          >
-            <X className="h-3 w-3" />
-          </button>
-        ) : !isFocused ? (
-          <span className="pointer-events-none absolute right-2.5 hidden select-none items-center rounded border border-white/20 bg-white/5 px-1.5 py-0.5 text-[9px] font-semibold tracking-wider text-white/50 xl:flex">
-            CTRL K
-          </span>
-        ) : null}
-      </div>
-
-      {/* Autocomplete Dropdown */}
-      {isOpen && (
-        <div className="absolute right-0 sm:left-0 sm:right-auto top-full z-[100] mt-2 w-80 sm:w-96 rounded-2xl border border-white/20 bg-[rgba(8,20,45,0.96)] p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.65)] backdrop-blur-3xl">
-          {/* Dropdown Header */}
-          <div className="mb-2 flex items-center justify-between px-2 pt-1 text-[11px] font-medium text-white/50">
-            <span>{query ? `Found ${filteredResults.length} result${filteredResults.length === 1 ? "" : "s"}` : "Popular Searches"}</span>
-            {!query && (
-              <span className="flex items-center gap-1 text-[#60a5fa]">
-                <Sparkles className="h-3 w-3" /> Quick Access
-              </span>
-            )}
-          </div>
-
-          {/* Results List */}
-          <div
-            ref={resultsListRef}
-            className="max-h-[340px] space-y-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent"
-          >
-            {filteredResults.length === 0 ? (
-              <div className="flex flex-col items-center justify-center px-4 py-8 text-center">
-                <Search className="mb-2 h-7 w-7 text-white/30" />
-                <p className="text-sm font-medium text-white/80">No results found for &ldquo;{query}&rdquo;</p>
-                <p className="mt-1 text-xs text-white/50">Try searching for &quot;home loan&quot;, &quot;emi&quot;, &quot;fssai&quot;, or &quot;gst&quot;</p>
-                <button
-                  type="button"
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    handleSelect({ to: "/services" });
-                  }}
-                  className="mt-3.5 rounded-full bg-[#4f72e0] px-4 py-1.5 text-xs font-medium text-white transition hover:bg-[#3d62d6]"
-                >
-                  Explore All Services →
-                </button>
+            {/* Modal Keyboard Shortcuts Footer (Desktop) */}
+            <div className="hidden sm:flex items-center justify-between border-t border-white/10 px-4 py-2.5 text-[11px] text-white/50 bg-white/[0.02]">
+              <div className="flex items-center gap-3">
+                <span>
+                  <kbd className="rounded border border-white/20 bg-white/10 px-1 py-0.5 text-[10px]">↑</kbd>{" "}
+                  <kbd className="rounded border border-white/20 bg-white/10 px-1 py-0.5 text-[10px]">↓</kbd> to navigate
+                </span>
+                <span>
+                  <kbd className="rounded border border-white/20 bg-white/10 px-1.5 py-0.5 text-[10px]">↵</kbd> to select
+                </span>
+                <span>
+                  <kbd className="rounded border border-white/20 bg-white/10 px-1.5 py-0.5 text-[10px]">ESC</kbd> to close
+                </span>
               </div>
-            ) : (
-              filteredResults.map((item, idx) => {
-                const Icon = item.icon;
-                const isSelected = idx === selectedIndex;
-
-                return (
-                  <div
-                    key={`d-${item.id}`}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      handleSelect(item);
-                    }}
-                    onMouseEnter={() => setSelectedIndex(idx)}
-                    className={`group flex cursor-pointer items-center gap-3 rounded-xl p-2.5 transition-all duration-150 ${
-                      isSelected
-                        ? "bg-[#4f72e0]/25 border border-[#4f72e0]/50 shadow-sm"
-                        : "hover:bg-white/10 border border-transparent"
-                    }`}
-                  >
-                    <div
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors ${
-                        isSelected
-                          ? "bg-[#4f8fff] text-white"
-                          : "bg-white/10 text-white/80 group-hover:bg-[#4f8fff]/20 group-hover:text-[#4f8fff]"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`truncate text-sm font-medium transition-colors ${
-                            isSelected ? "text-white" : "text-white/90 group-hover:text-white"
-                          }`}
-                        >
-                          {item.title}
-                        </span>
-
-                        <span
-                          className={`shrink-0 rounded-full border px-1.5 py-0.2 text-[9px] font-medium ${getCategoryBadgeClass(
-                            item.category
-                          )}`}
-                        >
-                          {item.category}
-                        </span>
-                      </div>
-
-                      <p className="truncate text-xs text-white/60 group-hover:text-white/75">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    <ArrowRight
-                      className={`h-4 w-4 shrink-0 transition-all ${
-                        isSelected
-                          ? "translate-x-0 text-white opacity-100"
-                          : "-translate-x-1 text-white/30 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
-                      }`}
-                    />
-                  </div>
-                );
-              })
-            )}
+              <span className="text-[#60a5fa] font-medium">T-HOME Quick Search</span>
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
-

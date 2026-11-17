@@ -221,9 +221,11 @@ function Navbar() {
   };
 
   const navLinkClass = ({ isActive }) =>
-    isActive
-      ? "text-[#4f72e0] font-semibold"
-      : "text-white/80 hover:text-[#4f72e0] transition";
+    `whitespace-nowrap transition-colors ${
+      isActive
+        ? "text-[#4f72e0] font-semibold"
+        : "text-white/80 hover:text-[#4f72e0]"
+    }`;
 
   const handleNavLink = () => {
     setMenuOpen(false);
@@ -284,13 +286,13 @@ function Navbar() {
 
   const AuthButtons = () =>
     isLoggedIn ? (
-      <>
+      <div className="flex shrink-0 items-center gap-2.5">
         {/* Desktop + Tablet notification button */}
         <NotificationButton />
 
         <Link
           to="/dashboard"
-          className="h-9 w-9 overflow-hidden rounded-full border-2 border-[#4f72e0]/70 transition hover:border-[#4f72e0]"
+          className="h-9 w-9 shrink-0 overflow-hidden rounded-full border-2 border-[#4f72e0]/70 transition hover:border-[#4f72e0]"
           title="Profile"
         >
           <img
@@ -304,13 +306,13 @@ function Navbar() {
             }}
           />
         </Link>
-      </>
+      </div>
     ) : (
-      <>
+      <div className="flex shrink-0 items-center gap-2">
         <button
           type="button"
           onClick={() => navigate("/login")}
-          className="flex h-9 min-w-[96px] items-center justify-center rounded-full border border-white/20 bg-white/10 px-4 text-sm text-white/90 transition hover:bg-white/20 hover:text-white lg:text-base"
+          className="flex h-8.5 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-white/20 bg-white/10 px-3.5 text-xs text-white/90 transition hover:bg-white/20 hover:text-white lg:h-9 lg:px-4 lg:text-sm"
           title="Login"
         >
           Login
@@ -319,12 +321,12 @@ function Navbar() {
         <button
           type="button"
           onClick={() => navigate("/get-started")}
-          className="flex h-9 min-w-[122px] items-center justify-center rounded-full bg-[linear-gradient(120deg,rgba(91,165,255,0.9)_0%,rgba(55,124,236,0.9)_100%)] px-4 text-sm text-white shadow-[0_8px_26px_rgba(77,163,255,0.35)] transition hover:brightness-110 lg:px-6 lg:text-base"
+          className="flex h-8.5 shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-[linear-gradient(120deg,rgba(91,165,255,0.95)_0%,rgba(55,124,236,0.95)_100%)] px-4 text-xs font-medium text-white shadow-[0_6px_20px_rgba(77,163,255,0.35)] transition hover:brightness-110 lg:h-9 lg:px-5 lg:text-sm"
           title="Get Started"
         >
           Get Started
         </button>
-      </>
+      </div>
     );
 
   return (
@@ -335,41 +337,41 @@ function Navbar() {
           : "pointer-events-none -translate-y-full opacity-0"
       }`}
     >
-      <div className="w-full max-w-[95%] sm:max-w-[92%]">
+      <div className="w-full max-w-[96%] sm:max-w-[94%] xl:max-w-[92%]">
         <nav
           className="
             rounded-2xl border border-[#d8ecff]/44
             bg-[linear-gradient(120deg,rgba(20,35,75,0.85)_0%,rgba(12,22,55,0.92)_42%,rgba(8,16,40,0.95)_100%)]
-            px-4 py-[11px]
+            px-3.5 py-2
             shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_0_0_1px_rgba(80,120,200,0.25),0_16px_40px_rgba(5,16,46,0.45)]
             backdrop-blur-[16px]
-            sm:rounded-full sm:px-6
+            sm:rounded-full sm:px-5
             sm:bg-[linear-gradient(120deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_42%,rgba(255,255,255,0.04)_100%)]
             sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]
-            lg:px-8
+            lg:px-6
           "
         >
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex min-w-0 items-center gap-2 sm:gap-3">
+            <Link to="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5">
               <img
                 src="/home/logo.png"
                 alt="T-HOME Logo"
-                className="h-9 w-9 flex-shrink-0 sm:h-10 sm:w-10"
+                className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
               />
 
-              <h1
-                className="truncate text-lg font-semibold text-white sm:text-xl lg:text-2xl"
+              <span
+                className="whitespace-nowrap text-base font-bold tracking-tight text-white sm:text-lg lg:text-xl"
                 style={{
                   fontFamily: "Poppins, sans-serif",
                   fontWeight: 600,
                 }}
               >
                 T-HOME
-              </h1>
+              </span>
             </Link>
 
             {/* DESKTOP NAV */}
-            <div className="hidden items-center gap-4 xl:gap-6 2xl:gap-8 lg:flex text-sm xl:text-base">
+            <div className="hidden items-center gap-3.5 lg:flex xl:gap-5 2xl:gap-7 text-sm font-medium">
               <NavLink
                 to="/"
                 end
@@ -436,7 +438,7 @@ function Navbar() {
                     state: { resetTools: true },
                   });
                 }}
-                className="text-white/80 transition hover:text-[#4f72e0]"
+                className="whitespace-nowrap text-white/80 transition-colors hover:text-[#4f72e0]"
               >
                 Financial Tools
               </button>
@@ -476,7 +478,7 @@ function Navbar() {
             </div>
 
             {/* DESKTOP SEARCH + AUTH */}
-            <div className="hidden items-center gap-2.5 lg:flex lg:gap-3">
+            <div className="hidden shrink-0 items-center gap-2 lg:flex xl:gap-2.5">
               <NavbarSearchBar />
               <AuthButtons />
             </div>
