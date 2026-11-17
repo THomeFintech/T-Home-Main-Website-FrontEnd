@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 
 export default function ConfidenceGauge({ result, loading = false }) {
-
   /* =========================
      🔥 EXTRACT FROM BACKEND
   ========================= */
@@ -9,9 +8,7 @@ export default function ConfidenceGauge({ result, loading = false }) {
 
   // convert 0–1 → %
   const confidence =
-    probabilityRaw <= 1
-      ? probabilityRaw * 100
-      : probabilityRaw;
+    probabilityRaw <= 1 ? probabilityRaw * 100 : probabilityRaw;
 
   /* =========================
      🔥 SAFE VALUE
@@ -77,9 +74,7 @@ export default function ConfidenceGauge({ result, loading = false }) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center text-white">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
-        <p className="mt-4 text-sm text-white/70">
-          Calculating eligibility...
-        </p>
+        <p className="mt-4 text-sm text-white/70">Calculating eligibility...</p>
       </div>
     );
   }
@@ -90,25 +85,27 @@ export default function ConfidenceGauge({ result, loading = false }) {
   if (!result || !result.decision) {
     return (
       <div className="text-white text-center">
-        <p className="text-white/60">
-          Submit details to see eligibility
-        </p>
+        <p className="text-white/60">Submit details to see eligibility</p>
       </div>
     );
   }
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center text-center px-4 py-4">
-
       <h2 className="text-xl md:text-2xl font-semibold text-white mb-5">
         Eligibility Status
       </h2>
 
       <div className="relative w-[260px] md:w-[320px] lg:w-[360px]">
         <svg viewBox="0 0 300 200" className="w-full h-auto">
-
           <defs>
-            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient
+              id="gaugeGradient"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
               <stop offset="0%" stopColor="#ef4444" />
               <stop offset="30%" stopColor="#f59e0b" />
               <stop offset="60%" stopColor="#eab308" />
@@ -150,7 +147,6 @@ export default function ConfidenceGauge({ result, loading = false }) {
 
           <circle cx="150" cy="150" r="8" fill="#e5e7eb" />
           <circle cx="150" cy="150" r="4" fill="#94a3b8" />
-
         </svg>
       </div>
 
@@ -177,7 +173,6 @@ export default function ConfidenceGauge({ result, loading = false }) {
           </span>
         </div>
       </div>
-
     </div>
   );
 }

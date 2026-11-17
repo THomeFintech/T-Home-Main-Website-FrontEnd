@@ -4,13 +4,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { Calculator, Shield, TrendingUp } from "lucide-react";
 
-
-
 import ContactForm from "../components/ContactForm";
 
 import LoanForm from "../components/LoanForm";
 
-import Meter from "../components/Meter";
+import ConfidenceGauge from "../components/ConfidenceGauge";
 
 import Decision from "../components/Decision";
 
@@ -26,37 +24,24 @@ import { calculateAgeFromDob } from "../utils/dobUtils";
 
 import EMIPage from "./Emi";
 
-
-
 export default function Tools() {
-
   const location = useLocation();
 
   const navigate = useNavigate();
 
-
-
   const searchParams = useMemo(
-
     () => new URLSearchParams(location.search),
 
     [location.search],
-
   );
 
   const toolParam = searchParams.get("tool");
 
   const serviceParam = searchParams.get("service");
 
-
-
   const [selectedService, setSelectedService] = useState(
-
     () => serviceParam || "",
-
   );
-
-
 
   const [step, setStep] = useState(() => {
     try {
@@ -91,18 +76,12 @@ export default function Tools() {
     }
   });
 
-
-
   const [contactData, setContactData] = useState(() => {
-
     try {
-
       const saved = JSON.parse(localStorage.getItem("contact_data") || "{}");
 
       const verified = JSON.parse(
-
         localStorage.getItem("digilocker_verified_identity") || "{}",
-
       );
 
       const params = new URLSearchParams(window.location.search);
@@ -110,7 +89,6 @@ export default function Tools() {
       const currentService = params.get("service") || "";
 
       return {
-
         ...saved,
 
         name: saved.name || verified.name || "",
@@ -130,46 +108,28 @@ export default function Tools() {
         address: saved.address || verified.address || "",
 
         driving_licence:
-
           saved.driving_licence || verified.driving_licence || "",
 
         service: saved.service || currentService || "",
-
       };
-
     } catch {
-
       return {};
-
     }
-
   });
 
-
-
   const [loanData, setLoanData] = useState(() => {
-
     try {
-
       const saved = JSON.parse(localStorage.getItem("loanData") || "{}");
 
       const verified = JSON.parse(
-
         localStorage.getItem("digilocker_verified_identity") || "{}",
-
       );
 
       const user = JSON.parse(
-
         localStorage.getItem("user") || sessionStorage.getItem("user") || "{}",
-
       );
 
-      const contact = JSON.parse(
-
-        localStorage.getItem("contact_data") || "{}",
-
-      );
+      const contact = JSON.parse(localStorage.getItem("contact_data") || "{}");
 
       const storedAge = localStorage.getItem("digilocker_age");
 
@@ -178,12 +138,23 @@ export default function Tools() {
       const savedCibil = localStorage.getItem("dashboard_cibil_score");
 
       return {
-
         ...saved,
 
-        name: saved.name || verified.name || contact.name || user.name || user.full_name || "",
+        name:
+          saved.name ||
+          verified.name ||
+          contact.name ||
+          user.name ||
+          user.full_name ||
+          "",
 
-        phone: saved.phone || verified.phone || contact.phone || user.phone || user.mobile || "",
+        phone:
+          saved.phone ||
+          verified.phone ||
+          contact.phone ||
+          user.phone ||
+          user.mobile ||
+          "",
 
         pan: saved.pan || verified.pan || contact.pan || "",
 
@@ -192,18 +163,11 @@ export default function Tools() {
         age: saved.age || storedAge || calculatedAge || "",
 
         cibilScore: saved.cibilScore || (savedCibil ? Number(savedCibil) : ""),
-
       };
-
     } catch {
-
       return {};
-
     }
-
   });
-
-
 
   const [predictionResult, setPredictionResult] = useState(null);
 
@@ -215,172 +179,99 @@ export default function Tools() {
 
   const API_BASE = import.meta.env.VITE_API_URL;
 
-
-
   useEffect(() => {
-
     if (serviceParam) {
-
       setSelectedService((prev) =>
-
         prev !== serviceParam ? serviceParam : prev,
-
       );
-
     }
-
   }, [serviceParam]);
 
-
-
   useEffect(() => {
-
     if (toolParam === "loan-prediction" && step >= 1 && step <= 5) {
-
       try {
-
         localStorage.setItem("loan_prediction_step", String(step));
-
       } catch {
-
         /* ignore */
-
       }
-
     }
-
   }, [step, toolParam]);
 
-
-
   useEffect(() => {
-
     let isMounted = true;
 
-
-
     if (toolParam === "loan-prediction") {
-
       const token =
-
         sessionStorage.getItem("access_token") ||
-
         localStorage.getItem("access_token");
 
-
-
       if (!token) {
-
         try {
-
           const currentPath = `${window.location.pathname}${window.location.search}`;
 
           localStorage.setItem("digilocker_return_url", currentPath);
 
           if (serviceParam) {
-
             localStorage.setItem("digilocker_selected_service", serviceParam);
-
           }
-
         } catch {
-
           /* ignore */
-
         }
 
         navigate("/login");
 
         return;
-
       }
-
-
 
       // Check DigiLocker status
 
       const checkStatus = async () => {
-
         try {
-
           const res = await fetch(`${API_BASE}/digilocker/status`, {
-
             headers: { Authorization: `Bearer ${token}` },
-
           });
-
-
 
           if (!isMounted) return;
 
-
-
           if (res.ok) {
-
             const data = await res.json();
 
             if (!isMounted) return;
 
-
-
             if (data?.connected && data?.verified_identity) {
-
               const verified = data.verified_identity;
 
               const calculatedAge = calculateAgeFromDob(verified.dob);
 
               if (calculatedAge) {
-
                 try {
-
                   localStorage.setItem("digilocker_age", String(calculatedAge));
-
                 } catch {
-
                   /* ignore */
-
                 }
-
               }
 
               try {
-
                 localStorage.setItem(
-
                   "digilocker_verified_identity",
 
                   JSON.stringify(verified),
-
                 );
-
               } catch {
-
                 /* ignore */
-
               }
 
-
-
               const currentService =
-
                 serviceParam ||
-
                 localStorage.getItem("digilocker_selected_service") ||
-
                 "";
 
-
-
               setContactData((prev) => {
-
                 const currentSaved = JSON.parse(
-
                   localStorage.getItem("contact_data") || "{}",
-
                 );
 
                 const updated = {
-
                   ...prev,
 
                   ...currentSaved,
@@ -388,89 +279,58 @@ export default function Tools() {
                   name: prev.name || currentSaved.name || verified.name || "",
 
                   phone:
-
                     prev.phone || currentSaved.phone || verified.phone || "",
 
                   email:
-
                     prev.email || currentSaved.email || verified.email || "",
 
                   pan: prev.pan || currentSaved.pan || verified.pan || "",
 
                   aadhaar:
-
                     prev.aadhaar ||
-
                     currentSaved.aadhaar ||
-
                     verified.aadhaar ||
-
                     "",
 
                   dob: prev.dob || currentSaved.dob || verified.dob || "",
 
                   gender:
-
                     prev.gender || currentSaved.gender || verified.gender || "",
 
                   address:
-
                     prev.address ||
-
                     currentSaved.address ||
-
                     verified.address ||
-
                     "",
 
                   driving_licence:
-
                     prev.driving_licence ||
-
                     currentSaved.driving_licence ||
-
                     verified.driving_licence ||
-
                     "",
 
                   service:
-
                     prev.service ||
-
                     currentSaved.service ||
-
                     currentService ||
-
                     "",
-
                 };
 
                 try {
-
                   localStorage.setItem("contact_data", JSON.stringify(updated));
-
                 } catch {
-
                   /* ignore */
-
                 }
 
                 return updated;
-
               });
 
-
-
               setLoanData((prev) => {
-
                 const currentSaved = JSON.parse(
-
                   localStorage.getItem("loanData") || "{}",
-
                 );
 
                 const updated = {
-
                   ...currentSaved,
 
                   ...prev,
@@ -482,173 +342,100 @@ export default function Tools() {
                   name: prev?.name || currentSaved?.name || verified.name || "",
 
                   phone:
-
                     prev?.phone || currentSaved?.phone || verified.phone || "",
 
                   gender:
-
                     prev?.gender ||
-
                     currentSaved?.gender ||
-
                     verified.gender ||
-
                     "",
-
                 };
 
                 try {
-
                   localStorage.setItem("loanData", JSON.stringify(updated));
-
                 } catch {
-
                   /* ignore */
-
                 }
 
                 return updated;
-
               });
-
-
 
               // Already connected with DigiLocker: advance to Step 2 (Basic Contact Form)
 
               setStep((currentStep) => {
-
                 if (currentStep <= 1) {
-
                   return 2;
-
                 }
 
                 return currentStep;
-
               });
 
               return;
-
             } else {
-
               setStep((currentStep) => (currentStep <= 1 ? 1 : currentStep));
-
             }
-
           } else {
-
             setStep((currentStep) => (currentStep <= 1 ? 1 : currentStep));
-
           }
-
         } catch (err) {
-
           console.error("Tools DigiLocker check error:", err);
 
           if (isMounted) {
-
             setStep((currentStep) => (currentStep <= 1 ? 1 : currentStep));
-
           }
-
         }
-
       };
 
-
-
       checkStatus();
-
     } else if (toolParam === "emi") {
-
       try {
-
         localStorage.removeItem("loan_prediction_step");
-
       } catch {
-
         /* ignore */
-
       }
 
       setStep(6);
-
     } else if (toolParam === "balance-transfer") {
-
       try {
-
         localStorage.removeItem("loan_prediction_step");
-
       } catch {
-
         /* ignore */
-
       }
 
       setStep(7);
-
     } else if (!toolParam && location.pathname === "/tools") {
-
       try {
-
         localStorage.removeItem("loan_prediction_step");
-
       } catch {
-
         /* ignore */
-
       }
 
       setStep(0);
-
     }
-
-
 
     return () => {
-
       isMounted = false;
-
     };
-
   }, [toolParam, serviceParam, location.pathname, navigate, API_BASE]);
 
-
-
   useEffect(() => {
-
     if (location.pathname === "/tools" && !location.search) {
-
       try {
-
         localStorage.removeItem("loan_prediction_step");
-
       } catch {
-
         /* ignore */
-
       }
 
       setStep(0);
-
     }
-
   }, [location.pathname, location.search]);
 
-
-
   useEffect(() => {
-
     if (location.state?.resetTools) {
-
       try {
-
         localStorage.removeItem("loan_prediction_step");
-
       } catch {
-
         /* ignore */
-
       }
 
       setStep(0);
@@ -665,20 +452,12 @@ export default function Tools() {
 
       setIsSelectingBank(false);
 
-
-
       navigate("/tools", { replace: true });
-
     }
-
   }, [location, navigate]);
 
-
-
   useEffect(() => {
-
     if (step === 3) {
-
       const savedLoan = JSON.parse(localStorage.getItem("loanData") || "{}");
 
       const storedAge = localStorage.getItem("digilocker_age");
@@ -687,76 +466,46 @@ export default function Tools() {
 
       const resolvedAge = savedLoan.age || storedAge || ageFromDob || "";
 
-
-
       setLoanData((prev) => ({
-
         ...savedLoan,
 
         ...prev,
 
         age: prev?.age || savedLoan.age || resolvedAge,
-
       }));
-
     }
-
   }, [step, contactData?.dob]);
-
-
 
   const nextStep = () => setStep((prev) => prev + 1);
 
   const prevStep = () => setStep((prev) => prev - 1);
 
-
-
   const handleLoanResult = (data, formValues) => {
-
     setPredictionResult(data);
 
     setLoanData(formValues);
-
-
 
     // ✅ SAVE DATA
 
     localStorage.setItem("loanData", JSON.stringify(formValues));
 
-
-
     if (["Approved", "Partially Approved"].includes(data?.decision)) {
-
       setShowBankCards(true);
-
     } else {
-
       setShowBankCards(false);
-
     }
-
   };
 
-
-
   const formattedBanks = useMemo(() => {
-
     if (!predictionResult?.recommended_banks) return [];
 
-
-
     console.log(
-
       "Recommended banks from backend:",
 
       predictionResult.recommended_banks,
-
     );
 
-
-
     return predictionResult.recommended_banks.map((b, i) => ({
-
       id: i + 1,
 
       name: b.bank_name || "Bank",
@@ -774,55 +523,32 @@ export default function Tools() {
       monthly_emi: Number(b.monthly_emi || b.emi || 0),
 
       original: b,
-
     }));
-
   }, [predictionResult]);
 
-
-
   const handleBankSelect = async (bank) => {
-
     try {
-
       setIsSelectingBank(true);
 
       console.log("Selected bank from UI:", bank);
 
-
-
       const loanId = localStorage.getItem("loan_id");
 
-
-
       if (!loanId) {
-
         alert("Loan ID is missing. Please complete the loan step first.");
 
         return;
-
       }
 
-
-
       const interestRate = Number(
-
         bank.interest_rate ?? String(bank.interestRate || "0").replace("%", ""),
-
       );
-
-
 
       const monthlyEmi = Number(
-
         bank.monthly_emi ?? String(bank.monthlyEmi || "0").replace(/[₹,]/g, ""),
-
       );
 
-
-
       const payload = {
-
         loan_id: String(loanId),
 
         bank_name: bank.bank_name || bank.name || "",
@@ -830,105 +556,65 @@ export default function Tools() {
         interest_rate: Number.isNaN(interestRate) ? 0 : interestRate,
 
         monthly_emi: Number.isNaN(monthlyEmi) ? 0 : monthlyEmi,
-
       };
 
-
-
       if (!payload.bank_name) {
-
         alert("Bank name is missing.");
 
         return;
-
       }
-
-
 
       console.log("Calling /applications/select-bank with payload:", payload);
 
       const token = sessionStorage.getItem("access_token"); // Your login stores the token as "token"
 
-
-
       const response = await fetch(`${API_BASE}/applications/select-bank`, {
-
         method: "POST",
 
         headers: {
-
           "Content-Type": "application/json",
 
           ...(token && { Authorization: `Bearer ${token}` }),
-
         },
 
         body: JSON.stringify(payload),
-
       });
-
-
 
       const data = await response.json();
 
       console.log("Select bank API response:", data);
 
-
-
       if (!response.ok) {
-
         throw new Error(data?.detail || "Failed to select bank");
-
       }
-
-
 
       const bankSelectionId = data?.bank_selection_id;
 
-
-
       if (!bankSelectionId) {
-
         throw new Error("bank_selection_id missing in response");
-
       }
-
-
 
       localStorage.setItem("selected_bank", JSON.stringify(bank));
 
       localStorage.setItem("bank_selection_id", String(bankSelectionId));
 
-
-
       setSelectedBank(bank);
 
       setStep(4);
-
     } catch (error) {
-
       console.error("Select bank API error:", error);
 
       alert(error.message || "Failed to select bank");
-
     } finally {
-
       setIsSelectingBank(false);
-
     }
-
   };
 
-
-
   const toolCards = [
-
     {
-
       title: "EMI & Repayment Modeller",
 
       description:
-
         "Calculate estimated monthly instalments, principal/interest split and total payable across custom tenures.",
 
       buttonText: "Calculate Now",
@@ -938,7 +624,6 @@ export default function Tools() {
       onClick: () => setStep(6),
 
       theme: {
-
         border: "border-amber-500/20",
 
         cardBorder: "border-amber-500/10",
@@ -950,17 +635,13 @@ export default function Tools() {
         btnBorder: "border-amber-500/30",
 
         glow: "hover:shadow-[0_0_56px_rgba(245,158,11,0.35),0_16px_36px_rgba(0,0,0,0.35)] active:shadow-[0_0_42px_rgba(245,158,11,0.28),0_12px_28px_rgba(0,0,0,0.32)]",
-
       },
-
     },
 
     {
-
       title: "AI-Powered Loan Eligibility & Prediction System",
 
       description:
-
         "Estimate your potential borrowing range from net income, current EMIs, age and tenure.",
 
       buttonText: "Check Eligibility",
@@ -968,25 +649,16 @@ export default function Tools() {
       icon: Shield,
 
       onClick: () => {
-
         const token = sessionStorage.getItem("access_token");
 
-
-
         if (token) {
-
           setStep(1);
-
         } else {
-
           navigate("/login");
-
         }
-
       },
 
       theme: {
-
         border: "border-blue-500/20",
 
         cardBorder: "border-blue-500/10",
@@ -998,17 +670,13 @@ export default function Tools() {
         btnBorder: "border-blue-500/30",
 
         glow: "hover:shadow-[0_0_56px_rgba(59,130,246,0.35),0_16px_36px_rgba(0,0,0,0.35)] active:shadow-[0_0_42px_rgba(59,130,246,0.28),0_12px_28px_rgba(0,0,0,0.32)]",
-
       },
-
     },
 
     {
-
       title: "AI-Powered Balance Transfer System",
 
       description:
-
         "Estimate prospective interest savings. Actual savings depend on new lender terms, processing fees and prepayment charges.",
 
       buttonText: "Calculate Now",
@@ -1016,25 +684,16 @@ export default function Tools() {
       icon: TrendingUp,
 
       onClick: () => {
-
         const token = sessionStorage.getItem("access_token");
 
-
-
         if (token) {
-
           navigate("/balance-transfer-contact");
-
         } else {
-
           navigate("/login");
-
         }
-
       },
 
       theme: {
-
         border: "border-emerald-500/20",
 
         cardBorder: "border-emerald-500/10",
@@ -1046,79 +705,43 @@ export default function Tools() {
         btnBorder: "border-emerald-500/30",
 
         glow: "hover:shadow-[0_0_56px_rgba(16,185,129,0.35),0_16px_36px_rgba(0,0,0,0.35)] active:shadow-[0_0_42px_rgba(16,185,129,0.28),0_12px_28px_rgba(0,0,0,0.32)]",
-
       },
-
     },
-
   ];
 
-
-
   return (
-
     <main className="relative min-h-screen overflow-hidden bg-[#040b1f] font-['Outfit'] text-white">
-
       <div className="pointer-events-none absolute left-1/2 top-[-10%] h-[500px] w-[1000px] -translate-x-1/2 rounded-full bg-blue-500/16 blur-[120px]" />
 
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(56,92,188,0.22)_0%,_transparent_72%)]" />
 
-
-
       {step === 0 && !toolParam && (
-
         <section className="relative z-10 px-6 pt-[180px] pb-24 md:pt-[144px]">
-
           <div className="mx-auto max-w-[1200px] text-center mt-16 md:mt-0">
-
             <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
-
               Financial Planning Calculators
-
             </h1>
 
-
-
             <p className="mx-auto max-w-2xl text-base font-normal leading-relaxed text-gray-400 md:text-lg">
-
               Estimate borrowing costs, evaluate monthly budgets and check
-
               potential refinancing savings before you apply.
-
             </p>
-
-
 
             <p className="mx-auto mt-4 max-w-3xl text-sm leading-6 text-gray-400">
-
               Tool results are estimates for planning only. They are not a loan
-
               approval, offer, financial advice, or a guarantee of eligibility.
-
               Final terms depend on the information provided and the applicable
-
               lender or service process.
-
             </p>
 
-
-
             <div className="mt-16 grid gap-6 text-left lg:grid-cols-3">
-
               {toolCards.map((tool, i) => {
-
                 const Icon = tool.icon;
 
-
-
                 return (
-
                   <div
-
                     key={i}
-
                     onClick={tool.onClick}
-
                     className={`
 
                       group relative min-h-[380px] cursor-pointer rounded-[18px]
@@ -1142,53 +765,30 @@ export default function Tools() {
                       ${tool.theme.glow}
 
                     `}
-
                   >
-
                     <div
-
                       className={`mb-8 flex h-12 w-12 items-center justify-center rounded-lg border bg-white/[0.03] transition-all duration-300 group-hover:scale-110 group-hover:bg-white/[0.08] group-active:scale-105 ${tool.theme.border}`}
-
                     >
-
                       <Icon
-
                         className={`h-5 w-5 ${tool.theme.text}`}
-
                         strokeWidth={1.5}
-
                       />
-
                     </div>
 
-
-
                     <h2 className="mb-4 text-2xl font-semibold tracking-normal text-white transition-colors duration-300 group-hover:text-white/95">
-
                       {tool.title}
-
                     </h2>
 
-
-
                     <p className="mb-10 flex-grow text-[15px] font-light leading-relaxed text-gray-400 transition-colors duration-300 group-hover:text-gray-300">
-
                       {tool.description}
-
                     </p>
 
-
-
                     <button
-
                       onClick={(e) => {
-
                         e.stopPropagation();
 
                         tool.onClick();
-
                       }}
-
                       className={`
 
                         w-full rounded-lg border bg-white/[0.02] py-3.5 text-[15px] font-medium
@@ -1204,63 +804,38 @@ export default function Tools() {
                         ${tool.theme.btnBorder} ${tool.theme.text} ${tool.theme.hoverBg}
 
                       `}
-
                     >
-
                       {tool.buttonText}
-
                     </button>
-
                   </div>
-
                 );
-
               })}
-
             </div>
-
           </div>
-
         </section>
-
       )}
 
-
-
       <div className="relative z-10">
-
         {step === 1 && (
-
           <div className="pt-24 pb-12">
-
             <DigiLockerVerificationStep
-
               serviceName={selectedService || "Loan Application"}
-
               onVerified={(verifiedIdentity) => {
-
                 const calculatedAge = calculateAgeFromDob(verifiedIdentity.dob);
 
                 if (calculatedAge) {
-
                   localStorage.setItem("digilocker_age", String(calculatedAge));
-
                 }
 
                 if (verifiedIdentity) {
-
                   localStorage.setItem(
-
                     "digilocker_verified_identity",
 
                     JSON.stringify(verifiedIdentity),
-
                   );
-
                 }
 
                 setContactData((prev) => ({
-
                   ...prev,
 
                   name: verifiedIdentity.name || prev.name || "",
@@ -1276,13 +851,10 @@ export default function Tools() {
                   dob: verifiedIdentity.dob || prev.dob || "",
 
                   gender: verifiedIdentity.gender || prev.gender || "",
-
                 }));
 
                 setLoanData((prev) => {
-
                   const updated = {
-
                     ...prev,
 
                     age: prev?.age || calculatedAge || "",
@@ -1294,290 +866,159 @@ export default function Tools() {
                     phone: prev?.phone || verifiedIdentity.phone || "",
 
                     gender: prev?.gender || verifiedIdentity.gender || "",
-
                   };
 
                   const currentSaved = JSON.parse(
-
                     localStorage.getItem("loanData") || "{}",
-
                   );
 
                   localStorage.setItem(
-
                     "loanData",
 
                     JSON.stringify({ ...currentSaved, ...updated }),
-
                   );
 
                   return updated;
-
                 });
 
                 setStep(2);
-
               }}
-
               onBack={() => {
-
                 try {
-
                   localStorage.removeItem("loan_prediction_step");
-
                 } catch {
-
                   /* ignore */
-
                 }
 
                 if (selectedService) {
-
                   navigate(-1);
-
                 } else {
-
                   setStep(0);
-
                 }
-
               }}
-
             />
-
           </div>
-
         )}
 
-
-
         {step === 2 && (
-
           <ContactForm
-
             title={selectedService || "Loan Application"}
-
             contactData={contactData}
-
             setContactData={setContactData}
-
             defaultService={selectedService}
-
             onNext={(service) => {
-
               setSelectedService(service);
 
               setContactData((prev) => ({
-
                 ...prev,
 
                 service,
-
               }));
 
               try {
-
                 localStorage.setItem("loan_prediction_step", "3");
-
               } catch {
-
                 /* ignore */
-
               }
 
               setStep(3);
-
             }}
-
           />
-
         )}
 
-
-
         {step === 3 && (
-
           <section className="px-4 pb-20 pt-32">
-
             <div className="mx-auto max-w-[1400px]">
-
               <div className="mb-4">
-
                 <button
-
                   type="button"
-
                   onClick={() => setStep(2)}
-
                   className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-xs font-medium text-white/80 transition hover:bg-white/[0.12] hover:text-white"
-
                 >
-
                   ← Edit Basic Details
-
                 </button>
-
               </div>
 
               <div
-
                 className={
-
                   predictionResult
-
                     ? "grid gap-6 rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-3 shadow-[0_22px_50px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-4 lg:grid-cols-[1.6fr_1fr]"
-
                     : "mx-auto max-w-[820px] rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-3 shadow-[0_22px_50px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-4"
-
                 }
-
               >
-
                 <LoanForm
-
                   loanData={loanData}
-
                   setLoanData={setLoanData}
-
                   onSubmit={handleLoanResult}
-
                   service={selectedService}
-
                   contactData={contactData}
-
                 />
 
-
-
                 {predictionResult && (
-
                   <div className="sticky top-28 h-fit space-y-5">
-
-                    <Meter result={predictionResult} />
-
+                    <ConfidenceGauge result={predictionResult} />
                     <Decision result={predictionResult} />
-
                   </div>
-
                 )}
-
               </div>
 
-
-
               {showBankCards && formattedBanks.length > 0 && (
-
                 <div className="mt-12">
-
                   <BankCards
-
                     banks={formattedBanks}
-
                     selectedBank={selectedBank}
-
                     onSelectBank={handleBankSelect}
-
                     isLoading={isSelectingBank}
-
                   />
-
                 </div>
-
               )}
-
             </div>
-
           </section>
-
         )}
-
-
 
         {step === 4 && (
-
           <Proceed
-
             selectedBank={selectedBank}
-
             contactData={contactData}
-
             loanData={loanData}
-
             result={predictionResult}
-
             onNext={() => setStep(5)}
-
             onBack={() => setStep(3)}
-
           />
-
         )}
-
-
 
         {step === 5 && (
-
           <Amortization
-
             selectedBank={selectedBank}
-
             loanData={loanData}
-
             result={predictionResult}
-
             onBack={() => setStep(4)}
-
           />
-
         )}
-
-
 
         {step === 6 && <EMIPage onBack={() => setStep(0)} />}
 
-
-
         {step === 7 && (
-
           <div className="px-4 pt-40 text-center text-white">
-
             <div className="mx-auto max-w-2xl rounded-[22px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))] px-8 py-12 shadow-[0_20px_45px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
-
               <h1 className="text-4xl font-bold">
-
                 Balance Transfer Calculator
-
               </h1>
 
               <p className="mt-6 text-lg text-gray-500">
-
                 Feature coming soon 🚀
-
               </p>
 
               <button
-
                 onClick={() => setStep(0)}
-
                 className="mt-8 rounded-xl border border-white/10 bg-white/5 px-10 py-4 font-semibold text-blue-400 transition-all hover:bg-white/10"
-
               >
-
                 Go Back
-
               </button>
-
             </div>
-
           </div>
-
         )}
-
       </div>
-
     </main>
-
   );
-
 }
-

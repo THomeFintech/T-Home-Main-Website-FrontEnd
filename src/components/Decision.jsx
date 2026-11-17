@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   FileText,
   AlertCircle,
@@ -6,8 +6,16 @@ import {
   XCircle,
   Clock3,
 } from "lucide-react";
+import { computeCibilEligibility } from "../utils/cibilEligibility";
 
-export default function DecisionPanel({ result, loading }) {
+export default function DecisionPanel({ result, loading, report = null }) {
+  /* ================= CIBIL-BASED ELIGIBILITY ================= */
+  // Same calculation as the gauge, so both always show the same percentage.
+  // (Hooks must stay above the early returns below.)
+  const cibilEligibility = useMemo(
+    () => computeCibilEligibility(result, report),
+    [result, report],
+  );
 
   /* ================= LOADING ================= */
   if (loading) {
@@ -37,67 +45,72 @@ export default function DecisionPanel({ result, loading }) {
   /* ================= SAFE VALUES ================= */
 
   // Decision
-  const decisionText = result.decision || "Pending";
+  const decisionText = String(result.decision || "Pending");
   const decision = decisionText.toLowerCase();
 
-  // Probability (backend gives 0–1 → convert to %)
+  // Probability: CIBIL-based when a report is available, otherwise the
+  // backend value (0–1 → convert to %)
   const probabilityRaw = Number(result.approval_probability ?? 0);
 
-  const safeApproval =
-    probabilityRaw <= 1
-      ? probabilityRaw * 100
-      : probabilityRaw;
+  const backendProbability =
+    probabilityRaw <= 1 ? probabilityRaw * 100 : probabilityRaw;
+
+  const safeApproval = cibilEligibility
+    ? cibilEligibility.percent
+    : backendProbability;
 
   // Clamp to 0–100
-  const finalProbability = Math.min(100, Math.max(0, safeApproval));
+  const finalProbability = Math.min(
+    100,
+    Math.max(0, Number.isFinite(safeApproval) ? safeApproval : 0),
+  );
 
   // Loan ID
   const loanId = result.loan_id || "Generating...";
 
   /* ================= DECISION TYPES ================= */
 
-  const isApproved =
-    decision.includes("approved") &&
-    !decision.includes("partially");
+  const isRejected =
+    decision.includes("rejected") ||
+    decision.includes("declined") ||
+    decision.includes("not approved");
 
-  const isPartiallyApproved = decision.includes("partially");
-  const isRejected = decision.includes("rejected");
+  const isPartiallyApproved = !isRejected && decision.includes("partially");
+
+  const isApproved =
+    !isRejected && !isPartiallyApproved && decision.includes("approved");
 
   /* ================= BADGE ================= */
 
-  let badgeClass =
-    "bg-blue-500/20 text-blue-400 border border-blue-400/30";
+  let badgeClass = "bg-blue-500/20 text-blue-400 border border-blue-400/30";
   let icon = <Clock3 className="h-4 w-4" />;
 
   if (isApproved) {
-    badgeClass =
-      "bg-green-500/20 text-green-400 border border-green-400/30";
+    badgeClass = "bg-green-500/20 text-green-400 border border-green-400/30";
     icon = <CheckCircle2 className="h-4 w-4" />;
   } else if (isPartiallyApproved) {
-    badgeClass =
-      "bg-yellow-500/20 text-yellow-400 border border-yellow-400/30";
+    badgeClass = "bg-yellow-500/20 text-yellow-400 border border-yellow-400/30";
     icon = <AlertCircle className="h-4 w-4" />;
   } else if (isRejected) {
-    badgeClass =
-      "bg-red-500/20 text-red-400 border border-red-400/30";
+    badgeClass = "bg-red-500/20 text-red-400 border border-red-400/30";
     icon = <XCircle className="h-4 w-4" />;
   }
 
   /* ================= AMOUNT ================= */
 
   const formattedAmount =
-    result.approved_amount &&
-    (isApproved || isPartiallyApproved)
+    result.approved_amount && (isApproved || isPartiallyApproved)
       ? `₹${Number(result.approved_amount).toLocaleString("en-IN")}`
       : null;
 
   return (
     <div className="p-6 rounded-xl bg-[#0f172a] text-white">
-
       {/* HEADER */}
       <div className="flex justify-between mb-6">
         <h2 className="text-2xl">Loan Prediction</h2>
-        <div className={`px-3 py-1 rounded-full flex items-center gap-2 ${badgeClass}`}>
+        <div
+          className={`px-3 py-1 rounded-full flex items-center gap-2 ${badgeClass}`}
+        >
           {icon}
           {decisionText}
         </div>
@@ -106,16 +119,17 @@ export default function DecisionPanel({ result, loading }) {
       {/* LOAN ID */}
       <div className="bg-white/10 p-4 rounded-lg text-center mb-6">
         <p className="text-sm text-white/60">Loan ID</p>
-        <h2 className="text-2xl font-bold">
-          {loanId}
-        </h2>
+        <h2 className="text-2xl font-bold">{loanId}</h2>
       </div>
 
       {/* PROBABILITY */}
       <div className="text-center mb-6">
-        <h1 className="text-5xl font-bold">
-          {finalProbability.toFixed(1)}%
-        </h1>
+        <h1 className="text-5xl font-bold">{finalProbability.toFixed(1)}%</h1>
+        {cibilEligibility && (
+          <p className="mt-2 text-xs text-white/50">
+            Based on your CIBIL report
+          </p>
+        )}
       </div>
 
       {/* APPROVED AMOUNT */}
@@ -137,7 +151,7 @@ export default function DecisionPanel({ result, loading }) {
         </div>
       )}
 
-      {/* GUIDANCE (NEW) */}
+      {/* GUIDANCE */}
       {Array.isArray(result?.guidance) && result.guidance.length > 0 && (
         <div className="mb-6">
           <h3 className="mb-2">Suggestions:</h3>
@@ -148,9 +162,6 @@ export default function DecisionPanel({ result, loading }) {
           ))}
         </div>
       )}
-
-      
-
     </div>
   );
 }
