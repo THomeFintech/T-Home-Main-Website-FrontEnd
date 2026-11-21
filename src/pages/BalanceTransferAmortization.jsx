@@ -205,29 +205,50 @@ export default function BalanceTransferAmortization() {
 
   const hasData = allRows.length > 0;
 
+  
   return (
     <section className="relative min-h-screen overflow-hidden px-4 pb-10 pt-24 sm:px-6 md:pt-28 lg:px-8 lg:pt-32">
       <div className="pointer-events-none absolute inset-0 bg-[#020918]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(47,77,167,0.34),transparent_60%)]" />
 
-      <div className="relative z-10 mx-auto max-w-[1320px] rounded-[14px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0.06)_100%)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.48)] backdrop-blur-xl">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 className="text-[44px] font-semibold text-white">Amortization Schedule</h1>
-            <p className="text-[12px] text-white/65">Month-wise breakup of principal and interest</p>
-          </div>
+      <div className="relative z-10 mx-auto max-w-[1320px] rounded-[14px] border border-white/15 bg-[linear-gradient(90deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0.06)_100%)] p-3 shadow-[0_18px_60px_rgba(0,0,0,0.48)] backdrop-blur-xl sm:p-5">
 
-          <div className="mt-2 flex flex-wrap gap-3 text-[12px] text-white sm:mt-1">
-            <button type="button" onClick={handleExportPdf} disabled={!hasData}>
-              Export PDF
-            </button>
-            <button type="button" onClick={handleExportCsv} disabled={!hasData}>
-              Export CSV
-            </button>
+        {/* Header */}
+        <div className="rounded-[12px] border border-white/20 bg-[#182537] p-4 text-white">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-[30px] font-semibold leading-tight">
+                Amortization Schedule
+              </h1>
+              <p className="mt-1 text-[12px] text-white/60">
+                Month-wise breakup of principal and interest
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={handleExportPdf}
+                disabled={!hasData}
+                className="rounded-[8px] border border-white/25 bg-white px-4 py-2 text-sm font-semibold text-[#0f172a] hover:bg-slate-100 disabled:opacity-40"
+              >
+                Export PDF
+              </button>
+
+              <button
+                type="button"
+                onClick={handleExportCsv}
+                disabled={!hasData}
+                className="rounded-[8px] bg-[#1f6bff] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1c5ee0] disabled:opacity-40"
+              >
+                Export CSV
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
+        {/* Summary Cards */}
+        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <TopCard title="EMI Amount" value={formatINR(emi)} />
           <TopCard title="Total Interest" value={formatINR(totalInterest)} />
           <TopCard title="Tenure" value={`${tenureMonths || 0} months`} />
@@ -235,20 +256,29 @@ export default function BalanceTransferAmortization() {
         </div>
 
         {!hasData ? (
-          <div className="mt-4 rounded-[10px] border border-slate-200/70 bg-[#f8fafc] p-4 text-[#1f2937]">
-            <h3 className="text-[22px] font-semibold">Amortization data not available</h3>
-            <p className="mt-2 text-sm text-slate-500">
-              Please open the analysis page first so the report is loaded and saved.
+          <div className="mt-3 rounded-[12px] border border-white/20 bg-[#182537] p-6 text-center text-white">
+            <h3 className="text-[22px] font-semibold">
+              Amortization data not available
+            </h3>
+            <p className="mt-2 text-sm text-white/60">
+              Please open the Analysis page first so the report is loaded and saved.
             </p>
           </div>
         ) : (
           <>
-            <div className="mt-4 rounded-[10px] border border-slate-200/70 bg-[#f8fafc] p-4 text-[#1f2937]">
-              <h3 className="text-[30px] font-semibold">Loan Breakdown Over Time</h3>
+            {/* Chart */}
+            <article className="mt-3 rounded-[12px] border border-white/20 bg-[#182537] p-4 text-white">
+              <h3 className="text-[25px] font-semibold">
+                Loan Breakdown Over Time
+              </h3>
+              <p className="mt-1 text-[12px] text-white/60">
+                Monthly principal and interest distribution
+              </p>
+
               <div className="mt-3 h-[260px] rounded-[8px] bg-white p-3">
                 <svg viewBox="0 0 800 190" className="h-full w-full">
-                  <line x1="40" y1="165" x2="760" y2="165" stroke="#c9d3e6" strokeWidth="1" />
-                  <line x1="40" y1="20" x2="40" y2="165" stroke="#c9d3e6" strokeWidth="1" />
+                  <line x1="40" y1="165" x2="760" y2="165" stroke="#c9d3e6" />
+                  <line x1="40" y1="20" x2="40" y2="165" stroke="#c9d3e6" />
 
                   <polyline
                     fill="none"
@@ -264,19 +294,15 @@ export default function BalanceTransferAmortization() {
                     points={chartMeta?.interestPoints || ""}
                   />
 
-                  {allRows.length > 0 ? (
-                    <>
-                      <text x="52" y="178" fontSize="9" fill="#64748b">
-                        Month 1
-                      </text>
-                      <text x="360" y="178" fontSize="9" fill="#64748b">
-                        Month {Math.ceil(allRows.length / 2)}
-                      </text>
-                      <text x="700" y="178" fontSize="9" fill="#64748b">
-                        Month {allRows.length}
-                      </text>
-                    </>
-                  ) : null}
+                  <text x="52" y="178" fontSize="9" fill="#64748b">
+                    Month 1
+                  </text>
+                  <text x="360" y="178" fontSize="9" fill="#64748b">
+                    Month {Math.ceil(allRows.length / 2)}
+                  </text>
+                  <text x="700" y="178" fontSize="9" fill="#64748b">
+                    Month {allRows.length}
+                  </text>
 
                   <circle cx="620" cy="30" r="5" fill="#f59e0b" />
                   <text x="632" y="34" fontSize="10" fill="#475569">
@@ -289,64 +315,85 @@ export default function BalanceTransferAmortization() {
                   </text>
                 </svg>
               </div>
-            </div>
+            </article>
 
-            <div className="mt-4 overflow-hidden rounded-[10px] border border-slate-200/70 bg-[#f8fafc] text-[#1f2937]">
-              <div className="grid grid-cols-6 bg-[#eef2f8] px-4 py-2 text-[12px] font-semibold text-[#394a68]">
-                <p className="text-center">Month</p>
-                <p className="text-center">Opening Balance</p>
-                <p className="text-center">EMI</p>
-                <p className="text-center">Principal</p>
-                <p className="text-center">Interest</p>
-                <p className="text-center">Closing Balance</p>
+            {/* Amortization Table */}
+            <article className="mt-3 overflow-hidden rounded-[12px] border border-white/20 bg-[#182537] text-white">
+              <div className="border-b border-white/15 p-4">
+                <h3 className="text-[25px] font-semibold">
+                  Monthly Repayment Schedule
+                </h3>
+                <p className="mt-1 text-[12px] text-white/60">
+                  Detailed month-wise loan repayment breakdown
+                </p>
               </div>
 
-              {visibleRows.map((row) => (
-                <div key={row.month} className="grid grid-cols-6 border-t border-slate-200 px-4 py-2 text-[12px]">
-                  <p className="text-center">{row.month}</p>
-                  <p className="text-center">{row.opening}</p>
-                  <p className="text-center">{row.emi}</p>
-                  <p className="text-center text-[#f97316]">{row.principal}</p>
-                  <p className="text-center text-[#2563eb]">{row.interest}</p>
-                  <p className="text-center">{row.closing}</p>
-                </div>
-              ))}
+              <div className="overflow-x-auto">
+                <div className="min-w-[850px]">
+                  <div className="grid grid-cols-6 bg-[#24364e] px-4 py-3 text-center text-[12px] font-semibold text-white/85">
+                    <p>Month</p>
+                    <p>Opening Balance</p>
+                    <p>EMI</p>
+                    <p>Principal</p>
+                    <p>Interest</p>
+                    <p>Closing Balance</p>
+                  </div>
 
-              <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3 text-[12px]">
+                  {visibleRows.map((row) => (
+                    <div
+                      key={row.month}
+                      className="grid grid-cols-6 border-t border-white/10 px-4 py-3 text-center text-[12px] text-white/85"
+                    >
+                      <p>{row.month}</p>
+                      <p>{row.opening}</p>
+                      <p>{row.emi}</p>
+                      <p className="text-orange-400">{row.principal}</p>
+                      <p className="text-blue-400">{row.interest}</p>
+                      <p>{row.closing}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between border-t border-white/15 px-4 py-3 text-[12px]">
                 <button
                   type="button"
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="rounded bg-slate-200 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-[7px] bg-white px-4 py-2 font-medium text-[#0f172a] disabled:opacity-40"
                 >
-                  Prev
+                  Previous
                 </button>
 
-                <p className="text-slate-500">
+                <p className="text-white/65">
                   Page {currentPage} of {totalPages}
                 </p>
 
                 <button
                   type="button"
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
                   disabled={currentPage === totalPages}
-                  className="rounded bg-slate-200 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-[7px] bg-white px-4 py-2 font-medium text-[#0f172a] disabled:opacity-40"
                 >
                   Next
                 </button>
               </div>
-            </div>
+            </article>
           </>
         )}
 
-        <div className="mt-4 flex items-center justify-center gap-3">
+        {/* Navigation */}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
           <button
             type="button"
             onClick={() => navigate("/balance-transfer/analysis")}
             className="rounded-[8px] border border-white/25 bg-white px-6 py-2.5 text-[18px] font-medium text-[#0f172a] transition hover:bg-slate-100"
           >
-            Back
+            ← Back
           </button>
+
           <button
             type="button"
             onClick={() => navigate("/balance-transfer/ready")}
@@ -362,9 +409,13 @@ export default function BalanceTransferAmortization() {
 
 function TopCard({ title, value }) {
   return (
-    <div className="rounded-[10px] border border-slate-200/70 bg-[#f8fafc] p-4 text-center text-[#1f2937]">
-      <p className="text-[14px] font-semibold text-[#8ca3c9]">{title}</p>
-      <p className="mt-1 text-[42px] font-bold leading-none">{value}</p>
-    </div>
+    <article className="rounded-[12px] border border-white/20 bg-[#182537] p-4 text-center text-white">
+      <p className="text-[14px] font-semibold text-white/55">
+        {title}
+      </p>
+      <p className="mt-2 break-words text-[25px] font-bold leading-tight sm:text-[30px]">
+        {value}
+      </p>
+    </article>
   );
 }
