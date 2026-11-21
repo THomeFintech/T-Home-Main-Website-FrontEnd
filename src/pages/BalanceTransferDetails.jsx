@@ -18,9 +18,7 @@ const initialState = {
   originalPrincipal: "",
   amountPaid: "",
   remainingTenure: "",
-  newLoanTenure: "",
   currentInterestRate: "",
-  proposedInterestRate: "",
   monthlyIncome: "",
   foreclosureFee: "",
 };
@@ -266,9 +264,7 @@ export default function BalanceTransferDetails() {
         original_principal: Number(formData.originalPrincipal),
         amount_paid: Number(formData.amountPaid),
         remaining_tenure_months: Number(formData.remainingTenure),
-        new_tenure_months: Number(formData.newLoanTenure || 0),
         current_interest_rate: Number(formData.currentInterestRate),
-        proposed_interest_rate: Number(formData.proposedInterestRate || 0),
         net_monthly_income: Number(formData.monthlyIncome),
         foreclosure_fee: Number(formData.foreclosureFee || 0),
         cibil_score: Number(localStorage.getItem("dashboard_cibil_score") || 0),
@@ -449,6 +445,7 @@ export default function BalanceTransferDetails() {
                   Enter the number of months remaining to fully repay your
                   current loan.
                 </p>
+
               </Field>
               <Field label="New Loan Tenure (Months) *">
                 <input
@@ -459,6 +456,7 @@ export default function BalanceTransferDetails() {
                   placeholder="Enter new loan tenure"
                   className={inputClass}
                 />
+
               </Field>
 
               <Field label="Current Interest Rate (%) *">
@@ -472,6 +470,7 @@ export default function BalanceTransferDetails() {
                   className={inputClass}
                 />
               </Field>
+
               <Field label="Proposed Interest Rate (%) *">
                 <input
                   type="number"
@@ -483,6 +482,9 @@ export default function BalanceTransferDetails() {
                   className={inputClass}
                 />
               </Field>
+
+              
+
 
               <Field label="Net Monthly Income (₹) *">
                 <input
