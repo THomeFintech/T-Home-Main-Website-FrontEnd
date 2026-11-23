@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import TurnstileWidget from "../../components/TurnstileWidget";
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -17,6 +18,8 @@ export default function SuperAdminSignup() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -52,6 +55,11 @@ export default function SuperAdminSignup() {
       return;
     }
 
+    if (!turnstileToken) {
+      setError("Please complete the security verification challenge.");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -66,6 +74,7 @@ export default function SuperAdminSignup() {
             name: formData.name,
             email: formData.email,
             password: formData.password,
+            turnstileToken,
           }),
         }
       );
@@ -73,6 +82,8 @@ export default function SuperAdminSignup() {
       const data = await response.json();
 
       if (!response.ok) {
+        turnstileRef.current?.reset();
+        setTurnstileToken("");
         throw new Error(
           data?.message || "Unable to create account."
         );
@@ -89,6 +100,8 @@ export default function SuperAdminSignup() {
 
     } catch (error) {
       console.error("Super Admin signup error:", error);
+      turnstileRef.current?.reset();
+      setTurnstileToken("");
       setError(error.message || "Unable to create account.");
     } finally {
       setLoading(false);
@@ -228,6 +241,15 @@ export default function SuperAdminSignup() {
                 {error}
               </div>
             )}
+
+            {/* TURNSTILE WIDGET */}
+            <TurnstileWidget
+              ref={turnstileRef}
+              theme="light"
+              onSuccess={setTurnstileToken}
+              onExpire={() => setTurnstileToken("")}
+              action="superadmin_signup"
+            />
 
             {/* CREATE ACCOUNT */}
             <button

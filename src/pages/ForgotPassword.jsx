@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthCardShell from "../components/AuthCardShell";
 import { IconMail } from "../components/AuthIcons";
+import TurnstileWidget from "../components/TurnstileWidget";
 import "../App.css";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -10,22 +11,32 @@ export default function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!turnstileToken) {
+      alert("Please complete the security verification challenge.");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, turnstileToken }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
         alert(data.message || "Failed to send reset code");
+        turnstileRef.current?.reset();
+        setTurnstileToken("");
         return;
       }
 
@@ -35,6 +46,8 @@ export default function ForgotPassword() {
     } catch (error) {
       console.error("Forgot password error:", error);
       alert("Something went wrong. Please check your connection and try again.");
+      turnstileRef.current?.reset();
+      setTurnstileToken("");
     } finally {
       setLoading(false);
     }
@@ -64,6 +77,13 @@ export default function ForgotPassword() {
               />
             </div>
           </div>
+
+          <TurnstileWidget
+            ref={turnstileRef}
+            onSuccess={setTurnstileToken}
+            onExpire={() => setTurnstileToken("")}
+            action="forgot_password"
+          />
 
           <button type="submit" className="btn-continue" disabled={loading}>
             {loading ? "Sending..." : "Send Reset Code"}

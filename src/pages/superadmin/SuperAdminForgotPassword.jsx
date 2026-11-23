@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import TurnstileWidget from "../../components/TurnstileWidget";
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -19,6 +20,8 @@ export default function SuperAdminForgotPassword() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
 
   // ==========================================
   // SEND RESET OTP
@@ -35,6 +38,11 @@ export default function SuperAdminForgotPassword() {
       return;
     }
 
+    if (!turnstileToken) {
+      setError("Please complete the security verification challenge.");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -47,6 +55,7 @@ export default function SuperAdminForgotPassword() {
           },
           body: JSON.stringify({
             email: email.trim(),
+            turnstileToken,
           }),
         }
       );
@@ -54,6 +63,8 @@ export default function SuperAdminForgotPassword() {
       const data = await response.json();
 
       if (!response.ok) {
+        turnstileRef.current?.reset();
+        setTurnstileToken("");
         throw new Error(
           data?.message ||
             "Unable to send reset OTP. Please try again."
@@ -68,7 +79,8 @@ export default function SuperAdminForgotPassword() {
       setStep(2);
     } catch (error) {
       console.error("Forgot password error:", error);
-
+      turnstileRef.current?.reset();
+      setTurnstileToken("");
       setError(
         error.message ||
           "Unable to process password reset request."
@@ -326,6 +338,15 @@ export default function SuperAdminForgotPassword() {
                   {error}
                 </div>
               )}
+
+              {/* TURNSTILE WIDGET */}
+              <TurnstileWidget
+                ref={turnstileRef}
+                theme="light"
+                onSuccess={setTurnstileToken}
+                onExpire={() => setTurnstileToken("")}
+                action="superadmin_forgot_password"
+              />
 
               {/* SEND OTP */}
 

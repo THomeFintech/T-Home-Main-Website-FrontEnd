@@ -1,7 +1,7 @@
-// import React, { useState } from "react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
+import TurnstileWidget from "../components/TurnstileWidget";
 import "../styles/Login.css";
 
 
@@ -64,8 +64,6 @@ const IconApple = () => (
 );
 
 export default function Login() {
-  console.log("🔴 LOGIN COMPONENT RENDERED");
-
   const navigate = useNavigate();
     useEffect(() => {
     const hideChatbot = () => {
@@ -88,9 +86,16 @@ export default function Login() {
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
 
   const handleLogin = async (e) => {
   e.preventDefault();
+
+  if (!turnstileToken) {
+    alert("Please complete the security verification challenge.");
+    return;
+  }
 
   setLoading(true);
 
@@ -104,11 +109,13 @@ export default function Login() {
   mode === "email"
     ? {
         email: email,
-        password: password
+        password: password,
+        turnstileToken: turnstileToken,
       }
       : {
         phone: mobile,
-        password: password
+        password: password,
+        turnstileToken: turnstileToken,
       }
       )
       
@@ -119,6 +126,8 @@ export default function Login() {
 
     if (!response.ok) {
   alert(data.message || "Login failed");
+  turnstileRef.current?.reset();
+  setTurnstileToken("");
   setLoading(false);
   return;
 }
@@ -142,6 +151,8 @@ sessionStorage.setItem("isLoggedIn", "true");
   } catch (error) {
     console.error(error);
     alert("Server error");
+    turnstileRef.current?.reset();
+    setTurnstileToken("");
   }
 
   setLoading(false);
@@ -239,7 +250,18 @@ sessionStorage.setItem("isLoggedIn", "true");
                   </button>
                 </div>
               </div>
-              <button type="submit" className="login-button" disabled={loading}>
+              <TurnstileWidget
+                ref={turnstileRef}
+                onSuccess={setTurnstileToken}
+                onExpire={() => setTurnstileToken("")}
+                action="login"
+              />
+              <button
+                type="submit"
+                className="login-button"
+                disabled={loading || !turnstileToken}
+                title={!turnstileToken ? "Please complete security verification first" : ""}
+              >
                 {loading ? "Logging in..." : "Login"}
               </button>
             </form>
