@@ -447,18 +447,6 @@ export default function BalanceTransferDetails() {
                 </p>
 
               </Field>
-              <Field label="New Loan Tenure (Months) *">
-                <input
-                  type="number"
-                  name="newLoanTenure"
-                  value={formData.newLoanTenure}
-                  onChange={handleChange}
-                  placeholder="Enter new loan tenure"
-                  className={inputClass}
-                />
-
-              </Field>
-
               <Field label="Current Interest Rate (%) *">
                 <input
                   type="number"
@@ -470,22 +458,6 @@ export default function BalanceTransferDetails() {
                   className={inputClass}
                 />
               </Field>
-
-              <Field label="Proposed Interest Rate (%) *">
-                <input
-                  type="number"
-                  step="0.01"
-                  name="proposedInterestRate"
-                  value={formData.proposedInterestRate}
-                  onChange={handleChange}
-                  placeholder="Enter proposed interest rate"
-                  className={inputClass}
-                />
-              </Field>
-
-              
-
-
               <Field label="Net Monthly Income (₹) *">
                 <input
                   type="number"
