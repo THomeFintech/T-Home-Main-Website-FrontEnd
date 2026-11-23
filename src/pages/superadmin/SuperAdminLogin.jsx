@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import TurnstileWidget from "../../components/TurnstileWidget";
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -12,6 +13,8 @@ export default function SuperAdminLogin() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,6 +23,11 @@ export default function SuperAdminLogin() {
 
     if (!email || !password) {
       setError("Email and password are required.");
+      return;
+    }
+
+    if (!turnstileToken) {
+      setError("Please complete the security verification challenge.");
       return;
     }
 
@@ -36,6 +44,7 @@ export default function SuperAdminLogin() {
           body: JSON.stringify({
             email,
             password,
+            turnstileToken,
           }),
         }
       );
@@ -43,6 +52,8 @@ export default function SuperAdminLogin() {
       const data = await response.json();
 
       if (!response.ok) {
+        turnstileRef.current?.reset();
+        setTurnstileToken("");
         throw new Error(
           data?.message || "Login failed. Please try again."
         );
@@ -69,6 +80,8 @@ export default function SuperAdminLogin() {
       navigate("/super-admin/dashboard");
     } catch (error) {
       console.error("Super Admin login error:", error);
+      turnstileRef.current?.reset();
+      setTurnstileToken("");
       setError(error.message || "Unable to login.");
     } finally {
       setLoading(false);
@@ -211,6 +224,15 @@ export default function SuperAdminLogin() {
               </button>
 
             </div>
+
+            {/* TURNSTILE WIDGET */}
+            <TurnstileWidget
+              ref={turnstileRef}
+              theme="light"
+              onSuccess={setTurnstileToken}
+              onExpire={() => setTurnstileToken("")}
+              action="superadmin_login"
+            />
 
             {/* SIGN IN */}
             <button

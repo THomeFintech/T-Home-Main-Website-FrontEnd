@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import TurnstileWidget from "../components/TurnstileWidget";
 import "../App.css";
 
 const GoogleAuthButton = lazy(() => import("../components/GoogleAuthButton"));
@@ -96,11 +97,18 @@ function LandingPage({ onGetStarted, onSignIn }) {
 ══════════════════════════════════════ */
 function LoginPage({ onBack, onLogin, onForgotPassword }) {
   const [showPw, setShowPw] = useState(false);
-const [email, setEmail] = useState("");
-const [password, setPassword] = useState("");
-const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
 
 const handleLogin = async () => {
+  if (!turnstileToken) {
+    alert("Please complete the security verification challenge.");
+    return;
+  }
+
   setLoading(true);
 
   try {
@@ -112,6 +120,7 @@ const handleLogin = async () => {
       body: JSON.stringify({
         email,
         password,
+        turnstileToken,
       }),
     });
 
@@ -119,6 +128,8 @@ const handleLogin = async () => {
 
     if (!response.ok) {
       alert(data.message || "Login failed");
+      turnstileRef.current?.reset();
+      setTurnstileToken("");
       setLoading(false);
       return;
     }
@@ -133,6 +144,8 @@ const handleLogin = async () => {
   } catch (err) {
     console.error(err);
     alert("Server error");
+    turnstileRef.current?.reset();
+    setTurnstileToken("");
   }
 
   setLoading(false);
@@ -185,6 +198,13 @@ const handleLogin = async () => {
   </button>
 </div>
 
+        <TurnstileWidget
+          ref={turnstileRef}
+          onSuccess={setTurnstileToken}
+          onExpire={() => setTurnstileToken("")}
+          action="login"
+        />
+
         <button
   className="btn-continue"
   onClick={handleLogin}
@@ -228,6 +248,8 @@ function SignupPage({ onLogin, onContinue }) {
   const [showRePw, setShowRePw] = useState(false);
   const [agreed, setAgreed] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
 
   // ✅ All fields tracked in state
   const [form, setForm] = useState({
@@ -273,6 +295,11 @@ function SignupPage({ onLogin, onContinue }) {
       return;
     }
 
+    if (!turnstileToken) {
+      alert("Please complete the security verification challenge.");
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch(`${BASE_URL}/auth/register`, {
@@ -283,6 +310,7 @@ function SignupPage({ onLogin, onContinue }) {
           email: form.email,
           phone: form.phone,
           password: form.password,
+          turnstileToken,
         }),
       });
 
@@ -290,6 +318,8 @@ function SignupPage({ onLogin, onContinue }) {
 
       if (!res.ok) {
         alert(data.message || "Registration failed");
+        turnstileRef.current?.reset();
+        setTurnstileToken("");
         return;
       }
 
@@ -299,6 +329,8 @@ function SignupPage({ onLogin, onContinue }) {
     } catch (error) {
       console.error("Register error:", error);
       alert("Registration failed. Please check your connection.");
+      turnstileRef.current?.reset();
+      setTurnstileToken("");
     } finally {
       setLoading(false);
     }
@@ -403,6 +435,13 @@ function SignupPage({ onLogin, onContinue }) {
             <button className="txt-link">Privacy Policy</button> and want a simple, secure registration experience.
           </p>
         </div>
+
+        <TurnstileWidget
+          ref={turnstileRef}
+          onSuccess={setTurnstileToken}
+          onExpire={() => setTurnstileToken("")}
+          action="register"
+        />
 
         <button className="btn-continue" onClick={handleContinue} disabled={loading}>
           {loading ? "Please wait..." : "Continue"}

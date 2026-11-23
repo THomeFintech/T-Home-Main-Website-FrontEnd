@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
+import TurnstileWidget from "../components/TurnstileWidget";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -16,6 +17,8 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -41,12 +44,18 @@ export default function Register() {
       return;
     }
 
+    if (!turnstileToken) {
+      alert("Please complete the security verification challenge.");
+      return;
+    }
+
     const payload = {
-  name: form.fullName.trim(),
-  email: form.email.trim().toLowerCase(),
-  phone: form.phone.trim(),
-  password: form.password,
-};
+      name: form.fullName.trim(),
+      email: form.email.trim().toLowerCase(),
+      phone: form.phone.trim(),
+      password: form.password,
+      turnstileToken,
+    };
 
     setLoading(true);
     try {
@@ -62,23 +71,27 @@ export default function Register() {
 
       if (!res.ok) {
         alert(
-  data.message ||
-  data.detail ||
-  "Registration failed"
-);
+          data.message ||
+          data.detail ||
+          "Registration failed"
+        );
+        turnstileRef.current?.reset();
+        setTurnstileToken("");
         return;
       }
 
       // Save email for OTP page
       localStorage.setItem(
-  "user_email",
-  form.email.trim().toLowerCase()
-);
+        "user_email",
+        form.email.trim().toLowerCase()
+      );
       navigate("/verify-otp");
 
     } catch (error) {
       console.error("Registration error:", error);
       alert("Registration failed. Please check your connection and try again.");
+      turnstileRef.current?.reset();
+      setTurnstileToken("");
     } finally {
       setLoading(false);
     }
@@ -219,6 +232,13 @@ inputMode="numeric"
                 and want a simple, secure registration experience.
               </span>
             </div>
+
+            <TurnstileWidget
+              ref={turnstileRef}
+              onSuccess={setTurnstileToken}
+              onExpire={() => setTurnstileToken("")}
+              action="register"
+            />
 
             <button
               type="submit"

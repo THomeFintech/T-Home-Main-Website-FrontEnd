@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Mail, Phone, MessageCircle } from "lucide-react";
 import SEO from "../components/SEO";
+import TurnstileWidget from "../components/TurnstileWidget";
 
 export default function ContactPage() {
   const services = [
@@ -81,6 +82,8 @@ export default function ContactPage() {
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -116,6 +119,11 @@ export default function ContactPage() {
       return;
     }
 
+    if (!turnstileToken) {
+      setErrorMsg("Please complete the security verification challenge.");
+      return;
+    }
+
     setLoading(true);
 
     const payload = {
@@ -124,6 +132,7 @@ export default function ContactPage() {
       email: formData.email.trim(),
       service: formData.service,
       message: formData.message.trim(),
+      turnstileToken,
     };
 
     const controller = new AbortController();
@@ -145,6 +154,8 @@ export default function ContactPage() {
 
       await res.json();
       setSuccessMsg("Thank you! We'll get back to you shortly.");
+      turnstileRef.current?.reset();
+      setTurnstileToken("");
       setFormData({
         name: "",
         phone: "",
@@ -155,6 +166,8 @@ export default function ContactPage() {
       });
     } catch (err) {
       setErrorMsg(err.message || "Something went wrong. Please try again.");
+      turnstileRef.current?.reset();
+      setTurnstileToken("");
     } finally {
       setLoading(false);
     }
@@ -306,6 +319,13 @@ export default function ContactPage() {
                       ✕ {errorMsg}
                     </div>
                   )}
+
+                  <TurnstileWidget
+                    ref={turnstileRef}
+                    onSuccess={setTurnstileToken}
+                    onExpire={() => setTurnstileToken("")}
+                    action="contact"
+                  />
 
                   <button
                     type="submit"
