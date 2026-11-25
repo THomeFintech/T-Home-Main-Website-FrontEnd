@@ -38,6 +38,8 @@ import swagatHousingFinanceLogo from "../assets/bank-logos/Swagat Housing Financ
 import masHousingFinanceLogo from "../assets/bank-logos/MAS Rural Housing & Mortgage Finance Limited.png";
 import ummeedHousingFinanceLogo from "../assets/bank-logos/Ummeed Housing Finance Private Limited.png";
 import tygerHomeFinanceLogo from "../assets/bank-logos/Tyger Home Finance Private Limited.png";
+import licLogo from "../assets/bank-logos/lic.png";
+import bajajLogo from "../assets/bank-logos/bajaj.png";
 
 export const bankLogos = {
   "Axis Bank": axisLogo,
@@ -80,6 +82,10 @@ export const bankLogos = {
   "MAS Rural Housing & Mortgage Finance Limited": masHousingFinanceLogo,
   "Ummeed Housing Finance Private Limited": ummeedHousingFinanceLogo,
   "Tyger Home Finance Private Limited": tygerHomeFinanceLogo,
+  "LIC": licLogo,
+  "LIC Housing Finance Limited": licLogo,
+  "Bajaj": bajajLogo,
+  "Bajaj Housing Finance Limited": bajajLogo,
 };
 
 export const getBankLogo = (bankName) => {
@@ -91,5 +97,10 @@ export const getBankLogo = (bankName) => {
     (name) => name.toLowerCase() === normalizedName
   );
 
-  return matchedBank ? bankLogos[matchedBank] : null;
+  if (matchedBank) return bankLogos[matchedBank];
+
+  if (normalizedName.includes("lic")) return licLogo;
+  if (normalizedName.includes("bajaj")) return bajajLogo;
+
+  return null;
 };
