@@ -50,42 +50,15 @@ export default function BalanceTransferApplicationPortal() {
       localStorage.getItem("btApplicationDraft") || "{}"
     );
 
-    const contactData = JSON.parse(localStorage.getItem("contact_data") || "{}");
-    const verifiedIdentity = JSON.parse(
-      localStorage.getItem("digilocker_verified_identity") || "{}"
-    );
-
     setFormData((prev) => ({
       ...prev,
-      fullName:
-        existingDraft.full_name ||
-        existingDraft.fullName ||
-        verifiedIdentity.name ||
-        contactData.name ||
-        "",
-      mobile:
-        existingDraft.mobile_number ||
-        existingDraft.mobile ||
-        verifiedIdentity.phone ||
-        contactData.phone ||
-        "",
-      email:
-        existingDraft.email ||
-        verifiedIdentity.email ||
-        contactData.email ||
-        "",
+      fullName: existingDraft.full_name || existingDraft.fullName || "",
+      mobile: existingDraft.mobile_number || existingDraft.mobile || "",
+      email: existingDraft.email || "",
       employmentType:
         existingDraft.employment_type || existingDraft.employmentType || "",
-      aadhaar:
-        existingDraft.aadhaar_number ||
-        existingDraft.aadhaar ||
-        verifiedIdentity.aadhaar ||
-        "",
-      pan:
-        existingDraft.pan_number ||
-        existingDraft.pan ||
-        verifiedIdentity.pan ||
-        "",
+      aadhaar: existingDraft.aadhaar_number || existingDraft.aadhaar || "",
+      pan: existingDraft.pan_number || existingDraft.pan || "",
       aadhaarFile: existingDraft.aadhaarFile || "",
       panFile: existingDraft.panFile || "",
       passportPhoto: existingDraft.passportPhoto || "",
@@ -247,11 +220,10 @@ export default function BalanceTransferApplicationPortal() {
 
        
 
-const data = await response.json();
-     const applicationReference =
-  data?.application_reference ||
-  localStorage.getItem("btApplicationReference") ||
-  "";
+  const applicationReference =
+   localStorage.getItem("btApplicationReference") ||
+   localStorage.getItem("btLoanReference") ||
+   "";
 
       if (applicationReference) {
         localStorage.setItem("btApplicationReference", applicationReference);
@@ -273,29 +245,29 @@ const data = await response.json();
   kycFiles.push(formData.passportPhotoObj);
 }
 
-     if (applicationReference && kycFiles.length > 0) {
-  const uploadForm = new FormData();
+  //    if (applicationReference && kycFiles.length > 0) {
+  // const uploadForm = new FormData();
 
-  uploadForm.append("document_group", "kyc");
+  // uploadForm.append("document_group", "kyc");
 
-  kycKeys.forEach((key) => {
-    uploadForm.append("document_keys", key);
-  });
+  // kycKeys.forEach((key) => {
+  //   uploadForm.append("document_keys", key);
+  // });
 
-  kycFiles.forEach((file) => {
-    uploadForm.append("files", file);
-  });
+  // kycFiles.forEach((file) => {
+  //   uploadForm.append("files", file);
+  // });
 
    
-  console.log("Upload status:", uploadResponse.status);
+//   console.log("Upload status:", uploadResponse.status);
 
-const responseData = await uploadResponse.json();
-console.log("Upload response:", responseData);
+// const responseData = await uploadResponse.json();
+// console.log("Upload response:", responseData);
 
-  if (!uploadResponse.ok) {
-    throw new Error("Failed to upload KYC documents");
-  }
-}
+//   if (!uploadResponse.ok) {
+//     throw new Error("Failed to upload KYC documents");
+//   }
+// }
 
       const existingDraft = JSON.parse(
         localStorage.getItem("btApplicationDraft") || "{}"

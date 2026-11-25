@@ -165,7 +165,7 @@ export default function BalanceTransferDetails() {
         return {
           ...initialState,
           ...JSON.parse(savedData),
-          loanType: JSON.parse(savedData).loanType || selectedService,
+          loanType: selectedService || JSON.parse(savedData).loanType,
         };
       } catch {
         // Use initial values if saved data is invalid
@@ -183,6 +183,15 @@ export default function BalanceTransferDetails() {
 
   // Read-only credit profile values (filled from the fetched CIBIL report).
   const [creditProfile, setCreditProfile] = useState(() => readCreditProfile());
+
+  // Ensure the latest selectedService (loan type from the previous page)
+  // is reflected in localStorage, even if the user doesn't modify any form fields.
+  useEffect(() => {
+    localStorage.setItem(
+      "btLoanDetailsDraft",
+      JSON.stringify(formData)
+    );
+  }, [formData]);
 
   // Refresh when the page opens, when the user returns from the CIBIL form,
   // and immediately when a new score is fetched.
