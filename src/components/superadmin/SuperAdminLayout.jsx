@@ -32,6 +32,8 @@ export default function SuperAdminLayout() {
   // Compute title from route
   const currentTitle = useMemo(() => {
     const path = location.pathname;
+    if (path.includes("/chatbot-analytics")) return "Chatbot Analytics";
+    if (path.includes("/chatbot-leads")) return "Chatbot Leads Management";
     if (path.includes("/leads")) return "Leads Inbox";
     if (path.includes("/bt-lps")) return "Balance Transfer & LPS";
     if (path.includes("/documents")) return "Documents Review";

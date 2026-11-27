@@ -23,7 +23,7 @@ async function handleResponse(response) {
   if (!response.ok) {
     throw new Error(
       data?.message ||
-        `Request failed with status ${response.status}`
+      `Request failed with status ${response.status}`
     );
   }
 
@@ -298,9 +298,8 @@ export async function getAuditLogs(params = {}) {
   if (params.entityType) query.append("entityType", params.entityType);
   if (params.action) query.append("action", params.action);
 
-  const url = `${API_URL}/super-admin/audit-logs${
-    query.toString() ? `?${query.toString()}` : ""
-  }`;
+  const url = `${API_URL}/super-admin/audit-logs${query.toString() ? `?${query.toString()}` : ""
+    }`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -321,9 +320,8 @@ export async function getCareerOpenings(params = {}) {
   if (params.employmentType) query.append("employmentType", params.employmentType);
   if (params.status) query.append("status", params.status);
 
-  const url = `${API_URL}/super-admin/careers${
-    query.toString() ? `?${query.toString()}` : ""
-  }`;
+  const url = `${API_URL}/super-admin/careers${query.toString() ? `?${query.toString()}` : ""
+    }`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -380,4 +378,159 @@ export async function deleteCareerOpening(id) {
 
   return handleResponse(response);
 }
-
+
+/* =========================================================
+   CHATBOT ANALYTICS & CONVERSATIONS
+========================================================= */
+
+export async function getChatbotAnalyticsSummary(params = {}) {
+  const query = new URLSearchParams();
+  if (params.startDate) query.append("startDate", params.startDate);
+  if (params.endDate) query.append("endDate", params.endDate);
+
+  const url = `${API_URL}/super-admin/chatbot/analytics/summary${query.toString() ? `?${query.toString()}` : ""
+    }`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(response);
+}
+
+export async function getChatbotTrends(params = {}) {
+  const query = new URLSearchParams();
+  if (params.range) query.append("range", params.range);
+  if (params.startDate) query.append("startDate", params.startDate);
+  if (params.endDate) query.append("endDate", params.endDate);
+
+  const url = `${API_URL}/super-admin/chatbot/analytics/trends${query.toString() ? `?${query.toString()}` : ""
+    }`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(response);
+}
+
+export async function getChatbotFaqs() {
+  const response = await fetch(`${API_URL}/super-admin/chatbot/analytics/faqs`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(response);
+}
+
+export async function getChatbotConversations(params = {}) {
+  const query = new URLSearchParams();
+  if (params.page) query.append("page", params.page);
+  if (params.limit) query.append("limit", params.limit);
+  if (params.search) query.append("search", params.search);
+  if (params.status && params.status !== "All") query.append("status", params.status);
+  if (params.service && params.service !== "All") query.append("service", params.service);
+  if (params.startDate) query.append("startDate", params.startDate);
+  if (params.endDate) query.append("endDate", params.endDate);
+
+  const url = `${API_URL}/super-admin/chatbot/conversations${query.toString() ? `?${query.toString()}` : ""
+    }`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(response);
+}
+
+export async function getChatbotConversation(id) {
+  const response = await fetch(
+    `${API_URL}/super-admin/chatbot/conversations/${encodeURIComponent(id)}`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(),
+    }
+  );
+  return handleResponse(response);
+}
+
+/* =========================================================
+   CHATBOT LEADS MANAGEMENT
+========================================================= */
+
+export async function getChatbotLeads(params = {}) {
+  const query = new URLSearchParams();
+  if (params.page) query.append("page", params.page);
+  if (params.limit) query.append("limit", params.limit);
+  if (params.search) query.append("search", params.search);
+  if (params.status && params.status !== "All") query.append("status", params.status);
+  if (params.service && params.service !== "All") query.append("service", params.service);
+  if (params.startDate) query.append("startDate", params.startDate);
+  if (params.endDate) query.append("endDate", params.endDate);
+
+  const url = `${API_URL}/super-admin/chatbot/leads${query.toString() ? `?${query.toString()}` : ""
+    }`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(response);
+}
+
+export async function getChatbotLead(id) {
+  const response = await fetch(`${API_URL}/super-admin/chatbot/leads/${id}`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(response);
+}
+
+export async function updateChatbotLeadStatus(id, status, notes = "") {
+  const response = await fetch(`${API_URL}/super-admin/chatbot/leads/${id}/status`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ status, notes }),
+  });
+  return handleResponse(response);
+}
+
+export async function updateChatbotLeadAssignment(id, assignedTo, notes = "") {
+  const response = await fetch(`${API_URL}/super-admin/chatbot/leads/${id}/assign`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ assignedTo, notes }),
+  });
+  return handleResponse(response);
+}
+
+export async function exportChatbotLeadsCsv(params = {}) {
+  const query = new URLSearchParams();
+  if (params.search) query.append("search", params.search);
+  if (params.status && params.status !== "All") query.append("status", params.status);
+  if (params.service && params.service !== "All") query.append("service", params.service);
+  if (params.startDate) query.append("startDate", params.startDate);
+  if (params.endDate) query.append("endDate", params.endDate);
+
+  const url = `${API_URL}/super-admin/chatbot/leads/export${query.toString() ? `?${query.toString()}` : ""
+    }`;
+  const token = localStorage.getItem("superadmin_token");
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Export failed with status ${response.status}`);
+  }
+
+  const blob = await response.blob();
+  const downloadUrl = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = downloadUrl;
+  a.download = `t-home-chatbot-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(downloadUrl);
+  return { success: true };
+}
+

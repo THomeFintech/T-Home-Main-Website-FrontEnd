@@ -29,7 +29,7 @@ const DEFAULT_ROLES = [
     employment_type: "Internship",
     experience: "Fresher / Intern",
     openings_count: 2,
-    salary_range: "₹15,000 - ₹25,000 / mo",
+    salary_range: "Not Disclosed",
     description: "Build cutting-edge user interfaces and scalable APIs for T-HOME's core fintech lending and advisory engines.",
     requirements: "Hands-on experience with React, Node.js, Express, PostgreSQL / Prisma. Strong JavaScript fundamentals.",
     apply_email: "info@thome.co.in",
@@ -42,7 +42,7 @@ const DEFAULT_ROLES = [
     employment_type: "Internship",
     experience: "Fresher / Intern",
     openings_count: 2,
-    salary_range: "₹15,000 - ₹25,000 / mo",
+    salary_range: "Not Disclosed",
     description: "Design secure backend microservices, banking API integrations, and low-latency database queries.",
     requirements: "Solid proficiency in Node.js, REST API design, database indexing, and OAuth/JWT authentication.",
     apply_email: "info@thome.co.in",
@@ -55,7 +55,7 @@ const DEFAULT_ROLES = [
     employment_type: "Internship",
     experience: "Fresher / Intern",
     openings_count: 1,
-    salary_range: "₹10,000 - ₹20,000 / mo",
+    salary_range: "Not Disclosed",
     description: "Create brand identity assets, marketing visuals, product infographics, and social media campaigns.",
     requirements: "Proficiency in Figma, Adobe Photoshop, and Illustrator. Strong eye for typography and layout.",
     apply_email: "info@thome.co.in",
@@ -68,7 +68,7 @@ const DEFAULT_ROLES = [
     employment_type: "Internship",
     experience: "Fresher / Intern",
     openings_count: 1,
-    salary_range: "₹12,000 - ₹20,000 / mo",
+    salary_range: "Not Disclosed",
     description: "Produce impactful video content, social reels, financial explainer videos, and product walkthroughs.",
     requirements: "Experience with Premiere Pro, After Effects, or DaVinci Resolve. Good sense of pacing and sound design.",
     apply_email: "info@thome.co.in",
@@ -81,7 +81,7 @@ const DEFAULT_ROLES = [
     employment_type: "Internship",
     experience: "Fresher / Intern",
     openings_count: 1,
-    salary_range: "₹15,000 - ₹22,000 / mo",
+    salary_range: "Not Disclosed",
     description: "Maintain database integrity, design normalized schemas, and tune complex SQL queries across loan modules.",
     requirements: "Understanding of relational databases (PostgreSQL/MySQL), schema design, and query optimization.",
     apply_email: "info@thome.co.in",
@@ -94,7 +94,7 @@ const DEFAULT_ROLES = [
     employment_type: "Internship",
     experience: "Fresher / Intern",
     openings_count: 1,
-    salary_range: "₹10,000 - ₹18,000 / mo",
+    salary_range: "Not Disclosed",
     description: "Craft engaging financial articles, educational guides, website copy, and customer success stories.",
     requirements: "Excellent English writing and storytelling skills. Ability to simplify complex financial topics.",
     apply_email: "info@thome.co.in",
@@ -107,7 +107,7 @@ const DEFAULT_ROLES = [
     employment_type: "Internship",
     experience: "Fresher / Intern",
     openings_count: 1,
-    salary_range: "₹10,000 - ₹18,000 / mo",
+    salary_range: "Not Disclosed",
     description: "Optimize organic search rankings, conduct keyword analysis, and monitor technical SEO metrics.",
     requirements: "Familiarity with Google Search Console, Google Analytics, meta tags, and on-page optimization.",
     apply_email: "info@thome.co.in",
@@ -418,7 +418,7 @@ export default function Career() {
                             <span>{role.experience || "Fresher / Intern"}</span>
                           </div>
 
-                          {role.salary_range && (
+                          {role.salary_range && role.salary_range !== "Not Disclosed" && role.salary_range.trim() !== "" && (
                             <div className="flex items-center gap-1 font-semibold text-emerald-400">
                               <IndianRupee className="h-3.5 w-3.5 shrink-0" />
                               <span>{role.salary_range}</span>

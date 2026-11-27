@@ -25,6 +25,8 @@ import SuperAdminUsers from "./pages/superadmin/SuperAdminUsers";
 import SuperAdminReports from "./pages/superadmin/SuperAdminReports";
 import SuperAdminSettings from "./pages/superadmin/SuperAdminSettings";
 import SuperAdminCareers from "./pages/superadmin/SuperAdminCareers";
+import SuperAdminChatbotAnalytics from "./pages/superadmin/SuperAdminChatbotAnalytics";
+import SuperAdminChatbotLeads from "./pages/superadmin/SuperAdminChatbotLeads";
 // =========================
 // Lazy Loaded Pages
 // =========================
@@ -450,6 +452,14 @@ function App() {
                 element={<SuperAdminDashboard />}
               />
               <Route path="/super-admin/leads" element={<SuperAdminLeads />} />
+              <Route
+                path="/super-admin/chatbot-leads"
+                element={<SuperAdminChatbotLeads />}
+              />
+              <Route
+                path="/super-admin/chatbot-analytics"
+                element={<SuperAdminChatbotAnalytics />}
+              />
               <Route path="/super-admin/bt-lps" element={<SuperAdminBtLps />} />
               <Route
                 path="/super-admin/documents"

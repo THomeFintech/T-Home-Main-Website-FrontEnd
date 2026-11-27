@@ -11,6 +11,8 @@ import {
   LogOut,
   ChevronLeft,
   Briefcase,
+  Bot,
+  MessageSquareText,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -35,6 +37,16 @@ export default function SuperAdminSidebar() {
       to: "/super-admin/leads",
       icon: ClipboardList,
       label: "Leads",
+    },
+    {
+      to: "/super-admin/chatbot-leads",
+      icon: MessageSquareText,
+      label: "Chatbot Leads",
+    },
+    {
+      to: "/super-admin/chatbot-analytics",
+      icon: Bot,
+      label: "Chatbot Analytics",
     },
     {
       to: "/super-admin/bt-lps",

@@ -88,6 +88,7 @@ export default function SuperAdminCareers() {
   const [modalMode, setModalMode] = useState("create"); // 'create' | 'edit'
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState(INITIAL_FORM);
+  const [discloseSalary, setDiscloseSalary] = useState(false);
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
 
@@ -154,6 +155,7 @@ export default function SuperAdminCareers() {
     setModalMode("create");
     setEditingId(null);
     setFormData(INITIAL_FORM);
+    setDiscloseSalary(false);
     setFormError("");
     setIsModalOpen(true);
   };
@@ -162,6 +164,12 @@ export default function SuperAdminCareers() {
   const handleOpenEdit = (item) => {
     setModalMode("edit");
     setEditingId(item.id);
+    const hasSalary = Boolean(
+      item.salary_range &&
+        item.salary_range.trim() !== "" &&
+        item.salary_range.trim().toLowerCase() !== "not disclosed"
+    );
+    setDiscloseSalary(hasSalary);
     setFormData({
       title: item.title || "",
       department: item.department || "General",
@@ -169,7 +177,7 @@ export default function SuperAdminCareers() {
       employment_type: item.employment_type || "Full-time",
       experience: item.experience || "Fresher / Any",
       openings_count: item.openings_count || 1,
-      salary_range: item.salary_range || "",
+      salary_range: hasSalary ? item.salary_range : "",
       description: item.description || "",
       requirements: item.requirements || "",
       apply_email: item.apply_email || "info@thome.co.in",
@@ -191,11 +199,19 @@ export default function SuperAdminCareers() {
       setFormSubmitting(true);
       setFormError("");
 
+      const payload = {
+        ...formData,
+        salary_range:
+          discloseSalary && formData.salary_range?.trim()
+            ? formData.salary_range.trim()
+            : "Not Disclosed",
+      };
+
       if (modalMode === "create") {
-        await createCareerOpening(formData);
+        await createCareerOpening(payload);
         setSuccessMsg(`"${formData.title}" posted successfully!`);
       } else {
-        await updateCareerOpening(editingId, formData);
+        await updateCareerOpening(editingId, payload);
         setSuccessMsg(`"${formData.title}" updated successfully!`);
       }
 
@@ -541,10 +557,16 @@ export default function SuperAdminCareers() {
                     </span>
                   </div>
 
-                  {item.salary_range && (
+                  {item.salary_range &&
+                  item.salary_range.trim().toLowerCase() !== "not disclosed" ? (
                     <div className="flex items-center gap-2 font-medium text-emerald-700">
                       <IndianRupee className="h-3.5 w-3.5 shrink-0" />
                       <span>{item.salary_range}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-slate-400 italic">
+                      <IndianRupee className="h-3.5 w-3.5 shrink-0 text-slate-300" />
+                      <span>Salary: Not Disclosed</span>
                     </div>
                   )}
                 </div>
@@ -712,14 +734,52 @@ export default function SuperAdminCareers() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700">Salary / Stipend Range</label>
-                  <input
-                    type="text"
-                    value={formData.salary_range}
-                    onChange={(e) => setFormData({ ...formData, salary_range: e.target.value })}
-                    placeholder="e.g. ₹15,000 - ₹25,000 / month or Competitive"
-                    className="mt-1 h-10 w-full rounded-lg border border-slate-300 px-3 text-sm focus:border-blue-500 focus:outline-none"
-                  />
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-slate-700">
+                      Salary / Stipend Range
+                    </label>
+                    <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+                      <span className="text-[11px] font-medium text-slate-600">
+                        {discloseSalary ? "Include Salary" : "Keep as Not Disclosed"}
+                      </span>
+                      <div className="relative">
+                        <input
+                          type="checkbox"
+                          checked={discloseSalary}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            setDiscloseSalary(checked);
+                            if (!checked) {
+                              setFormData((prev) => ({ ...prev, salary_range: "" }));
+                            }
+                          }}
+                          className="sr-only peer"
+                        />
+                        <div className="w-8 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:start-[1px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </div>
+                    </label>
+                  </div>
+
+                  {discloseSalary ? (
+                    <div className="relative">
+                      <IndianRupee className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                      <input
+                        type="text"
+                        value={formData.salary_range}
+                        onChange={(e) =>
+                          setFormData({ ...formData, salary_range: e.target.value })
+                        }
+                        placeholder="e.g. ₹15,000 - ₹25,000 / month or Competitive"
+                        className="h-10 w-full rounded-lg border border-slate-300 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none"
+                        autoFocus
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex h-10 items-center gap-2 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 text-xs text-slate-500">
+                      <IndianRupee className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                      <span>Kept as <strong>Not Disclosed</strong> (salary will be hidden from the public careers page)</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
