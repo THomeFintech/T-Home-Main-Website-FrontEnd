@@ -56,7 +56,11 @@ export default function VerifyResetOtp() {
     try {
       await fetch(`${BASE_URL}/auth/forgot-password`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
         body: JSON.stringify({ email }),
       });
     } catch (error) {
@@ -75,7 +79,11 @@ export default function VerifyResetOtp() {
     try {
       const res = await fetch(`${BASE_URL}/auth/verify-reset-otp`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
         body: JSON.stringify({ email, otp: otpString }),
       });
 

@@ -46,8 +46,10 @@ export default function SuperAdminVerifyOTP() {
         `${API_URL}/super-admin/auth/verify-otp`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
           },
           body: JSON.stringify({
             email,
@@ -97,8 +99,10 @@ export default function SuperAdminVerifyOTP() {
         `${API_URL}/super-admin/auth/resend-otp`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
           },
           body: JSON.stringify({
             email,

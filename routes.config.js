@@ -56,11 +56,18 @@ export const VALID_ROUTES = new Set([
   "/get-started",
   "/login",
   "/super-admin",
- "/super-admin/signup",
- "/super-admin/verify-otp",
- "/super-admin/forgot-password",
- "/super-admin/dashboard",
- "/super-admin/documents",
+  "/super-admin/signup",
+  "/super-admin/verify-otp",
+  "/super-admin/forgot-password",
+  "/super-admin/dashboard",
+  "/super-admin/documents",
+  "/super-admin/leads",
+  "/super-admin/bt-lps",
+  "/super-admin/bank-forwarding",
+  "/super-admin/users",
+  "/super-admin/reports",
+  "/super-admin/settings",
+  "/super-admin/careers",
 ]);
 
 const DYNAMIC_ROUTE_PATTERNS = [

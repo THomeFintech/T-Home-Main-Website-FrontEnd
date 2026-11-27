@@ -36,7 +36,12 @@ const authApi = {
     return response.data;
   },
 
-  logout: () => {
+  logout: async () => {
+    try {
+      await apiClient.post("/auth/logout");
+    } catch (e) {
+      // ignore
+    }
     sessionStorage.removeItem("access_token");
   },
 

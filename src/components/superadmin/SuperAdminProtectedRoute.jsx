@@ -1,9 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 export default function SuperAdminProtectedRoute() {
-  const token = localStorage.getItem("superadmin_token");
+  const hasAdminSession =
+    localStorage.getItem("superadmin_logged_in") === "true" ||
+    !!localStorage.getItem("superadmin_admin") ||
+    !!localStorage.getItem("superadmin_token");
 
-  if (!token) {
+  if (!hasAdminSession) {
     return <Navigate to="/super-admin" replace />;
   }
 

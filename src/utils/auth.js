@@ -6,8 +6,6 @@ export const getAuthToken = () => {
     return (
       sessionStorage.getItem("access_token") ||
       sessionStorage.getItem("token") ||
-      localStorage.getItem("access_token") ||
-      localStorage.getItem("token") ||
       null
     );
   } catch {
@@ -43,8 +41,9 @@ export const setAuthSession = ({ token, user }) => {
     if (token) {
       sessionStorage.setItem("access_token", token);
       sessionStorage.setItem("token", token);
-      localStorage.setItem("access_token", token);
-      localStorage.setItem("token", token);
+      // Explicitly purge sensitive token from localStorage
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("token");
     }
     if (user) {
       const userStr = typeof user === "string" ? user : JSON.stringify(user);
@@ -63,6 +62,16 @@ export const setAuthSession = ({ token, user }) => {
 
 export const clearAuthSession = () => {
   try {
+    // Notify backend to clear HttpOnly session cookie
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    fetch(`${API_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    }).catch(() => {});
+
     sessionStorage.removeItem("access_token");
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("refresh_token");

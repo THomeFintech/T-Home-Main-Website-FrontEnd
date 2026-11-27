@@ -43,9 +43,22 @@ export default function SuperAdminLayout() {
     return "Operations Dashboard";
   }, [location.pathname]);
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      await fetch(`${API_URL}/super-admin/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      });
+    } catch (e) {
+      // ignore
+    }
     localStorage.removeItem("superadmin_token");
     localStorage.removeItem("superadmin_admin");
+    localStorage.removeItem("superadmin_logged_in");
     localStorage.removeItem("superadmin_authenticated");
     navigate("/super-admin");
   };

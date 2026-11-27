@@ -2360,7 +2360,11 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
       try {
         const response = await fetch(`${API_BASE}/digilocker/identity`, {
           method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            Authorization: `Bearer ${token}`,
+          },
           signal: controller.signal,
         });
 
@@ -2484,8 +2488,10 @@ export default function GetCibilScore({ loanData, setLoanData, onBack }) {
     try {
       const response = await fetch(`${API_BASE}/cibil/test-fetch`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({

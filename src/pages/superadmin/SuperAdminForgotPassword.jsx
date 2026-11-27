@@ -50,8 +50,10 @@ export default function SuperAdminForgotPassword() {
         `${API_URL}/super-admin/auth/forgot-password`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
           },
           body: JSON.stringify({
             email: email.trim(),
@@ -117,8 +119,10 @@ export default function SuperAdminForgotPassword() {
         `${API_URL}/super-admin/auth/verify-reset-otp`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
           },
           body: JSON.stringify({
             email: email.trim(),
@@ -186,8 +190,10 @@ export default function SuperAdminForgotPassword() {
         `${API_URL}/super-admin/auth/reset-password`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
           },
           body: JSON.stringify({
             email: email.trim(),

@@ -22,8 +22,32 @@
       "source": "/(.*)",
       "headers": [
         {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        },
+        {
           "key": "Cross-Origin-Opener-Policy",
           "value": "same-origin-allow-popups"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://accounts.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://res.cloudinary.com https://ui-avatars.com https://challenges.cloudflare.com https://lh3.googleusercontent.com; frame-src 'self' blob: https://challenges.cloudflare.com https://accounts.google.com; connect-src 'self' https://challenges.cloudflare.com https://accounts.google.com https://res.cloudinary.com https://dev.thomefintech.com https://api.thomefintech.com https://www.thomefintech.com https://thomefintech.com https://t-home-main-website-front-end.vercel.app https://t-home-main-website-backend-1.onrender.com https://bt-backend-q16y.onrender.com http://localhost:5000 http://localhost:8000 http://127.0.0.1:8000; object-src 'none'; base-uri 'self'; form-action 'self' https://digilocker.meripehchaan.gov.in; frame-ancestors 'none'; upgrade-insecure-requests;"
         }
       ]
     }

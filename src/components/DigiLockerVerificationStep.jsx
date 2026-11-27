@@ -50,8 +50,10 @@ export default function DigiLockerVerificationStep({
       setError("");
 
       const res = await fetch(`${API_BASE}/digilocker/status`, {
+        credentials: "include",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "X-Requested-With": "XMLHttpRequest",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -135,8 +137,10 @@ export default function DigiLockerVerificationStep({
         setError("");
 
         const res = await fetch(`${API_BASE}/digilocker/status`, {
+          credentials: "include",
           headers: {
-            Authorization: `Bearer ${token}`,
+            "X-Requested-With": "XMLHttpRequest",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         });
 
@@ -219,8 +223,10 @@ export default function DigiLockerVerificationStep({
       });
 
       const res = await fetch(`${API_BASE}/digilocker/authorize?${params}`, {
+        credentials: "include",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "X-Requested-With": "XMLHttpRequest",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

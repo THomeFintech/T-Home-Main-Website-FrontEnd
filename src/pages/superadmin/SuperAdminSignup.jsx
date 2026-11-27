@@ -67,8 +67,10 @@ export default function SuperAdminSignup() {
         `${API_URL}/super-admin/auth/signup`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
           },
           body: JSON.stringify({
             name: formData.name,

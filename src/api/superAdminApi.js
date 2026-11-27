@@ -3,7 +3,21 @@ const API_URL =
   "http://localhost:5000";
 
 function getToken() {
-  return localStorage.getItem("superadmin_token");
+  return localStorage.getItem("superadmin_token") || null;
+}
+
+function getAuthHeaders() {
+  const headers = {
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest",
+  };
+
+  const token = getToken();
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return headers;
 }
 
 async function handleResponse(response) {
@@ -12,6 +26,8 @@ async function handleResponse(response) {
   if (response.status === 401) {
     localStorage.removeItem("superadmin_token");
     localStorage.removeItem("superadmin_admin");
+    localStorage.removeItem("superadmin_logged_in");
+    localStorage.removeItem("superadmin_authenticated");
 
     window.location.href = "/super-admin";
 
@@ -30,70 +46,43 @@ async function handleResponse(response) {
   return data;
 }
 
-function getAuthHeaders() {
-  const token = getToken();
+async function adminFetch(endpoint, options = {}) {
+  const url = endpoint.startsWith("http") ? endpoint : `${API_URL}${endpoint}`;
+  const response = await fetch(url, {
+    ...options,
+    credentials: "include",
+    headers: {
+      ...getAuthHeaders(),
+      ...(options.headers || {}),
+    },
+  });
 
-  if (!token) {
-    throw new Error("Super Admin authentication token is missing.");
-  }
-
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
+  return handleResponse(response);
 }
-
 
 /* =========================================================
    DASHBOARD
 ========================================================= */
 
 export async function getDashboardStats() {
-  const response = await fetch(
-    `${API_URL}/super-admin/dashboard`,
-    {
-      method: "GET",
-      headers: getAuthHeaders(),
-    }
-  );
-
-  return handleResponse(response);
+  return adminFetch("/super-admin/dashboard", { method: "GET" });
 }
-
 
 /* =========================================================
    DOCUMENTS
 ========================================================= */
 
 export async function getDocuments() {
-  const response = await fetch(
-    `${API_URL}/super-admin/documents`,
-    {
-      method: "GET",
-      headers: getAuthHeaders(),
-    }
-  );
-
-  return handleResponse(response);
+  return adminFetch("/super-admin/documents", { method: "GET" });
 }
-
 
 /* =========================================================
    APPLICATION
 ========================================================= */
 
 export async function getApplication(id) {
-  const response = await fetch(
-    `${API_URL}/super-admin/applications/${id}`,
-    {
-      method: "GET",
-      headers: getAuthHeaders(),
-    }
-  );
-
-  return handleResponse(response);
+  return adminFetch(`/super-admin/applications/${id}`, { method: "GET" });
 }
-
 
 /* =========================================================
    DOCUMENT STATUS
@@ -104,21 +93,14 @@ export async function updateDocumentStatus(
   status,
   notes = ""
 ) {
-  const response = await fetch(
-    `${API_URL}/super-admin/documents/${documentId}/status`,
-    {
-      method: "PATCH",
-      headers: getAuthHeaders(),
-      body: JSON.stringify({
-        status,
-        notes,
-      }),
-    }
-  );
-
-  return handleResponse(response);
+  return adminFetch(`/super-admin/documents/${documentId}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      status,
+      notes,
+    }),
+  });
 }
-
 
 /* =========================================================
    APPLICATION DECISION
@@ -128,28 +110,19 @@ export async function updateApplicationDecision(
   applicationId,
   decision
 ) {
-  const response = await fetch(
-    `${API_URL}/super-admin/applications/${applicationId}/decision`,
-    {
-      method: "PATCH",
-      headers: getAuthHeaders(),
-      body: JSON.stringify({
-        decision,
-      }),
-    }
-  );
-
-  return handleResponse(response);
+  return adminFetch(`/super-admin/applications/${applicationId}/decision`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      decision,
+    }),
+  });
 }
 
 export async function getDocumentPreviewUrl(documentId) {
-  const token = localStorage.getItem("superadmin_token");
-
   return `${API_URL}/super-admin/documents/${encodeURIComponent(
     documentId
-  )}/view?token=${encodeURIComponent(token)}`;
+  )}/view`;
 }
-
 
 /* =========================================================
    LEADS MANAGEMENT
@@ -161,64 +134,39 @@ export async function getLeads(params = {}) {
   if (params.status && params.status !== "All") query.append("status", params.status);
   if (params.search) query.append("search", params.search);
 
-  const url = `${API_URL}/super-admin/leads${query.toString() ? `?${query.toString()}` : ""}`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
-
-  return handleResponse(response);
+  const url = `/super-admin/leads${query.toString() ? `?${query.toString()}` : ""}`;
+  return adminFetch(url, { method: "GET" });
 }
 
 export async function updateLead(id, data) {
-  const response = await fetch(`${API_URL}/super-admin/leads/${id}`, {
+  return adminFetch(`/super-admin/leads/${id}`, {
     method: "PATCH",
-    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
-
-  return handleResponse(response);
 }
-
 
 /* =========================================================
    BALANCE TRANSFER & LPS
 ========================================================= */
 
 export async function getBtAndLps() {
-  const response = await fetch(`${API_URL}/super-admin/bt-lps`, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
-
-  return handleResponse(response);
+  return adminFetch("/super-admin/bt-lps", { method: "GET" });
 }
-
 
 /* =========================================================
    BANK FORWARDING TRACKER
 ========================================================= */
 
 export async function getBankForwarding() {
-  const response = await fetch(`${API_URL}/super-admin/bank-forwarding`, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
-
-  return handleResponse(response);
+  return adminFetch("/super-admin/bank-forwarding", { method: "GET" });
 }
 
 export async function updateBankForwarding(id, data) {
-  const response = await fetch(`${API_URL}/super-admin/bank-forwarding/${id}`, {
+  return adminFetch(`/super-admin/bank-forwarding/${id}`, {
     method: "PATCH",
-    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
-
-  return handleResponse(response);
 }
-
 
 /* =========================================================
    CUSTOMER DIRECTORY (USERS)
@@ -229,64 +177,39 @@ export async function getUsersList(params = {}) {
   if (params.status && params.status !== "All") query.append("status", params.status);
   if (params.search) query.append("search", params.search);
 
-  const url = `${API_URL}/super-admin/users${query.toString() ? `?${query.toString()}` : ""}`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
-
-  return handleResponse(response);
+  const url = `/super-admin/users${query.toString() ? `?${query.toString()}` : ""}`;
+  return adminFetch(url, { method: "GET" });
 }
 
 export async function updateUserStatus(id, isActive) {
-  const response = await fetch(`${API_URL}/super-admin/users/${id}/status`, {
+  return adminFetch(`/super-admin/users/${id}/status`, {
     method: "PATCH",
-    headers: getAuthHeaders(),
     body: JSON.stringify({ isActive }),
   });
-
-  return handleResponse(response);
 }
-
 
 /* =========================================================
    REPORTS & ANALYTICS
 ========================================================= */
 
 export async function getReportsData() {
-  const response = await fetch(`${API_URL}/super-admin/reports`, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
-
-  return handleResponse(response);
+  return adminFetch("/super-admin/reports", { method: "GET" });
 }
-
 
 /* =========================================================
    SETTINGS & SUPER ADMINS
 ========================================================= */
 
 export async function getSettingsData() {
-  const response = await fetch(`${API_URL}/super-admin/settings`, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
-
-  return handleResponse(response);
+  return adminFetch("/super-admin/settings", { method: "GET" });
 }
 
 export async function updateAdminActiveStatus(id, isActive) {
-  const response = await fetch(`${API_URL}/super-admin/settings/admin/${id}/status`, {
+  return adminFetch(`/super-admin/settings/admin/${id}/status`, {
     method: "PATCH",
-    headers: getAuthHeaders(),
     body: JSON.stringify({ isActive }),
   });
-
-  return handleResponse(response);
 }
-
 
 /* =========================================================
    AUDIT LOGS
@@ -298,16 +221,10 @@ export async function getAuditLogs(params = {}) {
   if (params.entityType) query.append("entityType", params.entityType);
   if (params.action) query.append("action", params.action);
 
-  const url = `${API_URL}/super-admin/audit-logs${
+  const url = `/super-admin/audit-logs${
     query.toString() ? `?${query.toString()}` : ""
   }`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
-
-  return handleResponse(response);
+  return adminFetch(url, { method: "GET" });
 }
 
 /* =========================================================
@@ -321,63 +238,37 @@ export async function getCareerOpenings(params = {}) {
   if (params.employmentType) query.append("employmentType", params.employmentType);
   if (params.status) query.append("status", params.status);
 
-  const url = `${API_URL}/super-admin/careers${
+  const url = `/super-admin/careers${
     query.toString() ? `?${query.toString()}` : ""
   }`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
-
-  return handleResponse(response);
+  return adminFetch(url, { method: "GET" });
 }
 
 export async function getCareerOpening(id) {
-  const response = await fetch(`${API_URL}/super-admin/careers/${id}`, {
-    method: "GET",
-    headers: getAuthHeaders(),
-  });
-
-  return handleResponse(response);
+  return adminFetch(`/super-admin/careers/${id}`, { method: "GET" });
 }
 
 export async function createCareerOpening(data) {
-  const response = await fetch(`${API_URL}/super-admin/careers`, {
+  return adminFetch("/super-admin/careers", {
     method: "POST",
-    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
-
-  return handleResponse(response);
 }
 
 export async function updateCareerOpening(id, data) {
-  const response = await fetch(`${API_URL}/super-admin/careers/${id}`, {
+  return adminFetch(`/super-admin/careers/${id}`, {
     method: "PUT",
-    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
-
-  return handleResponse(response);
 }
 
 export async function toggleCareerOpeningStatus(id, isActive) {
-  const response = await fetch(`${API_URL}/super-admin/careers/${id}/status`, {
+  return adminFetch(`/super-admin/careers/${id}/status`, {
     method: "PATCH",
-    headers: getAuthHeaders(),
     body: JSON.stringify({ is_active: isActive }),
   });
-
-  return handleResponse(response);
 }
 
 export async function deleteCareerOpening(id) {
-  const response = await fetch(`${API_URL}/super-admin/careers/${id}`, {
-    method: "DELETE",
-    headers: getAuthHeaders(),
-  });
-
-  return handleResponse(response);
+  return adminFetch(`/super-admin/careers/${id}`, { method: "DELETE" });
 }
-

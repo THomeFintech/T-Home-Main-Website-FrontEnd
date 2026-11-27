@@ -61,8 +61,10 @@ export default function Register() {
     try {
       const res = await fetch(`${BASE_URL}/auth/register`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
         },
         body: JSON.stringify(payload),
       });

@@ -38,8 +38,10 @@ export default function SuperAdminLogin() {
         `${API_URL}/super-admin/auth/login`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
           },
           body: JSON.stringify({
             email,
@@ -59,14 +61,7 @@ export default function SuperAdminLogin() {
         );
       }
 
-      if (!data.token) {
-        throw new Error("Authentication token was not received.");
-      }
-
-      // Store the real JWT token
-      localStorage.setItem("superadmin_token", data.token);
-
-      // Store admin information for UI use
+      // Store admin profile information for UI display (HttpOnly cookie manages auth)
       if (data.admin) {
         localStorage.setItem(
           "superadmin_admin",
@@ -74,7 +69,10 @@ export default function SuperAdminLogin() {
         );
       }
 
-      // Remove old temporary authentication flag if it exists
+      localStorage.setItem("superadmin_logged_in", "true");
+
+      // Clean up any legacy exposed token
+      localStorage.removeItem("superadmin_token");
       localStorage.removeItem("superadmin_authenticated");
 
       navigate("/super-admin/dashboard");

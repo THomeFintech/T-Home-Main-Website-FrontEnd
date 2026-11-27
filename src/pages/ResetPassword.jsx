@@ -33,11 +33,15 @@ export default function ResetPassword() {
     try {
       const res = await fetch(`${BASE_URL}/auth/reset-password`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
         body: JSON.stringify({
-    email,
-    newPassword: password,
-})
+          email,
+          newPassword: password,
+        }),
       });
 
       const data = await res.json();
